@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store Merchant Portal | CHITIKELO Express</title>
+  
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f8fafc] text-slate-900 font-sans antialiased pb-16">
+
+  <!-- Dashboard Navbar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+      
+      <div class="flex items-center gap-6">
+        <a href="index.html" class="flex flex-col">
+          <span class="font-display text-2xl font-black tracking-tight text-slate-950 flex items-center">
+            CHITI<span class="text-brand-600">KELO</span>
+            <span class="text-[10px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded ml-2">SELLER HUB</span>
+          </span>
+          <span class="text-[9px] uppercase tracking-[0.2em] font-extrabold text-slate-400">Merchant Operations</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-2 text-xs font-semibold bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          Store Status: Live & Accepting 60-Min Orders
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button onclick="toggleAddProductModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i> Add New Product
+        </button>
+
+        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-bold text-xs">
+          AR
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Metrics Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 space-y-8">
+    
+    <!-- Store Overview Bar -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+          <span>Today's Live Orders</span>
+          <i data-lucide="zap" class="w-4 h-4 text-brand-600"></i>
+        </div>
+        <p class="font-display text-2xl font-black text-slate-950 mt-2">14 Orders</p>
+        <span class="text-[11px] text-green-600 font-bold">⚡ All dispatched within 12 mins</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+          <span>Today's Gross Sales</span>
+          <i data-lucide="indian-rupee" class="w-4 h-4 text-emerald-600"></i>
+        </div>
+        <p class="font-display text-2xl font-black text-slate-950 mt-2">₹18,450</p>
+        <span class="text-[11px] text-slate-400 font-medium">Daily automated payout ready</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+          <span>Active Catalog</span>
+          <i data-lucide="hanger" class="w-4 h-4 text-blue-600"></i>
+        </div>
+        <p id="catalog-count" class="font-display text-2xl font-black text-slate-950 mt-2">32 Items</p>
+        <span class="text-[11px] text-blue-600 font-semibold">Listed in 30km radius</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-semibold">
+          <span>1-Hour Refund Requests</span>
+          <i data-lucide="rotate-ccw" class="w-4 h-4 text-orange-600"></i>
+        </div>
+        <p class="font-display text-2xl font-black text-slate-950 mt-2">1 Item</p>
+        <span class="text-[11px] text-orange-600 font-semibold">Size exchange initiated</span>
+      </div>
+    </div>
+
+    <!-- Live Orders Section (High Priority for 1-Hour Delivery) -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="p-6 bg-slate-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 animate-pulse"></span>
+            <h3 class="font-display text-lg font-bold">Express Order Queue (Ready for Pickup)</h3>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">Pack & mark ready within 12 minutes for delivery riders</p>
+        </div>
+        <span class="text-xs font-bold bg-white/10 border border-white/20 px-3 py-1.5 rounded-xl text-brand-400">
+          2 Pending Dispatch
+        </span>
+      </div>
+
+      <div class="divide-y divide-slate-100">
+        <!-- Live Order 1 -->
+        <div id="order-1" class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/80 transition">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-700 flex items-center justify-center font-black text-sm flex-shrink-0">
+              #841
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-slate-900 text-sm">Embroidered Anarkali Kurta Set (Size: M)</h4>
+                <span class="text-[10px] font-extrabold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">PACKING</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Customer: Priya V. (6.2 km away) • Paid: ₹899 via UPI</p>
+              <p class="text-xs text-brand-600 font-semibold mt-1 flex items-center gap-1">
+                <i data-lucide="timer" class="w-3.5 h-3.5"></i> Rider arriving at shop in: <span class="font-black">6 Mins</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button onclick="markReady('order-1')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="check" class="w-4 h-4"></i> Mark Ready for Rider
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Order 2 -->
+        <div id="order-2" class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-50/80 transition">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-black text-sm flex-shrink-0">
+              #842
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-slate-900 text-sm">Tailored Oxford Shirt (Size: 40)</h4>
+                <span class="text-[10px] font-extrabold bg-blue-100 text-blue-800 px-2 py-0.5 rounded">RIDER ASSIGNED</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Customer: Rajesh K. (3.8 km away) • Paid: ₹1,199 via UPI</p>
+              <p class="text-xs text-brand-600 font-semibold mt-1 flex items-center gap-1">
+                <i data-lucide="timer" class="w-3.5 h-3.5"></i> Rider arriving at shop in: <span class="font-black">9 Mins</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button onclick="markReady('order-2')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="check" class="w-4 h-4"></i> Mark Ready for Rider
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory & Stock Management -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden p-6 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div>
+          <h3 class="font-display text-base font-bold text-slate-900">Your Store Inventory (Available for 30km Radius)</h3>
+          <p class="text-xs text-slate-500">Live products visible to customers on Chitikelo app</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="text-slate-400 font-bold uppercase tracking-wider border-b border-slate-100">
+              <th class="pb-3">Product</th>
+              <th class="pb-3">Category</th>
+              <th class="pb-3">Selling Price</th>
+              <th class="pb-3">Available Sizes</th>
+              <th class="pb-3">Status</th>
+              <th class="pb-3 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-list" class="divide-y divide-slate-100 font-medium">
+            <tr>
+              <td class="py-3.5 font-bold text-slate-900">Embroidered Anarkali Kurta Set</td>
+              <td class="py-3.5 text-slate-600">Women's Ethnic</td>
+              <td class="py-3.5 font-extrabold text-slate-900">₹899</td>
+              <td class="py-3.5">S, M, L, XL</td>
+              <td class="py-3.5"><span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold text-[10px]">In Stock</span></td>
+              <td class="py-3.5 text-right"><button class="text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4 inline"></i></button></td>
+            </tr>
+            <tr>
+              <td class="py-3.5 font-bold text-slate-900">Pure Silk Traditional Zari Saree</td>
+              <td class="py-3.5 text-slate-600">Festive Sarees</td>
+              <td class="py-3.5 font-extrabold text-slate-900">₹2,499</td>
+              <td class="py-3.5">Free Size</td>
+              <td class="py-3.5"><span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold text-[10px]">In Stock</span></td>
+              <td class="py-3.5 text-right"><button class="text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4 inline"></i></button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Add Product Modal -->
+  <div id="addProductModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-display text-lg font-bold text-slate-900">Add New Product to Catalog</h3>
+        <button onclick="toggleAddProductModal()" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleAddProduct(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Product Title *</label>
+          <input id="prod-name" type="text" required placeholder="e.g. Designer Georgette Saree" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Selling Price (₹) *</label>
+            <input id="prod-price" type="number" required placeholder="1299" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Category *</label>
+            <select id="prod-cat" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20">
+              <option value="Women's Ethnic">Women's Ethnic</option>
+              <option value="Men's Wear">Men's Wear</option>
+              <option value="Sarees">Festive Sarees</option>
+              <option value="Kids Wear">Kids Wear</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Available Sizes (Comma separated) *</label>
+          <input id="prod-sizes" type="text" required placeholder="S, M, L, XL" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20" />
+        </div>
+
+        <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition">
+          Publish to 30km Hub
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function toggleAddProductModal() {
+      document.getElementById('addProductModal').classList.toggle('hidden');
+    }
+
+    function markReady(orderId) {
+      const orderEl = document.getElementById(orderId);
+      orderEl.innerHTML = `
+        <div class="flex items-center gap-3 text-emerald-700 font-bold text-xs py-2">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+          Order is Packed & Ready for Pickup! Rider notified.
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function handleAddProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('prod-name').value;
+      const price = document.getElementById('prod-price').value;
+      const cat = document.getElementById('prod-cat').value;
+      const sizes = document.getElementById('prod-sizes').value;
+
+      const list = document.getElementById('inventory-list');
+      const row = `
+        <tr>
+          <td class="py-3.5 font-bold text-slate-900">${name}</td>
+          <td class="py-3.5 text-slate-600">${cat}</td>
+          <td class="py-3.5 font-extrabold text-slate-900">₹${price}</td>
+          <td class="py-3.5">${sizes}</td>
+          <td class="py-3.5"><span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold text-[10px]">In Stock</span></td>
+          <td class="py-3.5 text-right"><button class="text-slate-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4 inline"></i></button></td>
+        </tr>
+      `;
+      list.innerHTML += row;
+      toggleAddProductModal();
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
