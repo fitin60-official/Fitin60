@@ -417,10 +417,27 @@
           <button class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition duration-300 shadow-lg shadow-brand-500/20 flex items-center justify-center gap-2">
             <i data-lucide="lock" class="w-4 h-4"></i> Proceed to Fast Checkout
           </button>
+          <button onclick="orderViaWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition duration-300 shadow-lg shadow-green-500/20 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-1.87 1.246-3.045 3.006-3.045 4.926 0 1.211.267 2.389.77 3.461L2.05 19.45l3.752-1.174c1.025.55 2.169.884 3.376.884 4.488 0 8.268-3.369 8.268-7.557 0-2.016-.779-3.91-2.191-5.326a7.569 7.569 0 00-5.384-2.235" />
+            </svg> Order via WhatsApp
+          </button>
           <p class="text-[10px] text-center text-slate-400 font-medium">⚡ 1-Hour return policy starts upon doorstep delivery</p>
         </div>
 
       </div>
+    </div>
+  </div>
+
+  <!-- Floating WhatsApp Order Button -->
+  <div id="floating-whatsapp" class="fixed bottom-8 right-8 z-40">
+    <button onclick="openWhatsApp()" class="w-16 h-16 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-2xl shadow-green-500/40 flex items-center justify-center transition transform hover:scale-110 duration-300 flex-shrink-0">
+      <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-5.031 1.378c-1.87 1.246-3.045 3.006-3.045 4.926 0 1.211.267 2.389.77 3.461L2.05 19.45l3.752-1.174c1.025.55 2.169.884 3.376.884 4.488 0 8.268-3.369 8.268-7.557 0-2.016-.779-3.91-2.191-5.326a7.569 7.569 0 00-5.384-2.235" />
+      </svg>
+    </button>
+    <div class="absolute -top-12 right-0 bg-slate-950 text-white text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap shadow-lg opacity-0 hover:opacity-100 transition pointer-events-none">
+      Order via WhatsApp
     </div>
   </div>
 
@@ -481,6 +498,35 @@
     function removeItem(index) {
       cart.splice(index, 1);
       updateCartUI();
+    }
+
+    function openWhatsApp() {
+      if (cart.length === 0) {
+        alert('Your cart is empty! Add items first.');
+        return;
+      }
+      orderViaWhatsApp();
+    }
+
+    function orderViaWhatsApp() {
+      if (cart.length === 0) {
+        alert('Your cart is empty! Add items first.');
+        return;
+      }
+
+      let total = 0;
+      let itemsText = '';
+
+      cart.forEach((item, index) => {
+        total += item.price;
+        itemsText += `${index + 1}. ${item.name} - ₹${item.price} (ETA: ${item.eta})\n`;
+      });
+
+      const message = encodeURIComponent(
+        `Hello! I'd like to place an order:\n\n${itemsText}\nTotal: ₹${total}\n\nDelivery within 30km radius\n1-Hour return policy available`
+      );
+
+      window.open(`https://wa.me/?text=${message}`, '_blank');
     }
   </script>
 </body>
