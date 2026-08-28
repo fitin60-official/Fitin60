@@ -6,7 +6,6 @@
   <title>CHITIKELO | 60-Minute Hyperlocal Fashion</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
@@ -29,8 +28,8 @@
           Partner Store
         </a>
         <!-- Cart Top Button -->
-        <button onclick="toggleCart()" class="relative bg-slate-950 hover:bg-orange-600 text-white px-4 py-2.5 rounded-2xl flex items-center gap-2 transition cursor-pointer">
-          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+        <button id="topCartBtn" class="relative bg-slate-950 hover:bg-orange-600 text-white px-4 py-2.5 rounded-2xl flex items-center gap-2 transition cursor-pointer">
+          <span class="text-base">🛍️</span>
           <span class="text-xs font-bold hidden sm:inline">Bag</span>
           <span id="cart-count" class="bg-orange-500 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
         </button>
@@ -58,7 +57,7 @@
           <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Embroidered Anarkali Kurta Set</h3>
           <p class="text-xl font-black text-slate-950 mt-2">₹899 <span class="text-xs text-slate-400 line-through font-normal">₹1,499</span></p>
         </div>
-        <button onclick="addToBag('Embroidered Anarkali Kurta Set', 899, '35 mins')" class="mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition">
+        <button class="add-btn mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition" data-name="Embroidered Anarkali Kurta Set" data-price="899" data-eta="35 mins">
           + Add to Express Bag
         </button>
       </div>
@@ -74,7 +73,7 @@
           <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Tailored Premium Oxford Shirt</h3>
           <p class="text-xl font-black text-slate-950 mt-2">₹1,199 <span class="text-xs text-slate-400 line-through font-normal">₹1,899</span></p>
         </div>
-        <button onclick="addToBag('Tailored Premium Oxford Shirt', 1199, '45 mins')" class="mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition">
+        <button class="add-btn mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition" data-name="Tailored Premium Oxford Shirt" data-price="1199" data-eta="45 mins">
           + Add to Express Bag
         </button>
       </div>
@@ -90,7 +89,7 @@
           <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Pure Silk Traditional Zari Saree</h3>
           <p class="text-xl font-black text-slate-950 mt-2">₹2,499 <span class="text-xs text-slate-400 line-through font-normal">₹3,999</span></p>
         </div>
-        <button onclick="addToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins')" class="mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition">
+        <button class="add-btn mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition" data-name="Pure Silk Traditional Zari Saree" data-price="2499" data-eta="50 mins">
           + Add to Express Bag
         </button>
       </div>
@@ -100,19 +99,19 @@
 
   <!-- Side Cart Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
-    <div onclick="toggleCart()" class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div id="cartBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
       
       <div class="p-6 bg-slate-950 text-white flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <i data-lucide="shopping-bag" class="w-5 h-5 text-orange-400"></i>
+          <span class="text-xl">🛍️</span>
           <div>
             <h3 class="font-brand font-bold text-base">Your Express Bag</h3>
             <p class="text-xs text-slate-400">60-Min Hyperlocal Delivery</p>
           </div>
         </div>
-        <button onclick="toggleCart()" class="text-slate-400 hover:text-white p-1">
-          <i data-lucide="x" class="w-6 h-6"></i>
+        <button id="closeCartBtn" class="text-slate-400 hover:text-white p-1 text-2xl font-bold leading-none cursor-pointer">
+          &times;
         </button>
       </div>
 
@@ -126,8 +125,8 @@
           <span id="cartTotal">₹0</span>
         </div>
 
-        <button onclick="orderViaWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-          <i data-lucide="message-circle" class="w-4 h-4"></i> Order via WhatsApp
+        <button id="whatsappBtn" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
+          💬 Order via WhatsApp
         </button>
       </div>
 
@@ -135,76 +134,90 @@
   </div>
 
   <script>
-    lucide.createIcons();
+    (function() {
+      let items = [];
+      const WHATSAPP_NUM = "919876543210";
 
-    let items = [];
-    const WHATSAPP_NUM = "919876543210"; // Enter your 10-digit WhatsApp number
-
-    function toggleCart() {
       const drawer = document.getElementById('cartDrawer');
-      drawer.classList.toggle('hidden');
-    }
+      const topBtn = document.getElementById('topCartBtn');
+      const closeBtn = document.getElementById('closeCartBtn');
+      const backdrop = document.getElementById('cartBackdrop');
+      const whatsappBtn = document.getElementById('whatsappBtn');
 
-    function addToBag(name, price, eta) {
-      items.push({ name, price, eta });
-      renderCart();
-      toggleCart();
-    }
+      function showCart() { drawer.classList.remove('hidden'); }
+      function hideCart() { drawer.classList.add('hidden'); }
 
-    function removeItem(index) {
-      items.splice(index, 1);
-      renderCart();
-    }
+      if(topBtn) topBtn.addEventListener('click', showCart);
+      if(closeBtn) closeBtn.addEventListener('click', hideCart);
+      if(backdrop) backdrop.addEventListener('click', hideCart);
 
-    function renderCart() {
-      const count = document.getElementById('cart-count');
-      const list = document.getElementById('cartItems');
-      const totalEl = document.getElementById('cartTotal');
-      
-      count.innerText = items.length;
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const name = this.getAttribute('data-name');
+          const price = parseFloat(this.getAttribute('data-price'));
+          const eta = this.getAttribute('data-eta');
+          items.push({ name, price, eta });
+          renderCart();
+          showCart();
+        });
+      });
 
-      if (items.length === 0) {
-        list.innerHTML = <p class="text-center text-slate-400 text-sm mt-12">Your shopping bag is empty.</p>;
-        totalEl.innerText = '₹0';
-        return;
-      }
+      window.removeCartItem = function(index) {
+        items.splice(index, 1);
+        renderCart();
+      };
 
-      let sum = 0;
-      list.innerHTML = '';
-      items.forEach((item, index) => {
-        sum += item.price;
-        list.innerHTML += `
-          <div class="flex items-center justify-between p-3.5 bg-white border border-slate-200 rounded-2xl shadow-sm">
-            <div>
-              <p class="text-xs font-bold text-slate-900">${item.name}</p>
-              <p class="text-[11px] text-orange-600 font-semibold mt-0.5">⚡ ETA: ${item.eta}</p>
-              <p class="text-xs font-extrabold text-slate-950 mt-1">₹${item.price}</p>
+      function renderCart() {
+        const count = document.getElementById('cart-count');
+        const list = document.getElementById('cartItems');
+        const totalEl = document.getElementById('cartTotal');
+        
+        count.innerText = items.length;
+
+        if (items.length === 0) {
+          list.innerHTML = '<p class="text-center text-slate-400 text-sm mt-12">Your shopping bag is empty.</p>';
+          totalEl.innerText = '₹0';
+          return;
+        }
+
+        let sum = 0;
+        list.innerHTML = '';
+        items.forEach((item, index) => {
+          sum += item.price;
+          list.innerHTML += `
+            <div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">
+              <div>
+                <p class="text-xs font-bold text-slate-900">${item.name}</p>
+                <p class="text-[11px] text-orange-600 font-semibold mt-0.5">⚡ ETA: ${item.eta}</p>
+                <p class="text-xs font-extrabold text-slate-950 mt-1">₹${item.price}</p>
+              </div>
+              <button onclick="removeCartItem(${index})" class="text-slate-400 hover:text-red-500 font-bold p-1 text-sm">
+                ✕
+              </button>
             </div>
-            <button onclick="removeItem(${index})" class="text-slate-400 hover:text-red-500 p-1">
-              <i data-lucide="trash-2" class="w-4 h-4"></i>
-            </button>
-          </div>
-        `;
-      });
+          `;
+        });
 
-      totalEl.innerText = '₹' + sum;
-      lucide.createIcons();
-    }
-
-    function orderViaWhatsApp() {
-      if (items.length === 0) {
-        alert("Please add items to your bag first!");
-        return;
+        totalEl.innerText = '₹' + sum;
       }
-      let sum = 0;
-      let text = "";
-      items.forEach((it, i) => {
-        sum += it.price;
-        text += ${i + 1}. ${it.name} - ₹${it.price}%0A;
-      });
-      const msg = *⚡ NEW 60-MIN EXPRESS ORDER - CHITIKELO*%0A%0A*Items:*%0A${text}%0A*Total Amount:* ₹${sum}%0A*Delivery Radius:* Within 30km%0A%0APlease confirm my order!;
-      window.open(https://wa.me/${WHATSAPP_NUM}?text=${msg}, '_blank');
-    }
+
+      if(whatsappBtn) {
+        whatsappBtn.addEventListener('click', function() {
+          if (items.length === 0) {
+            alert("Please add items to your bag first!");
+            return;
+          }
+          let sum = 0;
+          let text = "";
+          items.forEach((it, i) => {
+            sum += it.price;
+            text += ${i + 1}. ${it.name} - ₹${it.price}%0A;
+          });
+          const msg = *⚡ NEW 60-MIN EXPRESS ORDER - CHITIKELO*%0A%0A*Items:*%0A${text}%0A*Total Amount:* ₹${sum}%0A*Delivery Radius:* Within 30km%0A%0APlease confirm my order!;
+          window.open(https://wa.me/${WHATSAPP_NUM}?text=${msg}, '_blank');
+        });
+      }
+    })();
   </script>
 </body>
 </html>
