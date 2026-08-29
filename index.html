@@ -11,24 +11,24 @@
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-20">
+<body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-24">
 
-  <!-- Navigation Bar -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
-      <div>
+      <a href="index.html">
         <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
           CHITI<span class="text-orange-600">KELO</span>
         </span>
         <span class="block text-[9px] uppercase tracking-[0.25em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
-      </div>
+      </a>
 
       <div class="flex items-center gap-3">
-        <a href="tracking.html" class="hidden sm:inline-block text-xs font-bold text-orange-600 hover:text-slate-900 px-3 py-2 rounded-xl border border-orange-200 bg-orange-50">
+        <a href="tracking.html" class="hidden sm:inline-block text-xs font-bold text-orange-600 hover:text-slate-900 px-3.5 py-2 rounded-xl border border-orange-200 bg-orange-50">
           ⚡ Track Order
         </a>
-        <a href="partner.html" class="hidden sm:inline-block text-xs font-bold text-slate-700 hover:text-orange-600 px-3 py-2 rounded-xl border border-slate-200">
-          Partner Store
+        <a href="partner.html" class="hidden sm:inline-block text-xs font-bold text-slate-700 hover:text-orange-600 px-3.5 py-2 rounded-xl border border-slate-200">
+          Partner Portal
         </a>
         <button onclick="toggleCart()" class="relative bg-slate-950 hover:bg-orange-600 text-white px-4 py-2.5 rounded-2xl flex items-center gap-2 transition cursor-pointer">
           <span class="text-base">🛍️</span>
@@ -39,59 +39,67 @@
     </div>
   </header>
 
-  <!-- Banner -->
+  <!-- Hero Banner -->
   <section class="max-w-6xl mx-auto px-4 mt-6">
-    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 md:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
+    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
       <div>
         <span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-          ⚡ 60-Minute Delivery within 30km
+          ⚡ 60-Minute Doorstep Delivery
         </span>
-        <h1 class="font-brand text-2xl md:text-4xl font-extrabold text-white mt-3 leading-tight">
-          Trending Boutique Fashion <br class="hidden sm:inline">Delivered to Your Doorstep.
+        <h1 class="font-brand text-2xl md:text-3xl font-extrabold text-white mt-3 leading-tight">
+          Verified Local Boutiques & Designers
         </h1>
-        <p class="text-xs md:text-sm text-slate-300 mt-2 max-w-lg">
-          Pick your favorite ethnic wear, designer sarees, and premium menswear from local verified boutiques.
-        </p>
+        <p class="text-xs text-slate-300 mt-1">Select your size, add to express bag, and receive directly at home in 60 mins.</p>
       </div>
-      <div class="flex gap-4">
-        <div class="text-center bg-white/5 border border-white/10 p-4 rounded-2xl">
-          <p class="text-2xl font-black text-orange-400">60</p>
-          <p class="text-[10px] text-slate-300 uppercase tracking-wider font-bold">Mins ETA</p>
+      <div class="flex gap-3 shrink-0">
+        <div class="text-center bg-white/5 border border-white/10 px-4 py-3 rounded-2xl">
+          <p class="text-xl font-black text-orange-400">15-Min</p>
+          <p class="text-[9px] text-slate-300 uppercase font-bold tracking-wider">Home Trial</p>
         </div>
-        <div class="text-center bg-white/5 border border-white/10 p-4 rounded-2xl">
-          <p class="text-2xl font-black text-orange-400">30</p>
-          <p class="text-[10px] text-slate-300 uppercase tracking-wider font-bold">KM Radius</p>
+        <div class="text-center bg-white/5 border border-white/10 px-4 py-3 rounded-2xl">
+          <p class="text-xl font-black text-orange-400">30 KM</p>
+          <p class="text-[9px] text-slate-300 uppercase font-bold tracking-wider">Radius</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Product Catalog -->
-  <main class="max-w-6xl mx-auto px-4 mt-10">
-    <div class="mb-6 flex justify-between items-end">
+  <main class="max-w-6xl mx-auto px-4 mt-8">
+    
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h2 class="font-brand text-2xl font-bold text-slate-950">Nearby Express Boutiques</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Handpicked premium styles ready for instant dispatch</p>
+        <h2 class="font-brand text-xl font-bold text-slate-950">Nearby Express Boutiques</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Ready for instant dispatch in under 60 minutes</p>
       </div>
-      <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-        ● Live Inventory
-      </span>
     </div>
 
+    <!-- Products Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      <!-- Product 1: Ethnic Kurta Set -->
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+      <!-- Product 1 -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
-          <div class="relative h-64 overflow-hidden bg-slate-100">
-            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80" alt="Anarkali Kurti Set" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="relative h-60 bg-slate-100 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80" alt="Kurta Set" class="w-full h-full object-cover">
             <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 35 MINS</span>
-            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">40% OFF</span>
+            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg">40% OFF</span>
           </div>
           <div class="p-5">
             <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Anu Ram Fashions</span>
             <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Floral Designer Anarkali Kurta Set</h3>
-            <p class="text-xs text-slate-500 mt-1">Pure cotton fabric with intricate thread embroidery work.</p>
+            <p class="text-xs text-slate-500 mt-1">Pure cotton fabric with fine thread work.</p>
+            
+            <div class="mt-3">
+              <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="selectSize(1, 'M')" id="p1-size-M" class="size-btn-1 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">M</button>
+                <button type="button" onclick="selectSize(1, 'L')" id="p1-size-L" class="size-btn-1 border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold">L</button>
+                <button type="button" onclick="selectSize(1, 'XL')" id="p1-size-XL" class="size-btn-1 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">XL</button>
+                <button type="button" onclick="selectSize(1, 'XXL')" id="p1-size-XXL" class="size-btn-1 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">XXL</button>
+              </div>
+            </div>
+
             <div class="mt-4 flex items-baseline gap-2">
               <span class="text-2xl font-black text-slate-950">₹899</span>
               <span class="text-xs text-slate-400 line-through">₹1,499</span>
@@ -99,24 +107,34 @@
           </div>
         </div>
         <div class="p-5 pt-0">
-          <button onclick="addToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+          <button onclick="addProductToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins', selectedSizes[1] || 'L')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
             + Add to Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product 2: Premium Oxford Shirt -->
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+      <!-- Product 2 -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
-          <div class="relative h-64 overflow-hidden bg-slate-100">
-            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=700&q=80" alt="Oxford Shirt" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="relative h-60 bg-slate-100 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=700&q=80" alt="Oxford Shirt" class="w-full h-full object-cover">
             <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 40 MINS</span>
-            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">36% OFF</span>
+            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg">36% OFF</span>
           </div>
           <div class="p-5">
             <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Sai Menswear</span>
             <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Tailored Slim-Fit Oxford Shirt</h3>
-            <p class="text-xs text-slate-500 mt-1">100% Egyptian cotton, perfect for formal & casual styling.</p>
+            <p class="text-xs text-slate-500 mt-1">100% Egyptian cotton, formal & casual style.</p>
+            
+            <div class="mt-3">
+              <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="selectSize(2, '38/M')" id="p2-size-38/M" class="size-btn-2 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">38</button>
+                <button type="button" onclick="selectSize(2, '40/L')" id="p2-size-40/L" class="size-btn-2 border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold">40</button>
+                <button type="button" onclick="selectSize(2, '42/XL')" id="p2-size-42/XL" class="size-btn-2 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">42</button>
+              </div>
+            </div>
+
             <div class="mt-4 flex items-baseline gap-2">
               <span class="text-2xl font-black text-slate-950">₹1,199</span>
               <span class="text-xs text-slate-400 line-through">₹1,899</span>
@@ -124,24 +142,32 @@
           </div>
         </div>
         <div class="p-5 pt-0">
-          <button onclick="addToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+          <button onclick="addProductToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins', selectedSizes[2] || '40/L')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
             + Add to Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product 3: Kanchipuram Saree -->
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+      <!-- Product 3 -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
-          <div class="relative h-64 overflow-hidden bg-slate-100">
-            <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=700&q=80" alt="Silk Saree" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          <div class="relative h-60 bg-slate-100 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=700&q=80" alt="Silk Saree" class="w-full h-full object-cover">
             <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 50 MINS</span>
-            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">38% OFF</span>
+            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg">38% OFF</span>
           </div>
           <div class="p-5">
             <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Adhya Designer Studio</span>
             <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Pure Silk Traditional Zari Saree</h3>
-            <p class="text-xs text-slate-500 mt-1">Rich zari pallu with running unstitched blouse piece.</p>
+            <p class="text-xs text-slate-500 mt-1">Rich zari pallu with unstitched blouse.</p>
+            
+            <div class="mt-3">
+              <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
+              <div class="flex gap-2">
+                <button type="button" class="border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold">Free Size (6.3m)</button>
+              </div>
+            </div>
+
             <div class="mt-4 flex items-baseline gap-2">
               <span class="text-2xl font-black text-slate-950">₹2,499</span>
               <span class="text-xs text-slate-400 line-through">₹3,999</span>
@@ -149,7 +175,7 @@
           </div>
         </div>
         <div class="p-5 pt-0">
-          <button onclick="addToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+          <button onclick="addProductToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins', 'Free Size')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
             + Add to Express Bag
           </button>
         </div>
@@ -163,7 +189,7 @@
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
       
-      <div class="p-6 bg-slate-950 text-white flex items-center justify-between">
+      <div class="p-5 bg-slate-950 text-white flex items-center justify-between">
         <div class="flex items-center gap-3">
           <span class="text-xl">🛍️</span>
           <div>
@@ -176,18 +202,28 @@
         </button>
       </div>
 
-      <div id="cartItems" class="flex-1 p-6 overflow-y-auto space-y-4">
-        <p class="text-center text-slate-400 text-sm mt-12">Your shopping bag is empty.</p>
+      <div class="flex-1 p-5 overflow-y-auto space-y-4">
+        <div id="cartItems" class="space-y-3">
+          <p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>
+        </div>
+
+        <!-- Customer Delivery Details Form -->
+        <div id="addressSection" class="hidden mt-6 pt-5 border-t border-slate-200 space-y-3">
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider">📍 Delivery Address</h4>
+          <input type="text" id="custName" placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+          <input type="tel" id="custPhone" placeholder="Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+          <textarea id="custAddress" rows="2" placeholder="House / Flat No, Street, Landmark, City Area" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
+        </div>
       </div>
 
-      <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3">
+      <div class="p-5 bg-slate-50 border-t border-slate-200 space-y-3">
         <div class="flex justify-between font-extrabold text-base text-slate-950">
           <span>Total Amount</span>
           <span id="cartTotal">₹0</span>
         </div>
 
         <button onclick="orderViaWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-          💬 Order via WhatsApp
+          💬 Confirm & Order on WhatsApp
         </button>
       </div>
 
@@ -196,7 +232,20 @@
 
   <script>
     var items = [];
-    var WHATSAPP_NUM = "919876543210"; // Enter your WhatsApp Number
+    var WHATSAPP_NUM = "919515552511"; // Enter your 10-digit WhatsApp number here
+    var selectedSizes = { 1: 'L', 2: '40/L', 3: 'Free Size' };
+
+    function selectSize(productId, size) {
+      selectedSizes[productId] = size;
+      var buttons = document.querySelectorAll('.size-btn-' + productId);
+      buttons.forEach(function(b) {
+        b.className = 'size-btn-' + productId + ' border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500';
+      });
+      var active = document.getElementById('p' + productId + '-size-' + size);
+      if (active) {
+        active.className = 'size-btn-' + productId + ' border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold';
+      }
+    }
 
     function toggleCart() {
       var drawer = document.getElementById("cartDrawer");
@@ -207,8 +256,8 @@
       }
     }
 
-    function addToBag(name, price, eta) {
-      items.push({ name: name, price: price, eta: eta });
+    function addProductToBag(name, price, eta, size) {
+      items.push({ name: name, price: price, eta: eta, size: size });
       renderCart();
       toggleCart();
     }
@@ -222,15 +271,18 @@
       var count = document.getElementById("cart-count");
       var list = document.getElementById("cartItems");
       var totalEl = document.getElementById("cartTotal");
+      var addressBox = document.getElementById("addressSection");
       
       count.innerText = items.length;
 
       if (items.length === 0) {
-        list.innerHTML = '<p class="text-center text-slate-400 text-sm mt-12">Your shopping bag is empty.</p>';
+        list.innerHTML = '<p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>';
         totalEl.innerText = "₹0";
+        addressBox.classList.add("hidden");
         return;
       }
 
+      addressBox.classList.remove("hidden");
       var sum = 0;
       var html = "";
       for (var i = 0; i < items.length; i++) {
@@ -238,7 +290,7 @@
         html += '<div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">' +
                   '<div>' +
                     '<p class="text-xs font-bold text-slate-900">' + items[i].name + '</p>' +
-                    '<p class="text-[11px] text-orange-600 font-semibold mt-0.5">⚡ ETA: ' + items[i].eta + '</p>' +
+                    '<p class="text-[11px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600 font-bold">' + items[i].size + '</span> • ⚡ ' + items[i].eta + '</p>' +
                     '<p class="text-xs font-extrabold text-slate-950 mt-1">₹' + items[i].price + '</p>' +
                   '</div>' +
                   '<button onclick="removeCartItem(' + i + ')" class="text-slate-400 hover:text-red-500 font-bold p-1 text-sm">✕</button>' +
@@ -253,13 +305,32 @@
         alert("Please add items to your bag first!");
         return;
       }
+
+      var name = document.getElementById("custName").value.trim();
+      var phone = document.getElementById("custPhone").value.trim();
+      var addr = document.getElementById("custAddress").value.trim();
+
+      if (!name || !phone || !addr) {
+        alert("Please enter your Name, Phone Number, and Delivery Address in the cart drawer before ordering!");
+        return;
+      }
+
       var sum = 0;
       var text = "";
       for (var j = 0; j < items.length; j++) {
         sum += items[j].price;
-        text += (j + 1) + ". " + items[j].name + " - ₹" + items[j].price + "%0A";
+        text += (j + 1) + ". " + items[j].name + " (Size: " + items[j].size + ") - ₹" + items[j].price + "%0A";
       }
-      var msg = "⚡ NEW 60-MIN EXPRESS ORDER - CHITIKELO%0A%0A*Items:%0A" + text + "%0A*Total Amount: ₹" + sum + "%0A*Delivery Radius:* Within 30km%0A%0APlease confirm my order!";
+
+      var msg = "⚡ NEW 60-MIN EXPRESS ORDER - CHITIKELO%0A%0A" +
+                "🛍️ Items Ordered:%0A" + text + "%0A" +
+                "Total Bill: ₹" + sum + "%0A%0A" +
+                "📍 Delivery Details:%0A" +
+                "Customer: " + name + "%0A" +
+                "Phone: " + phone + "%0A" +
+                "Address: " + addr + "%0A%0A" +
+                "Please confirm my 60-minute doorstep delivery!";
+
       window.open("https://wa.me/" + WHATSAPP_NUM + "?text=" + msg, "_blank");
     }
   </script>
