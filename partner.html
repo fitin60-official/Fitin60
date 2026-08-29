@@ -13,7 +13,7 @@
 </head>
 <body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-16">
 
-  <!-- Header -->
+  <!-- Navigation Bar -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
     <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
       <a href="index.html" class="flex flex-col">
@@ -32,9 +32,9 @@
   <main class="max-w-3xl mx-auto px-4 py-10">
     
     <div class="text-center mb-8">
-      <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">Store Portal</span>
-      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950 mt-2">List New Fashion Item</h1>
-      <p class="text-slate-500 text-xs mt-1">Upload your boutique clothing photos to enable 60-minute express delivery.</p>
+      <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">Store Product Listing</span>
+      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950 mt-2">Upload Clothing & Details</h1>
+      <p class="text-slate-500 text-xs mt-1">Select your boutique dress photo and enter prices for instant hyperlocal listing.</p>
     </div>
 
     <!-- Product Upload Form Card -->
@@ -48,15 +48,15 @@
             <input type="text" id="partnerStoreName" required placeholder="e.g. Anu Ram Fashions, Sai Menswear" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store City & Location</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store City & Area</label>
             <input type="text" id="partnerLocation" required placeholder="e.g. KPHB 3rd Phase, Hyderabad" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
         </div>
 
-        <!-- Product Name -->
+        <!-- Dress Name -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Dress / Item Name</label>
-          <input type="text" id="dressName" required placeholder="e.g. Pure Silk Banarasi Saree / Floral Kurti Set" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          <input type="text" id="dressName" required placeholder="e.g. Embroidered Anarkali Kurta Set / Cotton Shirt" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
         </div>
 
         <!-- Category & Sizes -->
@@ -67,48 +67,56 @@
               <option value="Women's Ethnic & Sarees">Women's Ethnic & Sarees</option>
               <option value="Women's Western & Kurtis">Women's Western & Kurtis</option>
               <option value="Men's Formal & Casual Wear">Men's Formal & Casual Wear</option>
-              <option value="Kids Wear & Festive Sets">Kids Wear & Festive Sets</option>
+              <option value="Kids Festive Wear">Kids Festive Wear</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Available Sizes</label>
-            <input type="text" id="dressSizes" required placeholder="e.g. S, M, L, XL, Free Size" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            <input type="text" id="dressSizes" required placeholder="e.g. M, L, XL, XXL, Free Size" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
         </div>
 
-        <!-- Pricing & Dispatch -->
+        <!-- Pricing & Prep Time -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Selling Price (₹)</label>
-            <input type="number" id="dressPrice" required placeholder="e.g. 999" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Offer Price (₹)</label>
+            <input type="number" id="dressPrice" required placeholder="e.g. 899" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Preparation Time (ETA)</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Preparation / Dispatch ETA</label>
             <select id="dispatchTime" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-              <option value="Ready in 10 Mins (Instant Dispatch)">Ready in 10 Mins (Instant Dispatch)</option>
+              <option value="Ready in 10 Mins (Express Dispatch)">Ready in 10 Mins (Express Dispatch)</option>
               <option value="Ready in 20 Mins">Ready in 20 Mins</option>
               <option value="Ready in 30 Mins">Ready in 30 Mins</option>
             </select>
           </div>
         </div>
 
-        <!-- Image Upload Section -->
+        <!-- Dedicated "Upload Image" Box -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Upload Dress Image</label>
-          <div class="border-2 border-dashed border-slate-300 hover:border-orange-500 rounded-2xl p-6 text-center bg-slate-50 transition">
-            <input type="file" id="dressImageFile" accept="image/*" onchange="previewSelectedImage(event)" class="hidden">
+          <div class="border-2 border-dashed border-orange-300 bg-orange-50/40 hover:bg-orange-50 rounded-2xl p-6 text-center transition">
+            <input type="file" id="dressImageFile" accept="image/*" required onchange="previewSelectedImage(event)" class="hidden">
+            
             <label for="dressImageFile" class="cursor-pointer flex flex-col items-center justify-center">
-              <span class="text-3xl mb-2">📸</span>
-              <span class="text-xs font-bold text-slate-800" id="uploadLabel">Click to select dress photo from Phone/Laptop</span>
-              <span class="text-[11px] text-slate-400 mt-1">PNG, JPG, JPEG up to 10MB</span>
+              <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm border border-orange-100">
+                📷
+              </div>
+              <span class="text-xs font-bold text-slate-900" id="uploadBtnTitle">Click here to Select Dress Photo</span>
+              <span class="text-[11px] text-slate-500 mt-0.5">JPEG, PNG, WEBP from Gallery or Files</span>
             </label>
-            <img id="imagePreview" class="hidden mt-4 mx-auto max-h-48 rounded-xl object-contain border border-slate-200">
+
+            <!-- Image Preview Box -->
+            <div id="previewWrapper" class="hidden mt-4 pt-4 border-t border-orange-200">
+              <img id="imagePreview" class="mx-auto max-h-56 rounded-2xl object-contain border border-slate-200 shadow-md">
+              <p id="fileStatus" class="text-xs text-emerald-700 font-bold mt-2.5"></p>
+            </div>
           </div>
         </div>
 
         <!-- Submit Button -->
         <button type="submit" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-6">
-          <span>💬</span> Submit Product & Send Photos to Chitikelo Team
+          <span>💬</span> Submit & Forward to Chitikelo Onboarding
         </button>
 
       </form>
@@ -122,11 +130,10 @@
     function previewSelectedImage(event) {
       var file = event.target.files[0];
       if (file) {
-        var label = document.getElementById("uploadLabel");
-        var preview = document.getElementById("imagePreview");
-        label.innerText = "Selected: " + file.name + " (" + (file.size / 1024).toFixed(1) + " KB)";
-        preview.src = URL.createObjectURL(file);
-        preview.classList.remove("hidden");
+        document.getElementById("uploadBtnTitle").innerText = "Change Photo (" + file.name + ")";
+        document.getElementById("fileStatus").innerText = "✓ Selected: " + file.name + " (" + (file.size / 1024).toFixed(1) + " KB)";
+        document.getElementById("imagePreview").src = URL.createObjectURL(file);
+        document.getElementById("previewWrapper").classList.remove("hidden");
       }
     }
 
@@ -142,18 +149,18 @@
       var eta = document.getElementById("dispatchTime").value;
       var fileInput = document.getElementById("dressImageFile");
 
-      var fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "No photo attached directly";
+      var fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "No photo attached";
 
-      var text = "👗 NEW STORE PRODUCT UPLOAD - CHITIKELO%0A%0A" +
+      var text = "👗 NEW STORE PRODUCT LISTING - CHITIKELO%0A%0A" +
                  "Store Name: " + store + "%0A" +
                  "Location: " + loc + "%0A" +
-                 "Product: " + name + "%0A" +
+                 "Product Name: " + name + "%0A" +
                  "Category: " + cat + "%0A" +
                  "Sizes Available: " + sizes + "%0A" +
-                 "Selling Price: ₹" + price + "%0A" +
+                 "Offer Price: ₹" + price + "%0A" +
                  "Prep ETA: " + eta + "%0A" +
-                 "Selected Image: " + fileName + "%0A%0A" +
-                 "Note: Please attach the selected dress photo directly in this WhatsApp chat right now!";
+                 "Selected Image File: " + fileName + "%0A%0A" +
+                 "(Store owner: Please attach this dress photo directly in this chat now!)";
 
       window.open("https://wa.me/" + ADMIN_WHATSAPP + "?text=" + text, "_blank");
     }
