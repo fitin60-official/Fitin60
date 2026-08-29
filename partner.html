@@ -3,272 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Partner Store Registration | CHITIKELO Express</title>
-  
-  <!-- Tailwind CSS & Google Fonts -->
+  <title>Partner With CHITIKELO | 60-Minute Hyperlocal Fashion</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            display: ['"Space Grotesk"', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#fff7ed',
-              100: '#ffedd5',
-              500: '#f97316',
-              600: '#ea580c',
-              700: '#c2410c',
-              900: '#7c2d12',
-            }
-          }
-        }
-      }
-    }
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-brand { font-family: 'Space Grotesk', sans-serif; }
+  </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-900 font-sans antialiased pb-20">
+<body class="bg-[#f8fafc] text-slate-900 min-h-screen">
 
   <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
       <a href="index.html" class="flex flex-col">
-        <span class="font-display text-2xl font-black tracking-tight text-slate-950 flex items-center">
-          CHITI<span class="text-brand-600">KELO</span>
-          <span class="text-xs bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-md ml-2 border border-slate-200">PARTNER HUB</span>
+        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
+          CHITI<span class="text-orange-600">KELO</span>
         </span>
-        <span class="text-[9px] uppercase tracking-[0.2em] font-extrabold text-slate-400">Grow Your Offline Boutique</span>
+        <span class="text-[9px] uppercase tracking-[0.25em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
       </a>
-
-      <div class="flex items-center gap-3">
-        <span class="text-xs text-slate-500 hidden sm:inline">Already registered?</span>
-        <a href="dashboard.html" class="text-xs font-bold text-slate-900 hover:text-brand-600 border border-slate-300 px-4 py-2 rounded-xl transition">
-          Partner Login
-        </a>
-      </div>
+      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 px-4 py-2 rounded-xl border border-slate-200">
+        ← Back to Shop
+      </a>
     </div>
   </header>
 
-  <!-- Hero Highlight -->
-  <div class="bg-slate-950 text-white py-12 px-4 sm:px-6 border-b border-slate-800">
-    <div class="max-w-4xl mx-auto text-center space-y-3">
-      <span class="inline-flex items-center gap-1.5 bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-bold px-3 py-1 rounded-full">
-        ⚡ 0% Commission for the First 30 Days
-      </span>
-      <h1 class="font-display text-3xl sm:text-4xl font-extrabold tracking-tight">
-        Deliver Your Boutique Collection in <span class="text-brand-500">60 Minutes</span>
-      </h1>
-      <p class="text-slate-400 text-sm max-w-xl mx-auto font-normal">
-        Connect your store with thousands of local buyers within a 30km radius. Get instant rider pickup and fast settlements.
-      </p>
+  <!-- Main Hero & Form Section -->
+  <main class="max-w-4xl mx-auto px-4 py-12">
+    
+    <div class="text-center max-w-xl mx-auto mb-10">
+      <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Partner Network</span>
+      <h1 class="font-brand text-3xl md:text-4xl font-black text-slate-950 mt-3">Grow Your Fashion Store with 60-Minute Deliveries</h1>
+      <p class="text-slate-500 text-sm mt-2">Join Chitikelo and start receiving express orders directly on WhatsApp from local buyers within 30km.</p>
     </div>
-  </div>
 
-  <!-- Registration Form Container -->
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-      
-      <!-- Step Tracker Header -->
-      <div class="bg-slate-50 border-b border-slate-200 p-6 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-brand-600 text-white flex items-center justify-center font-bold font-display shadow-md shadow-brand-500/20">
-            1
+    <!-- Onboarding Form Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-sm">
+      <h2 class="font-brand text-xl font-bold text-slate-950 mb-6">Register Your Boutique / Store</h2>
+
+      <form id="partnerForm" onsubmit="submitPartnerForm(event)" class="space-y-5">
+        
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store / Boutique Name</label>
+          <input type="text" id="storeName" required placeholder="e.g. Anu Ram Fashions, Sai Menswear" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Owner Name</label>
+            <input type="text" id="ownerName" required placeholder="Your Name" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 text-base">Store Onboarding Application</h3>
-            <p class="text-xs text-slate-500">Takes less than 3 minutes to complete</p>
-          </div>
-        </div>
-        <span class="text-xs font-bold text-green-700 bg-green-100 px-3 py-1 rounded-full border border-green-200 flex items-center gap-1">
-          <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Hyperlocal 30km
-        </span>
-      </div>
-
-      <!-- Form Body -->
-      <form id="partnerForm" onsubmit="handleRegistration(event)" class="p-6 sm:p-10 space-y-8">
-        
-        <!-- Section 1: Store & Owner Profile -->
-        <div class="space-y-4">
-          <h4 class="font-display text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
-            <i data-lucide="store" class="w-4 h-4 text-brand-600"></i> Store & Owner Information
-          </h4>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Store / Boutique Name *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="e.g. Adhya Designer Studio" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Owner / Manager Name *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="e.g. Sai Ram" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Contact Mobile (For Order SMS) *</label>
-              <input 
-                type="tel" 
-                required 
-                placeholder="+91 98765 43210" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Primary Apparel Category *</label>
-              <select required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition font-medium">
-                <option value="">Select Primary Specialty</option>
-                <option value="women_ethnic">Women's Ethnic, Kurtas & Sarees</option>
-                <option value="mens_wear">Men's Casuals & Formals</option>
-                <option value="festive_bridal">Bridal & Grand Festive Wear</option>
-                <option value="multi_designer">Multi-Brand Designer Outlet</option>
-                <option value="kids_fashion">Kids & Teens Fashion</option>
-              </select>
-            </div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">WhatsApp Phone Number</label>
+            <input type="tel" id="storePhone" required placeholder="e.g. 9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
           </div>
         </div>
 
-        <!-- Section 2: Store Location (For 30KM Delivery Radius) -->
-        <div class="space-y-4">
-          <h4 class="font-display text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
-            <i data-lucide="map-pin" class="w-4 h-4 text-brand-600"></i> Store Location & Dispatch Address
-          </h4>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div class="sm:col-span-2">
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Complete Shop Address (For Rider Pickups) *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="Shop No., Street Name, Landmark / Market Center" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pincode *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="e.g. 500048" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Operating City / Town *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="e.g. Hyderabad" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
-              />
-            </div>
-          </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store Location / City Area</label>
+          <input type="text" id="storeAddress" required placeholder="e.g. KPHB, Hyderabad / Main Road, Vizag" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
         </div>
 
-        <!-- Section 3: Verification & Fast Payouts -->
-        <div class="space-y-4">
-          <h4 class="font-display text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
-            <i data-lucide="badge-check" class="w-4 h-4 text-brand-600"></i> Tax & Instant Bank Settlement
-          </h4>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">GSTIN or Business PAN *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="GSTIN / PAN Number" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition uppercase"
-              />
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Bank Account Number (For Daily Payouts) *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="Account Number" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition"
-              />
-            </div>
-
-            <div class="sm:col-span-2">
-              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">IFSC Code *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="e.g. HDFC0001234" 
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition uppercase"
-              />
-            </div>
-          </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Fashion Categories You Sell</label>
+          <select id="storeCategory" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
+            <option value="Women's Ethnic & Designer Wear">Women's Ethnic & Designer Wear</option>
+            <option value="Men's Formal & Casual Wear">Men's Formal & Casual Wear</option>
+            <option value="Kid's Fashion & Accessories">Kid's Fashion & Accessories</option>
+            <option value="Multi-Category Boutique">Multi-Category Boutique</option>
+          </select>
         </div>
 
-        <!-- Agreement & Terms -->
-        <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200/80 flex items-start gap-3">
-          <input type="checkbox" required id="terms" class="mt-1 w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
-          <label for="terms" class="text-xs text-amber-950 leading-relaxed cursor-pointer">
-            I agree to keep selected stock ready for rider pickup within <strong>12 minutes</strong> of order placement, and accept Chitikelo's 1-hour customer trial & refund verification policy.
-          </label>
-        </div>
-
-        <!-- Submit Button -->
-        <button 
-          type="submit" 
-          class="w-full bg-slate-950 hover:bg-brand-600 text-white font-display font-bold py-4 rounded-2xl text-sm uppercase tracking-wider transition duration-300 shadow-xl shadow-slate-950/10 flex items-center justify-center gap-2"
-        >
-          <i data-lucide="send" class="w-4 h-4"></i> Submit Partner Application
+        <button type="submit" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-4">
+          <span>💬</span> Submit Partner Request via WhatsApp
         </button>
 
       </form>
-
     </div>
+
   </main>
 
-  <!-- Success Notification Modal -->
-  <div id="successModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center space-y-4 shadow-2xl border border-slate-100">
-      <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-        <i data-lucide="check" class="w-8 h-8"></i>
-      </div>
-      <h3 class="font-display text-2xl font-bold text-slate-900">Application Received!</h3>
-      <p class="text-xs text-slate-600 leading-relaxed">
-        Your boutique details have been registered under <strong>Chitikelo Express 30km Hub</strong>. Our team will verify your documents within 2 hours to activate your catalog dashboard.
-      </p>
-      <a href="index.html" class="block w-full bg-slate-950 hover:bg-brand-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition">
-        Return to Storefront
-      </a>
-    </div>
-  </div>
-
   <script>
-    lucide.createIcons();
+    var ADMIN_WHATSAPP = "919876543210"; // Enter your admin WhatsApp number here
 
-    function handleRegistration(e) {
+    function submitPartnerForm(e) {
       e.preventDefault();
-      document.getElementById('successModal').classList.remove('hidden');
-      lucide.createIcons();
+      
+      var storeName = document.getElementById("storeName").value;
+      var ownerName = document.getElementById("ownerName").value;
+      var storePhone = document.getElementById("storePhone").value;
+      var storeAddress = document.getElementById("storeAddress").value;
+      var storeCategory = document.getElementById("storeCategory").value;
+
+      var text = "🏪 NEW PARTNER STORE REGISTRATION - CHITIKELO%0A%0A" +
+                 "Store Name: " + storeName + "%0A" +
+                 "Owner Name: " + ownerName + "%0A" +
+                 "Contact: " + storePhone + "%0A" +
+                 "Location: " + storeAddress + "%0A" +
+                 "Category: " + storeCategory + "%0A%0A" +
+                 "Please approve my store onboard request!";
+
+      window.open("https://wa.me/" + ADMIN_WHATSAPP + "?text=" + text, "_blank");
     }
   </script>
 </body>
