@@ -24,6 +24,9 @@
       </div>
 
       <div class="flex items-center gap-3">
+        <a href="tracking.html" class="hidden sm:inline-block text-xs font-bold text-orange-600 hover:text-slate-900 px-3 py-2 rounded-xl border border-orange-200 bg-orange-50">
+          ⚡ Track Order
+        </a>
         <a href="partner.html" class="hidden sm:inline-block text-xs font-bold text-slate-700 hover:text-orange-600 px-3 py-2 rounded-xl border border-slate-200">
           Partner Store
         </a>
@@ -36,61 +39,120 @@
     </div>
   </header>
 
-  <!-- Product Section -->
-  <main class="max-w-6xl mx-auto px-4 mt-8">
-    <div class="mb-6">
-      <h2 class="font-brand text-xl font-bold text-slate-950">Nearby Express Stores</h2>
-      <p class="text-xs text-slate-500">Delivering in under 60 minutes within your 30km radius</p>
+  <!-- Banner -->
+  <section class="max-w-6xl mx-auto px-4 mt-6">
+    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 md:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
+      <div>
+        <span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+          ⚡ 60-Minute Delivery within 30km
+        </span>
+        <h1 class="font-brand text-2xl md:text-4xl font-extrabold text-white mt-3 leading-tight">
+          Trending Boutique Fashion <br class="hidden sm:inline">Delivered to Your Doorstep.
+        </h1>
+        <p class="text-xs md:text-sm text-slate-300 mt-2 max-w-lg">
+          Pick your favorite ethnic wear, designer sarees, and premium menswear from local verified boutiques.
+        </p>
+      </div>
+      <div class="flex gap-4">
+        <div class="text-center bg-white/5 border border-white/10 p-4 rounded-2xl">
+          <p class="text-2xl font-black text-orange-400">60</p>
+          <p class="text-[10px] text-slate-300 uppercase tracking-wider font-bold">Mins ETA</p>
+        </div>
+        <div class="text-center bg-white/5 border border-white/10 p-4 rounded-2xl">
+          <p class="text-2xl font-black text-orange-400">30</p>
+          <p class="text-[10px] text-slate-300 uppercase tracking-wider font-bold">KM Radius</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Catalog -->
+  <main class="max-w-6xl mx-auto px-4 mt-10">
+    <div class="mb-6 flex justify-between items-end">
+      <div>
+        <h2 class="font-brand text-2xl font-bold text-slate-950">Nearby Express Boutiques</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Handpicked premium styles ready for instant dispatch</p>
+      </div>
+      <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+        ● Live Inventory
+      </span>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      <!-- Product 1 -->
-      <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+      <!-- Product 1: Ethnic Kurta Set -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
         <div>
-          <div class="h-44 bg-amber-50 rounded-2xl flex items-center justify-center text-5xl mb-4 relative">
-            👗
-            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2 py-1 rounded-md">⚡ 35 MINS</span>
+          <div class="relative h-64 overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80" alt="Anarkali Kurti Set" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 35 MINS</span>
+            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">40% OFF</span>
           </div>
-          <span class="text-xs font-bold text-orange-600 uppercase">Anu Ram Fashions</span>
-          <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Embroidered Anarkali Kurta Set</h3>
-          <p class="text-xl font-black text-slate-950 mt-2">₹899 <span class="text-xs text-slate-400 line-through font-normal">₹1,499</span></p>
+          <div class="p-5">
+            <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Anu Ram Fashions</span>
+            <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Floral Designer Anarkali Kurta Set</h3>
+            <p class="text-xs text-slate-500 mt-1">Pure cotton fabric with intricate thread embroidery work.</p>
+            <div class="mt-4 flex items-baseline gap-2">
+              <span class="text-2xl font-black text-slate-950">₹899</span>
+              <span class="text-xs text-slate-400 line-through">₹1,499</span>
+            </div>
+          </div>
         </div>
-        <button onclick="addToBag('Embroidered Anarkali Kurta Set', 899, '35 mins')" class="mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition">
-          + Add to Express Bag
-        </button>
+        <div class="p-5 pt-0">
+          <button onclick="addToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+            + Add to Express Bag
+          </button>
+        </div>
       </div>
 
-      <!-- Product 2 -->
-      <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+      <!-- Product 2: Premium Oxford Shirt -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
         <div>
-          <div class="h-44 bg-blue-50 rounded-2xl flex items-center justify-center text-5xl mb-4 relative">
-            👔
-            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2 py-1 rounded-md">⚡ 45 MINS</span>
+          <div class="relative h-64 overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=700&q=80" alt="Oxford Shirt" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 40 MINS</span>
+            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">36% OFF</span>
           </div>
-          <span class="text-xs font-bold text-orange-600 uppercase">Sai Menswear</span>
-          <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Tailored Premium Oxford Shirt</h3>
-          <p class="text-xl font-black text-slate-950 mt-2">₹1,199 <span class="text-xs text-slate-400 line-through font-normal">₹1,899</span></p>
+          <div class="p-5">
+            <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Sai Menswear</span>
+            <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Tailored Slim-Fit Oxford Shirt</h3>
+            <p class="text-xs text-slate-500 mt-1">100% Egyptian cotton, perfect for formal & casual styling.</p>
+            <div class="mt-4 flex items-baseline gap-2">
+              <span class="text-2xl font-black text-slate-950">₹1,199</span>
+              <span class="text-xs text-slate-400 line-through">₹1,899</span>
+            </div>
+          </div>
         </div>
-        <button onclick="addToBag('Tailored Premium Oxford Shirt', 1199, '45 mins')" class="mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition">
-          + Add to Express Bag
-        </button>
+        <div class="p-5 pt-0">
+          <button onclick="addToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+            + Add to Express Bag
+          </button>
+        </div>
       </div>
 
-      <!-- Product 3 -->
-      <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+      <!-- Product 3: Kanchipuram Saree -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group">
         <div>
-          <div class="h-44 bg-rose-50 rounded-2xl flex items-center justify-center text-5xl mb-4 relative">
-            🥻
-            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2 py-1 rounded-md">⚡ 50 MINS</span>
+          <div class="relative h-64 overflow-hidden bg-slate-100">
+            <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=700&q=80" alt="Silk Saree" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 50 MINS</span>
+            <span class="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">38% OFF</span>
           </div>
-          <span class="text-xs font-bold text-orange-600 uppercase">Adhya Designer Studio</span>
-          <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Pure Silk Traditional Zari Saree</h3>
-          <p class="text-xl font-black text-slate-950 mt-2">₹2,499 <span class="text-xs text-slate-400 line-through font-normal">₹3,999</span></p>
+          <div class="p-5">
+            <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Adhya Designer Studio</span>
+            <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Pure Silk Traditional Zari Saree</h3>
+            <p class="text-xs text-slate-500 mt-1">Rich zari pallu with running unstitched blouse piece.</p>
+            <div class="mt-4 flex items-baseline gap-2">
+              <span class="text-2xl font-black text-slate-950">₹2,499</span>
+              <span class="text-xs text-slate-400 line-through">₹3,999</span>
+            </div>
+          </div>
         </div>
-        <button onclick="addToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins')" class="mt-4 w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition">
-          + Add to Express Bag
-        </button>
+        <div class="p-5 pt-0">
+          <button onclick="addToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+            + Add to Express Bag
+          </button>
+        </div>
       </div>
 
     </div>
@@ -134,7 +196,7 @@
 
   <script>
     var items = [];
-    var WHATSAPP_NUM = "919515552511";
+    var WHATSAPP_NUM = "919876543210"; // Enter your WhatsApp Number
 
     function toggleCart() {
       var drawer = document.getElementById("cartDrawer");
