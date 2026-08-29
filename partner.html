@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Partner With CHITIKELO | 60-Minute Hyperlocal Fashion</title>
+  <title>Partner Store Hub | CHITIKELO</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -11,16 +11,16 @@
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-900 min-h-screen">
+<body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-16">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
+    <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
       <a href="index.html" class="flex flex-col">
-        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
+        <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
           CHITI<span class="text-orange-600">KELO</span>
         </span>
-        <span class="text-[9px] uppercase tracking-[0.25em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
+        <span class="text-[9px] uppercase tracking-[0.25em] font-extrabold text-slate-400">Partner Merchant Studio</span>
       </a>
       <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 px-4 py-2 rounded-xl border border-slate-200">
         ← Back to Shop
@@ -28,54 +28,87 @@
     </div>
   </header>
 
-  <!-- Main Hero & Form Section -->
-  <main class="max-w-4xl mx-auto px-4 py-12">
+  <!-- Main Container -->
+  <main class="max-w-3xl mx-auto px-4 py-10">
     
-    <div class="text-center max-w-xl mx-auto mb-10">
-      <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Partner Network</span>
-      <h1 class="font-brand text-3xl md:text-4xl font-black text-slate-950 mt-3">Grow Your Fashion Store with 60-Minute Deliveries</h1>
-      <p class="text-slate-500 text-sm mt-2">Join Chitikelo and start receiving express orders directly on WhatsApp from local buyers within 30km.</p>
+    <div class="text-center mb-8">
+      <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">Store Portal</span>
+      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950 mt-2">List New Fashion Item</h1>
+      <p class="text-slate-500 text-xs mt-1">Upload your boutique clothing photos to enable 60-minute express delivery.</p>
     </div>
 
-    <!-- Onboarding Form Card -->
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-sm">
-      <h2 class="font-brand text-xl font-bold text-slate-950 mb-6">Register Your Boutique / Store</h2>
-
-      <form id="partnerForm" onsubmit="submitPartnerForm(event)" class="space-y-5">
+    <!-- Product Upload Form Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-sm">
+      <form id="uploadForm" onsubmit="handleProductUpload(event)" class="space-y-5">
         
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store / Boutique Name</label>
-          <input type="text" id="storeName" required placeholder="e.g. Anu Ram Fashions, Sai Menswear" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
-        </div>
-
+        <!-- Store Info -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Owner Name</label>
-            <input type="text" id="ownerName" required placeholder="Your Name" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store / Boutique Name</label>
+            <input type="text" id="partnerStoreName" required placeholder="e.g. Anu Ram Fashions, Sai Menswear" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">WhatsApp Phone Number</label>
-            <input type="tel" id="storePhone" required placeholder="e.g. 9876543210" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store City & Location</label>
+            <input type="text" id="partnerLocation" required placeholder="e.g. KPHB 3rd Phase, Hyderabad" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
         </div>
 
+        <!-- Product Name -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store Location / City Area</label>
-          <input type="text" id="storeAddress" required placeholder="e.g. KPHB, Hyderabad / Main Road, Vizag" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Dress / Item Name</label>
+          <input type="text" id="dressName" required placeholder="e.g. Pure Silk Banarasi Saree / Floral Kurti Set" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Fashion Categories You Sell</label>
-          <select id="storeCategory" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-500">
-            <option value="Women's Ethnic & Designer Wear">Women's Ethnic & Designer Wear</option>
-            <option value="Men's Formal & Casual Wear">Men's Formal & Casual Wear</option>
-            <option value="Kid's Fashion & Accessories">Kid's Fashion & Accessories</option>
-            <option value="Multi-Category Boutique">Multi-Category Boutique</option>
-          </select>
+        <!-- Category & Sizes -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Category</label>
+            <select id="dressCategory" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+              <option value="Women's Ethnic & Sarees">Women's Ethnic & Sarees</option>
+              <option value="Women's Western & Kurtis">Women's Western & Kurtis</option>
+              <option value="Men's Formal & Casual Wear">Men's Formal & Casual Wear</option>
+              <option value="Kids Wear & Festive Sets">Kids Wear & Festive Sets</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Available Sizes</label>
+            <input type="text" id="dressSizes" required placeholder="e.g. S, M, L, XL, Free Size" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          </div>
         </div>
 
-        <button type="submit" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-4">
-          <span>💬</span> Submit Partner Request via WhatsApp
+        <!-- Pricing & Dispatch -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Selling Price (₹)</label>
+            <input type="number" id="dressPrice" required placeholder="e.g. 999" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Preparation Time (ETA)</label>
+            <select id="dispatchTime" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+              <option value="Ready in 10 Mins (Instant Dispatch)">Ready in 10 Mins (Instant Dispatch)</option>
+              <option value="Ready in 20 Mins">Ready in 20 Mins</option>
+              <option value="Ready in 30 Mins">Ready in 30 Mins</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Upload Dress Image</label>
+          <div class="border-2 border-dashed border-slate-300 hover:border-orange-500 rounded-2xl p-6 text-center bg-slate-50 transition">
+            <input type="file" id="dressImageFile" accept="image/*" onchange="previewSelectedImage(event)" class="hidden">
+            <label for="dressImageFile" class="cursor-pointer flex flex-col items-center justify-center">
+              <span class="text-3xl mb-2">📸</span>
+              <span class="text-xs font-bold text-slate-800" id="uploadLabel">Click to select dress photo from Phone/Laptop</span>
+              <span class="text-[11px] text-slate-400 mt-1">PNG, JPG, JPEG up to 10MB</span>
+            </label>
+            <img id="imagePreview" class="hidden mt-4 mx-auto max-h-48 rounded-xl object-contain border border-slate-200">
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-6">
+          <span>💬</span> Submit Product & Send Photos to Chitikelo Team
         </button>
 
       </form>
@@ -84,24 +117,43 @@
   </main>
 
   <script>
-    var ADMIN_WHATSAPP = "919876543210"; // Enter your admin WhatsApp number here
+    var ADMIN_WHATSAPP = "919876543210"; // Enter your 10-digit WhatsApp number here
 
-    function submitPartnerForm(e) {
+    function previewSelectedImage(event) {
+      var file = event.target.files[0];
+      if (file) {
+        var label = document.getElementById("uploadLabel");
+        var preview = document.getElementById("imagePreview");
+        label.innerText = "Selected: " + file.name + " (" + (file.size / 1024).toFixed(1) + " KB)";
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove("hidden");
+      }
+    }
+
+    function handleProductUpload(e) {
       e.preventDefault();
-      
-      var storeName = document.getElementById("storeName").value;
-      var ownerName = document.getElementById("ownerName").value;
-      var storePhone = document.getElementById("storePhone").value;
-      var storeAddress = document.getElementById("storeAddress").value;
-      var storeCategory = document.getElementById("storeCategory").value;
 
-      var text = "🏪 NEW PARTNER STORE REGISTRATION - CHITIKELO%0A%0A" +
-                 "Store Name: " + storeName + "%0A" +
-                 "Owner Name: " + ownerName + "%0A" +
-                 "Contact: " + storePhone + "%0A" +
-                 "Location: " + storeAddress + "%0A" +
-                 "Category: " + storeCategory + "%0A%0A" +
-                 "Please approve my store onboard request!";
+      var store = document.getElementById("partnerStoreName").value;
+      var loc = document.getElementById("partnerLocation").value;
+      var name = document.getElementById("dressName").value;
+      var cat = document.getElementById("dressCategory").value;
+      var sizes = document.getElementById("dressSizes").value;
+      var price = document.getElementById("dressPrice").value;
+      var eta = document.getElementById("dispatchTime").value;
+      var fileInput = document.getElementById("dressImageFile");
+
+      var fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "No photo attached directly";
+
+      var text = "👗 NEW STORE PRODUCT UPLOAD - CHITIKELO%0A%0A" +
+                 "Store Name: " + store + "%0A" +
+                 "Location: " + loc + "%0A" +
+                 "Product: " + name + "%0A" +
+                 "Category: " + cat + "%0A" +
+                 "Sizes Available: " + sizes + "%0A" +
+                 "Selling Price: ₹" + price + "%0A" +
+                 "Prep ETA: " + eta + "%0A" +
+                 "Selected Image: " + fileName + "%0A%0A" +
+                 "Note: Please attach the selected dress photo directly in this WhatsApp chat right now!";
 
       window.open("https://wa.me/" + ADMIN_WHATSAPP + "?text=" + text, "_blank");
     }
