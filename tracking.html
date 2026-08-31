@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Live Hyperlocal Order Tracker</title>
+  <title>Fitin60 | Rider Partner Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,119 +11,212 @@
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
-    .pulse-ring {
-      box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
-      animation: pulse-ring 2s infinite cubic-bezier(0.66, 0, 0, 1);
-    }
-    @keyframes pulse-ring {
-      to { box-shadow: 0 0 0 16px rgba(249, 115, 22, 0); }
-    }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen antialiased selection:bg-orange-500 selection:text-white pb-20">
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-      <a href="index.html" class="flex flex-col">
-        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
-          FITIN<span class="text-orange-600">60</span>
-        </span>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
-      </a>
-      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl transition">
-        ← Back to Store
-      </a>
+  <!-- Header with Duty Toggle -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
+      <div>
+        <span class="font-brand text-2xl font-black text-white">FITIN<span class="text-orange-500">60</span></span>
+        <span class="text-[10px] block font-bold text-slate-400 uppercase tracking-wider">Rider Partner Portal</span>
+      </div>
+
+      <!-- Online / Offline Duty Switch -->
+      <button id="dutyToggleBtn" onclick="toggleDutyStatus()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-2xl border border-slate-700 font-bold text-xs transition cursor-pointer">
+        <span id="dutyDot" class="w-3 h-3 rounded-full bg-rose-500"></span>
+        <span id="dutyText">You are Offline</span>
+      </button>
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-8">
-    <!-- Active Status Banner -->
-    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white shadow-2xl border border-slate-800 text-center relative overflow-hidden">
-      <div class="w-16 h-16 bg-orange-600/20 text-orange-400 border border-orange-500/30 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-4 pulse-ring">⚡</div>
-      
-      <span class="text-[10px] uppercase tracking-widest font-black bg-white/10 px-3 py-1 rounded-full text-orange-300">Live 60-Minute Radar</span>
-      <h1 class="font-brand text-3xl md:text-4xl font-black text-white mt-3">Order On The Way</h1>
-      <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-md mx-auto" id="etaBanner">Estimated delivery in <strong class="text-orange-400 font-black">35 Minutes</strong> • 20-Min Home Fitting Included</p>
+  <main class="max-w-xl mx-auto px-4 mt-6 space-y-6">
 
-      <div class="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-white/10 text-left max-w-md mx-auto">
-        <div>
-          <p class="text-[10px] uppercase font-bold text-slate-400">Order ID</p>
-          <p class="font-brand font-black text-white text-base" id="orderIdText">FIT-8492</p>
-        </div>
-        <div>
-          <p class="text-[10px] uppercase font-bold text-slate-400">Fulfillment Store</p>
-          <p class="font-brand font-black text-orange-400 text-base truncate" id="storeNameText">Boutique Partner</p>
-        </div>
-      </div>
+    <!-- Duty Status Banner -->
+    <div id="dutyBanner" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 text-center">
+      <div class="text-3xl mb-2" id="dutyIcon">😴</div>
+      <h2 class="font-brand font-bold text-lg text-white" id="dutyTitle">Ready to Deliver?</h2>
+      <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto" id="dutyDesc">Turn on Duty to start viewing available dress delivery rides nearby and receive audio alerts.</p>
+      
+      <button onclick="toggleDutyStatus()" id="dutyActionBtn" class="mt-4 bg-orange-600 hover:bg-orange-500 text-white font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
+        ⚡ Go Online & Check Rides
+      </button>
     </div>
 
-    <!-- Live Step Progression -->
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 mt-6 shadow-sm">
-      <h3 class="font-brand font-black text-base text-slate-950 mb-6">Delivery Milestones</h3>
-      
-      <div class="space-y-6 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-orange-200">
-        <div class="flex items-start gap-4 relative">
-          <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shadow-md z-10">✓</div>
-          <div>
-            <h4 class="font-brand font-bold text-sm text-slate-900">Order Received & Confirmed</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Boutique accepted the request and packed sizes</p>
-          </div>
-        </div>
-
-        <div class="flex items-start gap-4 relative">
-          <div class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center text-xs font-bold shadow-md z-10 animate-pulse">⚡</div>
-          <div>
-            <h4 class="font-brand font-bold text-sm text-orange-600">Rider Dispatched (Within 20 KM)</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Delivery partner is on the way with trial package</p>
-          </div>
-        </div>
-
-        <div class="flex items-start gap-4 relative opacity-40">
-          <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold z-10">🏠</div>
-          <div>
-            <h4 class="font-brand font-bold text-sm text-slate-900">Doorstep 20-Min Home Fitting</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Try before keeping • Pay UPI/Cash instantly</p>
-          </div>
-        </div>
+    <!-- Active Rides Pool (Only visible when Online) -->
+    <div id="ridesSection" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-brand font-black text-base text-white flex items-center gap-2">
+          <span>🛵</span> Available Rides for You
+        </h3>
+        <span class="text-[11px] bg-slate-800 text-orange-400 font-bold px-3 py-1 rounded-xl border border-slate-700" id="rideCountBadge">0 Available</span>
       </div>
-    </div>
 
-    <!-- Order Items Summary -->
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 mt-6 shadow-sm">
-      <h3 class="font-brand font-black text-base text-slate-950 mb-4">Items in Package</h3>
-      <div id="orderItemsSummary" class="space-y-3">
+      <div id="ridesList" class="space-y-4">
         <!-- Rendered dynamically -->
       </div>
-
-      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center font-black">
-        <span class="text-xs uppercase text-slate-400">Total Settlement</span>
-        <span class="font-brand text-xl text-slate-950" id="totalSummaryText">₹0</span>
-      </div>
     </div>
+
   </main>
 
   <script>
-    var order = JSON.parse(localStorage.getItem("chitikelo_active_order") || "{}");
-    
-    if (order.orderId) {
-      document.getElementById("orderIdText").innerText = order.orderId;
-      document.getElementById("storeNameText").innerText = order.store || "Verified Boutique";
-      document.getElementById("totalSummaryText").innerText = "₹" + (order.totalAmount || 0);
+    var isOnline = false;
+    var audioCtx = null;
+    var knownOrders = {};
 
-      var container = document.getElementById("orderItemsSummary");
-      var html = "";
-      (order.items || []).forEach(function(item) {
-        html += '<div class="flex justify-between items-center p-3.5 bg-slate-50 rounded-2xl text-xs">' +
-                  '<div>' +
-                    '<p class="font-bold text-slate-900">' + item.name + '</p>' +
-                    '<p class="text-[10px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600">' + item.size + '</span> • ' + item.store + '</p>' +
-                  '</div>' +
-                  '<p class="font-black text-slate-900">₹' + item.price + '</p>' +
-                '</div>';
-      });
-      container.innerHTML = html;
+    // Soft pleasant smartphone chime bell (Zepto/Swiggy style)
+    function playNotificationSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var now = audioCtx.currentTime;
+        
+        // Tone 1 (High note)
+        var osc1 = audioCtx.createOscillator();
+        var gain1 = audioCtx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(587.33, now); // D5 note
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.4);
+
+        // Tone 2 (Harmonic note)
+        var osc2 = audioCtx.createOscillator();
+        var gain2 = audioCtx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(880, now + 0.15); // A5 note
+        gain2.gain.setValueAtTime(0.3, now + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.6);
+      } catch (err) {
+        console.log("Audio not allowed yet:", err);
+      }
     }
+
+    function toggleDutyStatus() {
+      isOnline = !isOnline;
+
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      var dot = document.getElementById("dutyDot");
+      var text = document.getElementById("dutyText");
+      var btn = document.getElementById("dutyToggleBtn");
+      var banner = document.getElementById("dutyBanner");
+      var rides = document.getElementById("ridesSection");
+
+      if (isOnline) {
+        dot.className = "w-3 h-3 rounded-full bg-emerald-400 animate-pulse";
+        text.innerText = "Online (On Duty)";
+        btn.className = "flex items-center gap-2 bg-emerald-950/70 border border-emerald-500/40 text-emerald-400 px-4 py-2 rounded-2xl font-bold text-xs transition";
+        banner.classList.add("hidden");
+        rides.classList.remove("hidden");
+        checkAvailableRides();
+      } else {
+        dot.className = "w-3 h-3 rounded-full bg-rose-500";
+        text.innerText = "You are Offline";
+        btn.className = "flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-2xl border border-slate-700 font-bold text-xs transition";
+        banner.classList.remove("hidden");
+        rides.classList.add("hidden");
+      }
+    }
+
+    function checkAvailableRides() {
+      if (!isOnline) return;
+
+      var rawOrder = localStorage.getItem("chitikelo_active_order");
+      var list = document.getElementById("ridesList");
+      var countBadge = document.getElementById("rideCountBadge");
+
+      if (rawOrder) {
+        var order = JSON.parse(rawOrder);
+
+        if (order.orderId) {
+          // Trigger pleasant sound only once when a fresh order appears
+          if (!knownOrders[order.orderId]) {
+            knownOrders[order.orderId] = true;
+            playNotificationSound();
+          }
+
+          countBadge.innerText = "1 Ride Available";
+
+          var itemsText = (order.items || []).map(function(it) {
+            return it.name + " (" + it.size + ")";
+          }).join(", ");
+
+          var html = '<div class="bg-slate-900 border border-slate-800 hover:border-orange-500/60 rounded-3xl p-6 shadow-xl space-y-4 transition">' +
+                      '<div class="flex justify-between items-start">' +
+                        '<div>' +
+                          '<span class="text-[10px] uppercase font-black tracking-wider text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-md">60-Min Express Ride</span>' +
+                          '<h4 class="font-brand font-black text-lg text-white mt-1">' + order.orderId + '</h4>' +
+                        '</div>' +
+                        '<div class="text-right">' +
+                          '<span class="font-brand font-black text-emerald-400 text-lg">₹' + order.totalAmount + '</span>' +
+                          '<p class="text-[10px] text-slate-400">' + (order.paymentStatus || "UPI") + '</p>' +
+                        '</div>' +
+                      '</div>' +
+
+                      '<div class="space-y-2 text-xs">' +
+                        '<div class="flex items-start gap-2 bg-slate-800/60 p-3 rounded-2xl">' +
+                          '<span>🏬</span>' +
+                          '<div>' +
+                            '<p class="font-bold text-white">Pickup: ' + (order.store || "Boutique") + '</p>' +
+                            '<p class="text-[11px] text-slate-400">Subhash Road, Anantapur</p>' +
+                          '</div>' +
+                        '</div>' +
+
+                        '<div class="flex items-start gap-2 bg-slate-800/60 p-3 rounded-2xl">' +
+                          '<span>📍</span>' +
+                          '<div>' +
+                            '<p class="font-bold text-white">Drop: ' + (order.customerName || "Customer") + '</p>' +
+                            '<p class="text-[11px] text-slate-400">' + (order.customerAddress || "Anantapur") + '</p>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+
+                      '<p class="text-[11px] text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800">🛍️ <strong>Items:</strong> ' + itemsText + '</p>' +
+
+                      '<div class="grid grid-cols-2 gap-2 pt-2">' +
+                        '<a href="tel:' + (order.customerPhone || "") + '" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3 rounded-xl text-center transition flex items-center justify-center gap-1">' +
+                          '📞 Call Customer' +
+                        '</a>' +
+                        '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(order.customerAddress || "Anantapur") + '" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-3 rounded-xl text-center transition flex items-center justify-center gap-1">' +
+                          '🗺️ Maps Route' +
+                        '</a>' +
+                      '</div>' +
+
+                      '<button onclick="acceptSpecificRide(\'' + order.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer mt-2">' +
+                        '✓ Accept Ride & Start 60-Min Timer' +
+                      '</button>' +
+                    '</div>';
+
+          list.innerHTML = html;
+          return;
+        }
+      }
+
+      countBadge.innerText = "0 Available";
+      list.innerHTML = '<div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center">' +
+                         '<span class="text-3xl">☕</span>' +
+                         '<h4 class="font-bold text-white mt-2">No Active Rides Right Now</h4>' +
+                         '<p class="text-xs text-slate-400 mt-1">You are Online. When any order is placed, notification chime will play automatically.</p>' +
+                       '</div>';
+    }
+
+    function acceptSpecificRide(orderId) {
+      alert("🎉 Ride " + orderId + " accepted! Head over to the store for pickup.");
+    }
+
+    // Check every 3 seconds for new rides when on duty
+    setInterval(checkAvailableRides, 3000);
   </script>
 </body>
 </html>
