@@ -24,7 +24,7 @@
     }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-32 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-20 antialiased selection:bg-orange-500 selection:text-white">
 
   <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
@@ -32,7 +32,7 @@
     <span>⚡ <strong>FITIN60 Hyperlocal Active</strong> • 60-Min Express Drop • 20-Min Home Fitting • Direct Boutique Checkout</span>
   </div>
 
-  <!-- Header -->
+  <!-- Header (Clean Customer UI) -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
@@ -44,13 +44,10 @@
         <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
       </a>
 
-      <!-- Action Nav -->
-      <div class="flex items-center gap-2.5">
-        <a href="tracking.html" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-orange-600 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm">
+      <!-- Action Nav (Only Customer Essentials) -->
+      <div class="flex items-center gap-3">
+        <a href="tracking.html" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-orange-600 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm">
           <span>⚡</span> Track Order
-        </a>
-        <a href="partner.html" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 px-4 py-2.5 rounded-2xl transition shadow-sm">
-          <span>🏬</span> Partner Portal
         </a>
         <button onclick="toggleCart()" class="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2.5 transition shadow-md shadow-orange-500/20 cursor-pointer">
           <span class="text-base">🛍️</span>
@@ -117,6 +114,30 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
   </main>
+
+  <!-- Footer with Subtle Merchant Partner Link (Blinkit/Zomato Style) -->
+  <footer class="max-w-7xl mx-auto px-4 sm:px-6 mt-20 pt-10 border-t border-slate-200/80">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-12">
+      <div>
+        <span class="font-brand text-xl font-black tracking-tight text-slate-950">
+          FITIN<span class="text-orange-600">60</span>
+        </span>
+        <p class="text-xs text-slate-500 mt-1">60-Minute Luxury Hyperlocal Fashion Radar • Try at Home</p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-6 text-xs font-semibold text-slate-500">
+        <a href="tracking.html" class="hover:text-slate-900 transition">Track Active Order</a>
+        <span class="text-slate-300">•</span>
+        <!-- Subtle Shop Owner Link -->
+        <a href="partner.html" class="hover:text-orange-600 text-slate-600 flex items-center gap-1.5 transition bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200/60">
+          <span>🏬</span> Partner with Us / Merchant Login
+        </a>
+      </div>
+    </div>
+    <div class="border-t border-slate-100 py-6 text-center text-[11px] text-slate-400">
+      © 2026 Fitin60 Technologies. All rights reserved.
+    </div>
+  </footer>
 
   <!-- Floating Toast Notification -->
   <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
@@ -387,7 +408,6 @@
       renderProducts();
     }
 
-    // 100% Silent Background 20-KM Detection
     function silentlyDetectLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
