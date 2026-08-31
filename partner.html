@@ -22,7 +22,7 @@
         <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
           FITIN<span class="text-orange-600">60</span>
         </span>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Partner Merchant Studio</span>
+        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Merchant Partner Studio</span>
       </a>
       <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl transition">
         ← Customer Store
@@ -30,46 +30,159 @@
     </div>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 sm:px-6 mt-10">
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-10">
     <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-10 shadow-xl">
       <div class="w-14 h-14 rounded-2xl bg-orange-600/10 text-orange-600 flex items-center justify-center text-2xl font-bold mb-4">🏬</div>
-      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950">Partner Onboarding Hub</h1>
-      <p class="text-xs text-slate-500 mt-1">List your boutique collections on Fitin60 to receive direct instant UPI orders from customers within a 20-KM radius.</p>
+      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950">Boutique & Product Upload Hub</h1>
+      <p class="text-xs text-slate-500 mt-1">Upload dresses, set instant store UPI payout, and go live on Fitin60's 20-KM delivery radar.</p>
 
-      <form onsubmit="handlePartnerSubmit(event)" class="mt-8 space-y-4">
-        <div>
-          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Boutique / Store Name</label>
-          <input type="text" id="partnerStoreName" required placeholder="e.g., Anu Ram Designer Studio" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
+      <form onsubmit="handlePartnerSubmit(event)" class="mt-8 space-y-6">
+        
+        <!-- Store Information -->
+        <div class="p-5 bg-slate-50 border border-slate-200/80 rounded-3xl space-y-4">
+          <h3 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider flex items-center gap-2">
+            <span>🏬</span> Store Details & Payout
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Boutique Name</label>
+              <input type="text" id="partnerStoreName" required placeholder="e.g., Anu Ram Designer Studio" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Owner Contact</label>
+              <input type="tel" id="partnerPhone" required placeholder="10-Digit Mobile" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Area / Landmark</label>
+              <input type="text" id="partnerArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Direct UPI ID</label>
+              <input type="text" id="partnerUpi" required placeholder="e.g., anuram@okhdfcbank" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Address / Area</label>
-          <input type="text" id="partnerArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
+        <!-- Product Listing & Image Upload Section -->
+        <div class="p-5 bg-orange-50/40 border border-orange-200/70 rounded-3xl space-y-4">
+          <h3 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider flex items-center gap-2">
+            <span>👗</span> Add New Outfit / Dress
+          </h3>
+
+          <div>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Dress / Outfit Name</label>
+            <input type="text" id="productName" required placeholder="e.g., Premium Handloom Pure Silk Saree" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Offer Price (₹)</label>
+              <input type="number" id="productPrice" required placeholder="899" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">MRP / Original (₹)</label>
+              <input type="number" id="productOriginalPrice" required placeholder="1499" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Category</label>
+              <select id="productCategory" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+                <option value="ethnic">Women's Ethnic</option>
+                <option value="mens">Men's Wear</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- File Upload Field -->
+          <div>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Upload Dress Photo</label>
+            <div class="border-2 border-dashed border-slate-300 hover:border-orange-500 bg-white rounded-2xl p-6 text-center transition cursor-pointer relative">
+              <input type="file" id="productImageInput" accept="image/*" onchange="handleImagePreview(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+              <div id="uploadPrompt" class="space-y-1">
+                <span class="text-3xl">📸</span>
+                <p class="text-xs font-bold text-slate-700">Click to upload dress picture</p>
+                <p class="text-[10px] text-slate-400">PNG, JPG, JPEG from your device</p>
+              </div>
+              <!-- Preview Thumbnail -->
+              <div id="imagePreviewBox" class="hidden mt-2">
+                <img id="imagePreviewImg" src="" alt="Preview" class="w-32 h-32 object-cover mx-auto rounded-2xl border border-slate-200 shadow-md">
+                <p class="text-[10px] text-emerald-600 font-bold mt-2">✓ Photo selected successfully</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Short Fabric / Design Description</label>
+            <textarea id="productDesc" rows="2" placeholder="e.g., Pure soft cotton, gold border zari embroidery work." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500"></textarea>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Direct Merchant UPI ID (Instant Payout)</label>
-          <input type="text" id="partnerUpi" required placeholder="e.g., storename@okhdfcbank / mobile@ybl" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Owner Contact Number</label>
-          <input type="tel" id="partnerPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
-        </div>
-
-        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg mt-6 cursor-pointer">
-          ⚡ Register Boutique on Fitin60 Radar
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-xl cursor-pointer">
+          ⚡ Upload & Publish to Fitin60 Radar
         </button>
       </form>
     </div>
   </main>
 
   <script>
+    var uploadedImageBase64 = "";
+
+    function handleImagePreview(event) {
+      var file = event.target.files[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedImageBase64 = e.target.result;
+          document.getElementById("uploadPrompt").classList.add("hidden");
+          document.getElementById("imagePreviewBox").classList.remove("hidden");
+          document.getElementById("imagePreviewImg").src = uploadedImageBase64;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
     function handlePartnerSubmit(e) {
       e.preventDefault();
       var store = document.getElementById("partnerStoreName").value.trim();
       var upi = document.getElementById("partnerUpi").value.trim();
-      alert("✅ Store \"" + store + "\" with UPI (" + upi + ") successfully submitted to Fitin60!");
+      var prodName = document.getElementById("productName").value.trim();
+      var price = parseInt(document.getElementById("productPrice").value);
+      var originalPrice = parseInt(document.getElementById("productOriginalPrice").value) || price;
+      var category = document.getElementById("productCategory").value;
+      var desc = document.getElementById("productDesc").value.trim() || "Verified boutique collection.";
+      var area = document.getElementById("partnerArea").value.trim();
+
+      var defaultImg = "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80";
+      var finalImage = uploadedImageBase64 || defaultImg;
+
+      var newProduct = {
+        id: Date.now(),
+        name: prodName,
+        store: store,
+        area: area,
+        lat: 14.6819,
+        lng: 77.6006,
+        price: price,
+        originalPrice: originalPrice,
+        discount: Math.round(((originalPrice - price) / originalPrice) * 100) + "% OFF",
+        category: category,
+        sizes: category === "ethnic" ? ["M", "L", "XL"] : ["38", "40", "42"],
+        eta: "30 MINS",
+        rating: "5.0 (New)",
+        upi: upi,
+        image: finalImage,
+        desc: desc
+      };
+
+      // Store in browser memory for instant radar visibility
+      var customItems = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
+      customItems.unshift(newProduct);
+      localStorage.setItem("fitin60_custom_products", JSON.stringify(customItems));
+
+      alert("🎉 Dress \"" + prodName + "\" uploaded successfully for " + store + "! Redirecting to store...");
       window.location.href = "index.html";
     }
   </script>
