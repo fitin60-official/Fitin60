@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Boutique Merchant Studio</title>
+  <title>Fitin60 | Partner & Rider Operations Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +22,7 @@
         <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
           FITIN<span class="text-orange-600">60</span>
         </span>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Merchant Partner Studio</span>
+        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Partner & Rider Operations</span>
       </a>
       <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl transition">
         ← Customer Store
@@ -30,10 +30,43 @@
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-10">
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-10 space-y-10">
+
+    <!-- ================= 1. RIDER DUTY ON/OFF COMMAND SECTION ================= -->
+    <div class="bg-slate-950 text-white rounded-[2.5rem] p-8 md:p-10 shadow-2xl border border-slate-800">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-orange-600/20 text-orange-400 flex items-center justify-center text-2xl font-bold border border-orange-500/30">🛵</div>
+          <div>
+            <h2 class="font-brand text-xl md:text-2xl font-black text-white">Rider Fleet Station</h2>
+            <p class="text-xs text-slate-400">Manage your delivery duty and view live customer rides</p>
+          </div>
+        </div>
+
+        <!-- Duty Toggle Button -->
+        <button id="riderDutyBtn" onclick="toggleRiderDuty()" class="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3 rounded-2xl border border-slate-700 font-bold text-xs transition cursor-pointer">
+          <span id="riderDutyDot" class="w-3 h-3 rounded-full bg-rose-500"></span>
+          <span id="riderDutyText">Duty: OFFLINE</span>
+        </button>
+      </div>
+
+      <!-- Live Rides Feed -->
+      <div class="mt-6">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+          <span>Available Express Rides (Within 20 KM)</span>
+          <span id="riderRideCount" class="text-orange-400">0 Available</span>
+        </h3>
+
+        <div id="riderOrdersBox" class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 text-center text-xs text-slate-400">
+          Click <strong>"Duty: OFFLINE"</strong> button above to turn ON duty and listen for incoming customer dress orders.
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 2. BOUTIQUE PRODUCT UPLOAD SECTION ================= -->
     <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-10 shadow-xl">
       <div class="w-14 h-14 rounded-2xl bg-orange-600/10 text-orange-600 flex items-center justify-center text-2xl font-bold mb-4">🏬</div>
-      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950">Boutique & Product Upload Hub</h1>
+      <h2 class="font-brand text-2xl md:text-3xl font-black text-slate-950">Boutique & Product Upload Hub</h2>
       <p class="text-xs text-slate-500 mt-1">Upload dresses, set instant store UPI payout, and go live on Fitin60's 20-KM delivery radar.</p>
 
       <form onsubmit="handlePartnerSubmit(event)" class="mt-8 space-y-6">
@@ -106,7 +139,6 @@
                 <p class="text-xs font-bold text-slate-700">Click to upload dress picture</p>
                 <p class="text-[10px] text-slate-400">PNG, JPG, JPEG from your device</p>
               </div>
-              <!-- Preview Thumbnail -->
               <div id="imagePreviewBox" class="hidden mt-2">
                 <img id="imagePreviewImg" src="" alt="Preview" class="w-32 h-32 object-cover mx-auto rounded-2xl border border-slate-200 shadow-md">
                 <p class="text-[10px] text-emerald-600 font-bold mt-2">✓ Photo selected successfully</p>
@@ -125,10 +157,109 @@
         </button>
       </form>
     </div>
+
   </main>
 
   <script>
     var uploadedImageBase64 = "";
+    var isRiderOnline = false;
+    var audioCtx = null;
+    var knownRiderOrders = {};
+
+    function playDingDong() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var now = audioCtx.currentTime;
+        var osc1 = audioCtx.createOscillator();
+        var gain1 = audioCtx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(587.33, now);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.4);
+
+        var osc2 = audioCtx.createOscillator();
+        var gain2 = audioCtx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(880, now + 0.15);
+        gain2.gain.setValueAtTime(0.3, now + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.6);
+      } catch(e) {}
+    }
+
+    function toggleRiderDuty() {
+      isRiderOnline = !isRiderOnline;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      var dot = document.getElementById("riderDutyDot");
+      var text = document.getElementById("riderDutyText");
+      var btn = document.getElementById("riderDutyBtn");
+
+      if (isRiderOnline) {
+        dot.className = "w-3 h-3 rounded-full bg-emerald-400 animate-pulse";
+        text.innerText = "Duty: ONLINE (Listening)";
+        btn.className = "flex items-center justify-center gap-2 bg-emerald-950/70 border border-emerald-500/40 text-emerald-400 px-5 py-3 rounded-2xl font-bold text-xs transition";
+        renderRiderFeed();
+      } else {
+        dot.className = "w-3 h-3 rounded-full bg-rose-500";
+        text.innerText = "Duty: OFFLINE";
+        btn.className = "flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3 rounded-2xl border border-slate-700 font-bold text-xs transition";
+        document.getElementById("riderOrdersBox").innerHTML = "Duty is OFFLINE. Turn ON duty above to receive rides.";
+        document.getElementById("riderRideCount").innerText = "0 Available";
+      }
+    }
+
+    function renderRiderFeed() {
+      if (!isRiderOnline) return;
+
+      var box = document.getElementById("riderOrdersBox");
+      var countEl = document.getElementById("riderRideCount");
+      var rawOrder = localStorage.getItem("chitikelo_active_order");
+
+      if (rawOrder) {
+        var order = JSON.parse(rawOrder);
+        if (order.orderId) {
+          if (!knownRiderOrders[order.orderId]) {
+            knownRiderOrders[order.orderId] = true;
+            playDingDong();
+          }
+
+          countEl.innerText = "1 Ride Available";
+          box.innerHTML = 
+            '<div class="bg-slate-900 border border-orange-500/50 rounded-2xl p-5 text-left text-xs space-y-3">' +
+              '<div class="flex justify-between items-center font-bold">' +
+                '<span class="text-orange-400 font-brand text-sm">⚡ ' + order.orderId + '</span>' +
+                '<span class="text-emerald-400 font-black text-sm">₹' + order.totalAmount + '</span>' +
+              '</div>' +
+              '<p class="text-slate-300"><strong>Pickup Store:</strong> ' + (order.store || "Boutique") + '</p>' +
+              '<p class="text-slate-300"><strong>Customer Drop:</strong> ' + (order.customerName || "Customer") + ' • ' + (order.customerAddress || "Anantapur") + '</p>' +
+              '<div class="flex gap-2 pt-1">' +
+                '<a href="tel:' + (order.customerPhone || "") + '" class="flex-1 bg-slate-800 hover:bg-slate-700 text-center py-2.5 rounded-xl text-white font-bold">📞 Call Customer</a>' +
+                '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(order.customerAddress || "Anantapur") + '" target="_blank" class="flex-1 bg-blue-600 hover:bg-blue-500 text-center py-2.5 rounded-xl text-white font-bold">🗺️ Maps Route</a>' +
+              '</div>' +
+              '<button onclick="alert(\'✓ Ride Accepted! Head to Boutique.\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl uppercase tracking-wider cursor-pointer">✓ Accept 60-Min Ride</button>' +
+            '</div>';
+          return;
+        }
+      }
+
+      countEl.innerText = "0 Available";
+      box.innerHTML = "<span class='text-emerald-400 font-bold'>✓ Online & Listening</span> • No active rides in queue right now.";
+    }
+
+    setInterval(function() {
+      if (isRiderOnline) renderRiderFeed();
+    }, 3000);
 
     function handleImagePreview(event) {
       var file = event.target.files[0];
@@ -177,7 +308,6 @@
         desc: desc
       };
 
-      // Store in browser memory for instant radar visibility
       var customItems = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
       customItems.unshift(newProduct);
       localStorage.setItem("fitin60_custom_products", JSON.stringify(customItems));
