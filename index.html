@@ -24,7 +24,7 @@
     }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-32 antialiased selection:bg-orange-500 selection:text-white">
 
   <!-- Top Announcement Notification -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
@@ -125,6 +125,27 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
   </main>
+
+  <!-- Floating Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
+    <span class="text-emerald-400">✓</span>
+    <span id="toastMessage">Item added to Express Bag!</span>
+  </div>
+
+  <!-- Bottom Floating Bag Bar (Visible on mobile/desktop when items exist) -->
+  <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
+      <div>
+        <p class="text-xs font-black text-white" id="floatCartSummary">1 Item in Bag • ₹899</p>
+        <p class="text-[10px] text-slate-400">20-Min Home Fitting Included</p>
+      </div>
+    </div>
+    <button onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1.5 transition">
+      <span>View Bag</span>
+      <span>➔</span>
+    </button>
+  </div>
 
   <!-- Side Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
@@ -344,9 +365,13 @@
                         '</div>' +
                       '</div>' +
 
-                      '<div class="p-6 pt-0">' +
-                        '<button onclick="addProductToBag(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">' +
-                          '<span>+</span> Add to 60-Min Bag' +
+                      '<!-- Dual Button Layout -->' +
+                      '<div class="p-6 pt-0 grid grid-cols-2 gap-2.5">' +
+                        '<button onclick="addToBagSilent(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-1 cursor-pointer">' +
+                          '<span>+</span> Add to Bag' +
+                        '</button>' +
+                        '<button onclick="buyNowInstant(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer">' +
+                          '<span>⚡</span> Buy Now' +
                         '</button>' +
                       '</div>' +
                     '</div>';
@@ -410,10 +435,32 @@
       drawer.classList.toggle("hidden");
     }
 
-    function addProductToBag(name, price, eta, size, store, upiId) {
+    // 1. Silent Add (Screen won't open drawer, shows nice toast message)
+    function addToBagSilent(name, price, eta, size, store, upiId) {
       items.push({ name: name, price: price, eta: eta, size: size, store: store, storeUpi: upiId });
       renderCart();
-      toggleCart();
+      showToast("Added \"" + name.substring(0, 20) + "...\" to Bag!");
+    }
+
+    // 2. Instant Buy Now (Adds item and directly opens drawer for instant checkout)
+    function buyNowInstant(name, price, eta, size, store, upiId) {
+      items.push({ name: name, price: price, eta: eta, size: size, store: store, storeUpi: upiId });
+      renderCart();
+      var drawer = document.getElementById("cartDrawer");
+      drawer.classList.remove("hidden");
+    }
+
+    function showToast(msg) {
+      var toast = document.getElementById("toastNotification");
+      var text = document.getElementById("toastMessage");
+      text.innerText = msg;
+      toast.classList.remove("opacity-0", "pointer-events-none");
+      toast.classList.add("opacity-100");
+
+      setTimeout(function() {
+        toast.classList.remove("opacity-100");
+        toast.classList.add("opacity-0", "pointer-events-none");
+      }, 2000);
     }
 
     function removeCartItem(index) {
@@ -426,6 +473,8 @@
       var list = document.getElementById("cartItems");
       var totalEl = document.getElementById("cartTotal");
       var addressBox = document.getElementById("addressSection");
+      var floatBar = document.getElementById("floatingCartBar");
+      var floatSummary = document.getElementById("floatCartSummary");
       
       count.innerText = items.length;
 
@@ -433,10 +482,13 @@
         list.innerHTML = '<p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>';
         totalEl.innerText = "₹0";
         addressBox.classList.add("hidden");
+        floatBar.classList.add("hidden");
         return;
       }
 
       addressBox.classList.remove("hidden");
+      floatBar.classList.remove("hidden");
+      
       var sum = 0;
       var html = "";
       for (var i = 0; i < items.length; i++) {
@@ -452,6 +504,7 @@
       }
       list.innerHTML = html;
       totalEl.innerText = "₹" + sum;
+      floatSummary.innerText = items.length + " Item" + (items.length > 1 ? "s" : "") + " in Bag • ₹" + sum;
     }
 
     function handleCheckout() {
