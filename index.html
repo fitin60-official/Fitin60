@@ -3,175 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CHITIKELO | 60-Minute Hyperlocal Fashion</title>
+  <title>CHITIKELO | 60-Minute Luxury Hyperlocal Fashion</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
+    .font-luxury { font-family: 'Cinzel', serif; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .hero-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15), transparent 70%);
+    }
+    .badge-pulse {
+      box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+      animation: pulse 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+    @keyframes pulse {
+      to { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+    }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-24">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
-      <a href="index.html">
-        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
+  <!-- Top Announcement Notification -->
+  <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
+    <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+    <span>⚡ <strong>60-Min Express Boutique Dispatch Active</strong> • Try at Home in 20 Minutes • Zero Risk Cash & UPI Settlement</span>
+  </div>
+
+  <!-- Main Luxury Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="index.html" class="flex flex-col group">
+        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950 transition group-hover:tracking-wider">
           CHITI<span class="text-orange-600">KELO</span>
         </span>
-        <span class="block text-[9px] uppercase tracking-[0.25em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
+        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Haute Couture</span>
       </a>
 
-      <div class="flex items-center gap-3">
-        <a href="tracking.html" class="hidden sm:inline-block text-xs font-bold text-orange-600 hover:text-slate-900 px-3.5 py-2 rounded-xl border border-orange-200 bg-orange-50">
-          ⚡ Track Order
+      <!-- Quick Location Badge -->
+      <div class="hidden md:flex items-center gap-2 bg-slate-100/80 border border-slate-200 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-700">
+        <span class="text-orange-600">📍</span>
+        <span>Deliver to: <strong class="text-slate-950 font-bold">Hyderabad & Local Circles</strong></span>
+        <span class="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-bold">⚡ 45m</span>
+      </div>
+
+      <!-- Action Nav -->
+      <div class="flex items-center gap-2.5">
+        <a href="tracking.html" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-orange-600 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm">
+          <span>⚡</span> Track Order
         </a>
-        <a href="partner.html" class="hidden sm:inline-block text-xs font-bold text-slate-700 hover:text-orange-600 px-3.5 py-2 rounded-xl border border-slate-200">
-          Partner Portal
+        <a href="partner.html" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 px-4 py-2.5 rounded-2xl transition shadow-sm">
+          <span>🏬</span> Partner Portal
         </a>
-        <button onclick="toggleCart()" class="relative bg-slate-950 hover:bg-orange-600 text-white px-4 py-2.5 rounded-2xl flex items-center gap-2 transition cursor-pointer">
+        <button onclick="toggleCart()" class="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white px-5 py-2.5 rounded-2xl flex items-center gap-2.5 transition shadow-md shadow-orange-500/20 cursor-pointer">
           <span class="text-base">🛍️</span>
-          <span class="text-xs font-bold hidden sm:inline">Bag</span>
-          <span id="cart-count" class="bg-orange-500 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+          <span class="text-xs font-black tracking-wider uppercase hidden sm:inline">Bag</span>
+          <span id="cart-count" class="bg-white text-orange-600 text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-inner">0</span>
         </button>
       </div>
+
     </div>
   </header>
 
-  <!-- Hero Banner -->
-  <section class="max-w-6xl mx-auto px-4 mt-6">
-    <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
-      <div>
-        <span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-          ⚡ Direct Store UPI & COD
-        </span>
-        <h1 class="font-brand text-2xl md:text-3xl font-extrabold text-white mt-3 leading-tight">
-          Verified Local Boutiques & Designers
-        </h1>
-        <p class="text-xs text-slate-300 mt-1">Pay direct to verified boutique UPI or Cash with 60-min express delivery.</p>
-      </div>
-      <div class="flex gap-3 shrink-0">
-        <div class="text-center bg-white/5 border border-white/10 px-4 py-3 rounded-2xl">
-          <p class="text-xl font-black text-orange-400">15-Min</p>
-          <p class="text-[9px] text-slate-300 uppercase font-bold tracking-wider">Home Trial</p>
+  <!-- Hero Spotlight Showcase -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <div class="hero-glow bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-slate-800 relative overflow-hidden">
+      <div class="absolute -right-16 -top-16 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="max-w-3xl relative z-10">
+        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-4 py-1.5 rounded-full text-xs font-bold text-orange-300 mb-4">
+          <span class="w-2 h-2 rounded-full bg-orange-400 badge-pulse"></span> Verified Designer Boutiques
         </div>
-        <div class="text-center bg-white/5 border border-white/10 px-4 py-3 rounded-2xl">
-          <p class="text-xl font-black text-orange-400">Direct</p>
-          <p class="text-[9px] text-slate-300 uppercase font-bold tracking-wider">Store UPI</p>
+        <h1 class="font-brand text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1] text-white">
+          Runway Fashion to Your Doorstep in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
+        </h1>
+        <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
+          Order authentic designer wear, sarees, kurtas, and luxury shirts directly from top local boutiques with a 20-minute home trial option and spot cash/UPI checkout.
+        </p>
+
+        <!-- Stats Chips -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-6 mt-8 pt-8 border-t border-white/10 max-w-xl">
+          <div>
+            <p class="font-brand text-xl sm:text-2xl font-black text-white">60 <span class="text-orange-400 text-sm">MINS</span></p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Express Drop</p>
+          </div>
+          <div>
+            <p class="font-brand text-xl sm:text-2xl font-black text-white">20 <span class="text-orange-400 text-sm">MINS</span></p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Home Fitting</p>
+          </div>
+          <div>
+            <p class="font-brand text-xl sm:text-2xl font-black text-white">100%</p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Local Verified</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Product Catalog -->
-  <main class="max-w-6xl mx-auto px-4 mt-8">
-    <div class="mb-6 flex items-center justify-between">
+  <!-- Categories Tab Navigation -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
+    <div class="flex items-center justify-between gap-4 pb-4 border-b border-slate-200">
       <div>
-        <h2 class="font-brand text-xl font-bold text-slate-950">Express Boutique Collection</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Ready for instant dispatch in under 60 minutes</p>
+        <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Curated Boutique Vault</h2>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Handpicked express fashion ready for immediate dispatch</p>
+      </div>
+
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        <button onclick="filterCatalog('all')" id="tab-all" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm">All Drops</button>
+        <button onclick="filterCatalog('ethnic')" id="tab-ethnic" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition">Women's Ethnic</button>
+        <button onclick="filterCatalog('mens')" id="tab-mens" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition">Men's Oxford</button>
       </div>
     </div>
+  </section>
 
-    <!-- Products Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      
-      <!-- Product 1 -->
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+  <!-- Product Catalog Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+
+      <!-- Product Card 1 -->
+      <div class="product-item ethnic group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
         <div>
-          <div class="relative h-60 bg-slate-100 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=700&q=80" alt="Kurta Set" class="w-full h-full object-cover">
-            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 35 MINS</span>
+          <!-- Image Wrapper -->
+          <div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80" alt="Kurta Set" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute top-3.5 left-3.5 bg-slate-950/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-xl flex items-center gap-1 shadow-md">
+              <span>⚡</span> 35 MINS DISPATCH
+            </span>
+            <span class="absolute top-3.5 right-3.5 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl shadow-md">
+              40% OFF
+            </span>
           </div>
-          <div class="p-5">
-            <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Anu Ram Fashions</span>
-            <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Floral Designer Anarkali Kurta Set</h3>
-            <p class="text-xs text-slate-500 mt-1">Pure cotton fabric with fine embroidery.</p>
-            
-            <div class="mt-3">
-              <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
+
+          <!-- Card Content -->
+          <div class="p-6">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider">Anu Ram Fashions</span>
+              <span class="text-[10px] bg-slate-100 font-bold text-slate-600 px-2 py-0.5 rounded-md">⭐ 4.9 (140)</span>
+            </div>
+            <h3 class="font-brand font-bold text-lg text-slate-950 mt-1.5 leading-snug group-hover:text-orange-600 transition">Floral Designer Anarkali Kurta Set</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">Pure soft cotton with intricate hand-embroidered neckline and matching dupatta.</p>
+
+            <!-- Size Selector -->
+            <div class="mt-4">
+              <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Select Size</span>
               <div class="flex gap-2">
-                <button type="button" onclick="selectSize(1, 'M')" id="p1-size-M" class="size-btn-1 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">M</button>
-                <button type="button" onclick="selectSize(1, 'L')" id="p1-size-L" class="size-btn-1 border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold">L</button>
-                <button type="button" onclick="selectSize(1, 'XL')" id="p1-size-XL" class="size-btn-1 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">XL</button>
+                <button type="button" onclick="selectSize(1, 'M')" id="p1-size-M" class="size-btn-1 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">M</button>
+                <button type="button" onclick="selectSize(1, 'L')" id="p1-size-L" class="size-btn-1 border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1.5 text-xs font-bold rounded-xl transition">L</button>
+                <button type="button" onclick="selectSize(1, 'XL')" id="p1-size-XL" class="size-btn-1 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">XL</button>
+                <button type="button" onclick="selectSize(1, 'XXL')" id="p1-size-XXL" class="size-btn-1 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">XXL</button>
               </div>
             </div>
 
-            <div class="mt-4 flex items-baseline gap-2">
-              <span class="text-2xl font-black text-slate-950">₹899</span>
-              <span class="text-xs text-slate-400 line-through">₹1,499</span>
+            <!-- Price -->
+            <div class="mt-5 flex items-baseline gap-2.5">
+              <span class="font-brand text-2xl font-black text-slate-950">₹899</span>
+              <span class="text-xs font-bold text-slate-400 line-through">₹1,499</span>
+              <span class="text-[11px] text-emerald-600 font-extrabold ml-auto">20-Min Trial</span>
             </div>
           </div>
         </div>
-        <div class="p-5 pt-0">
-          <button onclick="addProductToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins', selectedSizes[1] || 'L', 'Anu Ram Fashions', 'anuram@ybl')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
-            + Add to Express Bag
+
+        <!-- Add Button -->
+        <div class="p-6 pt-0">
+          <button onclick="addProductToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins', selectedSizes[1] || 'L', 'Anu Ram Fashions', 'anuram@ybl')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+            <span>+</span> Add to 60-Min Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product 2 -->
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+      <!-- Product Card 2 -->
+      <div class="product-item mens group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
         <div>
-          <div class="relative h-60 bg-slate-100 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=700&q=80" alt="Oxford Shirt" class="w-full h-full object-cover">
-            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 40 MINS</span>
+          <div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80" alt="Oxford Shirt" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute top-3.5 left-3.5 bg-slate-950/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-xl flex items-center gap-1 shadow-md">
+              <span>⚡</span> 40 MINS DISPATCH
+            </span>
+            <span class="absolute top-3.5 right-3.5 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl shadow-md">
+              36% OFF
+            </span>
           </div>
-          <div class="p-5">
-            <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Sai Menswear</span>
-            <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Tailored Slim-Fit Oxford Shirt</h3>
-            <p class="text-xs text-slate-500 mt-1">100% Egyptian cotton, premium styling.</p>
-            
-            <div class="mt-3">
-              <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
+
+          <div class="p-6">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider">Sai Menswear</span>
+              <span class="text-[10px] bg-slate-100 font-bold text-slate-600 px-2 py-0.5 rounded-md">⭐ 4.8 (98)</span>
+            </div>
+            <h3 class="font-brand font-bold text-lg text-slate-950 mt-1.5 leading-snug group-hover:text-orange-600 transition">Tailored Slim-Fit Oxford Shirt</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">100% Egyptian cotton, structured formal collar with breathability.</p>
+
+            <div class="mt-4">
+              <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Select Size</span>
               <div class="flex gap-2">
-                <button type="button" onclick="selectSize(2, '38/M')" id="p2-size-38/M" class="size-btn-2 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">38</button>
-                <button type="button" onclick="selectSize(2, '40/L')" id="p2-size-40/L" class="size-btn-2 border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold">40</button>
-                <button type="button" onclick="selectSize(2, '42/XL')" id="p2-size-42/XL" class="size-btn-2 border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500">42</button>
+                <button type="button" onclick="selectSize(2, '38/M')" id="p2-size-38/M" class="size-btn-2 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">38</button>
+                <button type="button" onclick="selectSize(2, '40/L')" id="p2-size-40/L" class="size-btn-2 border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1.5 text-xs font-bold rounded-xl transition">40</button>
+                <button type="button" onclick="selectSize(2, '42/XL')" id="p2-size-42/XL" class="size-btn-2 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">42</button>
               </div>
             </div>
 
-            <div class="mt-4 flex items-baseline gap-2">
-              <span class="text-2xl font-black text-slate-950">₹1,199</span>
-              <span class="text-xs text-slate-400 line-through">₹1,899</span>
+            <div class="mt-5 flex items-baseline gap-2.5">
+              <span class="font-brand text-2xl font-black text-slate-950">₹1,199</span>
+              <span class="text-xs font-bold text-slate-400 line-through">₹1,899</span>
+              <span class="text-[11px] text-emerald-600 font-extrabold ml-auto">20-Min Trial</span>
             </div>
           </div>
         </div>
-        <div class="p-5 pt-0">
-          <button onclick="addProductToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins', selectedSizes[2] || '40/L', 'Sai Menswear', 'saimenswear@upi')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
-            + Add to Express Bag
+
+        <div class="p-6 pt-0">
+          <button onclick="addProductToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins', selectedSizes[2] || '40/L', 'Sai Menswear', 'saimenswear@upi')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+            <span>+</span> Add to 60-Min Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product 3 -->
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+      <!-- Product Card 3 -->
+      <div class="product-item ethnic group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
         <div>
-          <div class="relative h-60 bg-slate-100 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=700&q=80" alt="Silk Saree" class="w-full h-full object-cover">
-            <span class="absolute top-3 left-3 bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">⚡ 50 MINS</span>
+          <div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80" alt="Silk Saree" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <span class="absolute top-3.5 left-3.5 bg-slate-950/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-xl flex items-center gap-1 shadow-md">
+              <span>⚡</span> 50 MINS DISPATCH
+            </span>
+            <span class="absolute top-3.5 right-3.5 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl shadow-md">
+              38% OFF
+            </span>
           </div>
-          <div class="p-5">
-            <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Adhya Designer Studio</span>
-            <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Pure Silk Traditional Zari Saree</h3>
-            <p class="text-xs text-slate-500 mt-1">Rich zari pallu with running blouse.</p>
-            
-            <div class="mt-3">
-              <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
+
+          <div class="p-6">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider">Adhya Designer Studio</span>
+              <span class="text-[10px] bg-slate-100 font-bold text-slate-600 px-2 py-0.5 rounded-md">⭐ 5.0 (64)</span>
+            </div>
+            <h3 class="font-brand font-bold text-lg text-slate-950 mt-1.5 leading-snug group-hover:text-orange-600 transition">Pure Silk Traditional Zari Saree</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">Authentic rich zari work pallu with unstitched designer running blouse piece.</p>
+
+            <div class="mt-4">
+              <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Select Size</span>
               <div class="flex gap-2">
-                <button type="button" class="border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold">Free Size (6.3m)</button>
+                <button type="button" class="border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1.5 text-xs font-bold rounded-xl">Free Size (6.3m)</button>
               </div>
             </div>
 
-            <div class="mt-4 flex items-baseline gap-2">
-              <span class="text-2xl font-black text-slate-950">₹2,499</span>
-              <span class="text-xs text-slate-400 line-through">₹3,999</span>
+            <div class="mt-5 flex items-baseline gap-2.5">
+              <span class="font-brand text-2xl font-black text-slate-950">₹2,499</span>
+              <span class="text-xs font-bold text-slate-400 line-through">₹3,999</span>
+              <span class="text-[11px] text-emerald-600 font-extrabold ml-auto">20-Min Trial</span>
             </div>
           </div>
         </div>
-        <div class="p-5 pt-0">
-          <button onclick="addProductToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins', 'Free Size', 'Adhya Designer Studio', 'adhyastudio@okhdfcbank')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
-            + Add to Express Bag
+
+        <div class="p-6 pt-0">
+          <button onclick="addProductToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins', 'Free Size', 'Adhya Designer Studio', 'adhyastudio@okhdfcbank')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+            <span>+</span> Add to 60-Min Express Bag
           </button>
         </div>
       </div>
@@ -179,42 +272,47 @@
     </div>
   </main>
 
-  <!-- Side Cart Drawer -->
+  <!-- Side Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
-    <div onclick="toggleCart()" class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
       
-      <div class="p-5 bg-slate-950 text-white flex items-center justify-between">
+      <!-- Drawer Header -->
+      <div class="p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
         <div class="flex items-center gap-3">
-          <span class="text-xl">🛍️</span>
+          <div class="w-10 h-10 rounded-xl bg-orange-600/20 text-orange-400 flex items-center justify-center text-lg font-bold border border-orange-500/30">🛍️</div>
           <div>
-            <h3 class="font-brand font-bold text-base">Your Express Bag</h3>
-            <p class="text-xs text-slate-400">Direct Express Checkout</p>
+            <h3 class="font-brand font-bold text-base">Express Bag</h3>
+            <p class="text-xs text-slate-400">Hyperlocal 60-Min Checkout</p>
           </div>
         </div>
-        <button onclick="toggleCart()" class="text-slate-400 hover:text-white p-1 text-2xl font-bold leading-none cursor-pointer">
-          &times;
-        </button>
+        <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-2xl font-bold p-1 cursor-pointer">&times;</button>
       </div>
 
-      <div class="flex-1 p-5 overflow-y-auto space-y-4">
+      <!-- Drawer Content -->
+      <div class="flex-1 p-6 overflow-y-auto space-y-5">
         <div id="cartItems" class="space-y-3">
           <p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>
         </div>
 
-        <div id="addressSection" class="hidden mt-6 pt-5 border-t border-slate-200 space-y-3">
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider">📍 Delivery Address</h4>
-          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
-          <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
-          <textarea id="custAddress" rows="2" required placeholder="Door / Flat No, Street, Landmark, Area" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
+        <!-- Form Details -->
+        <div id="addressSection" class="hidden mt-6 pt-6 border-t border-slate-200 space-y-3.5">
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider flex items-center gap-1.5">
+            <span>📍</span> Doorstep Delivery Coordinates
+          </h4>
+          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          <textarea id="custAddress" rows="2" required placeholder="House/Flat No, Landmark, Street Area" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500"></textarea>
 
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider pt-2">💳 Payment Mode</h4>
-          <div class="grid grid-cols-2 gap-2">
-            <label class="border border-orange-500 bg-orange-50/50 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider pt-2 flex items-center gap-1.5">
+            <span>💳</span> Payment Settlement Mode
+          </h4>
+          <div class="grid grid-cols-2 gap-2.5">
+            <label class="border-2 border-orange-500 bg-orange-50/50 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
               <input type="radio" name="payMethod" value="UPI" checked class="accent-orange-600">
               <span class="text-xs font-bold text-slate-900">⚡ Store UPI</span>
             </label>
-            <label class="border border-slate-200 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+            <label class="border-2 border-slate-200 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
               <input type="radio" name="payMethod" value="COD" class="accent-orange-600">
               <span class="text-xs font-bold text-slate-900">💵 Cash on Delivery</span>
             </label>
@@ -222,45 +320,46 @@
         </div>
       </div>
 
-      <div class="p-5 bg-slate-50 border-t border-slate-200 space-y-3">
-        <div class="flex justify-between font-extrabold text-base text-slate-950">
-          <span>Total Amount</span>
-          <span id="cartTotal">₹0</span>
+      <!-- Drawer Footer -->
+      <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3.5">
+        <div class="flex justify-between items-baseline font-black text-slate-950">
+          <span class="text-xs uppercase text-slate-500">Estimated Total</span>
+          <span id="cartTotal" class="font-brand text-2xl text-slate-950">₹0</span>
         </div>
 
-        <button onclick="handleCheckout()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-          ⚡ Proceed to Checkout
+        <button onclick="handleCheckout()" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-xl shadow-orange-600/20 cursor-pointer">
+          ⚡ Place 60-Min Express Order
         </button>
       </div>
 
     </div>
   </div>
 
-  <!-- Dynamic Boutique UPI Modal -->
+  <!-- Boutique Dynamic UPI Modal -->
   <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-    <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 relative z-10 shadow-2xl text-center">
+    <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
+    <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-slate-100">
       
-      <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-inner">
         ⚡
       </div>
-      <h3 class="font-brand font-bold text-lg text-slate-900 mt-3">Direct Boutique UPI Payment</h3>
-      <p class="text-xs text-slate-500 mt-1" id="storeModalTitle">Paying to: Anu Ram Fashions</p>
+      <h3 class="font-brand font-black text-xl text-slate-950 mt-3">Direct Boutique UPI Gateway</h3>
+      <p class="text-xs text-slate-500 mt-1" id="storeModalTitle">Paying Store: Anu Ram Fashions</p>
 
-      <div class="my-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Amount to Pay</p>
-        <p class="text-3xl font-black text-slate-950 mt-0.5" id="modalAmount">₹0</p>
+      <div class="my-5 p-5 bg-slate-50 border border-slate-200/80 rounded-3xl">
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount Payable</p>
+        <p class="font-brand text-3xl font-black text-slate-950 mt-1" id="modalAmount">₹0</p>
         
-        <img id="upiQrCode" src="" alt="Store UPI QR" class="w-44 h-44 mx-auto mt-3 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-        <p class="text-[11px] text-slate-700 font-mono font-bold mt-2" id="upiIdDisplay">UPI ID: store@upi</p>
+        <img id="upiQrCode" src="" alt="Store UPI QR" class="w-44 h-44 mx-auto mt-4 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+        <p class="text-xs text-slate-800 font-mono font-bold mt-3" id="upiIdDisplay">UPI ID: store@upi</p>
       </div>
 
-      <a id="directUpiBtn" href="#" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mb-2">
-        📲 Open UPI App to Pay
+      <a id="directUpiBtn" href="#" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mb-2 shadow-md">
+        📲 Pay via Installed UPI App
       </a>
 
-      <button onclick="confirmUpiPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
-        ✓ I Have Paid (Confirm Order)
+      <button onclick="confirmUpiPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
+        ✓ I Have Paid (Track Delivery)
       </button>
 
       <button onclick="closeUpiModal()" class="w-full text-slate-400 hover:text-slate-700 text-xs font-bold mt-3 py-1 cursor-pointer">
@@ -278,11 +377,11 @@
       selectedSizes[productId] = size;
       var buttons = document.querySelectorAll('.size-btn-' + productId);
       buttons.forEach(function(b) {
-        b.className = 'size-btn-' + productId + ' border border-slate-300 px-3 py-1 text-xs rounded-lg font-bold hover:border-orange-500';
+        b.className = 'size-btn-' + productId + ' border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition';
       });
       var active = document.getElementById('p' + productId + '-size-' + size);
       if (active) {
-        active.className = 'size-btn-' + productId + ' border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1 text-xs rounded-lg font-bold';
+        active.className = 'size-btn-' + productId + ' border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1.5 text-xs font-bold rounded-xl transition';
       }
     }
 
@@ -322,26 +421,43 @@
       var html = "";
       for (var i = 0; i < items.length; i++) {
         sum += items[i].price;
-        html += '<div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">' +
+        html += '<div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/80 rounded-2xl">' +
                   '<div>' +
-                    '<p class="text-xs font-bold text-slate-900">' + items[i].name + '</p>' +
+                    '<p class="text-xs font-bold text-slate-950">' + items[i].name + '</p>' +
                     '<p class="text-[11px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600 font-bold">' + items[i].size + '</span> • ' + items[i].store + '</p>' +
-                    '<p class="text-xs font-extrabold text-slate-950 mt-1">₹' + items[i].price + '</p>' +
+                    '<p class="text-xs font-black text-slate-950 mt-1">₹' + items[i].price + '</p>' +
                   '</div>' +
-                  '<button onclick="removeCartItem(' + i + ')" class="text-slate-400 hover:text-red-500 font-bold p-1 text-sm">✕</button>' +
+                  '<button onclick="removeCartItem(' + i + ')" class="text-slate-400 hover:text-red-500 font-bold p-1 text-base">✕</button>' +
                 '</div>';
       }
       list.innerHTML = html;
       totalEl.innerText = "₹" + sum;
     }
 
+    function filterCatalog(category) {
+      var tabs = document.querySelectorAll('.cat-tab');
+      tabs.forEach(function(t) {
+        t.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition';
+      });
+      document.getElementById('tab-' + category).className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm';
+
+      var cards = document.querySelectorAll('.product-item');
+      cards.forEach(function(card) {
+        if (category === 'all' || card.classList.contains(category)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
     function handleCheckout() {
-      if (items.length === 0) return alert("Express Bag is empty!");
+      if (items.length === 0) return alert("Your Express Bag is empty!");
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
       var addr = document.getElementById("custAddress").value.trim();
 
-      if (!name || !phone || !addr) return alert("Please fill all contact details!");
+      if (!name || !phone || !addr) return alert("Please fill your Name, Phone Number, and Address!");
 
       var payMethod = document.querySelector('input[name="payMethod"]:checked').value;
       var total = items.reduce(function(acc, item) { return acc + item.price; }, 0);
