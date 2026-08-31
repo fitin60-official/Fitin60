@@ -26,30 +26,33 @@
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-32 antialiased selection:bg-orange-500 selection:text-white">
 
-  <!-- Top Announcement Notification -->
+  <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 Hyperlocal Radar Active</strong> • 60-Min Express Drop • 20-Min Home Fitting • Instant Settlement</span>
+    <span>⚡ <strong>FITIN60 Hyperlocal Radar Active</strong> • 60-Min Express Drop • 20-Min Home Fitting • Direct Boutique Checkout</span>
   </div>
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
-      <!-- Brand Logo -->
-      <a href="index.html" class="flex flex-col group">
-        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
-          FITIN<span class="text-orange-600">60</span>
-        </span>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
-      </a>
+      <!-- Brand Logo & Sleek Auto-Detected Location Pin -->
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="flex flex-col group">
+          <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
+            FITIN<span class="text-orange-600">60</span>
+          </span>
+          <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
+        </a>
 
-      <!-- Live GPS 20-KM Radar Trigger -->
-      <div class="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-3.5 py-1.5 rounded-2xl text-xs font-semibold text-slate-700 shadow-inner">
-        <button onclick="detectUserLocation(true)" id="gpsBtn" class="flex items-center gap-1.5 text-xs font-bold text-slate-950 hover:text-orange-600 cursor-pointer">
-          <span class="text-orange-600 text-sm">🎯</span>
-          <span id="locationBadgeText">Auto-Scanning 20 KM Shops...</span>
-        </button>
+        <!-- Subtle Location Indicator (No bulky buttons) -->
+        <div class="hidden sm:flex items-center gap-1.5 pl-4 border-l border-slate-200">
+          <span class="text-orange-600 text-xs">📍</span>
+          <div class="flex flex-col">
+            <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Delivering To</span>
+            <span id="detectedLocationText" class="text-xs font-bold text-slate-800 truncate max-w-[160px]">Detecting Location...</span>
+          </div>
+        </div>
       </div>
 
       <!-- Action Nav -->
@@ -110,7 +113,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       <div>
         <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Collections</h2>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium" id="radarStatus">📍 Detecting your location to show boutiques within 20 KM...</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium" id="radarStatus">📍 Scanning verified partner stores strictly within 20 KM...</p>
       </div>
 
       <div class="flex gap-2 overflow-x-auto pb-1">
@@ -299,7 +302,7 @@
     var currentCategory = 'all';
     var MAX_RADIUS_KM = 20;
 
-    // Haversine formula to compute exact aerial distance in KM
+    // Haversine formula to compute exact distance in KM
     function calculateDistance(lat1, lon1, lat2, lon2) {
       var R = 6371;
       var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -385,7 +388,7 @@
         html = '<div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200 p-8">' +
                  '<span class="text-4xl">📍</span>' +
                  '<h3 class="font-brand font-bold text-lg text-slate-900 mt-2">No Verified Partner Boutiques Within 20 KM</h3>' +
-                 '<p class="text-xs text-slate-500 mt-1">Fitin60 delivers strictly within 20 KM to guarantee instant 60-minute express trial.</p>' +
+                 '<p class="text-xs text-slate-500 mt-1">Fitin60 operates strictly within a 20-KM radius to guarantee 60-minute express trial.</p>' +
                '</div>';
       }
 
@@ -397,32 +400,31 @@
       renderProducts();
     }
 
-    // Auto-detect GPS location on page load or on click
-    function detectUserLocation(manualClick) {
-      var badge = document.getElementById("locationBadgeText");
+    // Completely Silent Automatic 20-KM Detection
+    function autoDetectUserLocation() {
+      var locText = document.getElementById("detectedLocationText");
       var status = document.getElementById("radarStatus");
 
       if (navigator.geolocation) {
-        badge.innerText = "Scanning 20-KM Radius...";
         navigator.geolocation.getCurrentPosition(
           function(position) {
             userCoords.lat = position.coords.latitude;
             userCoords.lng = position.coords.longitude;
-            badge.innerText = "📍 GPS Active (20 KM Radar)";
-            status.innerText = "📍 Fitin60 Radar: Showing boutiques strictly within 20 KM of your exact location";
+            if (locText) locText.innerText = "Nearby (20 KM Radar)";
+            if (status) status.innerText = "📍 Fitin60 Radar: Active • Showing boutiques within 20 KM of your exact location";
             renderProducts();
           },
           function(error) {
-            // Default fallback if permission denied
+            // Default fallback
             userCoords = { lat: 14.6819, lng: 77.6006 };
-            badge.innerText = "📍 Anantapur (Default 20 KM)";
-            status.innerText = "Location permission denied. Showing boutiques around default 20 KM hub.";
+            if (locText) locText.innerText = "Anantapur Hub";
+            if (status) status.innerText = "📍 Showing boutiques within 20 KM of Anantapur Central";
             renderProducts();
           },
-          { timeout: 10000, enableHighAccuracy: true }
+          { timeout: 8000, enableHighAccuracy: true }
         );
       } else {
-        badge.innerText = "📍 GPS Unsupported";
+        if (locText) locText.innerText = "Anantapur Hub";
         renderProducts();
       }
     }
@@ -575,9 +577,9 @@
       window.location.href = "tracking.html";
     }
 
-    // Automatically trigger GPS detection when any user opens the site
+    // Run automatically on page load
     window.addEventListener('DOMContentLoaded', function() {
-      detectUserLocation(false);
+      autoDetectUserLocation();
     });
   </script>
 </body>
