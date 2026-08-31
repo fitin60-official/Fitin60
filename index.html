@@ -13,6 +13,7 @@
 </head>
 <body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-24">
 
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
       <a href="index.html">
@@ -38,16 +39,17 @@
     </div>
   </header>
 
+  <!-- Hero Banner -->
   <section class="max-w-6xl mx-auto px-4 mt-6">
     <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
       <div>
         <span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-          ⚡ 60-Minute Instant Order
+          ⚡ Instant UPI & COD Available
         </span>
         <h1 class="font-brand text-2xl md:text-3xl font-extrabold text-white mt-3 leading-tight">
           Verified Local Boutiques & Designers
         </h1>
-        <p class="text-xs text-slate-300 mt-1">Select your size and place direct express order with live doorstep tracking.</p>
+        <p class="text-xs text-slate-300 mt-1">Pay via PhonePe / GPay / Paytm or Cash with 60-min express doorstep delivery.</p>
       </div>
       <div class="flex gap-3 shrink-0">
         <div class="text-center bg-white/5 border border-white/10 px-4 py-3 rounded-2xl">
@@ -55,23 +57,26 @@
           <p class="text-[9px] text-slate-300 uppercase font-bold tracking-wider">Home Trial</p>
         </div>
         <div class="text-center bg-white/5 border border-white/10 px-4 py-3 rounded-2xl">
-          <p class="text-xl font-black text-orange-400">30 KM</p>
-          <p class="text-[9px] text-slate-300 uppercase font-bold tracking-wider">Radius</p>
+          <p class="text-xl font-black text-orange-400">⚡ Live</p>
+          <p class="text-[9px] text-slate-300 uppercase font-bold tracking-wider">UPI Pay</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Product Catalog -->
   <main class="max-w-6xl mx-auto px-4 mt-8">
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="mb-6 flex items-center justify-between">
       <div>
-        <h2 class="font-brand text-xl font-bold text-slate-950">Nearby Express Boutiques</h2>
+        <h2 class="font-brand text-xl font-bold text-slate-950">Express Boutique Collection</h2>
         <p class="text-xs text-slate-500 mt-0.5">Ready for instant dispatch in under 60 minutes</p>
       </div>
     </div>
 
+    <!-- Products Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
+      <!-- Product 1 -->
       <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
           <div class="relative h-60 bg-slate-100 overflow-hidden">
@@ -107,6 +112,7 @@
         </div>
       </div>
 
+      <!-- Product 2 -->
       <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
           <div class="relative h-60 bg-slate-100 overflow-hidden">
@@ -141,6 +147,7 @@
         </div>
       </div>
 
+      <!-- Product 3 -->
       <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
           <div class="relative h-60 bg-slate-100 overflow-hidden">
@@ -176,6 +183,7 @@
     </div>
   </main>
 
+  <!-- Side Cart Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -198,18 +206,23 @@
           <p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>
         </div>
 
+        <!-- Customer Delivery Details Form -->
         <div id="addressSection" class="hidden mt-6 pt-5 border-t border-slate-200 space-y-3">
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider">📍 Delivery & Payment Details</h4>
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider">📍 Delivery Address</h4>
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
           <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
           <textarea id="custAddress" rows="2" required placeholder="Door / Flat No, Street, Landmark, Area" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
-          
-          <div class="bg-orange-50 border border-orange-200 p-3 rounded-xl flex items-center gap-2">
-            <span class="text-base">💵</span>
-            <div>
-              <p class="text-[11px] font-bold text-orange-950">Payment: Cash / UPI on Delivery</p>
-              <p class="text-[10px] text-orange-800">Pay after trial at your doorstep</p>
-            </div>
+
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider pt-2">💳 Payment Mode</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="border border-orange-500 bg-orange-50/50 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="payMethod" value="UPI" checked class="accent-orange-600">
+              <span class="text-xs font-bold text-slate-900">⚡ Pay via UPI</span>
+            </label>
+            <label class="border border-slate-200 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="payMethod" value="COD" class="accent-orange-600">
+              <span class="text-xs font-bold text-slate-900">💵 Cash on Delivery</span>
+            </label>
           </div>
         </div>
       </div>
@@ -220,16 +233,53 @@
           <span id="cartTotal">₹0</span>
         </div>
 
-        <button onclick="placeDirectOrder()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-          ⚡ Place 60-Min Express Order
+        <button onclick="handleCheckout()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
+          ⚡ Proceed to Checkout
         </button>
       </div>
 
     </div>
   </div>
 
+  <!-- UPI Gateway Modal -->
+  <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 relative z-10 shadow-2xl text-center">
+      
+      <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">
+        ⚡
+      </div>
+      <h3 class="font-brand font-bold text-lg text-slate-900 mt-3">Scan & Pay via UPI</h3>
+      <p class="text-xs text-slate-500 mt-1">PhonePe, Google Pay, Paytm, BHIM</p>
+
+      <div class="my-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Amount to Pay</p>
+        <p class="text-3xl font-black text-slate-950 mt-0.5" id="modalAmount">₹0</p>
+        
+        <!-- Live Dynamic QR Code pointing to your UPI -->
+        <img id="upiQrCode" src="" alt="UPI QR" class="w-44 h-44 mx-auto mt-3 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+        
+        <p class="text-[11px] text-slate-700 font-bold mt-2" id="upiIdDisplay">UPI ID: 9515552511-3@ybl</p>
+      </div>
+
+      <!-- Mobile Direct UPI Intent Link -->
+      <a id="directUpiBtn" href="#" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mb-2">
+        📲 Pay via UPI App (PhonePe / GPay)
+      </a>
+
+      <button onclick="confirmUpiPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
+        ✓ I Have Paid (Confirm Order)
+      </button>
+
+      <button onclick="closeUpiModal()" class="w-full text-slate-400 hover:text-slate-700 text-xs font-bold mt-3 py-1 cursor-pointer">
+        Cancel & Go Back
+      </button>
+    </div>
+  </div>
+
   <script>
     var items = [];
+    var UPI_ID = "9515552511-3@ybl"; // Live Verified UPI ID
     var selectedSizes = { 1: 'L', 2: '40/L', 3: 'Free Size' };
 
     function selectSize(productId, size) {
@@ -297,7 +347,7 @@
       totalEl.innerText = "₹" + sum;
     }
 
-    function placeDirectOrder() {
+    function handleCheckout() {
       if (items.length === 0) {
         alert("Please add items to your express bag first!");
         return;
@@ -308,10 +358,45 @@
       var addr = document.getElementById("custAddress").value.trim();
 
       if (!name || !phone || !addr) {
-        alert("Please fill in Name, Phone, and Delivery Address to place order!");
+        alert("Please enter Name, Phone Number, and Delivery Address!");
         return;
       }
 
+      var selectedPayMethod = document.querySelector('input[name="payMethod"]:checked').value;
+      var totalAmount = items.reduce(function(acc, item) { return acc + item.price; }, 0);
+
+      if (selectedPayMethod === "COD") {
+        finalizeOrder("Cash on Delivery (Pending)");
+      } else {
+        openUpiGateway(totalAmount);
+      }
+    }
+
+    function openUpiGateway(amount) {
+      document.getElementById("modalAmount").innerText = "₹" + amount;
+      document.getElementById("upiIdDisplay").innerText = "UPI ID: " + UPI_ID;
+      
+      var upiUrl = "upi://pay?pa=" + UPI_ID + "&pn=CHITIKELO&am=" + amount + "&cu=INR&tn=FashionOrder";
+      
+      // Live QR Code generation
+      document.getElementById("upiQrCode").src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(upiUrl);
+      document.getElementById("directUpiBtn").href = upiUrl;
+
+      document.getElementById("upiModal").classList.remove("hidden");
+    }
+
+    function closeUpiModal() {
+      document.getElementById("upiModal").classList.add("hidden");
+    }
+
+    function confirmUpiPayment() {
+      finalizeOrder("Paid via Online UPI (" + UPI_ID + ")");
+    }
+
+    function finalizeOrder(paymentStatus) {
+      var name = document.getElementById("custName").value.trim();
+      var phone = document.getElementById("custPhone").value.trim();
+      var addr = document.getElementById("custAddress").value.trim();
       var orderId = "CHK-" + Math.floor(1000 + Math.random() * 9000);
       var totalAmount = items.reduce(function(acc, item) { return acc + item.price; }, 0);
 
@@ -322,11 +407,11 @@
         customerAddress: addr,
         items: items,
         totalAmount: totalAmount,
+        paymentStatus: paymentStatus,
         orderTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         store: items[0].store
       };
 
-      // Save order locally and navigate directly to tracking
       localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
       window.location.href = "tracking.html";
     }
