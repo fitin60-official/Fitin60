@@ -3,135 +3,74 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Partner Store Hub | CHITIKELO</title>
+  <title>Fitin60 | Boutique Merchant Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-16">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen antialiased selection:bg-orange-500 selection:text-white pb-24">
 
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-    <div class="max-w-5xl mx-auto px-4 h-20 flex items-center justify-between">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
       <a href="index.html" class="flex flex-col">
-        <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
-          CHITI<span class="text-orange-600">KELO</span>
+        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
+          FITIN<span class="text-orange-600">60</span>
         </span>
-        <span class="text-[9px] uppercase tracking-[0.25em] font-extrabold text-slate-400">Partner Merchant Studio</span>
+        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Partner Merchant Studio</span>
       </a>
-      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 px-4 py-2 rounded-xl border border-slate-200">
-        ← Back to Shop
+      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl transition">
+        ← Customer Store
       </a>
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 py-10">
-    <div class="text-center mb-8">
-      <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">Store Product & UPI Listing</span>
-      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950 mt-2">Upload Clothing & Payout Details</h1>
-      <p class="text-slate-500 text-xs mt-1">Receive direct customer payments to your UPI & settle 15% platform fee.</p>
-    </div>
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 mt-10">
+    <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-10 shadow-xl">
+      <div class="w-14 h-14 rounded-2xl bg-orange-600/10 text-orange-600 flex items-center justify-center text-2xl font-bold mb-4">🏬</div>
+      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950">Partner Onboarding Hub</h1>
+      <p class="text-xs text-slate-500 mt-1">List your boutique collections on Fitin60 to receive direct instant UPI orders from customers within a 20-KM radius.</p>
 
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-sm">
-      <form id="uploadForm" onsubmit="handleProductUpload(event)" class="space-y-5">
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store / Boutique Name</label>
-            <input type="text" id="partnerStoreName" required placeholder="e.g. Anu Ram Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store UPI ID (For Direct Payments)</label>
-            <input type="text" id="storeUpiId" required placeholder="e.g. storename@ybl, boutique@paytm" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 font-mono">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Store City & Area</label>
-            <input type="text" id="partnerLocation" required placeholder="e.g. KPHB Colony, Hyderabad" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Dress / Item Name</label>
-            <input type="text" id="dressName" required placeholder="e.g. Designer Anarkali Suit" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Available Sizes</label>
-            <input type="text" id="dressSizes" required placeholder="e.g. M, L, XL, XXL" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Offer Price (₹)</label>
-            <input type="number" id="dressPrice" required placeholder="e.g. 1199" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          </div>
+      <form onsubmit="handlePartnerSubmit(event)" class="mt-8 space-y-4">
+        <div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Boutique / Store Name</label>
+          <input type="text" id="partnerStoreName" required placeholder="e.g., Anu Ram Designer Studio" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Upload Dress Photo</label>
-          <div class="border-2 border-dashed border-orange-300 bg-orange-50/40 rounded-2xl p-6 text-center">
-            <input type="file" id="dressImageFile" accept="image/*" required onchange="previewSelectedImage(event)" class="hidden">
-            <label for="dressImageFile" class="cursor-pointer flex flex-col items-center justify-center">
-              <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm">📷</div>
-              <span class="text-xs font-bold text-slate-900" id="uploadBtnTitle">Select Dress Photo</span>
-            </label>
-            <div id="previewWrapper" class="hidden mt-3">
-              <img id="imagePreview" class="mx-auto max-h-48 rounded-xl object-contain">
-            </div>
-          </div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Address / Area</label>
+          <input type="text" id="partnerArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
         </div>
 
-        <div class="bg-slate-900 text-white p-4 rounded-2xl space-y-2 border border-slate-800 text-xs">
-          <p class="text-orange-400 font-bold">⚡ Commission Agreement:</p>
-          <p class="text-slate-300">Customer payments will go directly to your registered UPI ID. You agree to settle Chitikelo's 15% platform commission upon successful order delivery.</p>
-          <label class="flex items-center gap-2 pt-1">
-            <input type="checkbox" required class="accent-orange-500">
-            <span class="text-orange-200">I confirm the UPI ID belongs to my store and agree to terms.</span>
-          </label>
+        <div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Direct Merchant UPI ID (Instant Payout)</label>
+          <input type="text" id="partnerUpi" required placeholder="e.g., storename@okhdfcbank / mobile@ybl" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
         </div>
 
-        <button type="submit" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2">
-          <span>💬</span> Submit Store Listing & UPI ID
+        <div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Owner Contact Number</label>
+          <input type="tel" id="partnerPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 text-xs focus:outline-none focus:border-orange-500">
+        </div>
+
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg mt-6 cursor-pointer">
+          ⚡ Register Boutique on Fitin60 Radar
         </button>
       </form>
     </div>
   </main>
 
   <script>
-    var ADMIN_WHATSAPP = "919515552511";
-
-    function previewSelectedImage(event) {
-      var file = event.target.files[0];
-      if (file) {
-        document.getElementById("uploadBtnTitle").innerText = "Photo: " + file.name;
-        document.getElementById("imagePreview").src = URL.createObjectURL(file);
-        document.getElementById("previewWrapper").classList.remove("hidden");
-      }
-    }
-
-    function handleProductUpload(e) {
+    function handlePartnerSubmit(e) {
       e.preventDefault();
-      var store = document.getElementById("partnerStoreName").value;
-      var upi = document.getElementById("storeUpiId").value;
-      var loc = document.getElementById("partnerLocation").value;
-      var name = document.getElementById("dressName").value;
-      var sizes = document.getElementById("dressSizes").value;
-      var price = document.getElementById("dressPrice").value;
-
-      var text = "👗 NEW STORE PRODUCT & UPI REGISTRATION%0A%0A" +
-                 "Store Name: " + store + "%0A" +
-                 "Store UPI ID: " + upi + "%0A" +
-                 "Location: " + loc + "%0A" +
-                 "Product Name: " + name + "%0A" +
-                 "Sizes: " + sizes + "%0A" +
-                 "Offer Price: ₹" + price + "%0A" +
-                 "Commission: Agrees to 15% Chitikelo platform fee%0A%0A" +
-                 "(Please attach the dress picture in chat!)";
-
-      window.open("https://wa.me/" + ADMIN_WHATSAPP + "?text=" + text, "_blank");
+      var store = document.getElementById("partnerStoreName").value.trim();
+      var upi = document.getElementById("partnerUpi").value.trim();
+      alert("✅ Store \"" + store + "\" with UPI (" + upi + ") successfully submitted to Fitin60!");
+      window.location.href = "index.html";
     }
   </script>
 </body>
