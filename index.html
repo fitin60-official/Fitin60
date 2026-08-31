@@ -13,7 +13,6 @@
 </head>
 <body class="bg-[#f8fafc] text-slate-900 min-h-screen pb-24">
 
-  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between">
       <a href="index.html">
@@ -39,17 +38,16 @@
     </div>
   </header>
 
-  <!-- Hero Banner -->
   <section class="max-w-6xl mx-auto px-4 mt-6">
     <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 md:p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-slate-800">
       <div>
         <span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-          ⚡ 60-Minute Doorstep Delivery
+          ⚡ 60-Minute Instant Order
         </span>
         <h1 class="font-brand text-2xl md:text-3xl font-extrabold text-white mt-3 leading-tight">
           Verified Local Boutiques & Designers
         </h1>
-        <p class="text-xs text-slate-300 mt-1">Select your size, add to express bag, and receive directly at home in 60 mins.</p>
+        <p class="text-xs text-slate-300 mt-1">Select your size and place direct express order with live doorstep tracking.</p>
       </div>
       <div class="flex gap-3 shrink-0">
         <div class="text-center bg-white/5 border border-white/10 px-4 py-3 rounded-2xl">
@@ -64,9 +62,7 @@
     </div>
   </section>
 
-  <!-- Product Catalog -->
   <main class="max-w-6xl mx-auto px-4 mt-8">
-    
     <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
         <h2 class="font-brand text-xl font-bold text-slate-950">Nearby Express Boutiques</h2>
@@ -74,10 +70,8 @@
       </div>
     </div>
 
-    <!-- Products Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      <!-- Product 1 -->
       <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
           <div class="relative h-60 bg-slate-100 overflow-hidden">
@@ -88,7 +82,7 @@
           <div class="p-5">
             <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Anu Ram Fashions</span>
             <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Floral Designer Anarkali Kurta Set</h3>
-            <p class="text-xs text-slate-500 mt-1">Pure cotton fabric with fine thread work.</p>
+            <p class="text-xs text-slate-500 mt-1">Pure cotton fabric with fine embroidery.</p>
             
             <div class="mt-3">
               <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
@@ -107,13 +101,12 @@
           </div>
         </div>
         <div class="p-5 pt-0">
-          <button onclick="addProductToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins', selectedSizes[1] || 'L')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+          <button onclick="addProductToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins', selectedSizes[1] || 'L', 'Anu Ram Fashions')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
             + Add to Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product 2 -->
       <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
           <div class="relative h-60 bg-slate-100 overflow-hidden">
@@ -124,7 +117,7 @@
           <div class="p-5">
             <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Sai Menswear</span>
             <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Tailored Slim-Fit Oxford Shirt</h3>
-            <p class="text-xs text-slate-500 mt-1">100% Egyptian cotton, formal & casual style.</p>
+            <p class="text-xs text-slate-500 mt-1">100% Egyptian cotton, premium styling.</p>
             
             <div class="mt-3">
               <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
@@ -142,13 +135,12 @@
           </div>
         </div>
         <div class="p-5 pt-0">
-          <button onclick="addProductToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins', selectedSizes[2] || '40/L')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+          <button onclick="addProductToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins', selectedSizes[2] || '40/L', 'Sai Menswear')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
             + Add to Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product 3 -->
       <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
         <div>
           <div class="relative h-60 bg-slate-100 overflow-hidden">
@@ -159,7 +151,7 @@
           <div class="p-5">
             <span class="text-[11px] font-bold text-orange-600 uppercase tracking-wider">Adhya Designer Studio</span>
             <h3 class="font-brand font-bold text-base text-slate-900 mt-1">Pure Silk Traditional Zari Saree</h3>
-            <p class="text-xs text-slate-500 mt-1">Rich zari pallu with unstitched blouse.</p>
+            <p class="text-xs text-slate-500 mt-1">Rich zari pallu with running blouse.</p>
             
             <div class="mt-3">
               <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Select Size:</label>
@@ -175,7 +167,7 @@
           </div>
         </div>
         <div class="p-5 pt-0">
-          <button onclick="addProductToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins', 'Free Size')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
+          <button onclick="addProductToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins', 'Free Size', 'Adhya Designer Studio')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
             + Add to Express Bag
           </button>
         </div>
@@ -184,7 +176,6 @@
     </div>
   </main>
 
-  <!-- Side Cart Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -194,7 +185,7 @@
           <span class="text-xl">🛍️</span>
           <div>
             <h3 class="font-brand font-bold text-base">Your Express Bag</h3>
-            <p class="text-xs text-slate-400">60-Min Hyperlocal Delivery</p>
+            <p class="text-xs text-slate-400">Direct Express Checkout</p>
           </div>
         </div>
         <button onclick="toggleCart()" class="text-slate-400 hover:text-white p-1 text-2xl font-bold leading-none cursor-pointer">
@@ -207,12 +198,19 @@
           <p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>
         </div>
 
-        <!-- Customer Delivery Details Form -->
         <div id="addressSection" class="hidden mt-6 pt-5 border-t border-slate-200 space-y-3">
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider">📍 Delivery Address</h4>
-          <input type="text" id="custName" placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
-          <input type="tel" id="custPhone" placeholder="Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
-          <textarea id="custAddress" rows="2" placeholder="House / Flat No, Street, Landmark, City Area" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider">📍 Delivery & Payment Details</h4>
+          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+          <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+          <textarea id="custAddress" rows="2" required placeholder="Door / Flat No, Street, Landmark, Area" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
+          
+          <div class="bg-orange-50 border border-orange-200 p-3 rounded-xl flex items-center gap-2">
+            <span class="text-base">💵</span>
+            <div>
+              <p class="text-[11px] font-bold text-orange-950">Payment: Cash / UPI on Delivery</p>
+              <p class="text-[10px] text-orange-800">Pay after trial at your doorstep</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -222,8 +220,8 @@
           <span id="cartTotal">₹0</span>
         </div>
 
-        <button onclick="orderViaWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-          💬 Confirm & Order on WhatsApp
+        <button onclick="placeDirectOrder()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg cursor-pointer">
+          ⚡ Place 60-Min Express Order
         </button>
       </div>
 
@@ -232,7 +230,6 @@
 
   <script>
     var items = [];
-    var WHATSAPP_NUM = "919515552511"; // Enter your 10-digit WhatsApp number here
     var selectedSizes = { 1: 'L', 2: '40/L', 3: 'Free Size' };
 
     function selectSize(productId, size) {
@@ -256,8 +253,8 @@
       }
     }
 
-    function addProductToBag(name, price, eta, size) {
-      items.push({ name: name, price: price, eta: eta, size: size });
+    function addProductToBag(name, price, eta, size, store) {
+      items.push({ name: name, price: price, eta: eta, size: size, store: store });
       renderCart();
       toggleCart();
     }
@@ -290,7 +287,7 @@
         html += '<div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-2xl">' +
                   '<div>' +
                     '<p class="text-xs font-bold text-slate-900">' + items[i].name + '</p>' +
-                    '<p class="text-[11px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600 font-bold">' + items[i].size + '</span> • ⚡ ' + items[i].eta + '</p>' +
+                    '<p class="text-[11px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600 font-bold">' + items[i].size + '</span> • ' + items[i].store + '</p>' +
                     '<p class="text-xs font-extrabold text-slate-950 mt-1">₹' + items[i].price + '</p>' +
                   '</div>' +
                   '<button onclick="removeCartItem(' + i + ')" class="text-slate-400 hover:text-red-500 font-bold p-1 text-sm">✕</button>' +
@@ -300,9 +297,9 @@
       totalEl.innerText = "₹" + sum;
     }
 
-    function orderViaWhatsApp() {
+    function placeDirectOrder() {
       if (items.length === 0) {
-        alert("Please add items to your bag first!");
+        alert("Please add items to your express bag first!");
         return;
       }
 
@@ -311,27 +308,27 @@
       var addr = document.getElementById("custAddress").value.trim();
 
       if (!name || !phone || !addr) {
-        alert("Please enter your Name, Phone Number, and Delivery Address in the cart drawer before ordering!");
+        alert("Please fill in Name, Phone, and Delivery Address to place order!");
         return;
       }
 
-      var sum = 0;
-      var text = "";
-      for (var j = 0; j < items.length; j++) {
-        sum += items[j].price;
-        text += (j + 1) + ". " + items[j].name + " (Size: " + items[j].size + ") - ₹" + items[j].price + "%0A";
-      }
+      var orderId = "CHK-" + Math.floor(1000 + Math.random() * 9000);
+      var totalAmount = items.reduce(function(acc, item) { return acc + item.price; }, 0);
 
-      var msg = "⚡ NEW 60-MIN EXPRESS ORDER - CHITIKELO%0A%0A" +
-                "🛍️ Items Ordered:%0A" + text + "%0A" +
-                "Total Bill: ₹" + sum + "%0A%0A" +
-                "📍 Delivery Details:%0A" +
-                "Customer: " + name + "%0A" +
-                "Phone: " + phone + "%0A" +
-                "Address: " + addr + "%0A%0A" +
-                "Please confirm my 60-minute doorstep delivery!";
+      var orderData = {
+        orderId: orderId,
+        customerName: name,
+        customerPhone: phone,
+        customerAddress: addr,
+        items: items,
+        totalAmount: totalAmount,
+        orderTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        store: items[0].store
+      };
 
-      window.open("https://wa.me/" + WHATSAPP_NUM + "?text=" + msg, "_blank");
+      // Save order locally and navigate directly to tracking
+      localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
+      window.location.href = "tracking.html";
     }
   </script>
 </body>
