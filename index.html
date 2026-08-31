@@ -46,9 +46,9 @@
 
       <!-- Live GPS 20-KM Radar Trigger -->
       <div class="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-3.5 py-1.5 rounded-2xl text-xs font-semibold text-slate-700 shadow-inner">
-        <button onclick="detectUserLocation()" id="gpsBtn" class="flex items-center gap-1.5 text-xs font-bold text-slate-950 hover:text-orange-600 cursor-pointer">
+        <button onclick="detectUserLocation(true)" id="gpsBtn" class="flex items-center gap-1.5 text-xs font-bold text-slate-950 hover:text-orange-600 cursor-pointer">
           <span class="text-orange-600 text-sm">🎯</span>
-          <span id="locationBadgeText">Auto-Detect 20 KM Shops</span>
+          <span id="locationBadgeText">Auto-Scanning 20 KM Shops...</span>
         </button>
       </div>
 
@@ -110,7 +110,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       <div>
         <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Collections</h2>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium" id="radarStatus">📍 Showing all available verified partner stores within 20 KM</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium" id="radarStatus">📍 Detecting your location to show boutiques within 20 KM...</p>
       </div>
 
       <div class="flex gap-2 overflow-x-auto pb-1">
@@ -132,7 +132,7 @@
     <span id="toastMessage">Item added to Express Bag!</span>
   </div>
 
-  <!-- Bottom Floating Bag Bar (Visible on mobile/desktop when items exist) -->
+  <!-- Bottom Floating Bag Bar -->
   <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
@@ -299,6 +299,7 @@
     var currentCategory = 'all';
     var MAX_RADIUS_KM = 20;
 
+    // Haversine formula to compute exact aerial distance in KM
     function calculateDistance(lat1, lon1, lat2, lon2) {
       var R = 6371;
       var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -318,6 +319,7 @@
       catalog.forEach(function(p) {
         var dist = calculateDistance(userCoords.lat, userCoords.lng, p.lat, p.lng);
         
+        // Strict 20 KM filter
         if (parseFloat(dist) <= MAX_RADIUS_KM) {
           if (currentCategory === 'all' || p.category === currentCategory) {
             count++;
@@ -365,7 +367,7 @@
                         '</div>' +
                       '</div>' +
 
-                      '<!-- Dual Button Layout -->' +
+                      '<!-- Dual Action Buttons -->' +
                       '<div class="p-6 pt-0 grid grid-cols-2 gap-2.5">' +
                         '<button onclick="addToBagSilent(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-1 cursor-pointer">' +
                           '<span>+</span> Add to Bag' +
@@ -382,8 +384,8 @@
       if (count === 0) {
         html = '<div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200 p-8">' +
                  '<span class="text-4xl">📍</span>' +
-                 '<h3 class="font-brand font-bold text-lg text-slate-900 mt-2">No Boutique Stores within 20 KM</h3>' +
-                 '<p class="text-xs text-slate-500 mt-1">Fitin60 delivers only within 20 KM to ensure guaranteed 60-minute express fitting.</p>' +
+                 '<h3 class="font-brand font-bold text-lg text-slate-900 mt-2">No Verified Partner Boutiques Within 20 KM</h3>' +
+                 '<p class="text-xs text-slate-500 mt-1">Fitin60 delivers strictly within 20 KM to guarantee instant 60-minute express trial.</p>' +
                '</div>';
       }
 
@@ -395,7 +397,8 @@
       renderProducts();
     }
 
-    function detectUserLocation() {
+    // Auto-detect GPS location on page load or on click
+    function detectUserLocation(manualClick) {
       var badge = document.getElementById("locationBadgeText");
       var status = document.getElementById("radarStatus");
 
@@ -405,18 +408,22 @@
           function(position) {
             userCoords.lat = position.coords.latitude;
             userCoords.lng = position.coords.longitude;
-            badge.innerText = "📍 GPS Active: Within 20 KM";
+            badge.innerText = "📍 GPS Active (20 KM Radar)";
             status.innerText = "📍 Fitin60 Radar: Showing boutiques strictly within 20 KM of your exact location";
             renderProducts();
           },
           function(error) {
+            // Default fallback if permission denied
+            userCoords = { lat: 14.6819, lng: 77.6006 };
             badge.innerText = "📍 Anantapur (Default 20 KM)";
-            status.innerText = "Location permission denied. Showing all verified boutiques within 20 KM radius.";
+            status.innerText = "Location permission denied. Showing boutiques around default 20 KM hub.";
             renderProducts();
-          }
+          },
+          { timeout: 10000, enableHighAccuracy: true }
         );
       } else {
-        alert("Geolocation is not supported by your browser.");
+        badge.innerText = "📍 GPS Unsupported";
+        renderProducts();
       }
     }
 
@@ -435,14 +442,12 @@
       drawer.classList.toggle("hidden");
     }
 
-    // 1. Silent Add (Screen won't open drawer, shows nice toast message)
     function addToBagSilent(name, price, eta, size, store, upiId) {
       items.push({ name: name, price: price, eta: eta, size: size, store: store, storeUpi: upiId });
       renderCart();
       showToast("Added \"" + name.substring(0, 20) + "...\" to Bag!");
     }
 
-    // 2. Instant Buy Now (Adds item and directly opens drawer for instant checkout)
     function buyNowInstant(name, price, eta, size, store, upiId) {
       items.push({ name: name, price: price, eta: eta, size: size, store: store, storeUpi: upiId });
       renderCart();
@@ -570,7 +575,10 @@
       window.location.href = "tracking.html";
     }
 
-    renderProducts();
+    // Automatically trigger GPS detection when any user opens the site
+    window.addEventListener('DOMContentLoaded', function() {
+      detectUserLocation(false);
+    });
   </script>
 </body>
 </html>
