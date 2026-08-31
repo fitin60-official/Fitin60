@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CHITIKELO | 60-Minute Luxury Hyperlocal Fashion</title>
+  <title>CHITIKELO | 60-Minute Luxury Hyperlocal Fashion - Anantapur</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +13,6 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
     .font-luxury { font-family: 'Cinzel', serif; }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
     .hero-glow {
       background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15), transparent 70%);
     }
@@ -35,7 +30,7 @@
   <!-- Top Announcement Notification -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>60-Min Express Boutique Dispatch Active</strong> • Try at Home in 20 Minutes • Zero Risk Cash & UPI Settlement</span>
+    <span>⚡ <strong>60-Min Express Boutique Dispatch in Anantapur</strong> • Try at Home in 20 Minutes • Zero Risk Cash & UPI Settlement</span>
   </div>
 
   <!-- Main Luxury Header -->
@@ -47,14 +42,23 @@
         <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950 transition group-hover:tracking-wider">
           CHITI<span class="text-orange-600">KELO</span>
         </span>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Haute Couture</span>
+        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Anantapur Haute Couture</span>
       </a>
 
-      <!-- Quick Location Badge -->
-      <div class="hidden md:flex items-center gap-2 bg-slate-100/80 border border-slate-200 px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-700">
-        <span class="text-orange-600">📍</span>
-        <span>Deliver to: <strong class="text-slate-950 font-bold">Hyderabad & Local Circles</strong></span>
-        <span class="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-bold">⚡ 45m</span>
+      <!-- Anantapur Live Location Selector Dropdown -->
+      <div class="flex items-center gap-2 bg-slate-100/90 border border-slate-200 px-3.5 py-1.5 rounded-2xl text-xs font-semibold text-slate-700 shadow-inner">
+        <span class="text-orange-600 text-sm">📍</span>
+        <div class="flex flex-col">
+          <span class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Your Anantapur Zone</span>
+          <select id="locationSelector" onchange="handleLocationChange()" class="bg-transparent font-bold text-slate-950 focus:outline-none cursor-pointer text-xs pr-1">
+            <option value="all">All Anantapur (Entire City)</option>
+            <option value="subhash-road">Subhash Road / Clock Tower</option>
+            <option value="saptagiri">Saptagiri Circle / RTC Bus Stand</option>
+            <option value="housing-board">Housing Board / Collector Office</option>
+            <option value="old-town">Old Town (పాతూరు)</option>
+          </select>
+        </div>
+        <span class="hidden md:inline text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-bold ml-1">⚡ 35-60m</span>
       </div>
 
       <!-- Action Nav -->
@@ -75,27 +79,27 @@
     </div>
   </header>
 
-  <!-- Hero Spotlight Showcase -->
+  <!-- Hero Showcase -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
     <div class="hero-glow bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-slate-800 relative overflow-hidden">
       <div class="absolute -right-16 -top-16 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
       
       <div class="max-w-3xl relative z-10">
         <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-4 py-1.5 rounded-full text-xs font-bold text-orange-300 mb-4">
-          <span class="w-2 h-2 rounded-full bg-orange-400 badge-pulse"></span> Verified Designer Boutiques
+          <span class="w-2 h-2 rounded-full bg-orange-400 badge-pulse"></span> Anantapur's Top Local Boutiques
         </div>
         <h1 class="font-brand text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1] text-white">
-          Runway Fashion to Your Doorstep in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
+          Anantapur Fashion to Your Doorstep in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Order authentic designer wear, sarees, kurtas, and luxury shirts directly from top local boutiques with a 20-minute home trial option and spot cash/UPI checkout.
+          Order authentic designer wear, sarees, kurtas, and shirts directly from Subhash Road, Saptagiri Circle & local boutiques with a 20-minute home fitting option.
         </p>
 
         <!-- Stats Chips -->
         <div class="grid grid-cols-3 gap-3 sm:gap-6 mt-8 pt-8 border-t border-white/10 max-w-xl">
           <div>
             <p class="font-brand text-xl sm:text-2xl font-black text-white">60 <span class="text-orange-400 text-sm">MINS</span></p>
-            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Express Drop</p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Express Anantapur</p>
           </div>
           <div>
             <p class="font-brand text-xl sm:text-2xl font-black text-white">20 <span class="text-orange-400 text-sm">MINS</span></p>
@@ -103,37 +107,36 @@
           </div>
           <div>
             <p class="font-brand text-xl sm:text-2xl font-black text-white">100%</p>
-            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Local Verified</p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Boutique Verified</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Categories Tab Navigation -->
+  <!-- Categories & Location Status -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="flex items-center justify-between gap-4 pb-4 border-b border-slate-200">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       <div>
         <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Curated Boutique Vault</h2>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Handpicked express fashion ready for immediate dispatch</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium" id="locationStatusText">Showing fashion from all verified boutiques in Anantapur</p>
       </div>
 
       <div class="flex gap-2 overflow-x-auto pb-1">
-        <button onclick="filterCatalog('all')" id="tab-all" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm">All Drops</button>
+        <button onclick="filterCatalog('all')" id="tab-all" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm">All Categories</button>
         <button onclick="filterCatalog('ethnic')" id="tab-ethnic" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition">Women's Ethnic</button>
-        <button onclick="filterCatalog('mens')" id="tab-mens" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition">Men's Oxford</button>
+        <button onclick="filterCatalog('mens')" id="tab-mens" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition">Men's Wear</button>
       </div>
     </div>
   </section>
 
   <!-- Product Catalog Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid">
 
-      <!-- Product Card 1 -->
-      <div class="product-item ethnic group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
+      <!-- Product Card 1 (Subhash Road Boutique) -->
+      <div class="product-item ethnic subhash-road group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between" data-location="subhash-road" data-category="ethnic">
         <div>
-          <!-- Image Wrapper -->
           <div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80" alt="Kurta Set" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
             <span class="absolute top-3.5 left-3.5 bg-slate-950/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-xl flex items-center gap-1 shadow-md">
@@ -144,27 +147,26 @@
             </span>
           </div>
 
-          <!-- Card Content -->
           <div class="p-6">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider">Anu Ram Fashions</span>
+              <div>
+                <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider block">Anu Ram Fashions</span>
+                <span class="text-[10px] text-slate-400 font-semibold">📍 Subhash Road, Anantapur</span>
+              </div>
               <span class="text-[10px] bg-slate-100 font-bold text-slate-600 px-2 py-0.5 rounded-md">⭐ 4.9 (140)</span>
             </div>
-            <h3 class="font-brand font-bold text-lg text-slate-950 mt-1.5 leading-snug group-hover:text-orange-600 transition">Floral Designer Anarkali Kurta Set</h3>
+            <h3 class="font-brand font-bold text-lg text-slate-950 mt-2 leading-snug group-hover:text-orange-600 transition">Floral Designer Anarkali Kurta Set</h3>
             <p class="text-xs text-slate-500 mt-1 line-clamp-2">Pure soft cotton with intricate hand-embroidered neckline and matching dupatta.</p>
 
-            <!-- Size Selector -->
             <div class="mt-4">
               <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Select Size</span>
               <div class="flex gap-2">
                 <button type="button" onclick="selectSize(1, 'M')" id="p1-size-M" class="size-btn-1 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">M</button>
                 <button type="button" onclick="selectSize(1, 'L')" id="p1-size-L" class="size-btn-1 border border-orange-500 bg-orange-50 text-orange-600 px-3 py-1.5 text-xs font-bold rounded-xl transition">L</button>
                 <button type="button" onclick="selectSize(1, 'XL')" id="p1-size-XL" class="size-btn-1 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">XL</button>
-                <button type="button" onclick="selectSize(1, 'XXL')" id="p1-size-XXL" class="size-btn-1 border border-slate-200 px-3 py-1.5 text-xs font-bold rounded-xl hover:border-slate-400 transition">XXL</button>
               </div>
             </div>
 
-            <!-- Price -->
             <div class="mt-5 flex items-baseline gap-2.5">
               <span class="font-brand text-2xl font-black text-slate-950">₹899</span>
               <span class="text-xs font-bold text-slate-400 line-through">₹1,499</span>
@@ -173,16 +175,15 @@
           </div>
         </div>
 
-        <!-- Add Button -->
         <div class="p-6 pt-0">
-          <button onclick="addProductToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins', selectedSizes[1] || 'L', 'Anu Ram Fashions', 'anuram@ybl')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+          <button onclick="addProductToBag('Floral Designer Anarkali Kurta Set', 899, '35 mins', selectedSizes[1] || 'L', 'Anu Ram Fashions (Subhash Road)', 'anuram@ybl')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
             <span>+</span> Add to 60-Min Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product Card 2 -->
-      <div class="product-item mens group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
+      <!-- Product Card 2 (Saptagiri Circle Boutique) -->
+      <div class="product-item mens saptagiri group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between" data-location="saptagiri" data-category="mens">
         <div>
           <div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80" alt="Oxford Shirt" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -196,10 +197,13 @@
 
           <div class="p-6">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider">Sai Menswear</span>
+              <div>
+                <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider block">Sai Menswear Studio</span>
+                <span class="text-[10px] text-slate-400 font-semibold">📍 Saptagiri Circle, Anantapur</span>
+              </div>
               <span class="text-[10px] bg-slate-100 font-bold text-slate-600 px-2 py-0.5 rounded-md">⭐ 4.8 (98)</span>
             </div>
-            <h3 class="font-brand font-bold text-lg text-slate-950 mt-1.5 leading-snug group-hover:text-orange-600 transition">Tailored Slim-Fit Oxford Shirt</h3>
+            <h3 class="font-brand font-bold text-lg text-slate-950 mt-2 leading-snug group-hover:text-orange-600 transition">Tailored Slim-Fit Oxford Shirt</h3>
             <p class="text-xs text-slate-500 mt-1 line-clamp-2">100% Egyptian cotton, structured formal collar with breathability.</p>
 
             <div class="mt-4">
@@ -220,14 +224,14 @@
         </div>
 
         <div class="p-6 pt-0">
-          <button onclick="addProductToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins', selectedSizes[2] || '40/L', 'Sai Menswear', 'saimenswear@upi')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+          <button onclick="addProductToBag('Tailored Slim-Fit Oxford Shirt', 1199, '40 mins', selectedSizes[2] || '40/L', 'Sai Menswear (Saptagiri)', 'saimenswear@upi')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
             <span>+</span> Add to 60-Min Express Bag
           </button>
         </div>
       </div>
 
-      <!-- Product Card 3 -->
-      <div class="product-item ethnic group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between">
+      <!-- Product Card 3 (Old Town / Subhash Road Saree Boutique) -->
+      <div class="product-item ethnic old-town subhash-road group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between" data-location="old-town" data-category="ethnic">
         <div>
           <div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">
             <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80" alt="Silk Saree" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -241,11 +245,14 @@
 
           <div class="p-6">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider">Adhya Designer Studio</span>
+              <div>
+                <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider block">Adhya Designer Studio</span>
+                <span class="text-[10px] text-slate-400 font-semibold">📍 Old Town (పాతూరు), Anantapur</span>
+              </div>
               <span class="text-[10px] bg-slate-100 font-bold text-slate-600 px-2 py-0.5 rounded-md">⭐ 5.0 (64)</span>
             </div>
-            <h3 class="font-brand font-bold text-lg text-slate-950 mt-1.5 leading-snug group-hover:text-orange-600 transition">Pure Silk Traditional Zari Saree</h3>
-            <p class="text-xs text-slate-500 mt-1 line-clamp-2">Authentic rich zari work pallu with unstitched designer running blouse piece.</p>
+            <h3 class="font-brand font-bold text-lg text-slate-950 mt-2 leading-snug group-hover:text-orange-600 transition">Pure Silk Traditional Zari Saree</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">Authentic rich Dharmavaram/Kanchi weave zari work pallu with unstitched blouse piece.</p>
 
             <div class="mt-4">
               <span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Select Size</span>
@@ -263,7 +270,7 @@
         </div>
 
         <div class="p-6 pt-0">
-          <button onclick="addProductToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins', 'Free Size', 'Adhya Designer Studio', 'adhyastudio@okhdfcbank')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+          <button onclick="addProductToBag('Pure Silk Traditional Zari Saree', 2499, '50 mins', 'Free Size', 'Adhya Designer Studio (Old Town)', 'adhyastudio@okhdfcbank')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
             <span>+</span> Add to 60-Min Express Bag
           </button>
         </div>
@@ -277,32 +284,29 @@
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
       
-      <!-- Drawer Header -->
       <div class="p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-xl bg-orange-600/20 text-orange-400 flex items-center justify-center text-lg font-bold border border-orange-500/30">🛍️</div>
           <div>
             <h3 class="font-brand font-bold text-base">Express Bag</h3>
-            <p class="text-xs text-slate-400">Hyperlocal 60-Min Checkout</p>
+            <p class="text-xs text-slate-400">Anantapur 60-Min Checkout</p>
           </div>
         </div>
         <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-2xl font-bold p-1 cursor-pointer">&times;</button>
       </div>
 
-      <!-- Drawer Content -->
       <div class="flex-1 p-6 overflow-y-auto space-y-5">
         <div id="cartItems" class="space-y-3">
           <p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>
         </div>
 
-        <!-- Form Details -->
         <div id="addressSection" class="hidden mt-6 pt-6 border-t border-slate-200 space-y-3.5">
           <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider flex items-center gap-1.5">
-            <span>📍</span> Doorstep Delivery Coordinates
+            <span>📍</span> Anantapur Delivery Coordinates
           </h4>
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          <textarea id="custAddress" rows="2" required placeholder="House/Flat No, Landmark, Street Area" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500"></textarea>
+          <textarea id="custAddress" rows="2" required placeholder="Door No, Street Name, Landmark (e.g. Near Sapthagiri Circle, Anantapur)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500"></textarea>
 
           <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider pt-2 flex items-center gap-1.5">
             <span>💳</span> Payment Settlement Mode
@@ -320,10 +324,9 @@
         </div>
       </div>
 
-      <!-- Drawer Footer -->
       <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3.5">
         <div class="flex justify-between items-baseline font-black text-slate-950">
-          <span class="text-xs uppercase text-slate-500">Estimated Total</span>
+          <span class="text-xs uppercase text-slate-500">Total Amount</span>
           <span id="cartTotal" class="font-brand text-2xl text-slate-950">₹0</span>
         </div>
 
@@ -335,27 +338,23 @@
     </div>
   </div>
 
-  <!-- Boutique Dynamic UPI Modal -->
+  <!-- Dynamic Boutique UPI Modal -->
   <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
     <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
     <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-slate-100">
-      
-      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-inner">
-        ⚡
-      </div>
+      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-inner">⚡</div>
       <h3 class="font-brand font-black text-xl text-slate-950 mt-3">Direct Boutique UPI Gateway</h3>
-      <p class="text-xs text-slate-500 mt-1" id="storeModalTitle">Paying Store: Anu Ram Fashions</p>
+      <p class="text-xs text-slate-500 mt-1" id="storeModalTitle">Paying Boutique: Anu Ram Fashions</p>
 
       <div class="my-5 p-5 bg-slate-50 border border-slate-200/80 rounded-3xl">
         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount Payable</p>
         <p class="font-brand text-3xl font-black text-slate-950 mt-1" id="modalAmount">₹0</p>
-        
         <img id="upiQrCode" src="" alt="Store UPI QR" class="w-44 h-44 mx-auto mt-4 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
         <p class="text-xs text-slate-800 font-mono font-bold mt-3" id="upiIdDisplay">UPI ID: store@upi</p>
       </div>
 
       <a id="directUpiBtn" href="#" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mb-2 shadow-md">
-        📲 Pay via Installed UPI App
+        📲 Pay via UPI App (PhonePe / GPay)
       </a>
 
       <button onclick="confirmUpiPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
@@ -372,6 +371,52 @@
     var items = [];
     var activeStoreUpi = "9515552511-3@ybl";
     var selectedSizes = { 1: 'L', 2: '40/L', 3: 'Free Size' };
+    var currentCategory = 'all';
+
+    function handleLocationChange() {
+      var selectedLoc = document.getElementById("locationSelector").value;
+      var statusEl = document.getElementById("locationStatusText");
+      
+      var locNames = {
+        "all": "all verified boutiques in Anantapur",
+        "subhash-road": "Subhash Road & Clock Tower boutiques",
+        "saptagiri": "Saptagiri Circle & RTC Complex boutiques",
+        "housing-board": "Housing Board & Collectorate area boutiques",
+        "old-town": "Old Town (పాతూరు) textile boutiques"
+      };
+
+      statusEl.innerText = "Showing fashion from " + (locNames[selectedLoc] || "Anantapur boutiques");
+      applyCombinedFilter();
+    }
+
+    function filterCatalog(category) {
+      currentCategory = category;
+      var tabs = document.querySelectorAll('.cat-tab');
+      tabs.forEach(function(t) {
+        t.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition';
+      });
+      document.getElementById('tab-' + category).className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm';
+      applyCombinedFilter();
+    }
+
+    function applyCombinedFilter() {
+      var selectedLoc = document.getElementById("locationSelector").value;
+      var cards = document.querySelectorAll('.product-item');
+
+      cards.forEach(function(card) {
+        var cardLoc = card.getAttribute('data-location') || '';
+        var cardCat = card.getAttribute('data-category') || '';
+
+        var matchLoc = (selectedLoc === 'all') || card.classList.contains(selectedLoc);
+        var matchCat = (currentCategory === 'all') || (cardCat === currentCategory);
+
+        if (matchLoc && matchCat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
 
     function selectSize(productId, size) {
       selectedSizes[productId] = size;
@@ -434,30 +479,13 @@
       totalEl.innerText = "₹" + sum;
     }
 
-    function filterCatalog(category) {
-      var tabs = document.querySelectorAll('.cat-tab');
-      tabs.forEach(function(t) {
-        t.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition';
-      });
-      document.getElementById('tab-' + category).className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm';
-
-      var cards = document.querySelectorAll('.product-item');
-      cards.forEach(function(card) {
-        if (category === 'all' || card.classList.contains(category)) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
     function handleCheckout() {
       if (items.length === 0) return alert("Your Express Bag is empty!");
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
       var addr = document.getElementById("custAddress").value.trim();
 
-      if (!name || !phone || !addr) return alert("Please fill your Name, Phone Number, and Address!");
+      if (!name || !phone || !addr) return alert("Please fill your Name, Mobile, and Delivery Address in Anantapur!");
 
       var payMethod = document.querySelector('input[name="payMethod"]:checked').value;
       var total = items.reduce(function(acc, item) { return acc + item.price; }, 0);
@@ -472,10 +500,10 @@
     function openStoreUpi(amount) {
       activeStoreUpi = items[0].storeUpi || "9515552511-3@ybl";
       document.getElementById("modalAmount").innerText = "₹" + amount;
-      document.getElementById("storeModalTitle").innerText = "Paying Store: " + items[0].store;
+      document.getElementById("storeModalTitle").innerText = "Paying Boutique: " + items[0].store;
       document.getElementById("upiIdDisplay").innerText = "Store UPI ID: " + activeStoreUpi;
 
-      var upiUrl = "upi://pay?pa=" + activeStoreUpi + "&pn=" + encodeURIComponent(items[0].store) + "&am=" + amount + "&cu=INR&tn=FashionOrder";
+      var upiUrl = "upi://pay?pa=" + activeStoreUpi + "&pn=" + encodeURIComponent(items[0].store) + "&am=" + amount + "&cu=INR&tn=FashionOrder_Anantapur";
       document.getElementById("upiQrCode").src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(upiUrl);
       document.getElementById("directUpiBtn").href = upiUrl;
 
@@ -487,7 +515,7 @@
     }
 
     function confirmUpiPayment() {
-      finalizeOrder("Paid to Store UPI (" + activeStoreUpi + ")");
+      finalizeOrder("Paid to Boutique UPI (" + activeStoreUpi + ")");
     }
 
     function finalizeOrder(status) {
