@@ -115,7 +115,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
   </main>
 
-  <!-- Footer (Clean & Simple) -->
+  <!-- Footer -->
   <footer class="max-w-7xl mx-auto px-4 sm:px-6 mt-20 pt-10 border-t border-slate-200/80">
     <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-12">
       <div>
@@ -128,7 +128,7 @@
       <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
         <a href="tracking.html" class="hover:text-slate-900 transition">Track Order</a>
         <span class="text-slate-300">•</span>
-        <a href="partner.html" class="hover:text-orange-600 text-slate-600 transition">🏬 Partner Onboarding & Rider Portal</a>
+        <a href="partner.html" class="hover:text-orange-600 text-slate-600 transition">🏬 Boutique Partner Login</a>
       </div>
     </div>
     <div class="border-t border-slate-100 py-6 text-center text-[11px] text-slate-400">
@@ -136,13 +136,12 @@
     </div>
   </footer>
 
-  <!-- Floating Toast Notification -->
+  <!-- Floating Toast & Cart Drawer -->
   <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
     <span class="text-emerald-400">✓</span>
     <span id="toastMessage">Item added to Bag!</span>
   </div>
 
-  <!-- Bottom Floating Bag Bar -->
   <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
@@ -157,7 +156,6 @@
     </button>
   </div>
 
-  <!-- Side Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -216,7 +214,6 @@
     </div>
   </div>
 
-  <!-- Dynamic Boutique UPI Modal -->
   <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
     <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
     <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-slate-100">
