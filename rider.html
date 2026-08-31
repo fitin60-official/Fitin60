@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Rider Dispatch Command</title>
+  <title>Fitin60 | Rider Partner Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,192 +11,212 @@
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Space Grotesk', sans-serif; }
-    .siren-glow {
-      animation: siren 1s infinite alternate;
-    }
-    @keyframes siren {
-      from { box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); border-color: rgba(239, 68, 68, 0.8); }
-      to { box-shadow: 0 0 45px rgba(249, 115, 22, 0.9); border-color: rgba(249, 115, 22, 1); }
-    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
 
-  <!-- Header -->
+  <!-- Header with Duty Toggle -->
   <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
-    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="font-brand text-xl font-black text-white">FITIN<span class="text-orange-500">60</span></span>
-        <span class="text-[10px] bg-orange-500/20 text-orange-400 font-bold px-2.5 py-0.5 rounded-full border border-orange-500/30 uppercase tracking-wider">Rider Fleet</span>
+    <div class="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
+      <div>
+        <span class="font-brand text-2xl font-black text-white">FITIN<span class="text-orange-500">60</span></span>
+        <span class="text-[10px] block font-bold text-slate-400 uppercase tracking-wider">Rider Partner Portal</span>
       </div>
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-xs font-bold text-emerald-400">Radar Active</span>
-      </div>
+
+      <!-- Online / Offline Duty Switch -->
+      <button id="dutyToggleBtn" onclick="toggleDutyStatus()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-2xl border border-slate-700 font-bold text-xs transition cursor-pointer">
+        <span id="dutyDot" class="w-3 h-3 rounded-full bg-rose-500"></span>
+        <span id="dutyText">You are Offline</span>
+      </button>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto px-4 mt-6">
+  <main class="max-w-xl mx-auto px-4 mt-6 space-y-6">
 
-    <!-- Audio Permission Starter -->
-    <div id="audioUnlockCard" class="bg-orange-600/10 border border-orange-500/40 rounded-3xl p-5 mb-6 text-center">
-      <p class="text-xs font-bold text-orange-300">🔔 Sound alerts are standing by.</p>
-      <button onclick="unlockAudio()" id="unlockBtn" class="mt-3 bg-orange-600 hover:bg-orange-500 text-white text-xs font-black px-6 py-3 rounded-2xl transition uppercase tracking-wider shadow-lg cursor-pointer">
-        🔊 Tap Once to Enable Siren Alert
+    <!-- Duty Status Banner -->
+    <div id="dutyBanner" class="bg-slate-900 border border-slate-800 rounded-3xl p-6 text-center">
+      <div class="text-3xl mb-2" id="dutyIcon">😴</div>
+      <h2 class="font-brand font-bold text-lg text-white" id="dutyTitle">Ready to Deliver?</h2>
+      <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto" id="dutyDesc">Turn on Duty to start viewing available dress delivery rides nearby and receive audio alerts.</p>
+      
+      <button onclick="toggleDutyStatus()" id="dutyActionBtn" class="mt-4 bg-orange-600 hover:bg-orange-500 text-white font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
+        ⚡ Go Online & Check Rides
       </button>
     </div>
 
-    <!-- Active Orders Container -->
-    <div id="noOrdersBox" class="bg-slate-900 border border-slate-800 rounded-3xl p-10 text-center">
-      <div class="text-4xl mb-3">🛵</div>
-      <h3 class="font-brand font-bold text-lg text-white">Waiting for New Orders...</h3>
-      <p class="text-xs text-slate-400 mt-1">Keep this screen open. Loud siren will trigger automatically when an order arrives within 20 KM.</p>
-    </div>
-
-    <div id="orderIncomingCard" class="hidden siren-glow bg-gradient-to-b from-slate-900 to-neutral-900 border-2 border-orange-500 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl text-left relative overflow-hidden">
-      
-      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-        <div class="flex items-center gap-2.5">
-          <span class="text-2xl animate-bounce">🚨</span>
-          <div>
-            <span class="text-[10px] uppercase tracking-widest font-black text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-md">New 60-Min Dispatch</span>
-            <h2 class="font-brand text-xl font-black text-white" id="rOrderId">FIT-0000</h2>
-          </div>
-        </div>
-        <span class="text-xs font-black bg-white text-slate-950 px-3 py-1.5 rounded-xl" id="rOrderAmount">₹0</span>
+    <!-- Active Rides Pool (Only visible when Online) -->
+    <div id="ridesSection" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-brand font-black text-base text-white flex items-center gap-2">
+          <span>🛵</span> Available Rides for You
+        </h3>
+        <span class="text-[11px] bg-slate-800 text-orange-400 font-bold px-3 py-1 rounded-xl border border-slate-700" id="rideCountBadge">0 Available</span>
       </div>
 
-      <!-- Store Pickup Info -->
-      <div class="mt-5 p-4 bg-slate-800/80 rounded-2xl border border-slate-700">
-        <p class="text-[10px] uppercase font-bold text-orange-400 tracking-wider">🏬 1. Store Pickup</p>
-        <p class="font-brand font-bold text-sm text-white mt-0.5" id="rStoreName">Boutique Name</p>
-        <p class="text-xs text-slate-300 mt-0.5" id="rStoreArea">Store Address Area</p>
+      <div id="ridesList" class="space-y-4">
+        <!-- Rendered dynamically -->
       </div>
-
-      <!-- Customer Dropoff Info -->
-      <div class="mt-3 p-4 bg-slate-800/80 rounded-2xl border border-slate-700">
-        <p class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">📍 2. Customer Dropoff (20-Min Fitting)</p>
-        <p class="font-brand font-bold text-sm text-white mt-0.5" id="rCustName">Customer Name</p>
-        <p class="text-xs text-slate-300 mt-0.5" id="rCustAddress">Delivery Address</p>
-        <div class="mt-2 flex items-center gap-2">
-          <a id="rCallBtn" href="tel:" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition">
-            📞 Call Customer
-          </a>
-          <a id="rMapBtn" href="#" target="_blank" class="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl transition">
-            🗺️ Open Google Maps
-          </a>
-        </div>
-      </div>
-
-      <!-- Items List -->
-      <div class="mt-3 p-4 bg-slate-800/40 rounded-2xl">
-        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2">Package Contents</p>
-        <div id="rItemsList" class="space-y-1.5 text-xs text-slate-300"></div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="grid grid-cols-2 gap-3 mt-6">
-        <button onclick="stopSirenAndAccept()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
-          ✓ Accept Order
-        </button>
-        <button onclick="dismissOrder()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
-          Dismiss
-        </button>
-      </div>
-
     </div>
 
   </main>
 
   <script>
+    var isOnline = false;
     var audioCtx = null;
-    var sirenInterval = null;
-    var lastKnownOrderId = null;
+    var knownOrders = {};
 
-    function unlockAudio() {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      document.getElementById("audioUnlockCard").innerHTML = '<p class="text-xs font-bold text-emerald-400">🔊 Loud Siren Active & Listening for orders!</p>';
+    // Soft pleasant smartphone chime bell (Zepto/Swiggy style)
+    function playNotificationSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var now = audioCtx.currentTime;
+        
+        // Tone 1 (High note)
+        var osc1 = audioCtx.createOscillator();
+        var gain1 = audioCtx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(587.33, now); // D5 note
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.4);
+
+        // Tone 2 (Harmonic note)
+        var osc2 = audioCtx.createOscillator();
+        var gain2 = audioCtx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(880, now + 0.15); // A5 note
+        gain2.gain.setValueAtTime(0.3, now + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.6);
+      } catch (err) {
+        console.log("Audio not allowed yet:", err);
+      }
     }
 
-    // High-pitched loud emergency dispatch siren
-    function startLoudSiren() {
+    function toggleDutyStatus() {
+      isOnline = !isOnline;
+
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
-      if (sirenInterval) clearInterval(sirenInterval);
+      var dot = document.getElementById("dutyDot");
+      var text = document.getElementById("dutyText");
+      var btn = document.getElementById("dutyToggleBtn");
+      var banner = document.getElementById("dutyBanner");
+      var rides = document.getElementById("ridesSection");
 
-      sirenInterval = setInterval(function() {
-        if (!audioCtx) return;
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1400, audioCtx.currentTime + 0.3);
-
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.3);
-      }, 450);
-    }
-
-    function stopSiren() {
-      if (sirenInterval) {
-        clearInterval(sirenInterval);
-        sirenInterval = null;
+      if (isOnline) {
+        dot.className = "w-3 h-3 rounded-full bg-emerald-400 animate-pulse";
+        text.innerText = "Online (On Duty)";
+        btn.className = "flex items-center gap-2 bg-emerald-950/70 border border-emerald-500/40 text-emerald-400 px-4 py-2 rounded-2xl font-bold text-xs transition";
+        banner.classList.add("hidden");
+        rides.classList.remove("hidden");
+        checkAvailableRides();
+      } else {
+        dot.className = "w-3 h-3 rounded-full bg-rose-500";
+        text.innerText = "You are Offline";
+        btn.className = "flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-2xl border border-slate-700 font-bold text-xs transition";
+        banner.classList.remove("hidden");
+        rides.classList.add("hidden");
       }
     }
 
-    function stopSirenAndAccept() {
-      stopSiren();
-      alert("✅ Order Accepted! Proceed to Boutique for pickup.");
-    }
+    function checkAvailableRides() {
+      if (!isOnline) return;
 
-    function dismissOrder() {
-      stopSiren();
-      document.getElementById("orderIncomingCard").classList.add("hidden");
-      document.getElementById("noOrdersBox").classList.remove("hidden");
-    }
-
-    // Live Polling for incoming customer orders
-    function checkIncomingOrders() {
       var rawOrder = localStorage.getItem("chitikelo_active_order");
+      var list = document.getElementById("ridesList");
+      var countBadge = document.getElementById("rideCountBadge");
+
       if (rawOrder) {
         var order = JSON.parse(rawOrder);
 
-        if (order.orderId && order.orderId !== lastKnownOrderId) {
-          lastKnownOrderId = order.orderId;
-          
-          // Display order data
-          document.getElementById("rOrderId").innerText = order.orderId;
-          document.getElementById("rOrderAmount").innerText = "₹" + (order.totalAmount || 0) + " (" + (order.paymentStatus || "UPI") + ")";
-          document.getElementById("rStoreName").innerText = order.store || "Verified Boutique";
-          document.getElementById("rCustName").innerText = order.customerName || "Customer";
-          document.getElementById("rCustAddress").innerText = order.customerAddress || "Address not provided";
-          document.getElementById("rCallBtn").href = "tel:" + (order.customerPhone || "");
-          document.getElementById("rMapBtn").href = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(order.customerAddress || "Anantapur");
+        if (order.orderId) {
+          // Trigger pleasant sound only once when a fresh order appears
+          if (!knownOrders[order.orderId]) {
+            knownOrders[order.orderId] = true;
+            playNotificationSound();
+          }
 
-          var itemsHtml = "";
-          (order.items || []).forEach(function(it) {
-            itemsHtml += '<div class="flex justify-between font-medium"><span>' + it.name + ' (Size ' + it.size + ')</span><span class="font-bold text-white">₹' + it.price + '</span></div>';
-          });
-          document.getElementById("rItemsList").innerHTML = itemsHtml;
+          countBadge.innerText = "1 Ride Available";
 
-          document.getElementById("noOrdersBox").classList.add("hidden");
-          document.getElementById("orderIncomingCard").classList.remove("hidden");
+          var itemsText = (order.items || []).map(function(it) {
+            return it.name + " (" + it.size + ")";
+          }).join(", ");
 
-          // Trigger Siren
-          startLoudSiren();
+          var html = '<div class="bg-slate-900 border border-slate-800 hover:border-orange-500/60 rounded-3xl p-6 shadow-xl space-y-4 transition">' +
+                      '<div class="flex justify-between items-start">' +
+                        '<div>' +
+                          '<span class="text-[10px] uppercase font-black tracking-wider text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-md">60-Min Express Ride</span>' +
+                          '<h4 class="font-brand font-black text-lg text-white mt-1">' + order.orderId + '</h4>' +
+                        '</div>' +
+                        '<div class="text-right">' +
+                          '<span class="font-brand font-black text-emerald-400 text-lg">₹' + order.totalAmount + '</span>' +
+                          '<p class="text-[10px] text-slate-400">' + (order.paymentStatus || "UPI") + '</p>' +
+                        '</div>' +
+                      '</div>' +
+
+                      '<div class="space-y-2 text-xs">' +
+                        '<div class="flex items-start gap-2 bg-slate-800/60 p-3 rounded-2xl">' +
+                          '<span>🏬</span>' +
+                          '<div>' +
+                            '<p class="font-bold text-white">Pickup: ' + (order.store || "Boutique") + '</p>' +
+                            '<p class="text-[11px] text-slate-400">Subhash Road, Anantapur</p>' +
+                          '</div>' +
+                        '</div>' +
+
+                        '<div class="flex items-start gap-2 bg-slate-800/60 p-3 rounded-2xl">' +
+                          '<span>📍</span>' +
+                          '<div>' +
+                            '<p class="font-bold text-white">Drop: ' + (order.customerName || "Customer") + '</p>' +
+                            '<p class="text-[11px] text-slate-400">' + (order.customerAddress || "Anantapur") + '</p>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+
+                      '<p class="text-[11px] text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800">🛍️ <strong>Items:</strong> ' + itemsText + '</p>' +
+
+                      '<div class="grid grid-cols-2 gap-2 pt-2">' +
+                        '<a href="tel:' + (order.customerPhone || "") + '" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3 rounded-xl text-center transition flex items-center justify-center gap-1">' +
+                          '📞 Call Customer' +
+                        '</a>' +
+                        '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(order.customerAddress || "Anantapur") + '" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-3 rounded-xl text-center transition flex items-center justify-center gap-1">' +
+                          '🗺️ Maps Route' +
+                        '</a>' +
+                      '</div>' +
+
+                      '<button onclick="acceptSpecificRide(\'' + order.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer mt-2">' +
+                        '✓ Accept Ride & Start 60-Min Timer' +
+                      '</button>' +
+                    '</div>';
+
+          list.innerHTML = html;
+          return;
         }
       }
+
+      countBadge.innerText = "0 Available";
+      list.innerHTML = '<div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center">' +
+                         '<span class="text-3xl">☕</span>' +
+                         '<h4 class="font-bold text-white mt-2">No Active Rides Right Now</h4>' +
+                         '<p class="text-xs text-slate-400 mt-1">You are Online. When any order is placed, notification chime will play automatically.</p>' +
+                       '</div>';
     }
 
-    setInterval(checkIncomingOrders, 2000);
+    function acceptSpecificRide(orderId) {
+      alert("🎉 Ride " + orderId + " accepted! Head over to the store for pickup.");
+    }
+
+    // Check every 3 seconds for new rides when on duty
+    setInterval(checkAvailableRides, 3000);
   </script>
 </body>
 </html>
