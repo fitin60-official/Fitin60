@@ -31,14 +31,26 @@
   <!-- Main Container -->
   <main class="max-w-3xl mx-auto px-4 py-8 space-y-6">
 
+    <!-- Order Confirmed Success Notice -->
+    <div class="bg-emerald-500 text-white rounded-2xl p-4 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🎉</span>
+        <div>
+          <h2 class="text-sm font-bold">Order Dispatched & Tracking Active!</h2>
+          <p class="text-xs text-emerald-100">Rider is en route with your items.</p>
+        </div>
+      </div>
+      <span class="text-xs font-mono font-bold bg-white/20 px-3 py-1.5 rounded-lg" id="liveOrderId">#CHK-8942</span>
+    </div>
+
     <!-- Live ETA Timer Card -->
     <div class="bg-slate-950 text-white rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
       <div class="relative z-10">
         <div class="flex items-center justify-between">
           <span class="bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-orange-500 animate-ping"></span> Live Express Delivery
+            <span class="w-2 h-2 rounded-full bg-orange-500 animate-ping"></span> 60-Min Hyperlocal Radar
           </span>
-          <span class="text-xs text-slate-400 font-mono">Order #CHK-8942</span>
+          <span class="text-xs text-slate-400" id="orderTimeDisplay">Ordered: Just now</span>
         </div>
 
         <div class="mt-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -47,74 +59,91 @@
             <h1 class="font-brand text-4xl md:text-5xl font-black text-white mt-1" id="timer">38:45</h1>
           </div>
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs space-y-1">
-            <p class="text-slate-400">Store: <span class="text-white font-bold">Anu Ram Fashions</span></p>
-            <p class="text-slate-400">Destination: <span class="text-orange-400 font-bold">Within 30km (Express)</span></p>
+            <p class="text-slate-400">Store: <span class="text-white font-bold" id="storeNameDisplay">Anu Ram Fashions</span></p>
+            <p class="text-slate-400">Payment Mode: <span class="text-orange-400 font-bold" id="totalAmountDisplay">Cash on Delivery</span></p>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Order Breakdown & Spot Settlement Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
+      <h3 class="font-brand font-bold text-base text-slate-950">📦 Items & Settlement Breakdown</h3>
+      <div id="orderedItemsList" class="space-y-2 text-xs divide-y divide-slate-100">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Financial Split Summary -->
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+        <div class="flex justify-between font-bold text-slate-900">
+          <span>Customer Payable Total (Cash):</span>
+          <span id="custPayable">₹1,199</span>
+        </div>
+        <div class="flex justify-between text-slate-500 text-[11px] pt-1 border-t border-slate-200">
+          <span>↳ Boutique Share (80%):</span>
+          <span id="boutiqueShare">₹959</span>
+        </div>
+        <div class="flex justify-between text-slate-500 text-[11px]">
+          <span>↳ Chitikelo Platform Fee (15%):</span>
+          <span id="platformShare">₹180</span>
+        </div>
+        <div class="flex justify-between text-slate-500 text-[11px]">
+          <span>↳ Express Rider Delivery Fee:</span>
+          <span id="riderShare">₹60</span>
+        </div>
+      </div>
+
+      <div class="pt-2 text-xs text-slate-600">
+        <p class="font-bold text-slate-900">📍 Deliver To:</p>
+        <p id="deliverAddressDisplay" class="mt-0.5 text-slate-500">Loading delivery address...</p>
       </div>
     </div>
 
     <!-- Tracking Steps Progress -->
     <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-sm">
-      <h2 class="font-brand text-lg font-bold text-slate-950 mb-6">Delivery Progress</h2>
+      <h2 class="font-brand text-lg font-bold text-slate-950 mb-6">Live Status Timeline</h2>
 
       <div class="space-y-6 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-200">
-        
-        <!-- Step 1: Completed -->
         <div class="relative flex items-start gap-4">
-          <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10 shrink-0">
-            ✓
-          </div>
+          <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10 shrink-0">✓</div>
           <div>
-            <h3 class="text-sm font-bold text-slate-900">Order Confirmed on WhatsApp</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Store accepted order & preparing package.</p>
+            <h3 class="text-sm font-bold text-slate-900">Order Confirmed by Boutique</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Item sanitized, packed and tagged.</p>
           </div>
         </div>
 
-        <!-- Step 2: Completed -->
         <div class="relative flex items-start gap-4">
-          <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10 shrink-0">
-            ✓
-          </div>
+          <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10 shrink-0">✓</div>
           <div>
-            <h3 class="text-sm font-bold text-slate-900">Package Picked Up</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Rider collected package from Anu Ram Fashions boutique.</p>
+            <h3 class="text-sm font-bold text-slate-900">Rider Picked up Order</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Heading to customer location.</p>
           </div>
         </div>
 
-        <!-- Step 3: Active -->
         <div class="relative flex items-start gap-4">
-          <div class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold text-sm z-10 shrink-0 ring-4 ring-orange-100">
-            ⚡
-          </div>
+          <div class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold text-sm z-10 shrink-0 ring-4 ring-orange-100">⚡</div>
           <div>
-            <h3 class="text-sm font-bold text-orange-600">Out for Hyperlocal Delivery</h3>
-            <p class="text-xs text-slate-600 font-medium mt-0.5">Rider is on the way to your doorstep.</p>
+            <h3 class="text-sm font-bold text-orange-600">Out for 60-Min Delivery</h3>
+            <p class="text-xs text-slate-600 font-medium mt-0.5">Express rider approaching destination.</p>
           </div>
         </div>
 
-        <!-- Step 4: Pending -->
         <div class="relative flex items-start gap-4">
-          <div class="w-8 h-8 rounded-full bg-slate-100 border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-sm z-10 shrink-0">
-            📦
-          </div>
+          <div class="w-8 h-8 rounded-full bg-slate-100 border-2 border-slate-300 text-slate-400 flex items-center justify-center font-bold text-sm z-10 shrink-0">💰</div>
           <div>
-            <h3 class="text-sm font-bold text-slate-400">Delivered</h3>
-            <p class="text-xs text-slate-400 mt-0.5">Estimated within 60 minutes.</p>
+            <h3 class="text-sm font-bold text-slate-400">Cash Handover to Boutique</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Rider hands total cash to store & completes settlement.</p>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Delivery Executive Card -->
+    <!-- Rider Profile -->
     <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-2xl flex items-center justify-center">
-          🛵
-        </div>
+        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-2xl flex items-center justify-center">🛵</div>
         <div>
-          <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Assigned Delivery Partner</span>
+          <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Dedicated Fleet Rider</span>
           <h4 class="text-sm font-bold text-slate-950">Ramesh K. (Chitikelo Fleet)</h4>
           <p class="text-xs text-emerald-600 font-bold">⭐ 4.9 Rating • 1200+ Express Drops</p>
         </div>
@@ -127,7 +156,36 @@
   </main>
 
   <script>
-    // Live countdown timer simulation
+    var savedOrder = localStorage.getItem("chitikelo_active_order");
+    if (savedOrder) {
+      var order = JSON.parse(savedOrder);
+      document.getElementById("liveOrderId").innerText = "#" + order.orderId;
+      document.getElementById("storeNameDisplay").innerText = order.store || "Local Boutique";
+      document.getElementById("orderTimeDisplay").innerText = "Ordered: " + order.orderTime;
+      document.getElementById("totalAmountDisplay").innerText = "₹" + order.totalAmount + " (Cash on Delivery)";
+      document.getElementById("deliverAddressDisplay").innerText = order.customerName + " (" + order.customerPhone + ") - " + order.customerAddress;
+
+      var total = order.totalAmount;
+      var boutique = Math.round(total * 0.80);
+      var platform = Math.round(total * 0.15);
+      var rider = total - boutique - platform;
+
+      document.getElementById("custPayable").innerText = "₹" + total;
+      document.getElementById("boutiqueShare").innerText = "₹" + boutique;
+      document.getElementById("platformShare").innerText = "₹" + platform;
+      document.getElementById("riderShare").innerText = "₹" + rider;
+
+      var itemsContainer = document.getElementById("orderedItemsList");
+      var html = "";
+      order.items.forEach(function(item) {
+        html += '<div class="flex justify-between py-2">' +
+                  '<span class="font-semibold text-slate-800">' + item.name + ' (Size: ' + item.size + ')</span>' +
+                  '<span class="font-bold text-slate-950">₹' + item.price + '</span>' +
+                '</div>';
+      });
+      itemsContainer.innerHTML = html;
+    }
+
     var totalSeconds = 38 * 60 + 45;
     var timerEl = document.getElementById("timer");
 
