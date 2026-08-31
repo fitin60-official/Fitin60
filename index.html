@@ -24,7 +24,7 @@
     }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-20 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
 
   <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
@@ -32,7 +32,7 @@
     <span>⚡ <strong>FITIN60 Hyperlocal Active</strong> • 60-Min Express Drop • 20-Min Home Fitting • Direct Boutique Checkout</span>
   </div>
 
-  <!-- Header (Clean Customer UI) -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
@@ -44,7 +44,7 @@
         <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
       </a>
 
-      <!-- Action Nav (Only Customer Essentials) -->
+      <!-- Action Nav -->
       <div class="flex items-center gap-3">
         <a href="tracking.html" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-orange-600 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm">
           <span>⚡</span> Track Order
@@ -115,7 +115,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
   </main>
 
-  <!-- Footer with Subtle Merchant Partner Link (Blinkit/Zomato Style) -->
+  <!-- Footer with Rider Mode & Boutique Links -->
   <footer class="max-w-7xl mx-auto px-4 sm:px-6 mt-20 pt-10 border-t border-slate-200/80">
     <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-12">
       <div>
@@ -125,13 +125,15 @@
         <p class="text-xs text-slate-500 mt-1">60-Minute Luxury Hyperlocal Fashion Radar • Try at Home</p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-6 text-xs font-semibold text-slate-500">
-        <a href="tracking.html" class="hover:text-slate-900 transition">Track Active Order</a>
+      <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
+        <a href="tracking.html" class="hover:text-slate-900 transition">Track Order</a>
         <span class="text-slate-300">•</span>
-        <!-- Subtle Shop Owner Link -->
-        <a href="partner.html" class="hover:text-orange-600 text-slate-600 flex items-center gap-1.5 transition bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200/60">
-          <span>🏬</span> Partner with Us / Merchant Login
-        </a>
+        <a href="partner.html" class="hover:text-orange-600 text-slate-600 transition">🏬 Partner Onboarding</a>
+        <span class="text-slate-300">•</span>
+        <!-- Rider Duty Popup Opener -->
+        <button onclick="openRiderDutyModal()" class="bg-slate-900 hover:bg-orange-600 text-white px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+          <span>🛵</span> <strong>Rider Duty (On/Off)</strong>
+        </button>
       </div>
     </div>
     <div class="border-t border-slate-100 py-6 text-center text-[11px] text-slate-400">
@@ -139,115 +141,48 @@
     </div>
   </footer>
 
-  <!-- Floating Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
-    <span class="text-emerald-400">✓</span>
-    <span id="toastMessage">Item added to Bag!</span>
-  </div>
-
-  <!-- Bottom Floating Bag Bar -->
-  <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
-      <div>
-        <p class="text-xs font-black text-white" id="floatCartSummary">1 Item in Bag • ₹899</p>
-        <p class="text-[10px] text-slate-400">20-Min Home Fitting Included</p>
-      </div>
-    </div>
-    <button onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1.5 transition">
-      <span>View Bag</span>
-      <span>➔</span>
-    </button>
-  </div>
-
-  <!-- Side Bag Drawer -->
-  <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
-    <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
-    <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
+  <!-- ================= IN-PAGE RIDER DUTY POPUP MODAL ================= -->
+  <div id="riderModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div onclick="closeRiderDutyModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
+    <div class="bg-slate-950 text-slate-100 rounded-[2.5rem] max-w-lg w-full p-6 sm:p-8 relative z-10 shadow-2xl border border-slate-800 max-h-[90vh] overflow-y-auto">
       
-      <div class="p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-orange-600/20 text-orange-400 flex items-center justify-center text-lg font-bold border border-orange-500/30">🛍️</div>
+      <!-- Rider Header -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold text-lg border border-orange-500/30">🛵</div>
           <div>
-            <h3 class="font-brand font-bold text-base">Express Bag</h3>
-            <p class="text-xs text-slate-400">Fitin60 Express Checkout</p>
+            <h3 class="font-brand font-black text-lg text-white">Rider Fleet Station</h3>
+            <p class="text-[11px] text-slate-400">Instant 60-Min Express Dispatch</p>
           </div>
         </div>
-        <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-2xl font-bold p-1 cursor-pointer">&times;</button>
+        <button onclick="closeRiderDutyModal()" class="text-slate-400 hover:text-white text-2xl font-bold p-1 cursor-pointer">&times;</button>
       </div>
 
-      <div class="flex-1 p-6 overflow-y-auto space-y-5">
-        <div id="cartItems" class="space-y-3">
-          <p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>
+      <!-- In-Page Duty Toggle Switch -->
+      <div class="my-5 p-4 bg-slate-900 border border-slate-800 rounded-3xl flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-white flex items-center gap-2">
+            <span id="modalDutyDot" class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+            <span id="modalDutyStatusText">Duty Status: Offline</span>
+          </p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Toggle switch to accept delivery rides</p>
         </div>
-
-        <div id="addressSection" class="hidden mt-6 pt-6 border-t border-slate-200 space-y-3.5">
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider flex items-center gap-1.5">
-            <span>📍</span> Doorstep Delivery Details
-          </h4>
-          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          <textarea id="custAddress" rows="2" required placeholder="Door No, Street Name, Landmark, Area" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500"></textarea>
-
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider pt-2 flex items-center gap-1.5">
-            <span>💳</span> Payment Settlement Mode
-          </h4>
-          <div class="grid grid-cols-2 gap-2.5">
-            <label class="border-2 border-orange-500 bg-orange-50/50 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="payMethod" value="UPI" checked class="accent-orange-600">
-              <span class="text-xs font-bold text-slate-900">⚡ Store UPI</span>
-            </label>
-            <label class="border-2 border-slate-200 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="payMethod" value="COD" class="accent-orange-600">
-              <span class="text-xs font-bold text-slate-900">💵 Cash on Delivery</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3.5">
-        <div class="flex justify-between items-baseline font-black text-slate-950">
-          <span class="text-xs uppercase text-slate-500">Total Amount</span>
-          <span id="cartTotal" class="font-brand text-2xl text-slate-950">₹0</span>
-        </div>
-
-        <button onclick="handleCheckout()" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-xl shadow-orange-600/20 cursor-pointer">
-          ⚡ Place 60-Min Express Order
+        <button onclick="toggleInPageRiderDuty()" id="modalDutySwitchBtn" class="bg-orange-600 hover:bg-orange-500 text-white text-xs font-black px-4 py-2 rounded-xl transition cursor-pointer">
+          ⚡ Turn ON Duty
         </button>
       </div>
 
-    </div>
-  </div>
-
-  <!-- Dynamic Boutique UPI Modal -->
-  <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-    <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
-    <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-slate-100">
-      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-inner">⚡</div>
-      <h3 class="font-brand font-black text-xl text-slate-950 mt-3">Fitin60 Direct UPI Gateway</h3>
-      <p class="text-xs text-slate-500 mt-1" id="storeModalTitle">Paying Store</p>
-
-      <div class="my-5 p-5 bg-slate-50 border border-slate-200/80 rounded-3xl">
-        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount Payable</p>
-        <p class="font-brand text-3xl font-black text-slate-950 mt-1" id="modalAmount">₹0</p>
-        <img id="upiQrCode" src="" alt="Store UPI QR" class="w-44 h-44 mx-auto mt-4 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
-        <p class="text-xs text-slate-800 font-mono font-bold mt-3" id="upiIdDisplay">UPI ID: store@upi</p>
+      <!-- Rides Container -->
+      <div id="modalRidesContainer" class="space-y-3">
+        <div class="text-center py-6 text-slate-400 text-xs">
+          Turn ON Duty above to see incoming dress rides and hear notification chimes.
+        </div>
       </div>
 
-      <a id="directUpiBtn" href="#" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mb-2 shadow-md">
-        📲 Pay via UPI App (PhonePe / GPay)
-      </a>
-
-      <button onclick="confirmUpiPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
-        ✓ I Have Paid (Track Delivery)
-      </button>
-
-      <button onclick="closeUpiModal()" class="w-full text-slate-400 hover:text-slate-700 text-xs font-bold mt-3 py-1 cursor-pointer">
-        Cancel & Go Back
-      </button>
     </div>
   </div>
 
+  <!-- Dynamic Product Grid & Other Modals Script -->
   <script>
     var catalog = [
       {
@@ -312,6 +247,114 @@
     var currentCategory = 'all';
     var MAX_RADIUS_KM = 20;
 
+    // Rider In-Page State
+    var isRiderDutyOn = false;
+    var audioCtx = null;
+    var knownRiderOrders = {};
+
+    function playDingDongChime() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var now = audioCtx.currentTime;
+        var osc1 = audioCtx.createOscillator();
+        var gain1 = audioCtx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(587.33, now);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.4);
+
+        var osc2 = audioCtx.createOscillator();
+        var gain2 = audioCtx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(880, now + 0.15);
+        gain2.gain.setValueAtTime(0.3, now + 0.15);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(now + 0.15);
+        osc2.stop(now + 0.6);
+      } catch(e) {}
+    }
+
+    function openRiderDutyModal() {
+      document.getElementById("riderModal").classList.remove("hidden");
+      renderInPageRiderOrders();
+    }
+
+    function closeRiderDutyModal() {
+      document.getElementById("riderModal").classList.add("hidden");
+    }
+
+    function toggleInPageRiderDuty() {
+      isRiderDutyOn = !isRiderDutyOn;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      var dot = document.getElementById("modalDutyDot");
+      var text = document.getElementById("modalDutyStatusText");
+      var btn = document.getElementById("modalDutySwitchBtn");
+
+      if (isRiderDutyOn) {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse";
+        text.innerText = "Duty Status: ONLINE (Ready)";
+        btn.innerText = "🔴 Turn OFF Duty";
+        btn.className = "bg-slate-800 hover:bg-slate-700 text-rose-400 text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer";
+      } else {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
+        text.innerText = "Duty Status: Offline";
+        btn.innerText = "⚡ Turn ON Duty";
+        btn.className = "bg-orange-600 hover:bg-orange-500 text-white text-xs font-black px-4 py-2 rounded-xl transition cursor-pointer";
+      }
+      renderInPageRiderOrders();
+    }
+
+    function renderInPageRiderOrders() {
+      var container = document.getElementById("modalRidesContainer");
+      if (!isRiderDutyOn) {
+        container.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs">You are Offline. Click "Turn ON Duty" to view live rides.</div>';
+        return;
+      }
+
+      var rawOrder = localStorage.getItem("chitikelo_active_order");
+      if (rawOrder) {
+        var order = JSON.parse(rawOrder);
+        if (order.orderId) {
+          if (!knownRiderOrders[order.orderId]) {
+            knownRiderOrders[order.orderId] = true;
+            playDingDongChime();
+          }
+
+          container.innerHTML = 
+            '<div class="bg-slate-900 border border-orange-500/50 rounded-2xl p-4 text-xs space-y-2.5">' +
+              '<div class="flex justify-between items-center font-bold">' +
+                '<span class="text-orange-400">⚡ ' + order.orderId + '</span>' +
+                '<span class="text-white font-black text-sm">₹' + order.totalAmount + '</span>' +
+              '</div>' +
+              '<p class="text-slate-300"><strong>Pickup:</strong> ' + (order.store || "Boutique") + '</p>' +
+              '<p class="text-slate-300"><strong>Drop:</strong> ' + (order.customerName || "Customer") + ' (' + (order.customerAddress || "Anantapur") + ')</p>' +
+              '<div class="flex gap-2 pt-1">' +
+                '<a href="tel:' + (order.customerPhone || "") + '" class="flex-1 bg-slate-800 hover:bg-slate-700 text-center py-2 rounded-xl text-white font-bold">📞 Call</a>' +
+                '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(order.customerAddress || "Anantapur") + '" target="_blank" class="flex-1 bg-blue-600 hover:bg-blue-500 text-center py-2 rounded-xl text-white font-bold">🗺️ Route</a>' +
+              '</div>' +
+              '<button onclick="alert(\'Ride Accepted!\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl uppercase tracking-wider mt-1 cursor-pointer">✓ Accept 60-Min Ride</button>' +
+            '</div>';
+          return;
+        }
+      }
+
+      container.innerHTML = '<div class="text-center py-6 text-emerald-400 text-xs font-bold">✓ Online & Listening for incoming customer rides...</div>';
+    }
+
+    setInterval(function() {
+      if (isRiderDutyOn) renderInPageRiderOrders();
+    }, 3000);
+
     function calculateDistance(lat1, lon1, lat2, lon2) {
       var R = 6371;
       var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -328,9 +371,12 @@
       var html = "";
       var count = 0;
 
-      catalog.forEach(function(p) {
+      // Combine custom uploaded boutique products with catalog
+      var customItems = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
+      var allProducts = customItems.concat(catalog);
+
+      allProducts.forEach(function(p) {
         var dist = calculateDistance(userCoords.lat, userCoords.lng, p.lat, p.lng);
-        
         if (parseFloat(dist) <= MAX_RADIUS_KM) {
           if (currentCategory === 'all' || p.category === currentCategory) {
             count++;
@@ -378,7 +424,6 @@
                         '</div>' +
                       '</div>' +
 
-                      '<!-- Dual Action Buttons -->' +
                       '<div class="p-6 pt-0 grid grid-cols-2 gap-2.5">' +
                         '<button onclick="addToBagSilent(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-1 cursor-pointer">' +
                           '<span>+</span> Add to Bag' +
@@ -391,14 +436,6 @@
           }
         }
       });
-
-      if (count === 0) {
-        html = '<div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200 p-8">' +
-                 '<span class="text-4xl">🛍️</span>' +
-                 '<h3 class="font-brand font-bold text-lg text-slate-900 mt-2">No Boutiques Found in Your Area</h3>' +
-                 '<p class="text-xs text-slate-500 mt-1">We are expanding fast. Check back shortly for stores near you!</p>' +
-               '</div>';
-      }
 
       grid.innerHTML = html;
     }
@@ -435,144 +472,6 @@
       });
       document.getElementById('tab-' + category).className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm';
       renderProducts();
-    }
-
-    function toggleCart() {
-      var drawer = document.getElementById("cartDrawer");
-      drawer.classList.toggle("hidden");
-    }
-
-    function addToBagSilent(name, price, eta, size, store, upiId) {
-      items.push({ name: name, price: price, eta: eta, size: size, store: store, storeUpi: upiId });
-      renderCart();
-      showToast("Added \"" + name.substring(0, 20) + "...\" to Bag!");
-    }
-
-    function buyNowInstant(name, price, eta, size, store, upiId) {
-      items.push({ name: name, price: price, eta: eta, size: size, store: store, storeUpi: upiId });
-      renderCart();
-      var drawer = document.getElementById("cartDrawer");
-      drawer.classList.remove("hidden");
-    }
-
-    function showToast(msg) {
-      var toast = document.getElementById("toastNotification");
-      var text = document.getElementById("toastMessage");
-      text.innerText = msg;
-      toast.classList.remove("opacity-0", "pointer-events-none");
-      toast.classList.add("opacity-100");
-
-      setTimeout(function() {
-        toast.classList.remove("opacity-100");
-        toast.classList.add("opacity-0", "pointer-events-none");
-      }, 2000);
-    }
-
-    function removeCartItem(index) {
-      items.splice(index, 1);
-      renderCart();
-    }
-
-    function renderCart() {
-      var count = document.getElementById("cart-count");
-      var list = document.getElementById("cartItems");
-      var totalEl = document.getElementById("cartTotal");
-      var addressBox = document.getElementById("addressSection");
-      var floatBar = document.getElementById("floatingCartBar");
-      var floatSummary = document.getElementById("floatCartSummary");
-      
-      count.innerText = items.length;
-
-      if (items.length === 0) {
-        list.innerHTML = '<p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>';
-        totalEl.innerText = "₹0";
-        addressBox.classList.add("hidden");
-        floatBar.classList.add("hidden");
-        return;
-      }
-
-      addressBox.classList.remove("hidden");
-      floatBar.classList.remove("hidden");
-      
-      var sum = 0;
-      var html = "";
-      for (var i = 0; i < items.length; i++) {
-        sum += items[i].price;
-        html += '<div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/80 rounded-2xl">' +
-                  '<div>' +
-                    '<p class="text-xs font-bold text-slate-950">' + items[i].name + '</p>' +
-                    '<p class="text-[11px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600 font-bold">' + items[i].size + '</span> • ' + items[i].store + '</p>' +
-                    '<p class="text-xs font-black text-slate-950 mt-1">₹' + items[i].price + '</p>' +
-                  '</div>' +
-                  '<button onclick="removeCartItem(' + i + ')" class="text-slate-400 hover:text-red-500 font-bold p-1 text-base">✕</button>' +
-                '</div>';
-      }
-      list.innerHTML = html;
-      totalEl.innerText = "₹" + sum;
-      floatSummary.innerText = items.length + " Item" + (items.length > 1 ? "s" : "") + " in Bag • ₹" + sum;
-    }
-
-    function handleCheckout() {
-      if (items.length === 0) return alert("Your Express Bag is empty!");
-      var name = document.getElementById("custName").value.trim();
-      var phone = document.getElementById("custPhone").value.trim();
-      var addr = document.getElementById("custAddress").value.trim();
-
-      if (!name || !phone || !addr) return alert("Please fill your Name, Mobile, and Delivery Address!");
-
-      var payMethod = document.querySelector('input[name="payMethod"]:checked').value;
-      var total = items.reduce(function(acc, item) { return acc + item.price; }, 0);
-
-      if (payMethod === "COD") {
-        finalizeOrder("Cash on Delivery");
-      } else {
-        openStoreUpi(total);
-      }
-    }
-
-    function openStoreUpi(amount) {
-      var activeStoreUpi = items[0].storeUpi || "9515552511-3@ybl";
-      document.getElementById("modalAmount").innerText = "₹" + amount;
-      document.getElementById("storeModalTitle").innerText = "Paying Boutique: " + items[0].store;
-      document.getElementById("upiIdDisplay").innerText = "Store UPI ID: " + activeStoreUpi;
-
-      var upiUrl = "upi://pay?pa=" + activeStoreUpi + "&pn=" + encodeURIComponent(items[0].store) + "&am=" + amount + "&cu=INR&tn=Fitin60_Order";
-      document.getElementById("upiQrCode").src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(upiUrl);
-      document.getElementById("directUpiBtn").href = upiUrl;
-
-      document.getElementById("upiModal").classList.remove("hidden");
-    }
-
-    function closeUpiModal() {
-      document.getElementById("upiModal").classList.add("hidden");
-    }
-
-    function confirmUpiPayment() {
-      finalizeOrder("Paid via Store UPI");
-    }
-
-    function finalizeOrder(status) {
-      var name = document.getElementById("custName").value.trim();
-      var phone = document.getElementById("custPhone").value.trim();
-      var addr = document.getElementById("custAddress").value.trim();
-      var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
-      var total = items.reduce(function(acc, item) { return acc + item.price; }, 0);
-
-      var orderData = {
-        orderId: orderId,
-        customerName: name,
-        customerPhone: phone,
-        customerAddress: addr,
-        items: items,
-        totalAmount: total,
-        paymentStatus: status,
-        orderTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        store: items[0].store,
-        storeUpi: items[0].storeUpi || "9515552511-3@ybl"
-      };
-
-      localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
-      window.location.href = "tracking.html";
     }
 
     window.addEventListener('DOMContentLoaded', function() {
