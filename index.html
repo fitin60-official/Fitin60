@@ -32,14 +32,14 @@
   <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-bold py-2 px-4 text-center tracking-wider flex items-center justify-center gap-2 border-b border-slate-800">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 EXPRESS</strong> • Direct Boutique Catalogs • 60-Min Doorstep Dispatch</span>
+    <span>⚡ <strong>FITIN60 EXPRESS</strong> • Curated Boutique Showrooms • 60-Min Doorstep Dispatch</span>
   </div>
 
-  <!-- Ultra Clean White Header -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
-      <!-- Brand Logo -->
+      <!-- Logo -->
       <a href="index.html" class="flex flex-col group">
         <div class="flex items-center gap-1">
           <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
@@ -68,16 +68,12 @@
             <span id="orderActiveDot" class="hidden absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
           </button>
 
-          <!-- Customer Dropdown Card -->
           <div id="custDropdown" class="hidden absolute right-0 top-14 w-80 bg-white rounded-3xl shadow-2xl border border-slate-200 p-4 space-y-3 z-50 transform origin-top-right transition-all">
             <div class="flex items-center justify-between border-b border-slate-100 pb-2">
               <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Live Order Status</p>
               <span class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Real-Time</span>
             </div>
-            
-            <div id="menuOrderBox" class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs">
-              <!-- Dynamic content -->
-            </div>
+            <div id="menuOrderBox" class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs"></div>
           </div>
         </div>
 
@@ -116,7 +112,7 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Hero Spotlight Section -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
     <div class="hero-glow-light bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-slate-800 relative overflow-hidden">
       <div class="absolute -right-16 -top-16 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -129,9 +125,10 @@
           Explore Local Boutiques & Get Drops in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Tap any boutique or dress preview to enter their full collection, slide through outfit angles, and order with instant UPI checkout.
+          Click any boutique name to enter their showroom, tap any dress for full-screen slide view, and order instantly.
         </p>
 
+        <!-- Stats Chips -->
         <div class="grid grid-cols-3 gap-3 sm:gap-6 mt-8 pt-8 border-t border-white/10 max-w-xl">
           <div>
             <p class="font-mono-num text-xl sm:text-2xl font-black text-white">60 <span class="text-orange-400 text-sm">MINS</span></p>
@@ -153,13 +150,12 @@
   <!-- Search Bar -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-      
       <div>
         <div class="flex items-center gap-2.5">
           <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Studios</h2>
-          <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full border border-orange-200">Loading...</span>
+          <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full border border-orange-200">0 Boutiques Active</span>
         </div>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click any boutique to view their showroom collection</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click on any boutique to view their full outfit collection</p>
       </div>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -169,7 +165,7 @@
             type="text" 
             id="searchInput" 
             oninput="handleSearch(event)" 
-            placeholder="Search boutique or outfit..." 
+            placeholder="Search boutique or dress..." 
             class="w-full bg-white border border-slate-200 rounded-xl pl-8 pr-7 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-sm transition"
           >
           <button 
@@ -181,15 +177,12 @@
           </button>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- ================= STORE-FIRST GRID ================= -->
+  <!-- Main Boutique Stores Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="boutiqueStoreGrid">
-      <!-- Injected via JavaScript -->
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="boutiqueStoreGrid"></div>
   </main>
 
   <!-- Delivery Rules Section -->
@@ -227,10 +220,11 @@
     </div>
   </section>
 
-  <!-- ================= 1. DEDICATED STOREFRONT MODAL ================= -->
+  <!-- ================= 1. BOUTIQUE SHOWROOM MODAL (OPENED VIA SHOP CLICK) ================= -->
   <div id="storeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md">
     <div class="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
       
+      <!-- Store Header -->
       <div class="p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-2xl font-bold">🏬</div>
@@ -245,10 +239,11 @@
         <button onclick="closeStoreModal()" class="text-slate-400 hover:text-white text-3xl font-bold p-1 cursor-pointer">&times;</button>
       </div>
 
+      <!-- Outfits Grid inside Boutique -->
       <div class="p-6 overflow-y-auto flex-1 bg-[#fafaf9]">
         <div class="flex items-center justify-between mb-4">
-          <h4 class="font-brand font-bold text-sm text-slate-950">Available Collection in This Boutique</h4>
-          <span id="modalItemCount" class="text-xs text-orange-600 font-bold">Select any dress to slide different angles & order</span>
+          <h4 class="font-brand font-bold text-sm text-slate-950">Boutique Catalog</h4>
+          <span id="modalItemCount" class="text-xs text-orange-600 font-bold">Click any dress to view full screen & slide</span>
         </div>
         <div id="storeProductsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
       </div>
@@ -256,69 +251,85 @@
     </div>
   </div>
 
-  <!-- ================= 2. SINGLE DRESS MULTI-ANGLE SLIDER MODAL ================= -->
-  <div id="singleProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
-    <div class="bg-white w-full max-w-3xl max-h-[92vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100 relative">
+  <!-- ================= 2. FULL SCREEN DRESS MODAL WITH SLIDE BUTTONS ================= -->
+  <div id="singleProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-lg">
+    <div class="bg-white w-full max-w-4xl h-[95vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100 relative">
       
-      <div class="p-4 sm:px-6 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-        <button onclick="backToStoreShowroom()" class="text-xs font-bold text-slate-700 hover:text-orange-600 flex items-center gap-1.5 cursor-pointer">
-          ← Back to <span id="backStoreNameBtn" class="font-black underline">Boutique</span>
+      <!-- Top Action Navigation Bar -->
+      <div class="p-4 sm:px-6 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <button onclick="backToStoreShowroom()" class="text-xs font-bold text-slate-300 hover:text-orange-400 flex items-center gap-1.5 cursor-pointer">
+          ← Back to <span id="backStoreNameBtn" class="font-black underline text-white">Boutique Collection</span>
         </button>
-        <button onclick="closeSingleProductModal()" class="text-slate-400 hover:text-slate-900 text-2xl font-bold p-1 cursor-pointer">&times;</button>
+        <button onclick="closeSingleProductModal()" class="text-slate-400 hover:text-white text-2xl font-bold p-1 cursor-pointer">&times;</button>
       </div>
 
-      <div class="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6">
+      <!-- Main Full-Screen Layout: Left Photo Viewport + Right Checkout Panel -->
+      <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto bg-slate-950">
         
-        <div class="space-y-3">
-          <div class="relative h-80 sm:h-96 bg-slate-950 rounded-3xl overflow-hidden border border-slate-200 flex items-center justify-center group" id="sliderBox">
-            <img id="productSliderImg" src="" alt="Dress angle view" class="w-full h-full object-contain">
+        <!-- Left: Huge Full-Screen Photo Slide Station (7 Columns) -->
+        <div class="lg:col-span-7 flex flex-col justify-between p-4 sm:p-6 relative bg-slate-950 border-b lg:border-b-0 lg:border-r border-slate-800">
+          
+          <div class="relative h-[360px] sm:h-[440px] w-full flex items-center justify-center rounded-3xl overflow-hidden bg-black/40">
+            <img id="productSliderImg" src="" alt="Dress Full View" class="w-full h-full object-contain select-none">
             
-            <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-xl text-white text-[11px] font-bold border border-white/10 z-20">
+            <!-- Angle Counter Pill -->
+            <div class="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-3.5 py-1.5 rounded-2xl text-white text-xs font-bold border border-white/10 z-20 shadow-md">
               <span id="slideCounterText">Angle 1 of 3</span>
             </div>
 
-            <button onclick="changeProductSlide(-1, event)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-950 w-9 h-9 rounded-full flex items-center justify-center font-black shadow-lg cursor-pointer transition z-20">
+            <!-- Big Slide Left Button -->
+            <button onclick="changeProductSlide(-1, event)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-950 w-12 h-12 rounded-full flex items-center justify-center text-xl font-black shadow-2xl cursor-pointer transition z-20 hover:scale-110 active:scale-95">
               ‹
             </button>
-            <button onclick="changeProductSlide(1, event)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-950 w-9 h-9 rounded-full flex items-center justify-center font-black shadow-lg cursor-pointer transition z-20">
+            
+            <!-- Big Slide Right Button -->
+            <button onclick="changeProductSlide(1, event)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-slate-950 w-12 h-12 rounded-full flex items-center justify-center text-xl font-black shadow-2xl cursor-pointer transition z-20 hover:scale-110 active:scale-95">
               ›
             </button>
 
-            <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full z-20" id="sliderDots"></div>
+            <!-- Slide Dots -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/70 backdrop-blur-md px-4 py-1.5 rounded-full z-20 border border-white/10" id="sliderDots"></div>
           </div>
 
-          <div class="flex gap-2.5 overflow-x-auto pb-1" id="sliderThumbs"></div>
+          <!-- Thumbnails Strip -->
+          <div class="flex gap-3 overflow-x-auto pt-4 pb-1 justify-center" id="sliderThumbs"></div>
         </div>
 
-        <div class="space-y-4 pt-2 border-t border-slate-100">
-          <div class="flex items-center justify-between">
-            <div>
-              <span id="singleProdStore" class="text-xs font-extrabold text-orange-600 uppercase tracking-widest block">Boutique Name</span>
-              <span id="singleProdArea" class="text-[11px] text-slate-500 font-medium">Store Location</span>
+        <!-- Right: Outfit Details & Express Buy Panel (5 Columns) -->
+        <div class="lg:col-span-5 bg-white p-6 sm:p-8 flex flex-col justify-between space-y-6">
+          
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span id="singleProdStore" class="text-xs font-extrabold text-orange-600 uppercase tracking-widest block">Boutique Name</span>
+                <span id="singleProdArea" class="text-[11px] text-slate-500 font-medium">Store Location</span>
+              </div>
+              <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2.5 py-1 rounded-xl">⚡ 60-Min Express</span>
             </div>
-            <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2.5 py-1 rounded-xl">⚡ 60-Min Express</span>
+
+            <h3 id="singleProdName" class="font-brand font-black text-2xl text-slate-950 leading-tight">Dress Name</h3>
+            <p id="singleProdDesc" class="text-xs text-slate-600 leading-relaxed font-normal">Description goes here.</p>
+
+            <!-- Size Selector -->
+            <div class="pt-2">
+              <span class="block text-[11px] font-black uppercase tracking-wider text-slate-500 mb-2">Select Size</span>
+              <div class="flex gap-2" id="singleProdSizes"></div>
+            </div>
           </div>
 
-          <h3 id="singleProdName" class="font-brand font-black text-2xl text-slate-950 leading-tight">Dress Name</h3>
-          <p id="singleProdDesc" class="text-xs text-slate-600 leading-relaxed font-normal">Description goes here.</p>
-
-          <div>
-            <span class="block text-[11px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Select Size</span>
-            <div class="flex gap-2" id="singleProdSizes"></div>
-          </div>
-
-          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-baseline gap-2.5">
+          <!-- Price & Order Action Buttons -->
+          <div class="pt-6 border-t border-slate-100 space-y-4">
+            <div class="flex items-baseline gap-3">
               <span id="singleProdPrice" class="font-mono-num text-3xl font-black text-slate-950">₹0</span>
               <span id="singleProdOriginal" class="font-mono-num text-sm font-bold text-slate-400 line-through">₹0</span>
-              <span id="singleProdDiscount" class="text-xs bg-rose-600 text-white font-bold px-2 py-0.5 rounded-lg">0% OFF</span>
+              <span id="singleProdDiscount" class="text-xs bg-rose-600 text-white font-bold px-2.5 py-1 rounded-lg">0% OFF</span>
             </div>
 
-            <div class="flex items-center gap-2.5 sm:w-72">
-              <button id="singleAddBagBtn" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase transition border border-slate-200 cursor-pointer">
+            <div class="grid grid-cols-2 gap-3">
+              <button id="singleAddBagBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-4 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 cursor-pointer">
                 + Add to Bag
               </button>
-              <button id="singleBuyNowBtn" class="flex-1 bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase transition shadow-md cursor-pointer">
+              <button id="singleBuyNowBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-xl cursor-pointer">
                 ⚡ Buy Now
               </button>
             </div>
@@ -353,7 +364,7 @@
     <span id="toastMessage">Item added to Bag!</span>
   </div>
 
-  <!-- Bottom Floating Bag Bar -->
+  <!-- Floating Bag Bar -->
   <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
@@ -457,7 +468,6 @@
   </div>
 
   <script>
-    // 100% Guaranteed Base Boutique Catalog
     var baseProducts = [
       {
         id: 1,
@@ -598,7 +608,7 @@
       return Object.values(storesMap);
     }
 
-    // Render Boutique Cards to Main Screen
+    // Render Boutique Cards on Main Screen
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("resultsCountBadge");
@@ -617,7 +627,7 @@
         if (storeMatches) {
           matchCount++;
 
-          // Build 3 Mini Previews
+          // 3 Mini Previews
           var previewImages = "";
           var displayProds = store.products.slice(0, 3);
           
@@ -664,7 +674,7 @@
                 '<div class="mt-5">' +
                   '<div class="flex items-center justify-between mb-2">' +
                     '<span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Featured Outfits (' + store.products.length + ')</span>' +
-                    '<span class="text-[10px] text-orange-600 font-bold">Click to view shop</span>' +
+                    '<span class="text-[10px] text-orange-600 font-bold">Click to view showroom</span>' +
                   '</div>' +
                   '<div class="grid grid-cols-3 gap-2.5">' + previewImages + '</div>' +
                 '</div>' +
@@ -689,7 +699,7 @@
           '<div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200">' +
             '<div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-3">🔍</div>' +
             '<h3 class="font-brand font-bold text-lg text-slate-950">No Matching Boutiques Found</h3>' +
-            '<p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Try typing a different search query.</p>' +
+            '<p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Try typing a different boutique name or area.</p>' +
             '<button onclick="clearSearch()" class="mt-4 bg-slate-950 text-white font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider hover:bg-orange-600 transition cursor-pointer">Reset Search</button>' +
           '</div>';
         return;
@@ -698,7 +708,7 @@
       grid.innerHTML = html;
     }
 
-    // Open Boutique Showroom
+    // Step 1: Open Boutique Showroom Modal
     function openStoreByIndex(storeIdx) {
       var stores = getGroupedStores();
       var selectedStore = stores[storeIdx];
@@ -706,7 +716,7 @@
 
       document.getElementById("modalStoreName").innerText = selectedStore.storeName;
       document.getElementById("modalStoreMeta").innerText = "📍 " + selectedStore.area + " • ⚡ " + selectedStore.eta + " Doorstep Delivery";
-      document.getElementById("modalItemCount").innerText = selectedStore.products.length + " Outfits Available (Click dress to slide angles & order)";
+      document.getElementById("modalItemCount").innerText = selectedStore.products.length + " Outfits Available (Tap dress for full-screen slide)";
 
       var container = document.getElementById("storeProductsContainer");
       var html = "";
@@ -720,7 +730,7 @@
                 '<span class="absolute top-3 left-3 bg-slate-950/90 text-white text-[10px] font-mono-num font-black px-2.5 py-1 rounded-xl">⚡ 60-MIN</span>' +
                 '<span class="absolute top-3 right-3 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl">' + (p.discount || '35% OFF') + '</span>' +
                 '<span class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-md">' +
-                  'Slide Angles & Buy ➔' +
+                  'Full Screen Slide ➔' +
                 '</span>' +
               '</div>' +
               '<div class="p-5">' +
@@ -734,7 +744,7 @@
             '</div>' +
             '<div class="p-5 pt-0">' +
               '<button class="w-full bg-slate-950 group-hover:bg-orange-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-sm">' +
-                '⚡ Slide Angles & Buy' +
+                '⚡ View Full Screen & Slide' +
               '</button>' +
             '</div>' +
           '</div>';
@@ -748,7 +758,7 @@
       document.getElementById("storeModal").classList.add("hidden");
     }
 
-    // Open Single Dress Multi-Angle Slider
+    // Step 2: Open Full-Screen Multi-Angle Slider Modal
     function openSingleProductModal(productId) {
       closeStoreModal();
       var allProds = getAllProducts();
@@ -779,7 +789,7 @@
 
       sizes.forEach(function(s) {
         var isSel = (s === activeSize);
-        sizeHtml += '<button type="button" onclick="selectSingleProdSize(\'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-50 text-orange-600 font-black' : 'border-slate-200 text-slate-700 bg-slate-50') + ' px-3.5 py-1.5 text-xs rounded-xl transition font-bold">' + s + '</button> ';
+        sizeHtml += '<button type="button" onclick="selectSingleProdSize(\'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-50 text-orange-600 font-black' : 'border-slate-200 text-slate-700 bg-slate-50') + ' px-4 py-2 text-xs rounded-xl transition font-bold">' + s + '</button> ';
       });
       sizeContainer.innerHTML = sizeHtml;
 
@@ -825,7 +835,7 @@
       // Dots
       var dotsHtml = "";
       activeProductObj.images.forEach(function(img, idx) {
-        dotsHtml += '<span class="w-2 h-2 rounded-full transition-all ' + (idx === activeSlideIndex ? 'bg-orange-500 w-5' : 'bg-white/50') + '"></span>';
+        dotsHtml += '<span class="w-2.5 h-2.5 rounded-full transition-all ' + (idx === activeSlideIndex ? 'bg-orange-500 w-6' : 'bg-white/50') + '"></span>';
       });
       dotsEl.innerHTML = dotsHtml;
 
@@ -833,7 +843,7 @@
       var thumbsHtml = "";
       activeProductObj.images.forEach(function(img, idx) {
         thumbsHtml += 
-          '<div onclick="setProductSlide(' + idx + ')" class="w-16 h-16 rounded-xl overflow-hidden border-2 cursor-pointer transition shrink-0 ' + (idx === activeSlideIndex ? 'border-orange-500 shadow-md' : 'border-slate-200 opacity-60 hover:opacity-100') + '">' +
+          '<div onclick="setProductSlide(' + idx + ')" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 cursor-pointer transition shrink-0 ' + (idx === activeSlideIndex ? 'border-orange-500 shadow-xl scale-105' : 'border-slate-700 opacity-60 hover:opacity-100') + '">' +
             '<img src="' + img + '" alt="Thumb" class="w-full h-full object-cover">' +
           '</div>';
       });
@@ -862,7 +872,7 @@
       buyNowInstant(name, price, eta, size, store, upiId);
     }
 
-    // Customer Menu & Bag
+    // Customer Menu & Bag System
     function toggleCustomerMenu(e) {
       if (e) e.stopPropagation();
       var custDrop = document.getElementById("custDropdown");
