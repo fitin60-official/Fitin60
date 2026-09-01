@@ -130,7 +130,7 @@
           Explore Local Boutiques & Get Drops in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Tap any boutique or dress preview to explore their collection, view all outfit angles, and order with instant UPI checkout.
+          Tap any boutique to view their showroom, slide through outfit angles, and order with instant UPI checkout.
         </p>
 
         <!-- Stats Chips -->
@@ -613,7 +613,7 @@
       var html = "";
       var matchCount = 0;
 
-      stores.forEach(function(store) {
+      stores.forEach(function(store, storeIdx) {
         var storeMatches = true;
         if (searchQuery.length > 0) {
           var storeText = (store.storeName + " " + store.area).toLowerCase();
@@ -623,15 +623,14 @@
 
         if (storeMatches) {
           matchCount++;
-          var safeStore = store.storeName.replace(/'/g, "\\'");
 
-          // 3 Mini Dress Previews (Clicking opens Boutique Collection)
+          // 3 Mini Dress Previews
           var previewImages = "";
           var displayProds = store.products.slice(0, 3);
           
           displayProds.forEach(function(p) {
             previewImages += 
-              '<div onclick="openStoreShowroom(\'' + safeStore + '\')" class="relative h-28 sm:h-32 bg-slate-100 rounded-2xl overflow-hidden cursor-pointer group/img border border-slate-200/80 hover:border-orange-500 transition shadow-sm">' +
+              '<div onclick="openStoreByIndex(' + storeIdx + ')" class="relative h-28 sm:h-32 bg-slate-100 rounded-2xl overflow-hidden cursor-pointer group/img border border-slate-200/80 hover:border-orange-500 transition shadow-sm">' +
                 '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-500">' +
                 '<span class="absolute bottom-1.5 left-1.5 bg-slate-950/80 backdrop-blur-md text-white font-mono-num font-bold text-[10px] px-1.5 py-0.5 rounded-md">' +
                   '₹' + p.price +
@@ -642,7 +641,7 @@
           if (displayProds.length < 3) {
             for (var i = displayProds.length; i < 3; i++) {
               previewImages += 
-                '<div onclick="openStoreShowroom(\'' + safeStore + '\')" class="h-28 sm:h-32 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300 text-xs cursor-pointer hover:border-orange-400 transition">' +
+                '<div onclick="openStoreByIndex(' + storeIdx + ')" class="h-28 sm:h-32 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-slate-300 text-xs cursor-pointer hover:border-orange-400 transition">' +
                   '<span>👗</span><span class="text-[10px] mt-1 font-bold">New Drop</span>' +
                 '</div>';
             }
@@ -653,7 +652,7 @@
               '<div class="p-6">' +
                 
                 '<!-- Shop Header Clickable -->' +
-                '<div onclick="openStoreShowroom(\'' + safeStore + '\')" class="cursor-pointer">' +
+                '<div onclick="openStoreByIndex(' + storeIdx + ')" class="cursor-pointer">' +
                   '<div class="flex items-center justify-between">' +
                     '<span class="text-xs font-mono-num font-black text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-xl flex items-center gap-1">' +
                       '<span>⚡</span> ' + store.eta + ' EXPRESS' +
@@ -681,7 +680,7 @@
 
               '<!-- Action Button -->' +
               '<div class="p-6 pt-0">' +
-                '<button onclick="openStoreShowroom(\'' + safeStore + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 cursor-pointer">' +
+                '<button onclick="openStoreByIndex(' + storeIdx + ')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 cursor-pointer">' +
                   '<span>🏬</span> View ' + store.storeName + ' Collection' +
                 '</button>' +
               '</div>' +
@@ -707,11 +706,12 @@
     }
 
     // ================= 2. OPEN BOUTIQUE SHOWROOM =================
-    function openStoreShowroom(storeName) {
-      currentBoutiqueName = storeName;
+    function openStoreByIndex(storeIdx) {
       var stores = getGroupedStores();
-      var selectedStore = stores.find(function(s) { return s.storeName === storeName; });
+      var selectedStore = stores[storeIdx];
       if (!selectedStore) return;
+
+      currentBoutiqueName = selectedStore.storeName;
 
       document.getElementById("modalStoreName").innerText = selectedStore.storeName;
       document.getElementById("modalStoreMeta").innerText = "📍 " + selectedStore.area + " • ⚡ " + selectedStore.eta + " Doorstep Delivery";
@@ -807,7 +807,11 @@
     function backToStoreShowroom() {
       closeSingleProductModal();
       if (activeProductObj) {
-        openStoreShowroom(activeProductObj.store);
+        var stores = getGroupedStores();
+        var idx = stores.findIndex(function(s) { return s.storeName === activeProductObj.store; });
+        if (idx !== -1) {
+          openStoreByIndex(idx);
+        }
       }
     }
 
