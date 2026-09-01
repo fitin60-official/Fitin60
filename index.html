@@ -32,14 +32,14 @@
   <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-bold py-2 px-4 text-center tracking-wider flex items-center justify-center gap-2 border-b border-slate-800">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 EXPRESS</strong> • Curated Boutique Showrooms • 60-Min Doorstep Dispatch</span>
+    <span>⚡ <strong>FITIN60 EXPRESS</strong> • Direct Boutique Catalogs • 60-Min Doorstep Dispatch</span>
   </div>
 
-  <!-- Header -->
+  <!-- Ultra Clean White Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
-      <!-- Logo -->
+      <!-- Brand Logo -->
       <a href="index.html" class="flex flex-col group">
         <div class="flex items-center gap-1">
           <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
@@ -73,11 +73,12 @@
               <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Live Order Status</p>
               <span class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Real-Time</span>
             </div>
+            
             <div id="menuOrderBox" class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs"></div>
           </div>
         </div>
 
-        <!-- Business Hub -->
+        <!-- Separate Business Hub (Partner & Fleet) -->
         <div class="relative">
           <button id="businessHubBtn" onclick="toggleBusinessMenu(event)" class="bg-slate-950 hover:bg-slate-900 text-white px-3.5 py-2.5 rounded-2xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
             <span class="text-sm">💼</span>
@@ -125,7 +126,7 @@
           Explore Local Boutiques & Get Drops in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Click any boutique name to enter their showroom, tap any dress for full-screen slide view, and order instantly.
+          Tap any boutique to view their showroom collection, click any dress for full-screen slide view, and order with instant doorstep dispatch.
         </p>
 
         <!-- Stats Chips -->
@@ -180,7 +181,7 @@
     </div>
   </section>
 
-  <!-- Main Boutique Stores Grid -->
+  <!-- ================= 1. HOMEPAGE: BOUTIQUES WITH 3 DRESS PREVIEWS ================= -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="boutiqueStoreGrid"></div>
   </main>
@@ -220,7 +221,7 @@
     </div>
   </section>
 
-  <!-- ================= 1. BOUTIQUE SHOWROOM MODAL (OPENED VIA SHOP CLICK) ================= -->
+  <!-- ================= 2. BOUTIQUE SHOWROOM MODAL (SHOP COLLECTION) ================= -->
   <div id="storeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md">
     <div class="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
       
@@ -242,8 +243,8 @@
       <!-- Outfits Grid inside Boutique -->
       <div class="p-6 overflow-y-auto flex-1 bg-[#fafaf9]">
         <div class="flex items-center justify-between mb-4">
-          <h4 class="font-brand font-bold text-sm text-slate-950">Boutique Catalog</h4>
-          <span id="modalItemCount" class="text-xs text-orange-600 font-bold">Click any dress to view full screen & slide</span>
+          <h4 class="font-brand font-bold text-sm text-slate-950">Boutique Collection</h4>
+          <span id="modalItemCount" class="text-xs text-orange-600 font-bold">Click any dress for full-screen view & slide</span>
         </div>
         <div id="storeProductsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
       </div>
@@ -251,12 +252,12 @@
     </div>
   </div>
 
-  <!-- ================= 2. FULL SCREEN DRESS MODAL WITH SLIDE BUTTONS ================= -->
+  <!-- ================= 3. FULL SCREEN SINGLE DRESS SLIDER & BUY MODAL ================= -->
   <div id="singleProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-lg">
     <div class="bg-white w-full max-w-4xl h-[95vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100 relative">
       
       <!-- Top Action Navigation Bar -->
-      <div class="p-4 sm:px-6 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+      <div class="p-4 sm:px-6 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
         <button onclick="backToStoreShowroom()" class="text-xs font-bold text-slate-300 hover:text-orange-400 flex items-center gap-1.5 cursor-pointer">
           ← Back to <span id="backStoreNameBtn" class="font-black underline text-white">Boutique Collection</span>
         </button>
@@ -266,7 +267,7 @@
       <!-- Main Full-Screen Layout: Left Photo Viewport + Right Checkout Panel -->
       <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto bg-slate-950">
         
-        <!-- Left: Huge Full-Screen Photo Slide Station (7 Columns) -->
+        <!-- Left: Full-Screen Photo Slide Station (7 Columns) -->
         <div class="lg:col-span-7 flex flex-col justify-between p-4 sm:p-6 relative bg-slate-950 border-b lg:border-b-0 lg:border-r border-slate-800">
           
           <div class="relative h-[360px] sm:h-[440px] w-full flex items-center justify-center rounded-3xl overflow-hidden bg-black/40">
@@ -608,7 +609,7 @@
       return Object.values(storesMap);
     }
 
-    // Render Boutique Cards on Main Screen
+    // Step 1: Render Homepage Boutique Cards
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("resultsCountBadge");
@@ -627,7 +628,6 @@
         if (storeMatches) {
           matchCount++;
 
-          // 3 Mini Previews
           var previewImages = "";
           var displayProds = store.products.slice(0, 3);
           
@@ -708,7 +708,7 @@
       grid.innerHTML = html;
     }
 
-    // Step 1: Open Boutique Showroom Modal
+    // Step 2: Open Boutique Showroom (Collections Grid)
     function openStoreByIndex(storeIdx) {
       var stores = getGroupedStores();
       var selectedStore = stores[storeIdx];
@@ -716,7 +716,7 @@
 
       document.getElementById("modalStoreName").innerText = selectedStore.storeName;
       document.getElementById("modalStoreMeta").innerText = "📍 " + selectedStore.area + " • ⚡ " + selectedStore.eta + " Doorstep Delivery";
-      document.getElementById("modalItemCount").innerText = selectedStore.products.length + " Outfits Available (Tap dress for full-screen slide)";
+      document.getElementById("modalItemCount").innerText = selectedStore.products.length + " Outfits Available (Tap dress for full-screen view & slide)";
 
       var container = document.getElementById("storeProductsContainer");
       var html = "";
@@ -730,7 +730,7 @@
                 '<span class="absolute top-3 left-3 bg-slate-950/90 text-white text-[10px] font-mono-num font-black px-2.5 py-1 rounded-xl">⚡ 60-MIN</span>' +
                 '<span class="absolute top-3 right-3 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl">' + (p.discount || '35% OFF') + '</span>' +
                 '<span class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-md">' +
-                  'Full Screen Slide ➔' +
+                  'Full View & Buy ➔' +
                 '</span>' +
               '</div>' +
               '<div class="p-5">' +
@@ -744,7 +744,7 @@
             '</div>' +
             '<div class="p-5 pt-0">' +
               '<button class="w-full bg-slate-950 group-hover:bg-orange-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-sm">' +
-                '⚡ View Full Screen & Slide' +
+                '⚡ View & Order' +
               '</button>' +
             '</div>' +
           '</div>';
@@ -758,7 +758,7 @@
       document.getElementById("storeModal").classList.add("hidden");
     }
 
-    // Step 2: Open Full-Screen Multi-Angle Slider Modal
+    // Step 3: Open ONLY That Single Dress in Full Screen with Angle Slider & Buy
     function openSingleProductModal(productId) {
       closeStoreModal();
       var allProds = getAllProducts();
