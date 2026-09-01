@@ -26,14 +26,17 @@
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white" onclick="handleGlobalClick(event)">
 
+  <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
     <span>⚡ <strong>FITIN60 Hyperlocal Active</strong> • 60-Min Doorstep Express Drop • Direct Boutique Checkout</span>
   </div>
 
+  <!-- Ultra Clean Sticky Header with Two Distinct Menus -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
+      <!-- Brand Logo -->
       <a href="index.html" class="flex flex-col group">
         <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
           FITIN<span class="text-orange-600">60</span>
@@ -41,50 +44,69 @@
         <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
       </a>
 
-      <div class="flex items-center gap-3 relative">
+      <!-- Right Action Controls -->
+      <div class="flex items-center gap-2 sm:gap-3 relative">
         
-        <button onclick="toggleCart()" class="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white px-4 sm:px-5 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-md shadow-orange-500/20 cursor-pointer">
+        <!-- Cart Bag Button -->
+        <button onclick="toggleCart()" class="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white px-3.5 sm:px-5 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-md shadow-orange-500/20 cursor-pointer">
           <span class="text-base">🛍️</span>
           <span class="text-xs font-black tracking-wider uppercase hidden sm:inline">Bag</span>
           <span id="cart-count" class="bg-white text-orange-600 text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-inner">0</span>
         </button>
 
-        <button id="menuBtn" onclick="toggleNavMenu(event)" class="bg-slate-100 hover:bg-slate-200 text-slate-900 px-3.5 py-2.5 rounded-2xl border border-slate-200 transition flex items-center gap-2 cursor-pointer shadow-sm relative">
-          <span class="text-lg leading-none">☰</span>
-          <span class="text-xs font-bold hidden sm:inline">Menu</span>
-          <span id="orderActiveDot" class="hidden absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full animate-ping"></span>
-        </button>
+        <!-- ================= 1. CUSTOMER ☰ MENU ================= -->
+        <div class="relative">
+          <button id="custMenuBtn" onclick="toggleCustomerMenu(event)" class="bg-slate-100 hover:bg-slate-200 text-slate-900 px-3.5 py-2.5 rounded-2xl border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shadow-sm relative">
+            <span class="text-lg leading-none">☰</span>
+            <span class="text-xs font-bold hidden sm:inline">Orders</span>
+            <!-- Orange Indicator for active order -->
+            <span id="orderActiveDot" class="hidden absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full animate-ping"></span>
+          </button>
 
-        <div id="navDropdown" class="hidden absolute right-0 top-14 w-80 bg-white rounded-3xl shadow-2xl border border-slate-200 p-4 space-y-3 z-50 transform origin-top-right transition-all">
-          
-          <div>
-            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">My Active Order</p>
-            <div id="menuOrderBox" class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs">
-              </div>
-          </div>
-
-          <div class="pt-1 border-t border-slate-100">
-            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Operations & Fleet</p>
+          <!-- Customer Dropdown (Only Active Orders & Tracking) -->
+          <div id="custDropdown" class="hidden absolute right-0 top-14 w-80 bg-white rounded-3xl shadow-2xl border border-slate-200 p-4 space-y-3 z-50 transform origin-top-right transition-all">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Customer Dashboard</p>
+              <span class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-md">Live Status</span>
+            </div>
             
-            <div class="space-y-1.5">
-              <a href="partner.html" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-slate-100 text-slate-800 hover:text-slate-950 transition group">
-                <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm group-hover:scale-110 transition">🏬</span>
-                <div>
-                  <p class="text-xs font-black">Boutique Partner Studio</p>
-                  <p class="text-[10px] text-slate-400">Upload & manage dresses</p>
-                </div>
-              </a>
-
-              <a href="rider.html" class="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 transition group">
-                <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm group-hover:scale-110 transition">🛵</span>
-                <div>
-                  <p class="text-xs font-black">Rider Fleet Station</p>
-                  <p class="text-[10px] text-slate-400">Duty toggle & delivery alerts</p>
-                </div>
-              </a>
+            <div id="menuOrderBox" class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs">
+              <!-- Dynamically populated -->
             </div>
           </div>
+        </div>
 
+        <!-- ================= 2. SEPARATE PARTNER & FLEET HUB ================= -->
+        <div class="relative">
+          <button id="businessHubBtn" onclick="toggleBusinessMenu(event)" class="bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2.5 rounded-2xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+            <span class="text-sm">💼</span>
+            <span class="text-xs font-bold hidden sm:inline">Partner Hub</span>
+          </button>
+
+          <!-- Business Dropdown (Only Boutique & Rider operations) -->
+          <div id="businessDropdown" class="hidden absolute right-0 top-14 w-72 bg-white rounded-3xl shadow-2xl border border-slate-200 p-3.5 space-y-2 z-50 transform origin-top-right transition-all">
+            <div class="px-3 py-1.5 border-b border-slate-100">
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Operations & Logistics</p>
+            </div>
+
+            <!-- Boutique Partner Link -->
+            <a href="partner.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-orange-50 text-slate-800 hover:text-orange-600 transition group">
+              <span class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-base group-hover:scale-110 transition">🏬</span>
+              <div>
+                <p class="text-xs font-black">Boutique Merchant Studio</p>
+                <p class="text-[10px] text-slate-400">Upload & manage dresses</p>
+              </div>
+            </a>
+
+            <!-- Rider Fleet Link -->
+            <a href="rider.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 transition group">
+              <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-base group-hover:scale-110 transition">🛵</span>
+              <div>
+                <p class="text-xs font-black">Rider Fleet Station</p>
+                <p class="text-[10px] text-slate-400">Duty toggle & delivery alerts</p>
+              </div>
+            </a>
+          </div>
         </div>
 
       </div>
@@ -92,6 +114,7 @@
     </div>
   </header>
 
+  <!-- Hero Spotlight -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
     <div class="hero-glow bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-slate-800 relative overflow-hidden">
       <div class="absolute -right-16 -top-16 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -107,6 +130,7 @@
           Instant doorstep delivery from the finest boutiques near you. Get authentic designer wear delivered within 60 minutes with instant UPI/COD checkout.
         </p>
 
+        <!-- Stats Chips -->
         <div class="grid grid-cols-3 gap-3 sm:gap-6 mt-8 pt-8 border-t border-white/10 max-w-xl">
           <div>
             <p class="font-brand text-xl sm:text-2xl font-black text-white">60 <span class="text-orange-400 text-sm">MINS</span></p>
@@ -125,6 +149,7 @@
     </div>
   </section>
 
+  <!-- Filter Bar -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       <div>
@@ -140,10 +165,12 @@
     </div>
   </section>
 
+  <!-- Dynamic Product Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
   </main>
 
+  <!-- Footer -->
   <footer class="max-w-7xl mx-auto px-4 sm:px-6 mt-20 pt-10 border-t border-slate-200/80">
     <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-8">
       <div>
@@ -159,11 +186,13 @@
     </div>
   </footer>
 
+  <!-- Floating Toast Notification -->
   <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
     <span class="text-emerald-400">✓</span>
     <span id="toastMessage">Item added to Bag!</span>
   </div>
 
+  <!-- Bottom Floating Bag Bar -->
   <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
@@ -178,6 +207,7 @@
     </button>
   </div>
 
+  <!-- Side Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -236,6 +266,7 @@
     </div>
   </div>
 
+  <!-- Dynamic Boutique UPI Modal -->
   <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
     <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
     <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-slate-100">
@@ -328,12 +359,23 @@
     var currentCategory = 'all';
     var MAX_RADIUS_KM = 20;
 
-    // Dropdown Toggle & Dynamic Menu Order Rendering
-    function toggleNavMenu(e) {
+    // Toggle Customer Menu
+    function toggleCustomerMenu(e) {
       if (e) e.stopPropagation();
-      var dropdown = document.getElementById("navDropdown");
-      dropdown.classList.toggle("hidden");
+      var custDrop = document.getElementById("custDropdown");
+      var bizDrop = document.getElementById("businessDropdown");
+      bizDrop.classList.add("hidden");
+      custDrop.classList.toggle("hidden");
       renderMenuOrderBox();
+    }
+
+    // Toggle Business Menu
+    function toggleBusinessMenu(e) {
+      if (e) e.stopPropagation();
+      var custDrop = document.getElementById("custDropdown");
+      var bizDrop = document.getElementById("businessDropdown");
+      custDrop.classList.add("hidden");
+      bizDrop.classList.toggle("hidden");
     }
 
     function renderMenuOrderBox() {
@@ -356,9 +398,9 @@
               '<p class="text-slate-600 text-[11px] truncate font-medium">🛍️ ' + firstItem + '</p>' +
               '<div class="flex items-center justify-between text-[11px] font-bold text-slate-900 pt-1 border-t border-slate-200/60">' +
                 '<span>Total: ₹' + order.totalAmount + '</span>' +
-                '<span class="text-orange-600">60-Min ETA</span>' +
+                '<span class="text-orange-600 font-extrabold">60-Min ETA</span>' +
               '</div>' +
-              '<a href="tracking.html" class="block text-center bg-orange-600 hover:bg-orange-500 text-white font-black py-2 rounded-xl text-[11px] transition shadow-sm mt-2">' +
+              '<a href="tracking.html" class="block text-center bg-orange-600 hover:bg-orange-500 text-white font-black py-2.5 rounded-xl text-[11px] transition shadow-sm mt-2">' +
                 '⚡ Track Live Status' +
               '</a>' +
             '</div>';
@@ -368,18 +410,24 @@
 
       dot.classList.add("hidden");
       box.innerHTML = 
-        '<div class="text-center py-2 text-slate-400">' +
-          '<p class="text-lg mb-0.5">🛍️</p>' +
-          '<p class="font-bold text-[11px] text-slate-500">No active orders right now</p>' +
-          '<p class="text-[10px] text-slate-400 mt-0.5">Your latest orders will appear here</p>' +
+        '<div class="text-center py-4 text-slate-400">' +
+          '<p class="text-xl mb-1">🛍️</p>' +
+          '<p class="font-bold text-[11px] text-slate-600">No Active Orders</p>' +
+          '<p class="text-[10px] text-slate-400 mt-0.5">Order updates will appear here in real-time</p>' +
         '</div>';
     }
 
     function handleGlobalClick(e) {
-      var dropdown = document.getElementById("navDropdown");
-      var btn = document.getElementById("menuBtn");
-      if (dropdown && !dropdown.contains(e.target) && !btn.contains(e.target)) {
-        dropdown.classList.add("hidden");
+      var custDrop = document.getElementById("custDropdown");
+      var bizDrop = document.getElementById("businessDropdown");
+      var custBtn = document.getElementById("custMenuBtn");
+      var bizBtn = document.getElementById("businessHubBtn");
+
+      if (custDrop && !custDrop.contains(e.target) && !custBtn.contains(e.target)) {
+        custDrop.classList.add("hidden");
+      }
+      if (bizDrop && !bizDrop.contains(e.target) && !bizBtn.contains(e.target)) {
+        bizDrop.classList.add("hidden");
       }
     }
 
