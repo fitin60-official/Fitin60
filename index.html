@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | 60-Minute Luxury Hyperlocal Fashion Radar</title>
+  <title>Fitin60 | 60-Minute Hyperlocal Fashion Delivery</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
     }
     .badge-pulse {
       box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
-      animation: pulse 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+      animation: pulse 1.8s infinite cubic-bezier(0.66, 0, 1);
     }
     @keyframes pulse {
       to { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
@@ -29,7 +29,7 @@
   <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 Hyperlocal Active</strong> • 60-Min Express Drop • 20-Min Home Fitting • Direct Boutique Checkout</span>
+    <span>⚡ <strong>FITIN60 Hyperlocal Active</strong> • 60-Min Doorstep Express Drop • Direct Boutique Checkout</span>
   </div>
 
   <!-- Header -->
@@ -72,7 +72,7 @@
           Runway Fashion Delivered in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Instant doorstep delivery from the finest boutiques near you. Try outfits at home for 20 minutes before making payment.
+          Instant doorstep delivery from the finest boutiques near you. Get authentic designer wear delivered within 60 minutes with instant UPI/COD checkout.
         </p>
 
         <!-- Stats Chips -->
@@ -82,8 +82,8 @@
             <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Express Drop</p>
           </div>
           <div>
-            <p class="font-brand text-xl sm:text-2xl font-black text-white">20 <span class="text-orange-400 text-sm">MINS</span></p>
-            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Home Fitting</p>
+            <p class="font-brand text-xl sm:text-2xl font-black text-white">20 <span class="text-orange-400 text-sm">KM</span></p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Local Radar</p>
           </div>
           <div>
             <p class="font-brand text-xl sm:text-2xl font-black text-white">100%</p>
@@ -122,7 +122,7 @@
         <span class="font-brand text-xl font-black tracking-tight text-slate-950">
           FITIN<span class="text-orange-600">60</span>
         </span>
-        <p class="text-xs text-slate-500 mt-1">60-Minute Luxury Hyperlocal Fashion Radar • Try at Home</p>
+        <p class="text-xs text-slate-500 mt-1">60-Minute Luxury Hyperlocal Fashion Delivery</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-500">
@@ -136,18 +136,19 @@
     </div>
   </footer>
 
-  <!-- Floating Toast & Cart Drawer -->
+  <!-- Floating Toast Notification -->
   <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
     <span class="text-emerald-400">✓</span>
     <span id="toastMessage">Item added to Bag!</span>
   </div>
 
+  <!-- Bottom Floating Bag Bar -->
   <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
       <div>
         <p class="text-xs font-black text-white" id="floatCartSummary">1 Item in Bag • ₹899</p>
-        <p class="text-[10px] text-slate-400">20-Min Home Fitting Included</p>
+        <p class="text-[10px] text-slate-400">60-Min Express Delivery</p>
       </div>
     </div>
     <button onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1.5 transition">
@@ -156,6 +157,7 @@
     </button>
   </div>
 
+  <!-- Side Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -185,7 +187,7 @@
           <textarea id="custAddress" rows="2" required placeholder="Door No, Street Name, Landmark, Area" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500"></textarea>
 
           <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider pt-2 flex items-center gap-1.5">
-            <span>💳</span> Payment Settlement Mode
+            <span>💳</span> Payment Mode
           </h4>
           <div class="grid grid-cols-2 gap-2.5">
             <label class="border-2 border-orange-500 bg-orange-50/50 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
@@ -214,6 +216,7 @@
     </div>
   </div>
 
+  <!-- Dynamic Boutique UPI Modal -->
   <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
     <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
     <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-slate-100">
@@ -369,7 +372,6 @@
                           '<div class="mt-5 flex items-baseline gap-2.5">' +
                             '<span class="font-brand text-2xl font-black text-slate-950">₹' + p.price + '</span>' +
                             '<span class="text-xs font-bold text-slate-400 line-through">₹' + p.originalPrice + '</span>' +
-                            '<span class="text-[11px] text-emerald-600 font-extrabold ml-auto">20-Min Trial</span>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
