@@ -25,16 +25,6 @@
     @keyframes pulse {
       to { box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); }
     }
-
-    /* Interactive Zoom Style */
-    .zoom-container {
-      overflow: hidden;
-      cursor: zoom-in;
-    }
-    .zoom-active {
-      transform: scale(2.2);
-      cursor: zoom-out;
-    }
   </style>
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white" onclick="handleGlobalClick(event)">
@@ -140,7 +130,7 @@
           Explore Local Boutiques & Get Drops in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Tap any boutique or outfit to explore their collection, inspect fabric details with HD zoom, and order with instant UPI checkout.
+          Tap any boutique or dress preview to enter their full collection, slide through outfit angles, and order with instant UPI checkout.
         </p>
 
         <!-- Stats Chips -->
@@ -171,7 +161,7 @@
           <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Studios</h2>
           <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full border border-orange-200">0 Boutiques Active</span>
         </div>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click any boutique or dress preview to enter the shop collection</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click any boutique or outfit to explore the full collection</p>
       </div>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -260,7 +250,7 @@
       <div class="p-6 overflow-y-auto flex-1 bg-[#fafaf9]">
         <div class="flex items-center justify-between mb-4">
           <h4 class="font-brand font-bold text-sm text-slate-950">Available Collection in This Boutique</h4>
-          <span id="modalItemCount" class="text-xs text-orange-600 font-bold">Click any dress for HD Zoom & Purchase</span>
+          <span id="modalItemCount" class="text-xs text-orange-600 font-bold">Select any dress to slide different angles & order</span>
         </div>
         <div id="storeProductsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
       </div>
@@ -268,7 +258,7 @@
     </div>
   </div>
 
-  <!-- ================= 2. SINGLE DRESS MODAL WITH HD ZOOM & BUY NOW ================= -->
+  <!-- ================= 2. SINGLE DRESS MULTI-ANGLE SLIDER MODAL ================= -->
   <div id="singleProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
     <div class="bg-white w-full max-w-3xl max-h-[92vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100 relative">
       
@@ -282,14 +272,14 @@
 
       <div class="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6">
         
-        <!-- HD Interactive Zoom Image Box -->
-        <div class="space-y-2">
-          <div class="relative h-80 sm:h-96 bg-slate-950 rounded-3xl overflow-hidden border border-slate-200 flex items-center justify-center zoom-container group" id="zoomBox" onclick="toggleZoomImage()">
-            <img id="productSliderImg" src="" alt="Dress view" class="w-full h-full object-contain transition-transform duration-300">
+        <!-- Multi-Angle Image Slider Box -->
+        <div class="space-y-3">
+          <div class="relative h-80 sm:h-96 bg-slate-950 rounded-3xl overflow-hidden border border-slate-200 flex items-center justify-center group" id="sliderBox">
+            <img id="productSliderImg" src="" alt="Dress angle view" class="w-full h-full object-contain">
             
-            <!-- Zoom Controls Overlay -->
-            <div class="absolute bottom-3 right-3 flex items-center gap-2 bg-black/70 backdrop-blur-md p-1.5 px-3 rounded-2xl text-white text-xs font-bold border border-white/10 z-20 pointer-events-none">
-              <span id="zoomStatusText">🔍 Click / Tap Photo to Zoom</span>
+            <!-- Slide Angle Label -->
+            <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-3 py-1 rounded-xl text-white text-[11px] font-bold border border-white/10 z-20">
+              <span id="slideCounterText">Angle 1 of 3</span>
             </div>
 
             <!-- Slide Prev/Next Arrows -->
@@ -598,7 +588,6 @@
 
     var activeProductObj = null;
     var activeSlideIndex = 0;
-    var isZoomed = false;
     var currentBoutiqueName = "";
 
     function getAllProducts() {
@@ -642,7 +631,6 @@
     }
 
     // ================= 1. RENDER HOMEPAGE BOUTIQUE STORES =================
-    // Clicking Shop Name OR any of the 3 preview images OPENS THE BOUTIQUE COLLECTION
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("resultsCountBadge");
@@ -720,8 +708,8 @@
               '<div class="p-6 pt-0">' +
                 '<button onclick="openStoreShowroom(\'' + safeStore + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 cursor-pointer">' +
                   '<span>🏬</span> View ' + store.storeName + ' Collection' +
-                '</button>' +
-              '</div>' +
+                '</button>
+              </div>' +
 
             '</div>';
         }
@@ -743,7 +731,7 @@
       grid.innerHTML = html;
     }
 
-    // ================= 2. OPEN BOUTIQUE SHOWROOM (STEP 1) =================
+    // ================= 2. OPEN BOUTIQUE SHOWROOM =================
     function openStoreShowroom(storeName) {
       currentBoutiqueName = storeName;
       var stores = getGroupedStores();
@@ -752,16 +740,12 @@
 
       document.getElementById("modalStoreName").innerText = selectedStore.storeName;
       document.getElementById("modalStoreMeta").innerText = "📍 " + selectedStore.area + " • ⚡ " + selectedStore.eta + " Doorstep Delivery";
-      document.getElementById("modalItemCount").innerText = selectedStore.products.length + " Outfits Available (Click dress for HD Zoom & Buy)";
+      document.getElementById("modalItemCount").innerText = selectedStore.products.length + " Outfits Available (Click dress to slide angles & order)";
 
       var container = document.getElementById("storeProductsContainer");
       var html = "";
 
       selectedStore.products.forEach(function(p) {
-        var safeName = p.name.replace(/'/g, "\\'");
-        var safeStore = p.store.replace(/'/g, "\\'");
-
-        // In this showroom, clicking any dress OPENS THE SINGLE DRESS HD ZOOM VIEW (STEP 2)
         html += 
           '<div onclick="openSingleProductModal(' + p.id + ')" class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:border-orange-400 hover:shadow-xl transition duration-300 flex flex-col justify-between cursor-pointer group">' +
             '<div>' +
@@ -770,7 +754,7 @@
                 '<span class="absolute top-3 left-3 bg-slate-950/90 text-white text-[10px] font-mono-num font-black px-2.5 py-1 rounded-xl">⚡ 60-MIN</span>' +
                 '<span class="absolute top-3 right-3 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl">' + p.discount + '</span>' +
                 '<span class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-md">' +
-                  '🔍 Zoom & Buy ➔' +
+                  'Slide Angles & Buy ➔' +
                 '</span>' +
               '</div>' +
               '<div class="p-5">' +
@@ -784,7 +768,7 @@
             '</div>' +
             '<div class="p-5 pt-0">' +
               '<button class="w-full bg-slate-950 group-hover:bg-orange-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-sm">' +
-                '⚡ Inspect & Order' +
+                '⚡ Slide Angles & Buy' +
               '</button>' +
             '</div>' +
           '</div>';
@@ -798,16 +782,15 @@
       document.getElementById("storeModal").classList.add("hidden");
     }
 
-    // ================= 3. OPEN SINGLE DRESS HD ZOOM & BUY NOW (STEP 2) =================
+    // ================= 3. OPEN SINGLE DRESS WITH ANGLE SLIDER =================
     function openSingleProductModal(productId) {
-      closeStoreModal(); // Close boutique view temporarily
+      closeStoreModal();
       var allProds = getAllProducts();
       var p = allProds.find(function(item) { return item.id == productId; });
       if (!p) return;
 
       activeProductObj = p;
       activeSlideIndex = 0;
-      isZoomed = false;
 
       if (!p.images || p.images.length === 0) {
         p.images = [p.image];
@@ -859,31 +842,15 @@
       openSingleProductModal(activeProductObj.id);
     }
 
-    // Toggle HD Zoom on Photo Click
-    function toggleZoomImage() {
-      var img = document.getElementById("productSliderImg");
-      var text = document.getElementById("zoomStatusText");
-      isZoomed = !isZoomed;
-
-      if (isZoomed) {
-        img.classList.add("zoom-active");
-        text.innerText = "🔍 Click again to Zoom Out (Normal View)";
-      } else {
-        img.classList.remove("zoom-active");
-        text.innerText = "🔍 Click / Tap Photo to Zoom";
-      }
-    }
-
     function updateSliderUI() {
       if (!activeProductObj) return;
       var imgEl = document.getElementById("productSliderImg");
       var dotsEl = document.getElementById("sliderDots");
       var thumbsEl = document.getElementById("sliderThumbs");
+      var counterEl = document.getElementById("slideCounterText");
 
-      imgEl.classList.remove("zoom-active");
-      isZoomed = false;
-      document.getElementById("zoomStatusText").innerText = "🔍 Click / Tap Photo to Zoom";
       imgEl.src = activeProductObj.images[activeSlideIndex];
+      counterEl.innerText = "Angle " + (activeSlideIndex + 1) + " of " + activeProductObj.images.length;
 
       // Dots
       var dotsHtml = "";
