@@ -36,11 +36,6 @@
     }
 
     /* Radiant Text */
-    .text-gradient-fire {
-      background: linear-gradient(135deg, #ff7a18 0%, #af002d 100%, #319197 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
     .text-gradient-sunset {
       background: linear-gradient(135deg, #f97316 0%, #fbbf24 50%, #f43f5e 100%);
       -webkit-background-clip: text;
@@ -50,9 +45,6 @@
     /* Live Badge Glow */
     .live-dot-pulse {
       box-shadow: 0 0 12px 2px #10b981;
-    }
-    .fire-dot-pulse {
-      box-shadow: 0 0 12px 2px #f97316;
     }
   </style>
 </head>
@@ -186,11 +178,37 @@
     </div>
   </section>
 
-  <!-- Filter Category Tabs -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-12">
+  <!-- ================= LUXURY SMART SEARCH BAR SECTION ================= -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
+    <div class="glass-card rounded-3xl p-3 sm:p-4 shadow-2xl border border-white/10 relative overflow-hidden">
+      <div class="flex items-center gap-3 bg-black/40 border border-white/10 rounded-2xl px-4 py-3 sm:py-3.5 transition focus-within:border-orange-500/80 focus-within:ring-2 focus-within:ring-orange-500/20">
+        <span class="text-xl text-orange-400">🔍</span>
+        <input 
+          type="text" 
+          id="searchInput" 
+          oninput="handleSearch(event)" 
+          placeholder="Search dresses, sarees, shirts, or boutique stores (e.g. Anu Ram, Saree, Oxford)..." 
+          class="w-full bg-transparent text-sm sm:text-base text-white placeholder-slate-400 focus:outline-none font-medium"
+        >
+        <button 
+          id="clearSearchBtn" 
+          onclick="clearSearch()" 
+          class="hidden text-xs bg-white/10 hover:bg-white/20 text-slate-300 px-3 py-1.5 rounded-xl font-bold transition cursor-pointer"
+        >
+          ✕ Clear
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Category Tabs & Results Counter -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-white/10">
       <div>
-        <h2 class="font-brand text-2xl md:text-3xl font-black text-white">Local Boutique Drops</h2>
+        <div class="flex items-center gap-3">
+          <h2 class="font-brand text-2xl md:text-3xl font-black text-white">Local Boutique Drops</h2>
+          <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-500/20 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full">0 Found</span>
+        </div>
         <p class="text-xs text-slate-400 mt-1 font-medium">Auto-sorted by fastest 60-minute delivery radius</p>
       </div>
 
@@ -397,7 +415,27 @@
     var items = [];
     var selectedSizes = {};
     var currentCategory = 'all';
+    var searchQuery = '';
     var MAX_RADIUS_KM = 20;
+
+    // Search Engine
+    function handleSearch(e) {
+      searchQuery = e.target.value.toLowerCase().trim();
+      var clearBtn = document.getElementById("clearSearchBtn");
+      if (searchQuery.length > 0) {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      renderProducts();
+    }
+
+    function clearSearch() {
+      document.getElementById("searchInput").value = "";
+      searchQuery = "";
+      document.getElementById("clearSearchBtn").classList.add("hidden");
+      renderProducts();
+    }
 
     function toggleCustomerMenu(e) {
       if (e) e.stopPropagation();
@@ -482,7 +520,9 @@
 
     function renderProducts() {
       var grid = document.getElementById("productGrid");
+      var badge = document.getElementById("resultsCountBadge");
       var html = "";
+      var matchCount = 0;
 
       var customItems = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
       var allProducts = customItems.concat(catalog);
@@ -490,7 +530,19 @@
       allProducts.forEach(function(p) {
         var dist = calculateDistance(userCoords.lat, userCoords.lng, p.lat, p.lng);
         if (parseFloat(dist) <= MAX_RADIUS_KM) {
-          if (currentCategory === 'all' || p.category === currentCategory) {
+          
+          // Match category
+          var categoryMatch = (currentCategory === 'all' || p.category === currentCategory);
+          
+          // Match search text across (Product Name, Store Name, Area, Description)
+          var searchMatch = true;
+          if (searchQuery.length > 0) {
+            var combinedText = (p.name + " " + p.store + " " + p.area + " " + p.desc).toLowerCase();
+            searchMatch = combinedText.includes(searchQuery);
+          }
+
+          if (categoryMatch && searchMatch) {
+            matchCount++;
             var activeSize = selectedSizes[p.id] || p.sizes[0];
 
             var sizeButtons = "";
@@ -547,6 +599,19 @@
           }
         }
       });
+
+      badge.innerText = matchCount + " Found";
+
+      if (matchCount === 0) {
+        grid.innerHTML = 
+          '<div class="col-span-full py-16 text-center">' +
+            '<div class="w-16 h-16 bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center mx-auto text-2xl mb-4">🔍</div>' +
+            '<h3 class="font-brand font-bold text-xl text-white">No Matching Outfits or Stores Found</h3>' +
+            '<p class="text-xs text-slate-400 mt-2 max-w-sm mx-auto">Try searching for different keywords like "Saree", "Shirt", or boutique names.</p>' +
+            '<button onclick="clearSearch()" class="mt-5 bg-orange-500 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-orange-400 transition cursor-pointer">Reset Search</button>' +
+          '</div>';
+        return;
+      }
 
       grid.innerHTML = html;
     }
