@@ -161,7 +161,7 @@
           <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Outfits</h2>
           <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full border border-orange-200">0 Found</span>
         </div>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Auto-sorted by 20-KM delivery radar</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click on any image for high-definition zoom view</p>
       </div>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -198,7 +198,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
   </main>
 
-  <!-- ================= 1. DELIVERY RULES & PROMISE SECTION ================= -->
+  <!-- Delivery Rules Section -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-20">
     <div class="text-center max-w-2xl mx-auto mb-10">
       <span class="text-orange-600 text-xs font-black uppercase tracking-widest bg-orange-50 border border-orange-200 px-3 py-1 rounded-full">⚡ Fitin60 Express Policy</span>
@@ -207,38 +207,35 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 transition">
         <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">⏱️</div>
         <h3 class="font-brand font-bold text-sm text-slate-950">60-Min Express Radar</h3>
         <p class="text-xs text-slate-500 mt-2 leading-relaxed">Orders are instantly assigned to nearby riders and dispatched directly from boutique stores within 20 KM.</p>
       </div>
 
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 transition">
         <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">📦</div>
         <h3 class="font-brand font-bold text-sm text-slate-950">Tamper-Proof Packing</h3>
         <p class="text-xs text-slate-500 mt-2 leading-relaxed">Every outfit comes with official boutique tags, fresh condition check, and sealed waterproof delivery packs.</p>
       </div>
 
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 transition">
         <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">🔄</div>
         <h3 class="font-brand font-bold text-sm text-slate-950">Instant Size Exchange</h3>
         <p class="text-xs text-slate-500 mt-2 leading-relaxed">If the size doesn't fit, request an instant same-day size replacement right after delivery without hassle.</p>
       </div>
 
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 transition">
         <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">💳</div>
         <h3 class="font-brand font-bold text-sm text-slate-950">Direct Store UPI / COD</h3>
         <p class="text-xs text-slate-500 mt-2 leading-relaxed">100% direct payment to local boutique merchant UPI accounts or choose Cash on Delivery at your doorstep.</p>
       </div>
-
     </div>
   </section>
 
-  <!-- ================= 2. CUSTOMER FEEDBACK & REVIEWS SECTION ================= -->
+  <!-- Customer Feedback & Reviews Section -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-20">
     <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
-      
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-800">
         <div>
           <span class="text-orange-400 text-xs font-black uppercase tracking-widest bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full">⭐ Customer Voices</span>
@@ -251,15 +248,30 @@
         </button>
       </div>
 
-      <!-- Live Reviews Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8" id="reviewsContainer">
-        <!-- Injected dynamically via script -->
-      </div>
-
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8" id="reviewsContainer"></div>
     </div>
   </section>
 
-  <!-- Modal for Writing a Review -->
+  <!-- ================= IMAGE ZOOM LIGHTBOX MODAL ================= -->
+  <div id="imageZoomModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <div class="relative max-w-2xl w-full bg-slate-950 rounded-3xl overflow-hidden border border-white/20 shadow-2xl">
+      <button onclick="closeImageZoom()" class="absolute top-4 right-4 z-20 bg-black/60 hover:bg-black text-white rounded-full w-9 h-9 flex items-center justify-center font-bold text-lg border border-white/20 cursor-pointer">&times;</button>
+      
+      <div class="relative h-[480px] sm:h-[540px] bg-slate-900 flex items-center justify-center overflow-hidden">
+        <img id="zoomedImg" src="" alt="Zoomed view" class="w-full h-full object-contain">
+      </div>
+
+      <div class="p-5 bg-slate-900 border-t border-white/10 flex items-center justify-between text-white">
+        <div>
+          <h4 id="zoomTitle" class="font-brand font-bold text-base">Dress Name</h4>
+          <p id="zoomStore" class="text-xs text-orange-400 font-semibold">Boutique Name</p>
+        </div>
+        <p id="zoomPrice" class="font-mono-num font-black text-xl text-white">₹0</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
   <div id="reviewModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
     <div onclick="toggleReviewModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
     <div class="bg-white rounded-[2rem] max-w-md w-full p-7 relative z-10 shadow-2xl text-slate-900 border border-slate-100">
@@ -483,7 +495,6 @@
       }
     ];
 
-    // Default Verified Customer Feedback
     var defaultReviews = [
       {
         name: "Divya Srikanth",
@@ -511,6 +522,19 @@
     var currentCategory = 'all';
     var searchQuery = '';
     var MAX_RADIUS_KM = 20;
+
+    // Image Zoom Functionality
+    function openImageZoom(imgUrl, title, store, price) {
+      document.getElementById("zoomedImg").src = imgUrl;
+      document.getElementById("zoomTitle").innerText = title;
+      document.getElementById("zoomStore").innerText = store;
+      document.getElementById("zoomPrice").innerText = "₹" + price;
+      document.getElementById("imageZoomModal").classList.remove("hidden");
+    }
+
+    function closeImageZoom() {
+      document.getElementById("imageZoomModal").classList.add("hidden");
+    }
 
     // Review Handlers
     function toggleReviewModal() {
@@ -695,15 +719,23 @@
               sizeButtons += '<button type="button" onclick="selectProductSize(' + p.id + ', \'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-50 text-orange-600 font-black' : 'border-slate-200 text-slate-700 bg-slate-50') + ' px-2.5 py-1 text-xs rounded-lg transition">' + s + '</button> ';
             });
 
+            // Clean escaped strings for zoom modal click
+            var safeName = p.name.replace(/'/g, "\\'");
+            var safeStore = p.store.replace(/'/g, "\\'");
+
             html += '<div class="group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-xl transition duration-300 flex flex-col justify-between">' +
                       '<div>' +
-                        '<div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">' +
+                        '<!-- Clickable Photo for Zoom View -->' +
+                        '<div onclick="openImageZoom(\'' + p.image + '\', \'' + safeName + '\', \'' + safeStore + '\', ' + p.price + ')" class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden cursor-pointer group">' +
                           '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
                           '<span class="absolute top-3.5 left-3.5 bg-slate-950/90 backdrop-blur-md text-white text-[10px] font-mono-num font-black px-3 py-1 rounded-xl flex items-center gap-1 shadow-md">' +
                             '<span>⚡</span> ' + p.eta + ' EXPRESS' +
                           '</span>' +
                           '<span class="absolute top-3.5 right-3.5 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl shadow-md">' +
                             p.discount +
+                          '</span>' +
+                          '<span class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition flex items-center gap-1">' +
+                            '🔍 Click to Zoom' +
                           '</span>' +
                         '</div>' +
 
@@ -732,10 +764,10 @@
                       '</div>' +
 
                       '<div class="p-6 pt-0 grid grid-cols-2 gap-2.5">' +
-                        '<button onclick="addToBagSilent(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-1 cursor-pointer">' +
+                        '<button onclick="addToBagSilent(\'' + safeName + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + safeStore + '\', \'' + p.upi + '\')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-1 cursor-pointer">' +
                           '<span>+</span> Add to Bag' +
                         '</button>' +
-                        '<button onclick="buyNowInstant(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer">' +
+                        '<button onclick="buyNowInstant(\'' + safeName + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + safeStore + '\', \'' + p.upi + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer">' +
                           '<span>⚡</span> Buy Now' +
                         '</button>' +
                       '</div>' +
