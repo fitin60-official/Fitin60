@@ -3,167 +3,311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Rider Fleet Station</title>
+  <title>Fitin60 | Rider Fleet Station & Dispatch</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-brand { font-family: 'Space Grotesk', sans-serif; }
+    .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
 
   <!-- Header -->
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
-    <div class="max-w-2xl mx-auto px-4 h-20 flex items-center justify-between">
-      <div>
-        <span class="font-brand text-2xl font-black text-white">FITIN<span class="text-orange-500">60</span></span>
-        <span class="text-[10px] block font-bold text-slate-400 uppercase tracking-wider">Rider Fleet Command</span>
-      </div>
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex flex-col">
+        <div class="flex items-center gap-1.5">
 
-      <a href="index.html" class="text-xs font-bold text-slate-300 hover:text-white bg-slate-800 px-4 py-2.5 rounded-2xl border border-slate-700 transition">
+          <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
+            FITIN<span class="text-orange-600">60</span>
+          </span>
+          <span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">FLEET</span>
+        </div>
+        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Rider Delivery Station</span>
+      </a>
+
+      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl transition">
         ← Customer Store
       </a>
     </div>
   </header>
 
-  <main class="max-w-lg mx-auto px-4 mt-8 space-y-6">
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-8 space-y-6">
 
-    <!-- Duty Toggle Card -->
-    <div class="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-7 text-center shadow-xl">
-      <div class="text-3xl mb-2" id="dutyIcon">🛵</div>
-      <h2 class="font-brand font-bold text-xl text-white" id="dutyTitle">Ready for Deliveries?</h2>
-      <p class="text-xs text-slate-400 mt-1">Turn ON Duty to receive instant chime notifications for customer orders nearby.</p>
-
-      <button id="dutySwitchBtn" onclick="toggleRiderDuty()" class="mt-6 w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer flex items-center justify-center gap-2">
-        <span id="dutyDot" class="w-3 h-3 rounded-full bg-rose-500"></span>
-        <span id="dutyBtnText">⚡ Turn ON Duty (Go Online)</span>
-      </button>
-    </div>
-
-    <!-- Active Rides Pool -->
-    <div class="space-y-4">
-      <div class="flex items-center justify-between px-2">
-        <h3 class="font-brand font-black text-sm text-slate-300 uppercase tracking-wider">Live Available Rides</h3>
-        <span id="rideCountBadge" class="text-xs bg-slate-900 text-orange-400 font-bold px-3 py-1 rounded-xl border border-slate-800">0 Available</span>
+    <!-- Duty Status & Profile Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-2xl font-bold">🛵</div>
+        <div>
+          <h2 class="font-brand font-bold text-lg text-slate-950">Rider: Rajesh Express</h2>
+          <p class="text-xs text-slate-500">ID: <span class="font-mono font-bold text-slate-700">F60-RIDER-78</span> • Anantapur Central Zone</p>
+        </div>
       </div>
 
-      <div id="riderFeedContainer" class="space-y-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center text-xs text-slate-400">
-          You are Offline. Switch on Duty above to view live dress delivery requests.
+      <!-- Duty Toggle Switch -->
+      <div class="flex items-center gap-3 bg-slate-50 p-2.5 px-4 rounded-2xl border border-slate-200">
+        <span class="text-xs font-bold text-slate-700">Duty Status:</span>
+        <button id="dutyToggleBtn" onclick="toggleDuty()" class="bg-emerald-600 text-white text-xs font-black px-4 py-2 rounded-xl transition cursor-pointer shadow-sm flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+          <span id="dutyText">ONLINE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Delivery Task Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-sm">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+        <div>
+          <h3 class="font-brand font-bold text-xl text-slate-950">Active Express Ride</h3>
+          <p class="text-xs text-slate-500">Live order dispatched from hyperlocal boutique radar</p>
         </div>
+        <span id="liveStatusBadge" class="text-xs font-bold bg-orange-100 text-orange-700 border border-orange-200 px-3 py-1 rounded-xl">⚡ Live Task</span>
+      </div>
+
+      <div id="activeRideContent" class="space-y-6">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Rider Rating & Feedback Section (Completed Trips Feedback) -->
+    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 shadow-sm">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+        <div>
+          <h3 class="font-brand font-bold text-xl text-slate-950">Rider Delivery Ratings & Logs</h3>
+          <p class="text-xs text-slate-500">Review boutique packaging & customer drop experience</p>
+        </div>
+        <button onclick="toggleRiderReviewModal()" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+          <span>⭐</span> Rate Last Delivery
+        </button>
+      </div>
+
+      <div id="riderFeedbackLogs" class="space-y-3">
+        <!-- Rendered dynamically -->
       </div>
     </div>
 
   </main>
 
+  <!-- Rider Rating Modal -->
+  <div id="riderReviewModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div onclick="toggleRiderReviewModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
+    <div class="bg-white rounded-[2rem] max-w-md w-full p-7 relative z-10 shadow-2xl text-slate-900 border border-slate-100">
+      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-3">⭐</div>
+      <h3 class="font-brand font-black text-xl text-slate-950">Rider Delivery Review</h3>
+      <p class="text-xs text-slate-500 mt-0.5">Rate store handover speed and customer drop experience</p>
+
+      <form onsubmit="handleRiderReviewSubmit(event)" class="mt-5 space-y-4">
+        <div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Order ID / Boutique Name</label>
+          <input type="text" id="riderRevOrder" required placeholder="e.g., FIT-4821 • Anu Ram Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Boutique Packing</label>
+            <select id="riderRevBoutique" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-orange-500 font-bold">
+              <option value="5">⭐⭐⭐⭐⭐ Fast</option>
+              <option value="4">⭐⭐⭐⭐ Good</option>
+              <option value="3">⭐⭐⭐ Delayed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Customer Drop</label>
+            <select id="riderRevCustomer" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-orange-500 font-bold">
+              <option value="5">⭐⭐⭐⭐⭐ Smooth</option>
+              <option value="4">⭐⭐⭐⭐ Good</option>
+              <option value="3">⭐⭐⭐ Hard to Find</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Rider Notes / Feedback</label>
+          <textarea id="riderRevNotes" rows="2" placeholder="e.g., Store gave package in 3 mins. Customer handoff was instant." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Submit Rider Rating
+        </button>
+      </form>
+    </div>
+  </div>
+
   <script>
-    var isOnline = false;
-    var audioCtx = null;
-    var knownOrders = {};
+    var isOnline = true;
 
-    function playDingDong() {
+    // Web Audio Sound Chime for New Orders
+    function playChime() {
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-
-        var now = audioCtx.currentTime;
-        var osc1 = audioCtx.createOscillator();
-        var gain1 = audioCtx.createGain();
-        osc1.type = "sine";
-        osc1.frequency.setValueAtTime(587.33, now);
-        gain1.gain.setValueAtTime(0.3, now);
-        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-        osc1.connect(gain1);
-        gain1.connect(audioCtx.destination);
-        osc1.start(now);
-        osc1.stop(now + 0.4);
-
-        var osc2 = audioCtx.createOscillator();
-        var gain2 = audioCtx.createGain();
-        osc2.type = "sine";
-        osc2.frequency.setValueAtTime(880, now + 0.15);
-        gain2.gain.setValueAtTime(0.3, now + 0.15);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-        osc2.connect(gain2);
-        gain2.connect(audioCtx.destination);
-        osc2.start(now + 0.15);
-        osc2.stop(now + 0.6);
-      } catch(e) {}
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15); // A5
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.6);
+      } catch (e) {}
     }
 
-    function toggleRiderDuty() {
+    function toggleDuty() {
       isOnline = !isOnline;
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-
-      var dot = document.getElementById("dutyDot");
-      var text = document.getElementById("dutyBtnText");
-      var title = document.getElementById("dutyTitle");
-      var btn = document.getElementById("dutySwitchBtn");
-
+      var btn = document.getElementById("dutyToggleBtn");
+      var txt = document.getElementById("dutyText");
       if (isOnline) {
-        dot.className = "w-3 h-3 rounded-full bg-emerald-400 animate-pulse";
-        text.innerText = "Duty is ONLINE (Listening for Rides)";
-        title.innerText = "You are On Duty!";
-        btn.className = "mt-6 w-full bg-slate-800 hover:bg-slate-700 text-rose-400 font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer flex items-center justify-center gap-2 border border-slate-700";
-        renderRiderOrders();
+        btn.className = "bg-emerald-600 text-white text-xs font-black px-4 py-2 rounded-xl transition cursor-pointer shadow-sm flex items-center gap-1.5";
+        txt.innerText = "ONLINE";
       } else {
-        dot.className = "w-3 h-3 rounded-full bg-rose-500";
-        text.innerText = "⚡ Turn ON Duty (Go Online)";
-        title.innerText = "Ready for Deliveries?";
-        btn.className = "mt-6 w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer flex items-center justify-center gap-2";
-        document.getElementById("riderFeedContainer").innerHTML = '<div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center text-xs text-slate-400">You are Offline. Switch on Duty above to view live dress delivery requests.</div>';
-        document.getElementById("rideCountBadge").innerText = "0 Available";
+        btn.className = "bg-slate-400 text-white text-xs font-black px-4 py-2 rounded-xl transition cursor-pointer shadow-sm flex items-center gap-1.5";
+        txt.innerText = "OFFLINE";
       }
+      renderActiveRide();
     }
 
-    function renderRiderOrders() {
-      if (!isOnline) return;
+    function toggleRiderReviewModal() {
+      document.getElementById("riderReviewModal").classList.toggle("hidden");
+    }
 
-      var container = document.getElementById("riderFeedContainer");
-      var badge = document.getElementById("rideCountBadge");
+    function handleRiderReviewSubmit(e) {
+      e.preventDefault();
+      var orderInfo = document.getElementById("riderRevOrder").value.trim();
+      var boutRating = parseInt(document.getElementById("riderRevBoutique").value);
+      var custRating = parseInt(document.getElementById("riderRevCustomer").value);
+      var notes = document.getElementById("riderRevNotes").value.trim() || "Delivery executed smoothly within 60 mins.";
+
+      var newLog = {
+        orderInfo: orderInfo,
+        boutRating: boutRating,
+        custRating: custRating,
+        notes: notes,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      var logs = JSON.parse(localStorage.getItem("fitin60_rider_logs") || "[]");
+      logs.unshift(newLog);
+      localStorage.setItem("fitin60_rider_logs", JSON.stringify(logs));
+
+      toggleRiderReviewModal();
+      renderRiderLogs();
+      alert("✓ Rider Rating & Feedback recorded successfully!");
+      
+      document.getElementById("riderRevOrder").value = "";
+      document.getElementById("riderRevNotes").value = "";
+    }
+
+    function renderRiderLogs() {
+      var container = document.getElementById("riderFeedbackLogs");
+      var defaultLogs = [
+        {
+          orderInfo: "FIT-3910 • Anu Ram Fashions",
+          boutRating: 5,
+          custRating: 5,
+          notes: "Store packing ready in 2 mins. Customer was waiting at gate.",
+          time: "11:45 AM"
+        },
+        {
+          orderInfo: "FIT-8122 • Sai Menswear Studio",
+          boutRating: 5,
+          custRating: 4,
+          notes: "Saptagiri circle traffic, but delivered in 38 minutes.",
+          time: "10:15 AM"
+        }
+      ];
+
+      var savedLogs = JSON.parse(localStorage.getItem("fitin60_rider_logs") || "[]");
+      var allLogs = savedLogs.concat(defaultLogs);
+
+      var html = "";
+      allLogs.forEach(function(l) {
+        html += '<div class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
+                  '<div>' +
+                    '<div class="flex items-center gap-2">' +
+                      '<span class="font-bold text-xs text-slate-950">' + l.orderInfo + '</span>' +
+                      '<span class="text-[10px] text-slate-400 font-medium">• ' + l.time + '</span>' +
+                    '</div>' +
+                    '<p class="text-xs text-slate-600 mt-1">“' + l.notes + '”</p>' +
+                  '</div>' +
+                  '<div class="flex items-center gap-2 shrink-0 text-xs font-bold">' +
+                    '<span class="bg-orange-100 text-orange-700 px-2 py-1 rounded-lg">Store: ' + "⭐".repeat(l.boutRating) + '</span>' +
+                    '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-lg">Drop: ' + "⭐".repeat(l.custRating) + '</span>' +
+                  '</div>' +
+                '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderActiveRide() {
+      var container = document.getElementById("activeRideContent");
+      if (!isOnline) {
+        container.innerHTML = '<div class="text-center py-12 text-slate-400 text-xs">You are currently OFFLINE. Toggle duty to ONLINE to receive 60-minute ride tasks.</div>';
+        return;
+      }
+
       var rawOrder = localStorage.getItem("chitikelo_active_order");
-
       if (rawOrder) {
         var order = JSON.parse(rawOrder);
-        if (order.orderId) {
-          if (!knownOrders[order.orderId]) {
-            knownOrders[order.orderId] = true;
-            playDingDong();
-          }
+        var firstItem = order.items && order.items[0] ? order.items[0].name : "Express Dress";
+        
+        container.innerHTML = 
+          '<div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl space-y-5">' +
+            '<div class="flex items-center justify-between">' +
+              '<div>' +
+                '<span class="font-mono-num font-black text-lg text-slate-950">' + order.orderId + '</span>' +
+                '<p class="text-xs text-orange-600 font-bold">⚡ 60-Minute Guaranteed Drop</p>' +
+              '</div>' +
+              '<span class="bg-emerald-600 text-white font-black text-xs px-3 py-1.5 rounded-xl">₹' + order.totalAmount + ' (' + order.paymentStatus + ')</span>' +
+            '</div>' +
 
-          badge.innerText = "1 Available";
-          container.innerHTML = 
-            '<div class="bg-slate-900 border border-orange-500/60 rounded-3xl p-6 text-xs space-y-3.5 shadow-xl">' +
-              '<div class="flex justify-between items-center font-bold">' +
-                '<span class="text-orange-400 font-brand text-sm">⚡ ' + order.orderId + '</span>' +
-                '<span class="text-emerald-400 font-black text-base">₹' + order.totalAmount + '</span>' +
+            '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">' +
+              '<div class="bg-white p-4 rounded-2xl border border-slate-200">' +
+                '<p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Pickup Boutique</p>' +
+                '<p class="font-bold text-xs text-slate-950 mt-1">🏬 ' + order.store + '</p>' +
+                '<p class="text-xs text-slate-500 mt-0.5">Item: ' + firstItem + '</p>' +
               '</div>' +
-              '<div class="space-y-1.5 text-slate-300 bg-slate-950 p-4 rounded-2xl border border-slate-800">' +
-                '<p><strong>🏬 Pickup Store:</strong> ' + (order.store || "Boutique") + '</p>' +
-                '<p><strong>📍 Customer Drop:</strong> ' + (order.customerName || "Customer") + '</p>' +
-                '<p class="text-slate-400 text-[11px]">Address: ' + (order.customerAddress || "Anantapur") + '</p>' +
+
+              '<div class="bg-white p-4 rounded-2xl border border-slate-200">' +
+                '<p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Customer Drop Location</p>' +
+                '<p class="font-bold text-xs text-slate-950 mt-1">📍 ' + order.customerName + ' (' + order.customerPhone + ')</p>' +
+                '<p class="text-xs text-slate-500 mt-0.5">' + order.customerAddress + '</p>' +
               '</div>' +
-              '<div class="grid grid-cols-2 gap-2">' +
-                '<a href="tel:' + (order.customerPhone || "") + '" class="bg-slate-800 hover:bg-slate-700 text-center py-3 rounded-xl text-white font-bold transition">📞 Call Customer</a>' +
-                '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(order.customerAddress || "Anantapur") + '" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-center py-3 rounded-xl text-white font-bold transition">🗺️ Google Maps</a>' +
-              '</div>' +
-              '<button onclick="alert(\'✓ Ride Accepted! Head to Boutique for pickup.\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider cursor-pointer shadow-md">✓ Accept 60-Min Express Ride</button>' +
-            '</div>';
-          return;
-        }
+            '</div>' +
+
+            '<div class="flex gap-3 pt-2">' +
+              '<a href="tel:' + order.customerPhone + '" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs text-center border border-slate-200 transition">' +
+                '📞 Call Customer' +
+              '</a>' +
+              '<button onclick="markDelivered()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-2xl text-xs text-center transition shadow-md cursor-pointer">' +
+                '✓ Mark Delivered & Rate Trip' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      } else {
+        container.innerHTML = '<div class="text-center py-12 text-slate-400 text-xs">Waiting for new orders on radar... Keep your device active.</div>';
       }
-
-      badge.innerText = "0 Available";
-      container.innerHTML = '<div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center text-xs text-emerald-400 font-bold">✓ Online & Listening • Waiting for new customer orders...</div>';
     }
 
-    setInterval(function() {
-      if (isOnline) renderRiderOrders();
-    }, 3000);
+    function markDelivered() {
+      alert("🎉 Ride completed! Please provide your delivery rating & feedback.");
+      toggleRiderReviewModal();
+      var rawOrder = localStorage.getItem("chitikelo_active_order");
+      if (rawOrder) {
+        var order = JSON.parse(rawOrder);
+        document.getElementById("riderRevOrder").value = order.orderId + " • " + order.store;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      renderActiveRide();
+      renderRiderLogs();
+    });
   </script>
 </body>
 </html>
