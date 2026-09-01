@@ -24,9 +24,9 @@
           <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
             FITIN<span class="text-orange-600">60</span>
           </span>
-          <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded-full border border-orange-200">SELLER HUB</span>
+          <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-1.5 py-0.5 rounded-full border border-orange-200">MERCHANT</span>
         </div>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Boutique Merchant Studio</span>
+        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Private Boutique Studio</span>
       </a>
 
       <div class="flex items-center gap-2.5">
@@ -39,11 +39,11 @@
 
   <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-10">
 
-    <!-- ================= 1. AUTH SCREEN ================= -->
+    <!-- ================= 1. AUTH SCREEN (STRICT ISOLATION) ================= -->
     <div id="authSection" class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-10 shadow-xl">
       <div class="w-14 h-14 rounded-2xl bg-orange-600/10 text-orange-600 flex items-center justify-center text-2xl font-bold mb-4">🔐</div>
-      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950">Boutique Merchant Login</h1>
-      <p class="text-xs text-slate-500 mt-1">Sign in to manage your boutique collection, UPI payouts, and radar stock.</p>
+      <h1 class="font-brand text-2xl md:text-3xl font-black text-slate-950">Boutique Private Studio</h1>
+      <p class="text-xs text-slate-500 mt-1">Each boutique owner has private access. Your catalog and inventory remain 100% confidential.</p>
 
       <!-- Switcher Tabs -->
       <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-1.5 mt-6 border border-slate-200">
@@ -67,20 +67,20 @@
         </div>
 
         <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-xl cursor-pointer">
-          🔓 Access Boutique Studio
+          🔓 Access My Private Studio
         </button>
       </form>
 
       <!-- Register Form -->
       <form id="registerForm" onsubmit="handleMerchantRegister(event)" class="hidden mt-6 space-y-4">
         <div>
-          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Boutique / Store Name</label>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Boutique / Studio Name</label>
           <input type="text" id="regStoreName" required placeholder="e.g., Anu Ram Designer Studio" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Owner Mobile (Login ID)</label>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Owner Mobile (Your Login ID)</label>
             <input type="tel" id="regPhone" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
           <div>
@@ -95,28 +95,28 @@
             <input type="text" id="regArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
           <div>
-            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Direct UPI ID</label>
-            <input type="text" id="regUpi" required placeholder="e.g., storename@okhdfcbank" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Store Direct UPI ID (For Payments)</label>
+            <input type="text" id="regUpi" required placeholder="e.g., anuram@okhdfcbank" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
           </div>
         </div>
 
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-xl cursor-pointer">
-          ⚡ Create Boutique Account & Go Live
+          ⚡ Register Boutique & Launch Studio
         </button>
       </form>
     </div>
 
-    <!-- ================= 2. PRIVATE LOGGED-IN BOUTIQUE STUDIO DASHBOARD ================= -->
+    <!-- ================= 2. PRIVATE LOGGED-IN STUDIO ================= -->
     <div id="studioSection" class="hidden space-y-10">
       
-      <!-- Boutique Owner Header Banner -->
+      <!-- Boutique Owner Private Profile Banner -->
       <div class="bg-slate-950 text-white p-6 sm:p-8 rounded-[2rem] border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-5 shadow-2xl">
         <div class="flex items-center gap-4">
           <div class="w-14 h-14 rounded-2xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-2xl font-bold">🏬</div>
           <div>
             <div class="flex items-center gap-2">
               <h2 id="merchantStoreTitle" class="font-brand text-xl sm:text-2xl font-black text-white">Store Name</h2>
-              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">Live on Radar</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">Active Radar</span>
             </div>
             <p id="merchantStoreSubtitle" class="text-xs text-slate-400 mt-0.5">Area • UPI: store@upi</p>
           </div>
@@ -130,9 +130,9 @@
       <!-- Upload New Outfit Form -->
       <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-10 shadow-xl">
         <h3 class="font-brand text-xl font-black text-slate-950 flex items-center gap-2">
-          <span>👗</span> Upload New Outfit to Fitin60 Radar
+          <span>👗</span> Upload New Outfit
         </h3>
-        <p class="text-xs text-slate-500 mt-1">This dress will be published instantly under your store name with 60-minute delivery.</p>
+        <p class="text-xs text-slate-500 mt-1">This outfit will be published exclusively under your boutique branding with 60-minute delivery.</p>
 
         <form onsubmit="handleProductUpload(event)" class="mt-6 space-y-5">
           
@@ -161,17 +161,17 @@
 
           <!-- Photo Upload Field -->
           <div>
-            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Upload Dress Photo</label>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1.5">Upload Dress Picture</label>
             <div class="border-2 border-dashed border-slate-300 hover:border-orange-500 bg-slate-50 rounded-2xl p-6 text-center transition cursor-pointer relative">
               <input type="file" id="prodImageInput" accept="image/*" onchange="handleImagePreview(event)" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
               <div id="uploadPrompt" class="space-y-1">
                 <span class="text-3xl">📸</span>
-                <p class="text-xs font-bold text-slate-700">Click to upload dress picture</p>
-                <p class="text-[10px] text-slate-400">PNG, JPG, JPEG from your device</p>
+                <p class="text-xs font-bold text-slate-700">Click to upload photo from your device</p>
+                <p class="text-[10px] text-slate-400">PNG, JPG, JPEG supported</p>
               </div>
               <div id="imagePreviewBox" class="hidden mt-2">
                 <img id="imagePreviewImg" src="" alt="Preview" class="w-32 h-32 object-cover mx-auto rounded-2xl border border-slate-200 shadow-md">
-                <p class="text-[10px] text-emerald-600 font-bold mt-2">✓ Photo selected successfully</p>
+                <p class="text-[10px] text-emerald-600 font-bold mt-2">✓ Photo selected</p>
               </div>
             </div>
           </div>
@@ -182,17 +182,17 @@
           </div>
 
           <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition shadow-xl cursor-pointer">
-            ⚡ Publish to Fitin60 Radar
+            ⚡ Publish to Customer Store
           </button>
         </form>
       </div>
 
-      <!-- Active Inventory & Delete Section -->
+      <!-- Private Inventory List (ONLY this boutique's items) -->
       <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 md:p-10 shadow-xl">
         <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
           <div>
-            <h2 class="font-brand text-xl font-black text-slate-950">Your Active Store Inventory</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Manage and remove out-of-stock dresses</p>
+            <h2 class="font-brand text-xl font-black text-slate-950">Your Private Store Inventory</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Only you can view and manage these outfits</p>
           </div>
           <span id="merchantInventoryBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-3 py-1 rounded-xl border border-orange-200">0 Items</span>
         </div>
@@ -202,37 +202,35 @@
         </div>
       </div>
 
-      <!-- ================= 3. STORE MANAGEMENT & DANGER ZONE ================= -->
+      <!-- Store Management & Bulk Clean Options -->
       <div class="bg-rose-50/60 border border-rose-200 rounded-[2.5rem] p-8 md:p-10 shadow-sm space-y-6">
         <div>
           <h3 class="font-brand font-black text-xl text-rose-950 flex items-center gap-2">
-            <span>⚠️</span> Store Management & Danger Zone
+            <span>⚠️</span> Store Settings & Inventory Reset
           </h3>
-          <p class="text-xs text-rose-700 mt-1">Bulk inventory clear or permanent boutique account removal options.</p>
+          <p class="text-xs text-rose-700 mt-1">Manage bulk catalog clear or remove store deregistration.</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           
-          <!-- Option 1: Clear All Outfits Only -->
           <div class="bg-white p-5 rounded-2xl border border-rose-200 space-y-3 flex flex-col justify-between">
             <div>
               <h4 class="font-bold text-xs text-slate-900 flex items-center gap-1.5">
                 <span>🧹</span> Clear All My Outfits
               </h4>
-              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Deletes all dress listings and photos from Fitin60 radar. Your store account remains active.</p>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Instantly removes all your dress listings from the customer store. Your store account stays active.</p>
             </div>
             <button onclick="handleClearAllOutfits()" class="w-full bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300 font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">
               Clear All Outfits
             </button>
           </div>
 
-          <!-- Option 2: Delete Entire Store Permanently -->
           <div class="bg-white p-5 rounded-2xl border border-rose-200 space-y-3 flex flex-col justify-between">
             <div>
               <h4 class="font-bold text-xs text-rose-700 flex items-center gap-1.5">
-                <span>🗑️</span> Delete Entire Store & Account
+                <span>🗑️</span> Delete Entire Boutique Profile
               </h4>
-              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Permanently deletes your boutique profile, UPI credentials, and all catalog dresses from the platform.</p>
+              <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Permanently removes your boutique account, UPI ID, and all published dresses from Fitin60.</p>
             </div>
             <button onclick="handleDeleteEntireStore()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-2.5 rounded-xl text-xs transition shadow-md cursor-pointer">
               Permanently Delete Store
@@ -250,7 +248,6 @@
     var currentMerchant = null;
     var uploadedImageBase64 = "";
 
-    // Auth Switcher
     function switchAuthTab(tab) {
       var tabLog = document.getElementById("tabLoginBtn");
       var tabReg = document.getElementById("tabRegisterBtn");
@@ -270,7 +267,6 @@
       }
     }
 
-    // Register Handler
     function handleMerchantRegister(e) {
       e.preventDefault();
       var storeName = document.getElementById("regStoreName").value.trim();
@@ -290,6 +286,7 @@
       }
 
       var newMerchant = {
+        storeId: "BOUTIQUE-" + Date.now(),
         storeName: storeName,
         phone: phone,
         pin: pin,
@@ -306,7 +303,6 @@
       checkAuthStatus();
     }
 
-    // Login Handler
     function handleMerchantLogin(e) {
       e.preventDefault();
       var phone = document.getElementById("loginPhone").value.trim();
@@ -316,8 +312,8 @@
       
       if (merchants.length === 0) {
         merchants = [
-          { storeName: "Anu Ram Fashions", phone: "9515552511", pin: "1234", area: "Subhash Road, Anantapur", upi: "anuram@ybl" },
-          { storeName: "Adhya Designer Studio", phone: "9876543210", pin: "1234", area: "Old Town (పాతూరు), Anantapur", upi: "adhyastudio@okhdfcbank" }
+          { storeId: "BOUTIQUE-1", storeName: "Anu Ram Fashions", phone: "9515552511", pin: "1234", area: "Subhash Road, Anantapur", upi: "anuram@ybl" },
+          { storeId: "BOUTIQUE-2", storeName: "Adhya Designer Studio", phone: "9876543210", pin: "1234", area: "Old Town (పాతూరు), Anantapur", upi: "adhyastudio@okhdfcbank" }
         ];
         localStorage.setItem("fitin60_merchants", JSON.stringify(merchants));
       }
@@ -326,23 +322,21 @@
 
       if (matched) {
         sessionStorage.setItem("fitin60_logged_merchant", JSON.stringify(matched));
-        alert("✓ Logged in successfully as " + matched.storeName);
+        alert("✓ Welcome back, " + matched.storeName);
         checkAuthStatus();
       } else {
         alert("❌ Invalid Mobile Number or PIN! Please try again or register a new account.");
       }
     }
 
-    // Logout Handler
     function handleMerchantLogout() {
-      if (confirm("Are you sure you want to log out of your boutique studio?")) {
+      if (confirm("Log out of your boutique studio?")) {
         sessionStorage.removeItem("fitin60_logged_merchant");
         currentMerchant = null;
         checkAuthStatus();
       }
     }
 
-    // Check Authentication on Page Load
     function checkAuthStatus() {
       var rawMerchant = sessionStorage.getItem("fitin60_logged_merchant");
       var authBox = document.getElementById("authSection");
@@ -364,7 +358,6 @@
       }
     }
 
-    // Image Upload Preview
     function handleImagePreview(event) {
       var file = event.target.files[0];
       if (file) {
@@ -379,7 +372,6 @@
       }
     }
 
-    // Product Upload
     function handleProductUpload(e) {
       e.preventDefault();
       if (!currentMerchant) return alert("Please login first!");
@@ -396,6 +388,7 @@
       var newProduct = {
         id: Date.now(),
         merchantPhone: currentMerchant.phone,
+        storeId: currentMerchant.storeId || ("BOUTIQUE-" + currentMerchant.phone),
         name: prodName,
         store: currentMerchant.storeName,
         area: currentMerchant.area,
@@ -417,7 +410,7 @@
       customItems.unshift(newProduct);
       localStorage.setItem("fitin60_custom_products", JSON.stringify(customItems));
 
-      alert("🎉 Dress \"" + prodName + "\" published under " + currentMerchant.storeName + "!");
+      alert("🎉 Outfit \"" + prodName + "\" published successfully to Fitin60 Customer Store!");
 
       document.getElementById("prodName").value = "";
       document.getElementById("prodPrice").value = "";
@@ -431,7 +424,6 @@
       renderMerchantInventory();
     }
 
-    // Render ONLY this merchant's items
     function renderMerchantInventory() {
       if (!currentMerchant) return;
 
@@ -446,7 +438,7 @@
       badge.innerText = myItems.length + " Items";
 
       if (myItems.length === 0) {
-        container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs">No active dresses found for your boutique. Upload your first outfit above!</div>';
+        container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs">No outfits uploaded yet. Upload your first outfit above to showcase in customer store!</div>';
         return;
       }
 
@@ -469,7 +461,6 @@
       container.innerHTML = html;
     }
 
-    // Delete Single Product
     function deleteMyProduct(itemId) {
       if (confirm("Are you sure you want to remove this outfit from your boutique?")) {
         var allCustom = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
@@ -478,17 +469,14 @@
         });
         localStorage.setItem("fitin60_custom_products", JSON.stringify(updated));
         renderMerchantInventory();
-        alert("✓ Outfit removed successfully!");
+        alert("✓ Outfit removed from store!");
       }
     }
 
-    // ================= DANGER ZONE OPERATIONS =================
-
-    // 1. Clear All Outfits for this Merchant
     function handleClearAllOutfits() {
       if (!currentMerchant) return;
 
-      var enteredPin = prompt("🔒 Security Check: Enter your 4-Digit PIN to remove ALL dresses uploaded by " + currentMerchant.storeName + ":");
+      var enteredPin = prompt("🔒 Enter your 4-Digit PIN to remove ALL dresses uploaded by " + currentMerchant.storeName + ":");
       if (enteredPin === null) return;
 
       if (enteredPin === currentMerchant.pin) {
@@ -498,42 +486,38 @@
         });
         localStorage.setItem("fitin60_custom_products", JSON.stringify(remaining));
         renderMerchantInventory();
-        alert("✓ All dress listings for " + currentMerchant.storeName + " have been removed from the platform.");
+        alert("✓ All dress listings for " + currentMerchant.storeName + " have been removed.");
       } else {
         alert("❌ Incorrect PIN! Action denied.");
       }
     }
 
-    // 2. Permanently Delete Entire Store & Account
     function handleDeleteEntireStore() {
       if (!currentMerchant) return;
 
-      var confirmMsg = confirm("⚠️ FINAL WARNING: Are you sure you want to PERMANENTLY delete \"" + currentMerchant.storeName + "\"?\n\nThis will remove your store profile, UPI details, and all outfits from Fitin60 radar. This action cannot be undone!");
+      var confirmMsg = confirm("⚠️ Are you sure you want to PERMANENTLY delete \"" + currentMerchant.storeName + "\" and all its listings?");
       if (!confirmMsg) return;
 
       var enteredPin = prompt("🔒 Enter your 4-Digit PIN to confirm permanent deletion of " + currentMerchant.storeName + ":");
       if (enteredPin === null) return;
 
       if (enteredPin === currentMerchant.pin) {
-        // 1. Remove all outfits
         var allCustom = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
         var remainingProducts = allCustom.filter(function(item) {
           return item.merchantPhone !== currentMerchant.phone && item.store !== currentMerchant.storeName;
         });
         localStorage.setItem("fitin60_custom_products", JSON.stringify(remainingProducts));
 
-        // 2. Remove merchant from registered merchants list
         var merchants = JSON.parse(localStorage.getItem("fitin60_merchants") || "[]");
         var remainingMerchants = merchants.filter(function(m) {
           return m.phone !== currentMerchant.phone;
         });
         localStorage.setItem("fitin60_merchants", JSON.stringify(remainingMerchants));
 
-        // 3. Clear session and logout
         sessionStorage.removeItem("fitin60_logged_merchant");
         currentMerchant = null;
 
-        alert("✓ Your boutique store \"" + currentMerchant.storeName + "\" has been completely removed from Fitin60.");
+        alert("✓ Your boutique store has been completely removed from Fitin60.");
         checkAuthStatus();
       } else {
         alert("❌ Incorrect PIN! Store deletion canceled.");
