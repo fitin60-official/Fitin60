@@ -1,109 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | 60-Minute Hyperlocal Fashion Delivery</title>
+  <title>Fitin60 | 60-Minute Luxury Hyperlocal Fashion Radar</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-brand { font-family: 'Space Grotesk', sans-serif; }
-    .hero-glow {
-      background: radial-gradient(circle at 50% 0%, rgba(249, 115, 22, 0.15), transparent 70%);
+    .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+
+    /* Luxury Mesh Gradient Background */
+    .bg-luxury-mesh {
+      background-color: #0b0c10;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 10%, rgba(236, 72, 153, 0.12) 0px, transparent 40%),
+        radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.08) 0px, transparent 60%);
     }
-    .badge-pulse {
-      box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
-      animation: pulse 1.8s infinite cubic-bezier(0.66, 0, 1);
+
+    /* Glass Effect */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    @keyframes pulse {
-      to { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+    .glass-card:hover {
+      border-color: rgba(249, 115, 22, 0.4);
+      box-shadow: 0 20px 40px -15px rgba(249, 115, 22, 0.15);
+    }
+
+    /* Radiant Text */
+    .text-gradient-fire {
+      background: linear-gradient(135deg, #ff7a18 0%, #af002d 100%, #319197 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-gradient-sunset {
+      background: linear-gradient(135deg, #f97316 0%, #fbbf24 50%, #f43f5e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Live Badge Glow */
+    .live-dot-pulse {
+      box-shadow: 0 0 12px 2px #10b981;
+    }
+    .fire-dot-pulse {
+      box-shadow: 0 0 12px 2px #f97316;
     }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white" onclick="handleGlobalClick(event)">
+<body class="bg-luxury-mesh text-slate-100 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white" onclick="handleGlobalClick(event)">
 
-  <!-- Top Announcement Bar -->
-  <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-medium py-2 px-4 text-center border-b border-white/5 flex items-center justify-center gap-2">
-    <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 Hyperlocal Active</strong> • 60-Min Doorstep Express Drop • Direct Boutique Checkout</span>
+  <!-- Top Express Live Ticker -->
+  <div class="bg-gradient-to-r from-orange-600 via-rose-600 to-amber-500 text-white text-[11px] font-black py-2 px-4 text-center tracking-widest uppercase flex items-center justify-center gap-2 shadow-lg">
+    <span class="inline-block w-2 h-2 rounded-full bg-white animate-ping"></span>
+    <span>⚡ FITIN60 EXPRESS • CURATED BOUTIQUE DROPS • 60-MIN DOORSTEP DISPATCH ACTIVE</span>
   </div>
 
-  <!-- Ultra Clean Sticky Header with Two Distinct Menus -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 transition shadow-sm">
+  <!-- Ultra Sleek Glass Floating Navbar -->
+  <header class="sticky top-0 z-40 bg-[#0b0c10]/80 backdrop-blur-2xl border-b border-white/10 transition shadow-2xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
-      <!-- Brand Logo -->
+      <!-- Brand Identity -->
       <a href="index.html" class="flex flex-col group">
-        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
-          FITIN<span class="text-orange-600">60</span>
-        </span>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
+        <div class="flex items-center gap-1.5">
+          <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-white group-hover:scale-[1.02] transition">
+            FITIN<span class="text-gradient-sunset font-black">60</span>
+          </span>
+          <span class="text-[10px] bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full font-mono font-bold">RADAR</span>
+        </div>
+        <span class="text-[9px] uppercase tracking-[0.35em] font-extrabold text-slate-400">Hyperlocal Runway</span>
       </a>
 
-      <!-- Right Action Controls -->
-      <div class="flex items-center gap-2 sm:gap-3 relative">
+      <!-- Controls Hub -->
+      <div class="flex items-center gap-2.5 sm:gap-3.5 relative">
         
         <!-- Cart Bag Button -->
-        <button onclick="toggleCart()" class="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white px-3.5 sm:px-5 py-2.5 rounded-2xl flex items-center gap-2 transition shadow-md shadow-orange-500/20 cursor-pointer">
+        <button onclick="toggleCart()" class="relative bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black px-4 sm:px-5 py-2.5 rounded-2xl flex items-center gap-2.5 transition shadow-lg shadow-orange-500/25 cursor-pointer transform active:scale-95">
           <span class="text-base">🛍️</span>
-          <span class="text-xs font-black tracking-wider uppercase hidden sm:inline">Bag</span>
-          <span id="cart-count" class="bg-white text-orange-600 text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-inner">0</span>
+          <span class="text-xs tracking-wider uppercase hidden sm:inline font-extrabold">Bag</span>
+          <span id="cart-count" class="bg-slate-950 text-white text-[11px] font-mono-num font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
         </button>
 
-        <!-- ================= 1. CUSTOMER ☰ MENU ================= -->
+        <!-- Customer Menu (Orders) -->
         <div class="relative">
-          <button id="custMenuBtn" onclick="toggleCustomerMenu(event)" class="bg-slate-100 hover:bg-slate-200 text-slate-900 px-3.5 py-2.5 rounded-2xl border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shadow-sm relative">
-            <span class="text-lg leading-none">☰</span>
+          <button id="custMenuBtn" onclick="toggleCustomerMenu(event)" class="bg-white/5 hover:bg-white/10 text-white px-3.5 py-2.5 rounded-2xl border border-white/10 transition flex items-center gap-1.5 cursor-pointer shadow-sm relative">
+            <span class="text-base leading-none">⚡</span>
             <span class="text-xs font-bold hidden sm:inline">Orders</span>
-            <!-- Orange Indicator for active order -->
-            <span id="orderActiveDot" class="hidden absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full animate-ping"></span>
+            <span id="orderActiveDot" class="hidden absolute top-2 right-2 w-2 h-2 bg-emerald-400 rounded-full animate-ping"></span>
           </button>
 
-          <!-- Customer Dropdown (Only Active Orders & Tracking) -->
-          <div id="custDropdown" class="hidden absolute right-0 top-14 w-80 bg-white rounded-3xl shadow-2xl border border-slate-200 p-4 space-y-3 z-50 transform origin-top-right transition-all">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Customer Dashboard</p>
-              <span class="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-md">Live Status</span>
+          <!-- Customer Dropdown Card -->
+          <div id="custDropdown" class="hidden absolute right-0 top-14 w-80 bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/15 p-4 space-y-3 z-50 transform origin-top-right transition-all">
+            <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Live Order Status</p>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2 py-0.5 rounded-md">Real-Time</span>
             </div>
             
-            <div id="menuOrderBox" class="p-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl text-xs">
-              <!-- Dynamically populated -->
+            <div id="menuOrderBox" class="p-3.5 bg-black/40 border border-white/10 rounded-2xl text-xs">
+              <!-- Rendered dynamically -->
             </div>
           </div>
         </div>
 
-        <!-- ================= 2. SEPARATE PARTNER & FLEET HUB ================= -->
+        <!-- Separate Business Hub (Partner & Fleet) -->
         <div class="relative">
-          <button id="businessHubBtn" onclick="toggleBusinessMenu(event)" class="bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2.5 rounded-2xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
+          <button id="businessHubBtn" onclick="toggleBusinessMenu(event)" class="bg-gradient-to-r from-slate-800 to-slate-900 hover:border-orange-500/50 border border-white/15 text-slate-200 px-3.5 py-2.5 rounded-2xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
             <span class="text-sm">💼</span>
-            <span class="text-xs font-bold hidden sm:inline">Partner Hub</span>
+            <span class="text-xs font-bold hidden sm:inline">Hub</span>
           </button>
 
-          <!-- Business Dropdown (Only Boutique & Rider operations) -->
-          <div id="businessDropdown" class="hidden absolute right-0 top-14 w-72 bg-white rounded-3xl shadow-2xl border border-slate-200 p-3.5 space-y-2 z-50 transform origin-top-right transition-all">
-            <div class="px-3 py-1.5 border-b border-slate-100">
+          <!-- Business Dropdown -->
+          <div id="businessDropdown" class="hidden absolute right-0 top-14 w-72 bg-slate-900/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/15 p-3.5 space-y-2 z-50 transform origin-top-right transition-all">
+            <div class="px-3 py-1.5 border-b border-white/10">
               <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Operations & Logistics</p>
             </div>
 
-            <!-- Boutique Partner Link -->
-            <a href="partner.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-orange-50 text-slate-800 hover:text-orange-600 transition group">
-              <span class="w-9 h-9 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-base group-hover:scale-110 transition">🏬</span>
+            <a href="partner.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 text-slate-200 hover:text-orange-400 transition group border border-transparent hover:border-white/10">
+              <span class="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-base group-hover:scale-110 transition">🏬</span>
               <div>
                 <p class="text-xs font-black">Boutique Merchant Studio</p>
-                <p class="text-[10px] text-slate-400">Upload & manage dresses</p>
+                <p class="text-[10px] text-slate-400">Upload dresses & manage catalog</p>
               </div>
             </a>
 
-            <!-- Rider Fleet Link -->
-            <a href="rider.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-emerald-50 text-slate-800 hover:text-emerald-700 transition group">
-              <span class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-base group-hover:scale-110 transition">🛵</span>
+            <a href="rider.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 text-slate-200 hover:text-emerald-400 transition group border border-transparent hover:border-white/10">
+              <span class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-base group-hover:scale-110 transition">🛵</span>
               <div>
                 <p class="text-xs font-black">Rider Fleet Station</p>
-                <p class="text-[10px] text-slate-400">Duty toggle & delivery alerts</p>
+                <p class="text-[10px] text-slate-400">Live duty switch & sound alerts</p>
               </div>
             </a>
           </div>
@@ -114,94 +146,99 @@
     </div>
   </header>
 
-  <!-- Hero Spotlight -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
-    <div class="hero-glow bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl border border-slate-800 relative overflow-hidden">
-      <div class="absolute -right-16 -top-16 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      
+  <!-- Hero Spotlight Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+    <div class="relative rounded-[3rem] p-8 md:p-14 bg-gradient-to-br from-slate-900/90 via-[#12141c] to-black border border-white/10 overflow-hidden shadow-2xl">
+      <!-- Glow orbs -->
+      <div class="absolute -right-20 -top-20 w-96 h-96 bg-orange-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-rose-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
       <div class="max-w-3xl relative z-10">
-        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-4 py-1.5 rounded-full text-xs font-bold text-orange-300 mb-4">
-          <span class="w-2 h-2 rounded-full bg-orange-400 badge-pulse"></span> Curated Local Boutiques
+        <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-xl px-4 py-1.5 rounded-full text-xs font-bold text-orange-300 mb-6">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 live-dot-pulse animate-pulse"></span> 
+          <span>Hyperlocal Fashion Radar Active</span>
         </div>
-        <h1 class="font-brand text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.1] text-white">
-          Runway Fashion Delivered in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
+
+        <h1 class="font-brand text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.05] text-white">
+          Runway Fashion At Your Door in <span class="text-gradient-sunset">60 Minutes</span>.
         </h1>
-        <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Instant doorstep delivery from the finest boutiques near you. Get authentic designer wear delivered within 60 minutes with instant UPI/COD checkout.
+        
+        <p class="text-slate-300 text-sm md:text-base mt-5 font-normal leading-relaxed max-w-2xl">
+          Direct boutique designer wear curated from premier studios within 20 KM. Instant dispatch, live GPS tracking, and seamless UPI checkout.
         </p>
 
-        <!-- Stats Chips -->
-        <div class="grid grid-cols-3 gap-3 sm:gap-6 mt-8 pt-8 border-t border-white/10 max-w-xl">
+        <!-- Stats Matrix -->
+        <div class="grid grid-cols-3 gap-4 sm:gap-8 mt-10 pt-8 border-t border-white/10 max-w-xl">
           <div>
-            <p class="font-brand text-xl sm:text-2xl font-black text-white">60 <span class="text-orange-400 text-sm">MINS</span></p>
-            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Express Drop</p>
+            <p class="font-mono-num text-2xl sm:text-3xl font-black text-white">60 <span class="text-orange-400 text-sm">MIN</span></p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Express Drop</p>
           </div>
           <div>
-            <p class="font-brand text-xl sm:text-2xl font-black text-white">20 <span class="text-orange-400 text-sm">KM</span></p>
-            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Local Radar</p>
+            <p class="font-mono-num text-2xl sm:text-3xl font-black text-white">20 <span class="text-orange-400 text-sm">KM</span></p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Radar Radius</p>
           </div>
           <div>
-            <p class="font-brand text-xl sm:text-2xl font-black text-white">100%</p>
-            <p class="text-[10px] sm:text-xs text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Direct Boutique</p>
+            <p class="font-mono-num text-2xl sm:text-3xl font-black text-emerald-400">100%</p>
+            <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wider mt-1">Direct Boutique</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Filter Bar -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+  <!-- Filter Category Tabs -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-12">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-5 pb-5 border-b border-white/10">
       <div>
-        <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Collections</h2>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Verified local designers and high-speed delivery</p>
+        <h2 class="font-brand text-2xl md:text-3xl font-black text-white">Local Boutique Drops</h2>
+        <p class="text-xs text-slate-400 mt-1 font-medium">Auto-sorted by fastest 60-minute delivery radius</p>
       </div>
 
-      <div class="flex gap-2 overflow-x-auto pb-1">
-        <button onclick="filterCatalog('all')" id="tab-all" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm">All Drops</button>
-        <button onclick="filterCatalog('ethnic')" id="tab-ethnic" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition">Women's Ethnic</button>
-        <button onclick="filterCatalog('mens')" id="tab-mens" class="cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition">Men's Wear</button>
+      <div class="flex gap-2.5 overflow-x-auto pb-1">
+        <button onclick="filterCatalog('all')" id="tab-all" class="cat-tab px-5 py-2.5 rounded-2xl text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 transition shadow-lg shadow-orange-500/20">All Drops</button>
+        <button onclick="filterCatalog('ethnic')" id="tab-ethnic" class="cat-tab px-5 py-2.5 rounded-2xl text-xs font-bold bg-white/5 text-slate-300 border border-white/10 hover:border-orange-500/50 hover:text-white transition">Women's Ethnic</button>
+        <button onclick="filterCatalog('mens')" id="tab-mens" class="cat-tab px-5 py-2.5 rounded-2xl text-xs font-bold bg-white/5 text-slate-300 border border-white/10 hover:border-orange-500/50 hover:text-white transition">Men's Wear</button>
       </div>
     </div>
   </section>
 
-  <!-- Dynamic Product Grid -->
+  <!-- Dynamic Luxury Product Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid"></div>
   </main>
 
   <!-- Footer -->
-  <footer class="max-w-7xl mx-auto px-4 sm:px-6 mt-20 pt-10 border-t border-slate-200/80">
+  <footer class="max-w-7xl mx-auto px-4 sm:px-6 mt-24 pt-10 border-t border-white/10">
     <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-8">
       <div>
-        <span class="font-brand text-xl font-black tracking-tight text-slate-950">
-          FITIN<span class="text-orange-600">60</span>
+        <span class="font-brand text-2xl font-black text-white">
+          FITIN<span class="text-gradient-sunset">60</span>
         </span>
-        <p class="text-xs text-slate-500 mt-1">60-Minute Luxury Hyperlocal Fashion Radar</p>
+        <p class="text-xs text-slate-400 mt-1">60-Minute Luxury Hyperlocal Fashion Radar</p>
       </div>
-      <p class="text-xs text-slate-400 font-medium">Delivering within 20 KM radius in 60 minutes</p>
+      <p class="text-xs text-slate-400 font-medium">Serving verified local designer studios within 20 KM</p>
     </div>
-    <div class="border-t border-slate-100 py-6 text-center text-[11px] text-slate-400">
-      © 2026 Fitin60 Technologies. All rights reserved.
+    <div class="border-t border-white/5 py-6 text-center text-[11px] text-slate-400">
+      © 2026 Fitin60 Technologies. High-Speed Hyperlocal Fashion Logistics.
     </div>
   </footer>
 
-  <!-- Floating Toast Notification -->
-  <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-950/95 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-2xl shadow-2xl border border-slate-800 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2">
-    <span class="text-emerald-400">✓</span>
+  <!-- Toast Alert -->
+  <div id="toastNotification" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-900/95 backdrop-blur-2xl text-white text-xs font-bold px-6 py-3.5 rounded-2xl shadow-2xl border border-white/20 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2.5">
+    <span class="text-emerald-400 text-base">✓</span>
     <span id="toastMessage">Item added to Bag!</span>
   </div>
 
   <!-- Bottom Floating Bag Bar -->
-  <div id="floatingCartBar" class="fixed bottom-4 inset-x-4 max-w-xl mx-auto bg-slate-950 text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-slate-800 z-40 hidden flex items-center justify-between">
+  <div id="floatingCartBar" class="fixed bottom-5 inset-x-4 max-w-md mx-auto bg-slate-900/90 backdrop-blur-2xl text-white p-3.5 px-5 rounded-3xl shadow-2xl border border-white/20 z-40 hidden flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold text-sm">🛍️</div>
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 flex items-center justify-center font-bold text-lg">🛍️</div>
       <div>
         <p class="text-xs font-black text-white" id="floatCartSummary">1 Item in Bag • ₹899</p>
-        <p class="text-[10px] text-slate-400">60-Min Express Delivery</p>
+        <p class="text-[10px] text-emerald-400 font-bold">⚡ 60-Min Express Drop</p>
       </div>
     </div>
-    <button onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1.5 transition">
+    <button onclick="toggleCart()" class="bg-white text-slate-950 hover:bg-orange-500 hover:text-white text-xs font-black px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition cursor-pointer">
       <span>View Bag</span>
       <span>➔</span>
     </button>
@@ -209,15 +246,15 @@
 
   <!-- Side Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
-    <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
-    <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
+    <div onclick="toggleCart()" class="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity"></div>
+    <div class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-950 text-slate-100 shadow-2xl border-l border-white/10 flex flex-col justify-between z-10">
       
-      <div class="p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
+      <div class="p-6 bg-black/50 border-b border-white/10 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-orange-600/20 text-orange-400 flex items-center justify-center text-lg font-bold border border-orange-500/30">🛍️</div>
+          <div class="w-10 h-10 rounded-2xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-lg font-bold">🛍️</div>
           <div>
-            <h3 class="font-brand font-bold text-base">Express Bag</h3>
-            <p class="text-xs text-slate-400">Fitin60 Express Checkout</p>
+            <h3 class="font-brand font-bold text-base text-white">Express Shopping Bag</h3>
+            <p class="text-xs text-slate-400">Direct Boutique Checkout</p>
           </div>
         </div>
         <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-2xl font-bold p-1 cursor-pointer">&times;</button>
@@ -228,37 +265,37 @@
           <p class="text-center text-slate-400 text-sm mt-8">Your shopping bag is empty.</p>
         </div>
 
-        <div id="addressSection" class="hidden mt-6 pt-6 border-t border-slate-200 space-y-3.5">
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider flex items-center gap-1.5">
-            <span>📍</span> Doorstep Delivery Details
+        <div id="addressSection" class="hidden mt-6 pt-6 border-t border-white/10 space-y-3.5">
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-200 tracking-wider flex items-center gap-1.5">
+            <span>📍</span> Delivery Location
           </h4>
-          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
-          <textarea id="custAddress" rows="2" required placeholder="Door No, Street Name, Landmark, Area" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500"></textarea>
+          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-900 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-orange-500">
+          <input type="tel" id="custPhone" required placeholder="10-Digit Mobile Number" class="w-full bg-slate-900 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-orange-500">
+          <textarea id="custAddress" rows="2" required placeholder="Door No, Street Name, Landmark, Area" class="w-full bg-slate-900 border border-white/10 rounded-2xl px-4 py-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-orange-500"></textarea>
 
-          <h4 class="font-brand font-bold text-xs uppercase text-slate-900 tracking-wider pt-2 flex items-center gap-1.5">
-            <span>💳</span> Payment Mode
+          <h4 class="font-brand font-bold text-xs uppercase text-slate-200 tracking-wider pt-2 flex items-center gap-1.5">
+            <span>💳</span> Payment Settlement
           </h4>
           <div class="grid grid-cols-2 gap-2.5">
-            <label class="border-2 border-orange-500 bg-orange-50/50 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="payMethod" value="UPI" checked class="accent-orange-600">
-              <span class="text-xs font-bold text-slate-900">⚡ Store UPI</span>
+            <label class="border border-orange-500/80 bg-orange-500/10 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="payMethod" value="UPI" checked class="accent-orange-500">
+              <span class="text-xs font-bold text-white">⚡ Store UPI</span>
             </label>
-            <label class="border-2 border-slate-200 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="payMethod" value="COD" class="accent-orange-600">
-              <span class="text-xs font-bold text-slate-900">💵 Cash on Delivery</span>
+            <label class="border border-white/10 bg-slate-900 p-3 rounded-2xl flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="payMethod" value="COD" class="accent-orange-500">
+              <span class="text-xs font-bold text-white">💵 Cash on Delivery</span>
             </label>
           </div>
         </div>
       </div>
 
-      <div class="p-6 bg-slate-50 border-t border-slate-200 space-y-3.5">
-        <div class="flex justify-between items-baseline font-black text-slate-950">
-          <span class="text-xs uppercase text-slate-500">Total Amount</span>
-          <span id="cartTotal" class="font-brand text-2xl text-slate-950">₹0</span>
+      <div class="p-6 bg-black/60 border-t border-white/10 space-y-3.5">
+        <div class="flex justify-between items-baseline font-black text-white">
+          <span class="text-xs uppercase text-slate-400">Total Payable</span>
+          <span id="cartTotal" class="font-mono-num text-2xl text-gradient-sunset">₹0</span>
         </div>
 
-        <button onclick="handleCheckout()" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-xl shadow-orange-600/20 cursor-pointer">
+        <button onclick="handleCheckout()" class="w-full bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500 hover:opacity-90 text-slate-950 font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-xl shadow-orange-500/25 cursor-pointer">
           ⚡ Place 60-Min Express Order
         </button>
       </div>
@@ -266,30 +303,30 @@
     </div>
   </div>
 
-  <!-- Dynamic Boutique UPI Modal -->
+  <!-- Dynamic UPI Modal -->
   <div id="upiModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
-    <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
-    <div class="bg-white rounded-[2rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-slate-100">
-      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-inner">⚡</div>
-      <h3 class="font-brand font-black text-xl text-slate-950 mt-3">Fitin60 Direct UPI Gateway</h3>
-      <p class="text-xs text-slate-500 mt-1" id="storeModalTitle">Paying Store</p>
+    <div onclick="closeUpiModal()" class="fixed inset-0 bg-black/85 backdrop-blur-md"></div>
+    <div class="bg-slate-950 text-white rounded-[2.5rem] max-w-sm w-full p-7 relative z-10 shadow-2xl text-center border border-white/15">
+      <div class="w-14 h-14 bg-orange-500/20 text-orange-400 border border-orange-500/30 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold">⚡</div>
+      <h3 class="font-brand font-black text-xl text-white mt-3">Fitin60 Direct Gateway</h3>
+      <p class="text-xs text-slate-400 mt-1" id="storeModalTitle">Paying Store</p>
 
-      <div class="my-5 p-5 bg-slate-50 border border-slate-200/80 rounded-3xl">
+      <div class="my-5 p-5 bg-black/50 border border-white/10 rounded-3xl">
         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Amount Payable</p>
-        <p class="font-brand text-3xl font-black text-slate-950 mt-1" id="modalAmount">₹0</p>
-        <img id="upiQrCode" src="" alt="Store UPI QR" class="w-44 h-44 mx-auto mt-4 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
-        <p class="text-xs text-slate-800 font-mono font-bold mt-3" id="upiIdDisplay">UPI ID: store@upi</p>
+        <p class="font-mono-num text-3xl font-black text-gradient-sunset mt-1" id="modalAmount">₹0</p>
+        <img id="upiQrCode" src="" alt="Store UPI QR" class="w-44 h-44 mx-auto mt-4 rounded-2xl border border-white/10 bg-white p-2 shadow-sm">
+        <p class="text-xs text-slate-300 font-mono font-bold mt-3" id="upiIdDisplay">UPI ID: store@upi</p>
       </div>
 
-      <a id="directUpiBtn" href="#" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mb-2 shadow-md">
+      <a id="directUpiBtn" href="#" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mb-2 shadow-md">
         📲 Pay via UPI App (PhonePe / GPay)
       </a>
 
-      <button onclick="confirmUpiPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
+      <button onclick="confirmUpiPayment()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg cursor-pointer">
         ✓ I Have Paid (Track Delivery)
       </button>
 
-      <button onclick="closeUpiModal()" class="w-full text-slate-400 hover:text-slate-700 text-xs font-bold mt-3 py-1 cursor-pointer">
+      <button onclick="closeUpiModal()" class="w-full text-slate-400 hover:text-white text-xs font-bold mt-3 py-1 cursor-pointer">
         Cancel & Go Back
       </button>
     </div>
@@ -310,7 +347,8 @@
         category: "ethnic",
         sizes: ["M", "L", "XL", "XXL"],
         eta: "35 MINS",
-        rating: "4.9 (140)",
+        rating: "4.9",
+        reviews: "140",
         upi: "anuram@ybl",
         image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
         desc: "Pure soft cotton with intricate hand-embroidered neckline and matching dupatta."
@@ -328,7 +366,8 @@
         category: "mens",
         sizes: ["38", "40", "42"],
         eta: "40 MINS",
-        rating: "4.8 (98)",
+        rating: "4.8",
+        reviews: "98",
         upi: "saimenswear@upi",
         image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
         desc: "100% Egyptian cotton, structured formal collar with breathability."
@@ -346,7 +385,8 @@
         category: "ethnic",
         sizes: ["Free Size"],
         eta: "50 MINS",
-        rating: "5.0 (64)",
+        rating: "5.0",
+        reviews: "64",
         upi: "adhyastudio@okhdfcbank",
         image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
         desc: "Authentic rich Dharmavaram/Kanchi weave zari work pallu with running blouse."
@@ -359,7 +399,6 @@
     var currentCategory = 'all';
     var MAX_RADIUS_KM = 20;
 
-    // Toggle Customer Menu
     function toggleCustomerMenu(e) {
       if (e) e.stopPropagation();
       var custDrop = document.getElementById("custDropdown");
@@ -369,7 +408,6 @@
       renderMenuOrderBox();
     }
 
-    // Toggle Business Menu
     function toggleBusinessMenu(e) {
       if (e) e.stopPropagation();
       var custDrop = document.getElementById("custDropdown");
@@ -390,17 +428,17 @@
           var firstItem = order.items && order.items[0] ? order.items[0].name : "Express Dress";
           
           box.innerHTML = 
-            '<div class="space-y-2">' +
+            '<div class="space-y-2.5">' +
               '<div class="flex items-center justify-between">' +
-                '<span class="font-brand font-black text-slate-900">' + order.orderId + '</span>' +
-                '<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md text-[10px]">On the Way 🛵</span>' +
+                '<span class="font-mono-num font-black text-orange-400">' + order.orderId + '</span>' +
+                '<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2 py-0.5 rounded-md text-[10px]">On Route 🛵</span>' +
               '</div>' +
-              '<p class="text-slate-600 text-[11px] truncate font-medium">🛍️ ' + firstItem + '</p>' +
-              '<div class="flex items-center justify-between text-[11px] font-bold text-slate-900 pt-1 border-t border-slate-200/60">' +
+              '<p class="text-slate-300 text-[11px] truncate font-medium">🛍️ ' + firstItem + '</p>' +
+              '<div class="flex items-center justify-between text-[11px] font-bold text-white pt-1.5 border-t border-white/10">' +
                 '<span>Total: ₹' + order.totalAmount + '</span>' +
-                '<span class="text-orange-600 font-extrabold">60-Min ETA</span>' +
+                '<span class="text-gradient-sunset font-black">60-MIN ETA</span>' +
               '</div>' +
-              '<a href="tracking.html" class="block text-center bg-orange-600 hover:bg-orange-500 text-white font-black py-2.5 rounded-xl text-[11px] transition shadow-sm mt-2">' +
+              '<a href="tracking.html" class="block text-center bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 font-black py-2.5 rounded-xl text-[11px] transition shadow-md mt-2">' +
                 '⚡ Track Live Status' +
               '</a>' +
             '</div>';
@@ -412,8 +450,8 @@
       box.innerHTML = 
         '<div class="text-center py-4 text-slate-400">' +
           '<p class="text-xl mb-1">🛍️</p>' +
-          '<p class="font-bold text-[11px] text-slate-600">No Active Orders</p>' +
-          '<p class="text-[10px] text-slate-400 mt-0.5">Order updates will appear here in real-time</p>' +
+          '<p class="font-bold text-[11px] text-slate-300">No Active Orders</p>' +
+          '<p class="text-[10px] text-slate-400 mt-0.5">Live delivery tracking will appear here</p>' +
         '</div>';
     }
 
@@ -445,7 +483,6 @@
     function renderProducts() {
       var grid = document.getElementById("productGrid");
       var html = "";
-      var count = 0;
 
       var customItems = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
       var allProducts = customItems.concat(catalog);
@@ -454,23 +491,22 @@
         var dist = calculateDistance(userCoords.lat, userCoords.lng, p.lat, p.lng);
         if (parseFloat(dist) <= MAX_RADIUS_KM) {
           if (currentCategory === 'all' || p.category === currentCategory) {
-            count++;
             var activeSize = selectedSizes[p.id] || p.sizes[0];
 
             var sizeButtons = "";
             p.sizes.forEach(function(s) {
               var isSel = (s === activeSize);
-              sizeButtons += '<button type="button" onclick="selectProductSize(' + p.id + ', \'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-50 text-orange-600' : 'border-slate-200 text-slate-700') + ' px-3 py-1.5 text-xs font-bold rounded-xl transition">' + s + '</button> ';
+              sizeButtons += '<button type="button" onclick="selectProductSize(' + p.id + ', \'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-500/20 text-orange-400' : 'border-white/10 text-slate-300 bg-white/5') + ' px-3 py-1 text-xs font-mono-num font-bold rounded-xl transition">' + s + '</button> ';
             });
 
-            html += '<div class="group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between">' +
+            html += '<div class="glass-card rounded-[2rem] overflow-hidden transition-all duration-300 flex flex-col justify-between group">' +
                       '<div>' +
-                        '<div class="relative h-72 sm:h-80 bg-slate-100 overflow-hidden">' +
-                          '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
-                          '<span class="absolute top-3.5 left-3.5 bg-slate-950/90 backdrop-blur-md text-white text-[10px] font-black px-3 py-1 rounded-xl flex items-center gap-1 shadow-md">' +
-                            '<span>⚡</span> ' + p.eta + ' EXPRESS' +
+                        '<div class="relative h-80 bg-slate-900 overflow-hidden">' +
+                          '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">' +
+                          '<span class="absolute top-4 left-4 bg-black/80 backdrop-blur-md text-orange-400 border border-orange-500/30 text-[10px] font-mono-num font-black px-3 py-1 rounded-xl flex items-center gap-1.5 shadow-xl">' +
+                            '<span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-ping"></span> ' + p.eta + ' EXPRESS' +
                           '</span>' +
-                          '<span class="absolute top-3.5 right-3.5 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl shadow-md">' +
+                          '<span class="absolute top-4 right-4 bg-gradient-to-r from-rose-600 to-orange-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl shadow-xl">' +
                             p.discount +
                           '</span>' +
                         '</div>' +
@@ -478,13 +514,13 @@
                         '<div class="p-6">' +
                           '<div class="flex items-center justify-between">' +
                             '<div>' +
-                              '<span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider block">' + p.store + '</span>' +
-                              '<span class="text-[10px] text-slate-500 font-bold">' + p.area + '</span>' +
+                              '<span class="text-[11px] font-extrabold text-orange-400 uppercase tracking-widest block">' + p.store + '</span>' +
+                              '<span class="text-[10px] text-slate-400 font-medium">' + p.area + '</span>' +
                             '</div>' +
-                            '<span class="text-[10px] bg-slate-100 font-bold text-slate-600 px-2 py-0.5 rounded-md">⭐ ' + p.rating + '</span>' +
+                            '<span class="text-[10px] bg-white/5 border border-white/10 font-bold text-amber-300 px-2.5 py-1 rounded-lg">⭐ ' + (p.rating || "5.0") + '</span>' +
                           '</div>' +
-                          '<h3 class="font-brand font-bold text-lg text-slate-950 mt-2 leading-snug group-hover:text-orange-600 transition">' + p.name + '</h3>' +
-                          '<p class="text-xs text-slate-500 mt-1 line-clamp-2">' + p.desc + '</p>' +
+                          '<h3 class="font-brand font-bold text-lg text-white mt-2 leading-snug group-hover:text-orange-400 transition">' + p.name + '</h3>' +
+                          '<p class="text-xs text-slate-400 mt-1 line-clamp-2 font-normal">' + p.desc + '</p>' +
 
                           '<div class="mt-4">' +
                             '<span class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5">Select Size</span>' +
@@ -492,17 +528,18 @@
                           '</div>' +
 
                           '<div class="mt-5 flex items-baseline gap-2.5">' +
-                            '<span class="font-brand text-2xl font-black text-slate-950">₹' + p.price + '</span>' +
-                            '<span class="text-xs font-bold text-slate-400 line-through">₹' + p.originalPrice + '</span>' +
+                            '<span class="font-mono-num text-2xl font-black text-white">₹' + p.price + '</span>' +
+                            '<span class="font-mono-num text-xs font-bold text-slate-400 line-through">₹' + p.originalPrice + '</span>' +
+                            '<span class="text-[10px] text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 rounded-md font-extrabold ml-auto">Verified Stock</span>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
 
                       '<div class="p-6 pt-0 grid grid-cols-2 gap-2.5">' +
-                        '<button onclick="addToBagSilent(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-1 cursor-pointer">' +
-                          '<span>+</span> Add to Bag' +
+                        '<button onclick="addToBagSilent(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-white/10 flex items-center justify-center gap-1 cursor-pointer">' +
+                          '<span>+</span> Bag' +
                         '</button>' +
-                        '<button onclick="buyNowInstant(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer">' +
+                        '<button onclick="buyNowInstant(\'' + p.name + '\', ' + p.price + ', \'' + p.eta + '\', \'' + activeSize + '\', \'' + p.store + '\', \'' + p.upi + '\')" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:opacity-90 text-slate-950 font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5 cursor-pointer">' +
                           '<span>⚡</span> Buy Now' +
                         '</button>' +
                       '</div>' +
@@ -542,9 +579,9 @@
       currentCategory = category;
       var tabs = document.querySelectorAll('.cat-tab');
       tabs.forEach(function(t) {
-        t.className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition';
+        t.className = 'cat-tab px-5 py-2.5 rounded-2xl text-xs font-bold bg-white/5 text-slate-300 border border-white/10 hover:border-orange-500/50 hover:text-white transition';
       });
-      document.getElementById('tab-' + category).className = 'cat-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm';
+      document.getElementById('tab-' + category).className = 'cat-tab px-5 py-2.5 rounded-2xl text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 transition shadow-lg shadow-orange-500/20';
       renderProducts();
     }
 
@@ -609,13 +646,13 @@
       var html = "";
       for (var i = 0; i < items.length; i++) {
         sum += items[i].price;
-        html += '<div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/80 rounded-2xl">' +
+        html += '<div class="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl">' +
                   '<div>' +
-                    '<p class="text-xs font-bold text-slate-950">' + items[i].name + '</p>' +
-                    '<p class="text-[11px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600 font-bold">' + items[i].size + '</span> • ' + items[i].store + '</p>' +
-                    '<p class="text-xs font-black text-slate-950 mt-1">₹' + items[i].price + '</p>' +
+                    '<p class="text-xs font-bold text-white">' + items[i].name + '</p>' +
+                    '<p class="text-[11px] text-slate-400 font-semibold mt-0.5">Size: <span class="text-orange-400 font-bold">' + items[i].size + '</span> • ' + items[i].store + '</p>' +
+                    '<p class="text-xs font-mono-num font-black text-white mt-1">₹' + items[i].price + '</p>' +
                   '</div>' +
-                  '<button onclick="removeCartItem(' + i + ')" class="text-slate-400 hover:text-red-500 font-bold p-1 text-base">✕</button>' +
+                  '<button onclick="removeCartItem(' + i + ')" class="text-slate-400 hover:text-red-400 font-bold p-1 text-base">✕</button>' +
                 '</div>';
       }
       list.innerHTML = html;
