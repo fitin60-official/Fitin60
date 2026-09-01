@@ -130,7 +130,7 @@
           Explore Local Boutiques & Get Drops in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Tap any boutique or dress preview to enter their full collection, slide through outfit angles, and order with instant UPI checkout.
+          Tap any boutique or dress preview to explore their collection, view all outfit angles, and order with instant UPI checkout.
         </p>
 
         <!-- Stats Chips -->
@@ -161,7 +161,7 @@
           <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Studios</h2>
           <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full border border-orange-200">0 Boutiques Active</span>
         </div>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click any boutique or outfit to explore the full collection</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click any boutique or outfit to explore their collection</p>
       </div>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -187,7 +187,7 @@
     </div>
   </section>
 
-  <!-- ================= STORE-FIRST GRID: SHOPS WITH 3 CLOTHES PREVIEWS ================= -->
+  <!-- ================= STORE-FIRST GRID WITH PROMINENT SHOP NAMES ================= -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="boutiqueStoreGrid"></div>
   </main>
@@ -227,7 +227,7 @@
     </div>
   </section>
 
-  <!-- ================= 1. DEDICATED STOREFRONT MODAL (OPENED BY CLICKING SHOP OR 3 IMAGES) ================= -->
+  <!-- ================= 1. DEDICATED STOREFRONT MODAL ================= -->
   <div id="storeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md">
     <div class="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
       
@@ -474,8 +474,6 @@
         name: "Floral Designer Anarkali Kurta Set",
         store: "Anu Ram Fashions",
         area: "Subhash Road, Anantapur",
-        lat: 14.6819,
-        lng: 77.6006,
         price: 899,
         originalPrice: 1499,
         discount: "40% OFF",
@@ -497,8 +495,6 @@
         name: "Festive Embroidered Silk Lehanga",
         store: "Anu Ram Fashions",
         area: "Subhash Road, Anantapur",
-        lat: 14.6819,
-        lng: 77.6006,
         price: 2199,
         originalPrice: 3499,
         discount: "37% OFF",
@@ -519,8 +515,6 @@
         name: "Traditional Soft Cotton Party Kurti",
         store: "Anu Ram Fashions",
         area: "Subhash Road, Anantapur",
-        lat: 14.6819,
-        lng: 77.6006,
         price: 649,
         originalPrice: 1099,
         discount: "41% OFF",
@@ -541,8 +535,6 @@
         name: "Tailored Slim-Fit Oxford Shirt",
         store: "Sai Menswear Studio",
         area: "Saptagiri Circle, Anantapur",
-        lat: 14.6738,
-        lng: 77.5954,
         price: 1199,
         originalPrice: 1899,
         discount: "36% OFF",
@@ -562,8 +554,6 @@
         name: "Pure Silk Traditional Zari Saree",
         store: "Adhya Designer Studio",
         area: "Old Town (పాతూరు), Anantapur",
-        lat: 14.6650,
-        lng: 77.5890,
         price: 2499,
         originalPrice: 3999,
         discount: "38% OFF",
@@ -580,11 +570,9 @@
       }
     ];
 
-    var userCoords = { lat: 14.6819, lng: 77.6006 };
     var items = [];
     var selectedSizes = {};
     var searchQuery = '';
-    var MAX_RADIUS_KM = 20;
 
     var activeProductObj = null;
     var activeSlideIndex = 0;
@@ -595,36 +583,23 @@
       return customItems.concat(baseProducts);
     }
 
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-      var R = 6371;
-      var dLat = (lat2 - lat1) * Math.PI / 180;
-      var dLon = (lon2 - lon1) * Math.PI / 180;
-      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return (R * c).toFixed(1);
-    }
-
     function getGroupedStores() {
       var allProducts = getAllProducts();
       var storesMap = {};
 
       allProducts.forEach(function(p) {
-        var dist = calculateDistance(userCoords.lat, userCoords.lng, p.lat || 14.6819, p.lng || 77.6006);
-        if (parseFloat(dist) <= MAX_RADIUS_KM) {
-          if (!storesMap[p.store]) {
-            storesMap[p.store] = {
-              storeName: p.store,
-              area: p.area,
-              eta: p.eta || "35 MINS",
-              rating: p.rating || "4.9",
-              upi: p.upi,
-              products: []
-            };
-          }
-          storesMap[p.store].products.push(p);
+        var storeKey = p.store || "Local Boutique";
+        if (!storesMap[storeKey]) {
+          storesMap[storeKey] = {
+            storeName: storeKey,
+            area: p.area || "City Central",
+            eta: p.eta || "35 MINS",
+            rating: p.rating || "4.9",
+            upi: p.upi || "9515552511-3@ybl",
+            products: []
+          };
         }
+        storesMap[storeKey].products.push(p);
       });
 
       return Object.values(storesMap);
@@ -686,11 +661,11 @@
                     '<span class="text-[11px] bg-slate-100 font-bold text-slate-700 px-2 py-0.5 rounded-lg">⭐ ' + store.rating + '</span>' +
                   '</div>' +
 
-                  '<h3 class="font-brand font-black text-xl text-slate-950 mt-3 group-hover:text-orange-600 transition flex items-center justify-between">' +
+                  '<h3 class="font-brand font-black text-2xl text-slate-950 mt-3.5 group-hover:text-orange-600 transition flex items-center justify-between">' +
                     '<span>' + store.storeName + '</span>' +
-                    '<span class="text-xs text-orange-600 font-bold">Showroom ➔</span>' +
+                    '<span class="text-xs text-orange-600 font-bold">Collection ➔</span>' +
                   '</h3>' +
-                  '<p class="text-xs text-slate-500 mt-0.5 font-medium">📍 ' + store.area + '</p>' +
+                  '<p class="text-xs text-slate-500 mt-1 font-semibold">📍 ' + store.area + '</p>' +
                 '</div>' +
 
                 '<!-- 3 Clothes Images Preview Strip -->' +
@@ -708,8 +683,8 @@
               '<div class="p-6 pt-0">' +
                 '<button onclick="openStoreShowroom(\'' + safeStore + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 cursor-pointer">' +
                   '<span>🏬</span> View ' + store.storeName + ' Collection' +
-                '</button>
-              </div>' +
+                '</button>' +
+              '</div>' +
 
             '</div>';
         }
@@ -721,8 +696,8 @@
         grid.innerHTML = 
           '<div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200">' +
             '<div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl mb-3">🔍</div>' +
-            '<h3 class="font-brand font-bold text-lg text-slate-950">No Matching Boutiques or Outfits Found</h3>' +
-            '<p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Try searching with a different boutique name or area.</p>' +
+            '<h3 class="font-brand font-bold text-lg text-slate-950">No Matching Boutiques Found</h3>' +
+            '<p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Try typing boutique name or area.</p>' +
             '<button onclick="clearSearch()" class="mt-4 bg-slate-950 text-white font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider hover:bg-orange-600 transition cursor-pointer">Reset Search</button>' +
           '</div>';
         return;
@@ -752,7 +727,7 @@
               '<div class="relative h-60 bg-slate-100 overflow-hidden">' +
                 '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
                 '<span class="absolute top-3 left-3 bg-slate-950/90 text-white text-[10px] font-mono-num font-black px-2.5 py-1 rounded-xl">⚡ 60-MIN</span>' +
-                '<span class="absolute top-3 right-3 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl">' + p.discount + '</span>' +
+                '<span class="absolute top-3 right-3 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl">' + (p.discount || '35% OFF') + '</span>' +
                 '<span class="absolute bottom-2.5 right-2.5 bg-black/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-md">' +
                   'Slide Angles & Buy ➔' +
                 '</span>' +
@@ -762,7 +737,7 @@
                 '<p class="text-xs text-slate-500 mt-1 line-clamp-2">' + p.desc + '</p>' +
                 '<div class="mt-4 flex items-baseline gap-2">' +
                   '<span class="font-mono-num text-2xl font-black text-slate-950">₹' + p.price + '</span>' +
-                  '<span class="font-mono-num text-xs font-bold text-slate-400 line-through">₹' + p.originalPrice + '</span>' +
+                  '<span class="font-mono-num text-xs font-bold text-slate-400 line-through">₹' + (p.originalPrice || (p.price * 1.5)) + '</span>' +
                 '</div>' +
               '</div>' +
             '</div>' +
