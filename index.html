@@ -130,7 +130,7 @@
           Explore Local Boutiques & Get Drops in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Browse verified designer stores near you. Click any boutique or outfit to explore their complete private collection and order instantly.
+          Tap any dress photo to slide through full angles, or click the boutique title to view their entire showroom collection.
         </p>
 
         <!-- Stats Chips -->
@@ -152,7 +152,7 @@
     </div>
   </section>
 
-  <!-- Compact Search & Filter Bar -->
+  <!-- Search & Filter Bar -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       
@@ -161,7 +161,7 @@
           <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Studios</h2>
           <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full border border-orange-200">0 Boutiques Active</span>
         </div>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click on any store or outfit to enter their full showroom</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Tap photo to open single dress view with multi-image slider</p>
       </div>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -187,7 +187,7 @@
     </div>
   </section>
 
-  <!-- ================= STORE-FIRST GRID: SHOPS WITH 3 CLOTHES IMAGES ================= -->
+  <!-- ================= STORE-FIRST GRID WITH DIRECT SINGLE DRESS CLICKS ================= -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="boutiqueStoreGrid"></div>
   </main>
@@ -227,11 +227,84 @@
     </div>
   </section>
 
-  <!-- ================= DEDICATED STOREFRONT MODAL (FULL BOUTIQUE SHOWROOM) ================= -->
+  <!-- ================= 1. DEDICATED SINGLE DRESS PRODUCT MODAL (WITH IMAGE SLIDER) ================= -->
+  <div id="singleProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
+    <div class="bg-white w-full max-w-3xl max-h-[92vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100 relative">
+      
+      <!-- Close Button -->
+      <button onclick="closeSingleProductModal()" class="absolute top-4 right-4 z-30 bg-black/60 hover:bg-black text-white rounded-full w-9 h-9 flex items-center justify-center font-bold text-lg border border-white/20 cursor-pointer">&times;</button>
+
+      <div class="overflow-y-auto flex-1 p-6 sm:p-8 space-y-6">
+        
+        <!-- Multi-Angle Image Slider Box -->
+        <div class="relative h-80 sm:h-96 bg-slate-950 rounded-3xl overflow-hidden border border-slate-200 group">
+          <img id="productSliderImg" src="" alt="Product view" class="w-full h-full object-contain transition-all duration-300">
+          
+          <!-- Prev Button -->
+          <button onclick="changeProductSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-950 w-9 h-9 rounded-full flex items-center justify-center font-black shadow-md cursor-pointer transition">
+            ‹
+          </button>
+          
+          <!-- Next Button -->
+          <button onclick="changeProductSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-slate-950 w-9 h-9 rounded-full flex items-center justify-center font-black shadow-md cursor-pointer transition">
+            ›
+          </button>
+
+          <!-- Slider Dots Indicator -->
+          <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full" id="sliderDots"></div>
+        </div>
+
+        <!-- Thumbnails Strip -->
+        <div class="flex gap-2.5 overflow-x-auto pb-1" id="sliderThumbs"></div>
+
+        <!-- Product & Boutique Meta -->
+        <div class="space-y-4 pt-2 border-t border-slate-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <span id="singleProdStore" class="text-xs font-extrabold text-orange-600 uppercase tracking-widest block">Boutique Name</span>
+              <span id="singleProdArea" class="text-[11px] text-slate-500 font-medium">Store Location</span>
+            </div>
+            <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2.5 py-1 rounded-xl">⚡ 60-Min Express</span>
+          </div>
+
+          <h3 id="singleProdName" class="font-brand font-black text-2xl text-slate-950 leading-tight">Dress Name</h3>
+          <p id="singleProdDesc" class="text-xs text-slate-600 leading-relaxed font-normal">Description goes here.</p>
+
+          <!-- Size Selector -->
+          <div>
+            <span class="block text-[11px] font-black uppercase tracking-wider text-slate-500 mb-1.5">Select Size</span>
+            <div class="flex gap-2" id="singleProdSizes"></div>
+          </div>
+
+          <!-- Price & Actions -->
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-baseline gap-2.5">
+              <span id="singleProdPrice" class="font-mono-num text-3xl font-black text-slate-950">₹0</span>
+              <span id="singleProdOriginal" class="font-mono-num text-sm font-bold text-slate-400 line-through">₹0</span>
+              <span id="singleProdDiscount" class="text-xs bg-rose-600 text-white font-bold px-2 py-0.5 rounded-lg">0% OFF</span>
+            </div>
+
+            <div class="flex items-center gap-2.5 sm:w-72">
+              <button id="singleAddBagBtn" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase transition border border-slate-200 cursor-pointer">
+                + Add to Bag
+              </button>
+              <button id="singleBuyNowBtn" class="flex-1 bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase transition shadow-md cursor-pointer">
+                ⚡ Buy Now
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= 2. FULL BOUTIQUE SHOWROOM MODAL (OPENED VIA SHOP NAME) ================= -->
   <div id="storeModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md">
     <div class="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
       
-      <!-- Storefront Modal Header -->
       <div class="p-6 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-2xl font-bold">🏬</div>
@@ -246,10 +319,9 @@
         <button onclick="closeStoreModal()" class="text-slate-400 hover:text-white text-3xl font-bold p-1 cursor-pointer">&times;</button>
       </div>
 
-      <!-- Outfits Grid inside Store -->
       <div class="p-6 overflow-y-auto flex-1 bg-[#fafaf9]">
         <div class="flex items-center justify-between mb-4">
-          <h4 class="font-brand font-bold text-sm text-slate-950">Available Collection in This Boutique</h4>
+          <h4 class="font-brand font-bold text-sm text-slate-950">Full Boutique Catalog</h4>
           <span id="modalItemCount" class="text-xs text-slate-500 font-semibold">3 Outfits</span>
         </div>
         <div id="storeProductsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
@@ -384,7 +456,7 @@
   </div>
 
   <script>
-    // Initial Base Boutique Catalog with multiple clothes
+    // Base Boutique Catalog with multiple dress angle images
     var baseProducts = [
       {
         id: 1,
@@ -402,7 +474,12 @@
         rating: "4.9",
         upi: "anuram@ybl",
         image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
-        desc: "Pure soft cotton with intricate hand-embroidered neckline and matching dupatta."
+        images: [
+          "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80"
+        ],
+        desc: "Pure soft cotton with intricate hand-embroidered neckline, side tassels and matching dupatta."
       },
       {
         id: 2,
@@ -420,7 +497,11 @@
         rating: "4.9",
         upi: "anuram@ybl",
         image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
-        desc: "Rich flared raw silk lehanga with heavy stone work blouse."
+        images: [
+          "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
+        ],
+        desc: "Rich flared raw silk lehanga with heavy stone work designer blouse and net dupatta."
       },
       {
         id: 3,
@@ -438,7 +519,11 @@
         rating: "4.8",
         upi: "anuram@ybl",
         image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
-        desc: "Breathable daily wear and party wear stylish kurti."
+        images: [
+          "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
+        ],
+        desc: "Breathable daily wear and lightweight evening party wear stylish kurti."
       },
       {
         id: 4,
@@ -456,6 +541,9 @@
         rating: "4.8",
         upi: "saimenswear@upi",
         image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80"
+        ],
         desc: "100% Egyptian cotton, structured formal collar with breathability."
       },
       {
@@ -474,6 +562,9 @@
         rating: "5.0",
         upi: "adhyastudio@okhdfcbank",
         image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+        ],
         desc: "Authentic rich Dharmavaram/Kanchi weave zari work pallu with running blouse."
       }
     ];
@@ -484,7 +575,117 @@
     var searchQuery = '';
     var MAX_RADIUS_KM = 20;
 
-    // Search Handler
+    // Single Product Slider Active State
+    var activeProductObj = null;
+    var activeSlideIndex = 0;
+
+    function getAllProducts() {
+      var customItems = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
+      return customItems.concat(baseProducts);
+    }
+
+    // Single Product Screen (Direct Dress Click)
+    function openSingleProductModal(productId, e) {
+      if (e) e.stopPropagation();
+      var allProds = getAllProducts();
+      var p = allProds.find(function(item) { return item.id == productId; });
+      if (!p) return;
+
+      activeProductObj = p;
+      activeSlideIndex = 0;
+
+      // Ensure images array exists
+      if (!p.images || p.images.length === 0) {
+        p.images = [p.image];
+      }
+
+      document.getElementById("singleProdStore").innerText = p.store;
+      document.getElementById("singleProdArea").innerText = "📍 " + p.area + " • ⚡ " + (p.eta || "35 MINS");
+      document.getElementById("singleProdName").innerText = p.name;
+      document.getElementById("singleProdDesc").innerText = p.desc;
+      document.getElementById("singleProdPrice").innerText = "₹" + p.price;
+      document.getElementById("singleProdOriginal").innerText = "₹" + (p.originalPrice || p.price);
+      document.getElementById("singleProdDiscount").innerText = p.discount || "SPECIAL OFFER";
+
+      // Render Sizes
+      var activeSize = selectedSizes[p.id] || (p.sizes ? p.sizes[0] : "Free Size");
+      var sizeContainer = document.getElementById("singleProdSizes");
+      var sizeHtml = "";
+      var sizes = p.sizes || ["Free Size"];
+
+      sizes.forEach(function(s) {
+        var isSel = (s === activeSize);
+        sizeHtml += '<button type="button" onclick="selectSingleProdSize(\'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-50 text-orange-600 font-black' : 'border-slate-200 text-slate-700 bg-slate-50') + ' px-3.5 py-1.5 text-xs rounded-xl transition font-bold">' + s + '</button> ';
+      });
+      sizeContainer.innerHTML = sizeHtml;
+
+      // Update Action Buttons
+      var safeName = p.name.replace(/'/g, "\\'");
+      var safeStore = p.store.replace(/'/g, "\\'");
+      var upi = p.upi || "9515552511-3@ybl";
+      var eta = p.eta || "35 MINS";
+
+      document.getElementById("singleAddBagBtn").setAttribute("onclick", "addToBagSilent('" + safeName + "', " + p.price + ", '" + eta + "', '" + activeSize + "', '" + safeStore + "', '" + upi + "')");
+      document.getElementById("singleBuyNowBtn").setAttribute("onclick", "buyNowFromSingle('" + safeName + "', " + p.price + ", '" + eta + "', '" + activeSize + "', '" + safeStore + "', '" + upi + "')");
+
+      updateSliderUI();
+      document.getElementById("singleProductModal").classList.remove("hidden");
+    }
+
+    function selectSingleProdSize(size) {
+      if (!activeProductObj) return;
+      selectedSizes[activeProductObj.id] = size;
+      openSingleProductModal(activeProductObj.id);
+    }
+
+    function updateSliderUI() {
+      if (!activeProductObj) return;
+      var imgEl = document.getElementById("productSliderImg");
+      var dotsEl = document.getElementById("sliderDots");
+      var thumbsEl = document.getElementById("sliderThumbs");
+
+      imgEl.src = activeProductObj.images[activeSlideIndex];
+
+      // Dots
+      var dotsHtml = "";
+      activeProductObj.images.forEach(function(img, idx) {
+        dotsHtml += '<span class="w-2 h-2 rounded-full transition-all ' + (idx === activeSlideIndex ? 'bg-orange-500 w-5' : 'bg-white/50') + '"></span>';
+      });
+      dotsEl.innerHTML = dotsHtml;
+
+      // Thumbs
+      var thumbsHtml = "";
+      activeProductObj.images.forEach(function(img, idx) {
+        thumbsHtml += 
+          '<div onclick="setProductSlide(' + idx + ')" class="w-16 h-16 rounded-xl overflow-hidden border-2 cursor-pointer transition shrink-0 ' + (idx === activeSlideIndex ? 'border-orange-500 shadow-md' : 'border-slate-200 opacity-60 hover:opacity-100') + '">' +
+            '<img src="' + img + '" alt="Thumb" class="w-full h-full object-cover">' +
+          '</div>';
+      });
+      thumbsEl.innerHTML = thumbsHtml;
+    }
+
+    function changeProductSlide(direction) {
+      if (!activeProductObj) return;
+      var total = activeProductObj.images.length;
+      activeSlideIndex = (activeSlideIndex + direction + total) % total;
+      updateSliderUI();
+    }
+
+    function setProductSlide(idx) {
+      activeSlideIndex = idx;
+      updateSliderUI();
+    }
+
+    function closeSingleProductModal() {
+      document.getElementById("singleProductModal").classList.add("hidden");
+    }
+
+    function buyNowFromSingle(name, price, eta, size, store, upiId) {
+      closeSingleProductModal();
+      buyNowInstant(name, price, eta, size, store, upiId);
+    }
+
+    // Search Engine
     function handleSearch(e) {
       searchQuery = e.target.value.toLowerCase().trim();
       var clearBtn = document.getElementById("clearSearchBtn");
@@ -516,14 +717,12 @@
 
     // Group Products by Boutique / Store Name
     function getGroupedStores() {
-      var customItems = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
-      var allProducts = customItems.concat(baseProducts);
+      var allProducts = getAllProducts();
       var storesMap = {};
 
       allProducts.forEach(function(p) {
         var dist = calculateDistance(userCoords.lat, userCoords.lng, p.lat || 14.6819, p.lng || 77.6006);
         if (parseFloat(dist) <= MAX_RADIUS_KM) {
-          
           if (!storesMap[p.store]) {
             storesMap[p.store] = {
               storeName: p.store,
@@ -560,21 +759,23 @@
         if (storeMatches) {
           matchCount++;
           
-          // Generate 3 Mini Images
+          // Generate 3 Direct-Click Dress Images
           var previewImages = "";
           var displayProds = store.products.slice(0, 3);
           
           displayProds.forEach(function(p) {
             previewImages += 
-              '<div onclick="openStoreShowroom(\'' + store.storeName.replace(/'/g, "\\'") + '\')" class="relative h-28 sm:h-32 bg-slate-100 rounded-2xl overflow-hidden cursor-pointer group/img border border-slate-200/80 hover:border-orange-500 transition">' +
+              '<div onclick="openSingleProductModal(' + p.id + ', event)" class="relative h-28 sm:h-32 bg-slate-100 rounded-2xl overflow-hidden cursor-pointer group/img border border-slate-200/80 hover:border-orange-500 transition shadow-sm">' +
                 '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-500">' +
                 '<span class="absolute bottom-1.5 left-1.5 bg-slate-950/80 backdrop-blur-md text-white font-mono-num font-bold text-[10px] px-1.5 py-0.5 rounded-md">' +
                   '₹' + p.price +
                 '</span>' +
+                '<span class="absolute top-1.5 right-1.5 bg-orange-600 text-white text-[9px] font-black px-1.5 py-0.2 rounded opacity-0 group-hover/img:opacity-100 transition">' +
+                  'View' +
+                '</span>' +
               '</div>';
           });
 
-          // Fill placeholders if less than 3
           if (displayProds.length < 3) {
             for (var i = displayProds.length; i < 3; i++) {
               previewImages += 
@@ -588,7 +789,7 @@
             '<div class="bg-white rounded-[2rem] border border-slate-200/90 overflow-hidden shadow-sm hover:border-orange-300 hover:shadow-2xl transition duration-300 flex flex-col justify-between group">' +
               '<div class="p-6">' +
                 
-                '<!-- Shop Header (Clickable) -->' +
+                '<!-- Shop Header (Opens Boutique Showroom) -->' +
                 '<div onclick="openStoreShowroom(\'' + store.storeName.replace(/'/g, "\\'") + '\')" class="cursor-pointer">' +
                   '<div class="flex items-center justify-between">' +
                     '<span class="text-xs font-mono-num font-black text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-xl flex items-center gap-1">' +
@@ -599,26 +800,26 @@
 
                   '<h3 class="font-brand font-black text-xl text-slate-950 mt-3 group-hover:text-orange-600 transition flex items-center justify-between">' +
                     '<span>' + store.storeName + '</span>' +
-                    '<span class="text-xs text-orange-600 font-bold">View Store ➔</span>' +
+                    '<span class="text-xs text-orange-600 font-bold">All Outfits ➔</span>' +
                   '</h3>' +
                   '<p class="text-xs text-slate-500 mt-0.5 font-medium">📍 ' + store.area + '</p>' +
                 '</div>' +
 
-                '<!-- 3 Clothes Images Strip -->' +
+                '<!-- 3 Clothes Images Strip (Each click opens that specific dress) -->' +
                 '<div class="mt-5">' +
                   '<div class="flex items-center justify-between mb-2">' +
                     '<span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Featured Outfits (' + store.products.length + ')</span>' +
-                    '<span class="text-[10px] text-slate-400 font-semibold">Tap photo to open</span>' +
+                    '<span class="text-[10px] text-orange-600 font-bold">Tap dress for angles</span>' +
                   '</div>' +
                   '<div class="grid grid-cols-3 gap-2.5">' + previewImages + '</div>' +
                 '</div>' +
 
               '</div>' +
 
-              '<!-- View Full Boutique Button -->' +
+              '<!-- View Full Boutique Showroom Button -->' +
               '<div class="p-6 pt-0">' +
                 '<button onclick="openStoreShowroom(\'' + store.storeName.replace(/'/g, "\\'") + '\')" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md flex items-center justify-center gap-2 cursor-pointer">' +
-                  '<span>🏬</span> Enter ' + store.storeName + ' Showroom' +
+                  '<span>🏬</span> View ' + store.storeName + ' Showroom' +
                 '</button>' +
               '</div>' +
 
@@ -642,7 +843,7 @@
       grid.innerHTML = html;
     }
 
-    // Open Dedicated Boutique Showroom Modal
+    // Open Full Boutique Showroom Modal
     function openStoreShowroom(storeName) {
       var stores = getGroupedStores();
       var selectedStore = stores.find(function(s) { return s.storeName === storeName; });
@@ -668,15 +869,16 @@
         var safeStore = p.store.replace(/'/g, "\\'");
 
         html += 
-          '<div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">' +
+          '<div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between group/card">' +
             '<div>' +
-              '<div class="relative h-60 bg-slate-100 overflow-hidden">' +
-                '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover">' +
+              '<div onclick="openSingleProductModal(' + p.id + ', event)" class="relative h-60 bg-slate-100 overflow-hidden cursor-pointer">' +
+                '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover/card:scale-105 transition duration-500">' +
                 '<span class="absolute top-3 left-3 bg-slate-950/90 text-white text-[10px] font-mono-num font-black px-2.5 py-1 rounded-xl">⚡ 60-MIN</span>' +
                 '<span class="absolute top-3 right-3 bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-xl">' + p.discount + '</span>' +
+                '<span class="absolute bottom-2.5 right-2.5 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-lg opacity-0 group-hover/card:opacity-100 transition">Slide Angles ➔</span>' +
               '</div>' +
               '<div class="p-5">' +
-                '<h4 class="font-brand font-bold text-base text-slate-950 leading-snug">' + p.name + '</h4>' +
+                '<h4 onclick="openSingleProductModal(' + p.id + ', event)" class="font-brand font-bold text-base text-slate-950 leading-snug cursor-pointer hover:text-orange-600 transition">' + p.name + '</h4>' +
                 '<p class="text-xs text-slate-500 mt-1 line-clamp-2">' + p.desc + '</p>' +
                 '<div class="mt-3.5">' +
                   '<span class="block text-[10px] font-black uppercase text-slate-400 mb-1">Select Size</span>' +
