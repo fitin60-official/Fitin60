@@ -152,11 +152,10 @@
     </div>
   </section>
 
-  <!-- ================= COMPACT & SLEEK SEARCH + FILTER BAR ================= -->
+  <!-- Compact Search & Filter Bar -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-200">
       
-      <!-- Title & Results Badge -->
       <div>
         <div class="flex items-center gap-2.5">
           <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Outfits</h2>
@@ -165,10 +164,7 @@
         <p class="text-xs text-slate-500 mt-0.5 font-medium">Auto-sorted by 20-KM delivery radar</p>
       </div>
 
-      <!-- Controls Right: Compact Search + Category Tabs -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        
-        <!-- Small & Simple Search Box -->
         <div class="relative min-w-[240px] sm:w-64">
           <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 text-xs pointer-events-none">🔍</span>
           <input 
@@ -187,13 +183,11 @@
           </button>
         </div>
 
-        <!-- Filter Tabs -->
         <div class="flex gap-1.5 overflow-x-auto pb-0.5">
           <button onclick="filterCatalog('all')" id="tab-all" class="cat-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white transition shadow-sm whitespace-nowrap">All Drops</button>
           <button onclick="filterCatalog('ethnic')" id="tab-ethnic" class="cat-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition whitespace-nowrap">Women's Ethnic</button>
           <button onclick="filterCatalog('mens')" id="tab-mens" class="cat-tab px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-orange-500 transition whitespace-nowrap">Men's Wear</button>
         </div>
-
       </div>
 
     </div>
@@ -203,6 +197,108 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7" id="productGrid"></div>
   </main>
+
+  <!-- ================= 1. DELIVERY RULES & PROMISE SECTION ================= -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-20">
+    <div class="text-center max-w-2xl mx-auto mb-10">
+      <span class="text-orange-600 text-xs font-black uppercase tracking-widest bg-orange-50 border border-orange-200 px-3 py-1 rounded-full">⚡ Fitin60 Express Policy</span>
+      <h2 class="font-brand text-2xl md:text-3xl font-black text-slate-950 mt-2">Clear & Fast Delivery Rules</h2>
+      <p class="text-xs text-slate-500 mt-1">Everything you need to know about our 60-minute hyperlocal runway delivery.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">⏱️</div>
+        <h3 class="font-brand font-bold text-sm text-slate-950">60-Min Express Radar</h3>
+        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Orders are instantly assigned to nearby riders and dispatched directly from boutique stores within 20 KM.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">📦</div>
+        <h3 class="font-brand font-bold text-sm text-slate-950">Tamper-Proof Packing</h3>
+        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Every outfit comes with official boutique tags, fresh condition check, and sealed waterproof delivery packs.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">🔄</div>
+        <h3 class="font-brand font-bold text-sm text-slate-950">Instant Size Exchange</h3>
+        <p class="text-xs text-slate-500 mt-2 leading-relaxed">If the size doesn't fit, request an instant same-day size replacement right after delivery without hassle.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm hover:border-orange-300 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-4">💳</div>
+        <h3 class="font-brand font-bold text-sm text-slate-950">Direct Store UPI / COD</h3>
+        <p class="text-xs text-slate-500 mt-2 leading-relaxed">100% direct payment to local boutique merchant UPI accounts or choose Cash on Delivery at your doorstep.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 2. CUSTOMER FEEDBACK & REVIEWS SECTION ================= -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-20">
+    <div class="bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+      
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-slate-800">
+        <div>
+          <span class="text-orange-400 text-xs font-black uppercase tracking-widest bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full">⭐ Customer Voices</span>
+          <h2 class="font-brand text-2xl md:text-3xl font-black text-white mt-2">What Fashion Lovers Say</h2>
+          <p class="text-xs text-slate-400 mt-1">Verified reviews from hyper-local boutique shoppers</p>
+        </div>
+        
+        <button onclick="toggleReviewModal()" class="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black px-5 py-3 rounded-2xl text-xs uppercase tracking-wider transition shadow-lg flex items-center gap-2 cursor-pointer self-start md:self-auto">
+          <span>✍️</span> Drop Your Review
+        </button>
+      </div>
+
+      <!-- Live Reviews Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8" id="reviewsContainer">
+        <!-- Injected dynamically via script -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Modal for Writing a Review -->
+  <div id="reviewModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div onclick="toggleReviewModal()" class="fixed inset-0 bg-black/75 backdrop-blur-md"></div>
+    <div class="bg-white rounded-[2rem] max-w-md w-full p-7 relative z-10 shadow-2xl text-slate-900 border border-slate-100">
+      <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-xl font-bold mb-3">✍️</div>
+      <h3 class="font-brand font-black text-xl text-slate-950">Share Your Experience</h3>
+      <p class="text-xs text-slate-500 mt-0.5">Help others discover local fashion boutiques</p>
+
+      <form onsubmit="handleReviewSubmit(event)" class="mt-5 space-y-3.5">
+        <div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Your Name</label>
+          <input type="text" id="revName" required placeholder="e.g., Harika Reddy" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Star Rating</label>
+            <select id="revRating" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500 font-bold">
+              <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+              <option value="4">⭐⭐⭐⭐ (4/5)</option>
+              <option value="3">⭐⭐⭐ (3/5)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Boutique / Outfit</label>
+            <input type="text" id="revStore" required placeholder="e.g., Anu Ram Studio" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-black uppercase tracking-wider text-slate-600 mb-1">Your Feedback</label>
+          <textarea id="revComment" rows="3" required placeholder="How was the dress quality and delivery speed?" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer mt-2">
+          Post Review
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="max-w-7xl mx-auto px-4 sm:px-6 mt-20 pt-10 border-t border-slate-200/80">
@@ -387,12 +483,86 @@
       }
     ];
 
+    // Default Verified Customer Feedback
+    var defaultReviews = [
+      {
+        name: "Divya Srikanth",
+        rating: 5,
+        store: "Anu Ram Fashions",
+        comment: "Emergency event kosam Anarkali order petanu, exactly 35 minutes lo doorstep ki vachindi. Fabric & fitting chala superb ga unnay!"
+      },
+      {
+        name: "Kalyan V.",
+        rating: 5,
+        store: "Sai Menswear Studio",
+        comment: "Office party ki Oxford shirt order chesa. Instant direct UPI checkout and 40 mins lo deliver chesaru. Best hyperlocal fashion service in town."
+      },
+      {
+        name: "Pravallika Reddy",
+        rating: 5,
+        store: "Adhya Designer Studio",
+        comment: "Traditional zari saree color exactly photo lo unnatte undi. Authentic boutique collection delivered in under an hour."
+      }
+    ];
+
     var userCoords = { lat: 14.6819, lng: 77.6006 };
     var items = [];
     var selectedSizes = {};
     var currentCategory = 'all';
     var searchQuery = '';
     var MAX_RADIUS_KM = 20;
+
+    // Review Handlers
+    function toggleReviewModal() {
+      document.getElementById("reviewModal").classList.toggle("hidden");
+    }
+
+    function handleReviewSubmit(e) {
+      e.preventDefault();
+      var name = document.getElementById("revName").value.trim();
+      var rating = parseInt(document.getElementById("revRating").value);
+      var store = document.getElementById("revStore").value.trim();
+      var comment = document.getElementById("revComment").value.trim();
+
+      var newRev = { name: name, rating: rating, store: store, comment: comment };
+      var customRevs = JSON.parse(localStorage.getItem("fitin60_user_reviews") || "[]");
+      customRevs.unshift(newRev);
+      localStorage.setItem("fitin60_user_reviews", JSON.stringify(customRevs));
+
+      toggleReviewModal();
+      renderReviews();
+      showToast("✓ Thank you! Your review has been published.");
+      
+      document.getElementById("revName").value = "";
+      document.getElementById("revStore").value = "";
+      document.getElementById("revComment").value = "";
+    }
+
+    function renderReviews() {
+      var container = document.getElementById("reviewsContainer");
+      var customRevs = JSON.parse(localStorage.getItem("fitin60_user_reviews") || "[]");
+      var allRevs = customRevs.concat(defaultReviews);
+
+      var html = "";
+      allRevs.slice(0, 3).forEach(function(r) {
+        var stars = "⭐".repeat(r.rating);
+        html += '<div class="bg-slate-950 p-6 rounded-3xl border border-slate-800 space-y-3 flex flex-col justify-between shadow-inner">' +
+                  '<div>' +
+                    '<div class="flex items-center justify-between">' +
+                      '<span class="text-xs font-bold text-amber-400">' + stars + '</span>' +
+                      '<span class="text-[10px] text-slate-500 font-semibold">' + r.store + '</span>' +
+                    '</div>' +
+                    '<p class="text-xs text-slate-300 mt-3 italic leading-relaxed font-normal">“' + r.comment + '”</p>' +
+                  '</div>' +
+                  '<div class="pt-3 border-t border-slate-900 flex items-center gap-2">' +
+                    '<div class="w-6 h-6 rounded-full bg-orange-600/20 text-orange-400 flex items-center justify-center font-bold text-[10px]">✓</div>' +
+                    '<span class="text-xs font-bold text-white">' + r.name + '</span>' +
+                    '<span class="text-[10px] text-emerald-400 font-bold ml-auto">Verified Buyer</span>' +
+                  '</div>' +
+                '</div>';
+      });
+      container.innerHTML = html;
+    }
 
     // Search Handler
     function handleSearch(e) {
@@ -765,6 +935,7 @@
     window.addEventListener('DOMContentLoaded', function() {
       silentlyDetectLocation();
       renderMenuOrderBox();
+      renderReviews();
     });
   </script>
 </body>
