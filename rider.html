@@ -20,7 +20,6 @@
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
 
-  <!-- Header -->
   <header class="bg-white border-b border-slate-200 px-6 h-20 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2">
       <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
@@ -34,7 +33,7 @@
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- 1. MANDATORY AUTH GATEKEEPER (Visible if rider is not logged in) -->
+    <!-- 1. AUTH GATEKEEPER -->
     <div id="authSection" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
       <div class="text-center space-y-1">
         <h2 class="font-brand font-black text-2xl text-slate-950">Rider Fleet Portal</h2>
@@ -46,7 +45,7 @@
         <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register New Rider</button>
       </div>
 
-      <!-- Rider Login Form -->
+      <!-- Login Form -->
       <form id="loginForm" onsubmit="handleRiderLogin(event)" class="space-y-4">
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Registered Mobile</label>
@@ -61,7 +60,7 @@
         </button>
       </form>
 
-      <!-- Rider Register Form (Auto logs in) -->
+      <!-- Register Form -->
       <form id="registerForm" onsubmit="handleRiderRegister(event)" class="space-y-4 hidden">
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Full Name</label>
@@ -85,7 +84,7 @@
       </form>
     </div>
 
-    <!-- 2. PRIVATE RIDER DASHBOARD (Visible ONLY when logged in) -->
+    <!-- 2. PRIVATE RIDER DASHBOARD -->
     <div id="privateDashboard" class="hidden space-y-6">
 
       <!-- Duty Toggle Card -->
@@ -130,6 +129,17 @@
             <span>✓</span> Mark Delivered
           </button>
         </div>
+      </div>
+
+      <!-- PERMANENT RIDER ID DELETION DANGER ZONE -->
+      <div class="bg-rose-50/70 border border-rose-200 rounded-3xl p-6 space-y-3">
+        <h4 class="font-brand font-bold text-sm text-rose-900">⚠️ Danger Zone: Delete Rider Account</h4>
+        <p class="text-xs text-rose-700 leading-relaxed">
+          Permanently delete your Rider ID and profile from the Fitin60 delivery fleet.
+        </p>
+        <button onclick="deleteRiderPermanently()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition shadow-sm cursor-pointer">
+          🗑️ Delete My Rider ID Permanently
+        </button>
       </div>
 
     </div>
@@ -203,7 +213,6 @@
       }
     }
 
-    // REGISTRATION WITH IMMEDIATE AUTO-LOGIN
     function handleRiderRegister(e) {
       e.preventDefault();
       var name = document.getElementById("regRiderName").value.trim();
@@ -256,7 +265,7 @@
     }
 
     function riderLogout() {
-      if (isDutyOn) toggleDuty(); // Turn off duty on logout
+      if (isDutyOn) toggleDuty();
       currentRider = null;
       localStorage.removeItem("fitin60_active_rider");
       document.getElementById("authSection").classList.remove("hidden");
@@ -378,6 +387,26 @@
           activeOrderObj = null;
         });
       }
+    }
+
+    // PERMANENT RIDER ID DELETION FUNCTION
+    function deleteRiderPermanently() {
+      if (!currentRider) return;
+
+      var enteredPin = prompt("⚠️ WARNING: This will permanently delete your Rider ID & delivery account from Fitin60!\n\nPlease enter your 4-digit PIN to confirm:");
+      if (!enteredPin) return;
+
+      if (enteredPin !== currentRider.pin) {
+        alert("Incorrect PIN! Account deletion cancelled.");
+        return;
+      }
+
+      db.ref("riders/" + currentRider.mobile).remove().then(function() {
+        alert("✓ Your Rider ID has been permanently removed.");
+        riderLogout();
+      }).catch(function(err) {
+        alert("Deletion failed: " + err.message);
+      });
     }
 
     window.addEventListener('DOMContentLoaded', function() {
