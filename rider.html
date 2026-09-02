@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Rider Fleet Station & GPS Radar</title>
+  <title>Fitin60 | Rider Fleet Station (Cloud Realtime)</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
@@ -31,7 +36,7 @@
         <span class="text-3xl">🛵</span>
         <div>
           <h2 class="font-brand font-black text-xl">Ramesh Varma</h2>
-          <p class="text-xs text-slate-400">Fleet ID: #RDR-8821 • Anantapur Zone</p>
+          <p class="text-xs text-slate-400">Fleet ID: #RDR-8821 • Cloud Active</p>
         </div>
       </div>
 
@@ -43,32 +48,30 @@
       </div>
     </div>
 
-    <!-- Active Banner -->
     <div id="dutyActiveBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-        <span>ON DUTY • Listening for boutique dispatches in your 20 KM zone...</span>
+        <span>ON DUTY • Listening to cloud dispatches across all boutiques in real-time...</span>
       </div>
     </div>
 
-    <!-- Active Delivery Card with Google Maps Navigation -->
+    <!-- Active Delivery Order Card -->
     <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-6 shadow-md space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 class="font-brand font-bold text-base text-slate-950">Active Delivery Order</h3>
-        <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Live GPS Ready</span>
+        <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Live GPS Connected</span>
       </div>
 
       <div class="text-xs text-slate-700 space-y-1.5" id="activeDeliveryDetails"></div>
 
-      <!-- Turn-by-Turn Route to Customer -->
       <a id="gmapsNavBtn" href="#" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
-        <span>🗺️</span> Navigate to Customer on Google Maps
+        <span>🗺️</span> Open Turn-by-Turn Route on Google Maps
       </a>
     </div>
 
   </main>
 
-  <!-- RIDER POP-UP ALERT (Alerts ONLY when Boutique Accepts) -->
+  <!-- LIVE POP-UP ALERT (Triggered Real-Time from Cloud) -->
   <div id="riderAlertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-orange-500 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
@@ -78,8 +81,8 @@
 
       <div class="space-y-2 text-xs">
         <div class="p-3 bg-orange-50 rounded-xl">
-          <p class="font-bold text-slate-900" id="popStore">Pickup: Boutique Name</p>
-          <p class="text-slate-500" id="popItem">Outfit: Dress</p>
+          <p class="font-bold text-slate-900" id="popStore">Store: Boutique Name</p>
+          <p class="text-slate-500" id="popItem">Item: Dress</p>
         </div>
         <div class="p-3 bg-slate-50 rounded-xl">
           <p class="font-bold text-slate-900" id="popCustomer">Deliver to: Customer</p>
@@ -88,15 +91,44 @@
       </div>
 
       <button onclick="acceptOrderAsRider()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-md">
-        ✓ Accept Order & Start GPS Route
+        ✓ Accept Order & Start GPS Navigation
       </button>
     </div>
   </div>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
+      authDomain: "fitin60.firebaseapp.com",
+      databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
+      projectId: "fitin60",
+      storageBucket: "fitin60.firebasestorage.app",
+      messagingSenderId: "349862141371",
+      appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
     var isDutyOn = false;
-    var dutyInterval = null;
-    var lastAlertId = null;
+    var activeOrderObj = null;
+    var lastAlertOrderId = null;
+
+    function playBeepSound() {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+      } catch(e){}
+    }
 
     function toggleDuty() {
       isDutyOn = !isDutyOn;
@@ -111,34 +143,42 @@
         btn.classList.replace("bg-slate-700", "bg-emerald-500");
         knob.classList.replace("translate-x-0", "translate-x-6");
         banner.classList.remove("hidden");
-
-        dutyInterval = setInterval(listenForAcceptedOrders, 2000);
+        listenToCloudDispatches();
       } else {
         text.innerText = "OFF DUTY";
         text.classList.remove("text-emerald-400");
         btn.classList.replace("bg-emerald-500", "bg-slate-700");
         knob.classList.replace("translate-x-6", "translate-x-0");
         banner.classList.add("hidden");
-
-        clearInterval(dutyInterval);
+        db.ref("orders").off();
         document.getElementById("riderAlertModal").classList.add("hidden");
       }
     }
 
-    function listenForAcceptedOrders() {
-      if (!isDutyOn) return;
-      var raw = localStorage.getItem("chitikelo_active_order");
-      if (!raw) return;
+    function listenToCloudDispatches() {
+      db.ref("orders").on("value", function(snapshot) {
+        if (!isDutyOn) return;
+        var orders = snapshot.val();
+        if (!orders) return;
 
-      var order = JSON.parse(raw);
-      // Alerts the rider ONLY when boutique has accepted
-      if (order.boutiqueAccepted && !order.riderAssigned && order.orderId !== lastAlertId) {
-        lastAlertId = order.orderId;
-        showRiderPopup(order);
-      }
+        // Find the most recent order that is boutiqueAccepted but NOT riderAssigned
+        var targetOrder = null;
+        Object.values(orders).forEach(function(o) {
+          if (o.boutiqueAccepted && !o.riderAssigned) {
+            targetOrder = o;
+          }
+        });
+
+        if (targetOrder && targetOrder.orderId !== lastAlertOrderId) {
+          lastAlertOrderId = targetOrder.orderId;
+          activeOrderObj = targetOrder;
+          showRiderPopup(targetOrder);
+        }
+      });
     }
 
     function showRiderPopup(order) {
+      playBeepSound();
       var item = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
       document.getElementById("popOrderId").innerText = order.orderId;
       document.getElementById("popStore").innerText = "Pickup Store: " + order.store;
@@ -150,15 +190,15 @@
     }
 
     function acceptOrderAsRider() {
-      var raw = localStorage.getItem("chitikelo_active_order");
-      if (!raw) return;
-      var order = JSON.parse(raw);
-      order.riderAssigned = true;
-      order.paymentStatus = "Rider On the Way to Customer 🛵";
-      localStorage.setItem("chitikelo_active_order", JSON.stringify(order));
+      if (!activeOrderObj) return;
 
-      document.getElementById("riderAlertModal").classList.add("hidden");
-      showActiveDelivery(order);
+      db.ref("orders/" + activeOrderObj.orderId).update({
+        riderAssigned: true,
+        paymentStatus: "Rider On the Way to Customer 🛵"
+      }).then(function() {
+        document.getElementById("riderAlertModal").classList.add("hidden");
+        showActiveDelivery(activeOrderObj);
+      });
     }
 
     function showActiveDelivery(order) {
@@ -169,10 +209,10 @@
       card.classList.remove("hidden");
       details.innerHTML = 
         "<p><strong>Order ID:</strong> " + order.orderId + "</p>" +
+        "<p><strong>Pickup Boutique:</strong> " + order.store + "</p>" +
         "<p><strong>Customer:</strong> " + order.customerName + " (" + order.customerPhone + ")</p>" +
-        "<p><strong>Address:</strong> " + order.customerAddress + "</p>";
+        "<p><strong>Delivery Address:</strong> " + order.customerAddress + "</p>";
 
-      // Opens turn-by-turn navigation in Google Maps App using customer's GPS
       var lat = order.customerLat || "14.6819";
       var lng = order.customerLng || "77.6006";
       gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
