@@ -6,7 +6,6 @@
   <title>Fitin60 | Boutique Merchant Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -33,34 +32,37 @@
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- 1. AUTH GATEKEEPER -->
+    <!-- 1. AUTH GATEKEEPER WITH FORGOT PIN -->
     <div id="authSection" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
       <div class="text-center space-y-1">
-        <h2 class="font-brand font-black text-2xl text-slate-950">Boutique Partner Portal</h2>
-        <p class="text-xs text-slate-500">Authorized store access only. Login or register to manage your store.</p>
+        <h2 id="authTitle" class="font-brand font-black text-2xl text-slate-950">Boutique Partner Portal</h2>
+        <p id="authSubtitle" class="text-xs text-slate-500">Authorized store access only. Login or register to manage your store.</p>
       </div>
 
-      <div class="flex bg-slate-100 p-1 rounded-2xl">
+      <div id="partnerAuthTabs" class="flex bg-slate-100 p-1 rounded-2xl">
         <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Partner Login</button>
         <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register New Boutique</button>
       </div>
 
-      <!-- Login Form -->
+      <!-- Partner Login Form -->
       <form id="loginForm" onsubmit="handleMerchantLogin(event)" class="space-y-4">
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Registered Mobile</label>
-          <input type="tel" id="loginMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          <input type="tel" id="loginMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 font-mono">
         </div>
         <div>
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Secret 4-Digit PIN</label>
-          <input type="password" id="loginPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono">
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-[11px] font-bold uppercase text-slate-500">Secret 4-Digit PIN</label>
+            <button type="button" onclick="openPartnerForgotPin()" class="text-[11px] text-orange-600 font-bold hover:underline cursor-pointer">Forgot PIN?</button>
+          </div>
+          <input type="password" id="loginPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono text-center">
         </div>
         <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
           Login to Private Studio ➔
         </button>
       </form>
 
-      <!-- Registration Form -->
+      <!-- Partner Register Form -->
       <form id="registerForm" onsubmit="handleMerchantRegister(event)" class="space-y-4 hidden">
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Boutique / Store Name</label>
@@ -72,11 +74,11 @@
         </div>
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Merchant Mobile Number</label>
-          <input type="tel" id="regMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          <input type="tel" id="regMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 font-mono">
         </div>
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Set 4-Digit Security PIN</label>
-          <input type="password" id="regPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono">
+          <input type="password" id="regPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono text-center">
         </div>
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Store UPI ID</label>
@@ -84,6 +86,31 @@
         </div>
         <button type="submit" id="regSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
           Complete Registration & Enter Studio ➔
+        </button>
+      </form>
+
+      <!-- Partner Forgot / Reset PIN Form -->
+      <form id="partnerForgotForm" onsubmit="handlePartnerResetPin(event)" class="space-y-4 hidden">
+        <div class="p-3 bg-orange-50 border border-orange-200 rounded-2xl text-xs text-slate-700">
+          Verify registered store details to reset your 4-digit PIN.
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Registered Mobile</label>
+          <input type="tel" id="partnerResetMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 font-mono">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Store / Boutique Name (Exact)</label>
+          <input type="text" id="partnerResetStore" required placeholder="e.g., Sai Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Set New 4-Digit PIN</label>
+          <input type="password" id="partnerResetNewPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono text-center">
+        </div>
+        <button type="submit" id="partnerResetBtn" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Reset PIN & Enter Studio ➔
+        </button>
+        <button type="button" onclick="switchAuthTab('login')" class="w-full text-center text-xs text-slate-400 hover:text-slate-600 cursor-pointer">
+          ← Back to Login
         </button>
       </form>
     </div>
@@ -145,7 +172,6 @@
                 <span class="text-[10px] text-emerald-600 font-bold">✓ Photo Selected! Tap to change</span>
               </div>
             </div>
-            <!-- Hidden input holding the compressed base64 data URL -->
             <input type="hidden" id="prodBase64Image" value="">
           </div>
 
@@ -169,7 +195,7 @@
         <div id="storeProductsList" class="space-y-3"></div>
       </div>
 
-      <!-- PERMANENT STORE DELETION DANGER ZONE -->
+      <!-- Danger Zone -->
       <div class="bg-rose-50/70 border border-rose-200 rounded-3xl p-6 space-y-3">
         <h4 class="font-brand font-bold text-sm text-rose-900">⚠️ Danger Zone: Delete Store</h4>
         <p class="text-xs text-rose-700 leading-relaxed">
@@ -203,24 +229,74 @@
     function switchAuthTab(tab) {
       var loginF = document.getElementById("loginForm");
       var regF = document.getElementById("registerForm");
-      var tLog = document.getElementById("tabLogin");
-      var tReg = document.getElementById("tabRegister");
+      var forgF = document.getElementById("partnerForgotForm");
+      var tabs = document.getElementById("partnerAuthTabs");
+      var title = document.getElementById("authTitle");
+      var subtitle = document.getElementById("authSubtitle");
+
+      tabs.classList.remove("hidden");
+      forgF.classList.add("hidden");
 
       if (tab === 'login') {
+        title.innerText = "Boutique Partner Portal";
+        subtitle.innerText = "Authorized store access only. Login or register to manage your store.";
         loginF.classList.remove("hidden");
         regF.classList.add("hidden");
-        tLog.classList.add("bg-white", "text-slate-950", "shadow-sm");
-        tLog.classList.remove("text-slate-500");
-        tReg.classList.remove("bg-white", "text-slate-950", "shadow-sm");
-        tReg.classList.add("text-slate-500");
+        document.getElementById("tabLogin").classList.add("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("tabRegister").classList.remove("bg-white", "text-slate-950", "shadow-sm");
       } else {
+        title.innerText = "Register New Boutique";
+        subtitle.innerText = "Start dispatching 60-min orders from your studio.";
         loginF.classList.add("hidden");
         regF.classList.remove("hidden");
-        tReg.classList.add("bg-white", "text-slate-950", "shadow-sm");
-        tReg.classList.remove("text-slate-500");
-        tLog.classList.remove("bg-white", "text-slate-950", "shadow-sm");
-        tLog.classList.add("text-slate-500");
+        document.getElementById("tabRegister").classList.add("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("tabLogin").classList.remove("bg-white", "text-slate-950", "shadow-sm");
       }
+    }
+
+    function openPartnerForgotPin() {
+      document.getElementById("loginForm").classList.add("hidden");
+      document.getElementById("registerForm").classList.add("hidden");
+      document.getElementById("partnerAuthTabs").classList.add("hidden");
+      document.getElementById("partnerForgotForm").classList.remove("hidden");
+
+      document.getElementById("authTitle").innerText = "Reset Store PIN";
+      document.getElementById("authSubtitle").innerText = "Verify boutique details to set a new PIN";
+
+      var m = document.getElementById("loginMobile").value.trim();
+      if (m) document.getElementById("partnerResetMobile").value = m;
+    }
+
+    function handlePartnerResetPin(e) {
+      e.preventDefault();
+      var mobile = document.getElementById("partnerResetMobile").value.trim();
+      var storeName = document.getElementById("partnerResetStore").value.trim().toLowerCase();
+      var newPin = document.getElementById("partnerResetNewPin").value.trim();
+
+      if (newPin.length !== 4) return alert("PIN must be 4 digits!");
+
+      var btn = document.getElementById("partnerResetBtn");
+      btn.disabled = true;
+      btn.innerText = "Verifying...";
+
+      db.ref("partners/" + mobile).once("value").then(function(snapshot) {
+        var partner = snapshot.val();
+        if (partner && partner.storeName.trim().toLowerCase() === storeName) {
+          db.ref("partners/" + mobile).update({ pin: newPin }).then(function() {
+            alert("✓ Partner PIN reset successfully!");
+            partner.pin = newPin;
+            loginSuccess(partner);
+          });
+        } else {
+          alert("Verification Failed: Mobile or Store Name does not match!");
+          btn.disabled = false;
+          btn.innerText = "Reset PIN & Enter Studio ➔";
+        }
+      }).catch(function(err) {
+        alert("Error: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "Reset PIN & Enter Studio ➔";
+      });
     }
 
     function handleMerchantRegister(e) {
@@ -238,7 +314,7 @@
       var newPartner = { storeName: storeName, area: area, mobile: mobile, pin: pin, upi: upi };
 
       db.ref("partners/" + mobile).set(newPartner).then(function() {
-        alert("✓ Registration Successful! Auto-logging in to your studio...");
+        alert("✓ Registration Successful!");
         loginSuccess(newPartner);
       }).catch(function(err) {
         alert("Error: " + err.message);
@@ -257,7 +333,7 @@
         if (partner && partner.pin === pin) {
           loginSuccess(partner);
         } else {
-          alert("Invalid Mobile or PIN! Please register first if you are new.");
+          alert("Invalid Mobile or PIN! Click 'Forgot PIN?' if you don't remember.");
         }
       });
     }
@@ -285,7 +361,6 @@
       document.getElementById("logoutBtn").classList.add("hidden");
     }
 
-    // PHOTO PICKER & CLIENT-SIDE IMAGE COMPRESSOR
     function previewSelectedPhoto(event) {
       var file = event.target.files[0];
       if (!file) return;
@@ -303,7 +378,6 @@
           var ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-          // Compress to JPEG with 0.7 quality (takes < 60KB)
           var compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
 
           document.getElementById("prodBase64Image").value = compressedBase64;
@@ -321,10 +395,7 @@
       if (!currentMerchant) return;
 
       var base64Img = document.getElementById("prodBase64Image").value;
-      if (!base64Img) {
-        alert("Please select a photo for your dress first!");
-        return;
-      }
+      if (!base64Img) return alert("Please select a photo first!");
 
       var name = document.getElementById("prodName").value.trim();
       var price = parseInt(document.getElementById("prodPrice").value.trim(), 10);
@@ -361,10 +432,6 @@
         document.getElementById("imagePreview").src = "";
         document.getElementById("uploadPromptBox").classList.remove("hidden");
         document.getElementById("imagePreviewContainer").classList.add("hidden");
-      }).catch(function(err) {
-        alert("Upload error: " + err.message);
-        btn.disabled = false;
-        btn.innerText = "+ Publish Live to Fitin60";
       });
     }
 
@@ -474,11 +541,11 @@
     function deleteEntireStorePermanently() {
       if (!currentMerchant) return;
 
-      var enteredPin = prompt("⚠️ WARNING: This will permanently delete your store and all uploaded clothing from Fitin60!\n\nPlease enter your 4-digit PIN to confirm:");
+      var enteredPin = prompt("⚠️ WARNING: This will permanently delete your store!\nPlease enter your 4-digit PIN to confirm:");
       if (!enteredPin) return;
 
       if (enteredPin !== currentMerchant.pin) {
-        alert("Incorrect PIN! Store deletion cancelled.");
+        alert("Incorrect PIN! Deletion cancelled.");
         return;
       }
 
@@ -490,21 +557,16 @@
           });
         }
         updates["partners/" + currentMerchant.mobile] = null;
-
         return db.ref().update(updates);
       }).then(function() {
-        alert("✓ Your boutique and all related clothing have been permanently deleted.");
+        alert("✓ Boutique deleted permanently.");
         merchantLogout();
-      }).catch(function(err) {
-        alert("Deletion failed: " + err.message);
       });
     }
 
     window.addEventListener('DOMContentLoaded', function() {
       var saved = localStorage.getItem("fitin60_active_merchant");
-      if (saved) {
-        loginSuccess(JSON.parse(saved));
-      }
+      if (saved) loginSuccess(JSON.parse(saved));
     });
   </script>
 </body>
