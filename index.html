@@ -70,7 +70,7 @@
     </div>
   </header>
 
-  <!-- Profile Menu Popover (Safe Logout) -->
+  <!-- Profile Menu Popover -->
   <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-60 space-y-3">
     <div class="border-b border-slate-100 pb-2">
       <p class="text-[10px] font-bold text-slate-400 uppercase">Logged in as</p>
@@ -148,7 +148,6 @@
   <div id="unifiedStoreModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-0 md:p-4">
     <div class="bg-[#f8f9fa] w-full h-full md:max-w-7xl md:h-[96vh] md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
       
-      <!-- Store Header -->
       <div class="bg-slate-950 text-white px-4 sm:px-8 py-3.5 flex items-center justify-between border-b border-slate-800 shrink-0 z-10">
         <div class="flex items-center gap-3 min-w-0">
           <span class="text-2xl shrink-0">🏬</span>
@@ -160,7 +159,6 @@
         <button onclick="closeUnifiedStoreModal()" class="text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 w-9 h-9 rounded-full flex items-center justify-center text-xl font-bold shrink-0 ml-2 cursor-pointer transition">&times;</button>
       </div>
 
-      <!-- Modal Body -->
       <div class="overflow-y-auto flex-1 p-3 sm:p-6 space-y-5" id="modalScrollBody">
         <div class="bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-7 shadow-sm">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -223,49 +221,81 @@
     <img id="zoomedImageTag" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl select-none">
   </div>
 
-  <!-- 4-DIGIT SECURE MOBILE OTP LOGIN MODAL -->
+  <!-- CUSTOMER MOBILE + 4-DIGIT PIN AUTH MODAL (WITH FORGOT PIN OPTION) -->
   <div id="customerLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 text-2xl font-bold cursor-pointer">&times;</button>
-      <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">📲</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-2">Mobile Verification</h3>
-      <p class="text-xs text-slate-500 mt-1">Instant login with secure 4-digit OTP</p>
+      <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
+      <p class="text-xs text-slate-500 mt-1" id="custModalSubtitle">Login with your Mobile & 4-Digit PIN</p>
 
-      <!-- Step 1: Request OTP -->
-      <div id="otpStepRequest" class="space-y-3 text-left mt-4">
+      <!-- Tabs for Login / Register -->
+      <div id="authNavTabs" class="flex bg-slate-100 p-1 rounded-2xl mt-4">
+        <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition">Login</button>
+        <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition">Register</button>
+      </div>
+
+      <!-- 1. Customer Login Form -->
+      <form id="custLoginForm" onsubmit="handleCustomerPinLogin(event)" class="space-y-3 text-left mt-4">
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Your Full Name</label>
-          <input type="text" id="custLoginName" placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile Number</label>
+          <input type="tel" id="custPinLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-[10px] font-black uppercase text-slate-400">4-Digit PIN</label>
+            <button type="button" onclick="openForgotPinView()" class="text-[10px] text-orange-600 font-bold hover:underline cursor-pointer">Forgot PIN?</button>
+          </div>
+          <input type="password" id="custPinLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono tracking-widest text-center focus:outline-none focus:border-orange-500">
+        </div>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+          Login ➔
+        </button>
+      </form>
+
+      <!-- 2. Customer Register Form -->
+      <form id="custRegisterForm" onsubmit="handleCustomerPinRegister(event)" class="space-y-3 text-left mt-4 hidden">
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Full Name</label>
+          <input type="text" id="custRegName" required placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
         </div>
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile Number</label>
-          <input type="tel" id="custLoginPhone" maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-orange-500">
+          <input type="tel" id="custRegMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-orange-500">
         </div>
-        <button type="button" onclick="sendMobileOtp()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
-          Send 4-Digit OTP ➔
-        </button>
-      </div>
-
-      <!-- Step 2: Verify OTP Screen -->
-      <div id="otpStepVerify" class="hidden space-y-3 text-left mt-4">
-        <div class="p-3 bg-orange-50 border border-orange-200 rounded-xl text-center">
-          <p class="text-[11px] text-slate-600">Verification Code sent to <strong id="displayTargetPhone" class="font-mono"></strong></p>
-          <p class="text-xs text-orange-600 font-bold mt-1">Your OTP Code: <span id="generatedOtpBadge" class="bg-orange-600 text-white font-mono px-2 py-0.5 rounded tracking-widest text-sm">----</span></p>
-        </div>
-
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1 text-center">Enter 4-Digit OTP</label>
-          <input type="tel" id="inputOtpCode" maxlength="4" placeholder="••••" class="w-full text-center tracking-[0.6em] font-mono text-xl bg-slate-50 border border-slate-300 rounded-xl py-2.5 focus:outline-none focus:border-orange-500">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Create 4-Digit PIN</label>
+          <input type="password" id="custRegPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono tracking-widest text-center focus:outline-none focus:border-orange-500">
         </div>
-
-        <button type="button" onclick="verifyMobileOtp()" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
-          Verify & Log In
+        <button type="submit" id="custRegSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+          Create Account & Log In ➔
         </button>
+      </form>
 
-        <button type="button" onclick="backToPhoneStep()" class="w-full text-center text-xs text-slate-400 hover:text-slate-600">
-          ← Change Number
+      <!-- 3. Forgot / Reset PIN Form -->
+      <form id="custForgotForm" onsubmit="handleResetPinSubmit(event)" class="space-y-3 text-left mt-4 hidden">
+        <div class="p-2.5 bg-orange-50 border border-orange-200 rounded-xl text-[11px] text-slate-600">
+          Enter your registered Mobile Number and Name to verify identity & reset your PIN.
+        </div>
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Registered Mobile</label>
+          <input type="tel" id="resetMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Your Full Name (As Registered)</label>
+          <input type="text" id="resetName" required placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Set New 4-Digit PIN</label>
+          <input type="password" id="resetNewPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono tracking-widest text-center focus:outline-none focus:border-orange-500">
+        </div>
+        <button type="submit" id="resetPinBtn" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+          Update PIN & Login ➔
         </button>
-      </div>
+        <button type="button" onclick="switchCustAuthTab('login')" class="w-full text-center text-xs text-slate-400 hover:text-slate-600">
+          ← Back to Login
+        </button>
+      </form>
 
     </div>
   </div>
@@ -346,9 +376,6 @@
     var currentCustomer = null;
     var pendingShowroomAction = null;
     var currentActiveImageSrc = "";
-    var currentSessionOtp = null;
-    var tempLoginPhone = "";
-    var tempLoginName = "";
 
     function initCustomerAuth() {
       var saved = localStorage.getItem("fitin60_customer_user");
@@ -358,7 +385,6 @@
       }
     }
 
-    // Header Pill without direct 'X' (Safe Profile Dropdown)
     function updateAuthHeaderUI() {
       var container = document.getElementById("authPillContainer");
       if (currentCustomer) {
@@ -399,7 +425,7 @@
     }
 
     function openLoginModal() {
-      backToPhoneStep();
+      switchCustAuthTab('login');
       document.getElementById("customerLoginModal").classList.remove("hidden");
     }
 
@@ -407,51 +433,131 @@
       document.getElementById("customerLoginModal").classList.add("hidden");
     }
 
-    function backToPhoneStep() {
-      document.getElementById("otpStepRequest").classList.remove("hidden");
-      document.getElementById("otpStepVerify").classList.add("hidden");
-      document.getElementById("inputOtpCode").value = "";
-    }
+    function switchCustAuthTab(tab) {
+      var loginF = document.getElementById("custLoginForm");
+      var regF = document.getElementById("custRegisterForm");
+      var forgF = document.getElementById("custForgotForm");
+      var navTabs = document.getElementById("authNavTabs");
+      var title = document.getElementById("custModalTitle");
+      var sub = document.getElementById("custModalSubtitle");
 
-    // OTP Generation
-    function sendMobileOtp() {
-      var name = document.getElementById("custLoginName").value.trim() || "Guest Customer";
-      var phone = document.getElementById("custLoginPhone").value.trim();
+      navTabs.classList.remove("hidden");
+      forgF.classList.add("hidden");
 
-      if (!phone || phone.length < 10) {
-        alert("Please enter a valid 10-digit mobile number!");
-        return;
-      }
-
-      tempLoginName = name;
-      tempLoginPhone = phone;
-
-      // Generate 4 digit code
-      currentSessionOtp = String(Math.floor(1000 + Math.random() * 9000));
-
-      document.getElementById("displayTargetPhone").innerText = phone;
-      document.getElementById("generatedOtpBadge").innerText = currentSessionOtp;
-
-      document.getElementById("otpStepRequest").classList.add("hidden");
-      document.getElementById("otpStepVerify").classList.remove("hidden");
-      document.getElementById("inputOtpCode").focus();
-    }
-
-    // OTP Verification
-    function verifyMobileOtp() {
-      var entered = document.getElementById("inputOtpCode").value.trim();
-      if (entered === currentSessionOtp) {
-        currentCustomer = { name: tempLoginName, phone: tempLoginPhone };
-        localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
-        updateAuthHeaderUI();
-        closeLoginModal();
-
-        if (pendingShowroomAction) {
-          openUnifiedShowroom(pendingShowroomAction.storeIdx, pendingShowroomAction.preferredDressId);
-          pendingShowroomAction = null;
-        }
+      if (tab === 'login') {
+        title.innerText = "Customer Account";
+        sub.innerText = "Login with your Mobile & 4-Digit PIN";
+        loginF.classList.remove("hidden");
+        regF.classList.add("hidden");
+        document.getElementById("custTabLogin").classList.add("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("custTabRegister").classList.remove("bg-white", "text-slate-950", "shadow-sm");
       } else {
-        alert("Invalid OTP! Please check the code and try again.");
+        title.innerText = "New Customer";
+        sub.innerText = "Create your account with a 4-Digit PIN";
+        loginF.classList.add("hidden");
+        regF.classList.remove("hidden");
+        document.getElementById("custTabRegister").classList.add("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("custTabLogin").classList.remove("bg-white", "text-slate-950", "shadow-sm");
+      }
+    }
+
+    function openForgotPinView() {
+      document.getElementById("custLoginForm").classList.add("hidden");
+      document.getElementById("custRegisterForm").classList.add("hidden");
+      document.getElementById("authNavTabs").classList.add("hidden");
+      document.getElementById("custForgotForm").classList.remove("hidden");
+
+      document.getElementById("custModalTitle").innerText = "Reset 4-Digit PIN";
+      document.getElementById("custModalSubtitle").innerText = "Verify identity to set a new PIN";
+
+      var mob = document.getElementById("custPinLoginMobile").value.trim();
+      if (mob) document.getElementById("resetMobile").value = mob;
+    }
+
+    // Handle Reset PIN Verification & Save
+    function handleResetPinSubmit(e) {
+      e.preventDefault();
+      var mobile = document.getElementById("resetMobile").value.trim();
+      var name = document.getElementById("resetName").value.trim().toLowerCase();
+      var newPin = document.getElementById("resetNewPin").value.trim();
+
+      if (mobile.length !== 10) return alert("Please enter valid 10-digit mobile number!");
+      if (newPin.length !== 4) return alert("New PIN must be exactly 4 digits!");
+
+      var btn = document.getElementById("resetPinBtn");
+      btn.disabled = true;
+      btn.innerText = "Verifying...";
+
+      db.ref("customers/" + mobile).once("value").then(function(snapshot) {
+        var user = snapshot.val();
+        if (user && user.name.trim().toLowerCase() === name) {
+          // Name and Mobile match, update the PIN
+          db.ref("customers/" + mobile).update({ pin: newPin }).then(function() {
+            alert("✓ PIN Updated Successfully! Auto-logging in...");
+            user.pin = newPin;
+            customerLoginSuccess(user);
+          });
+        } else {
+          alert("Verification Failed: Mobile Number or Name does not match our records. Please verify or create a new account.");
+          btn.disabled = false;
+          btn.innerText = "Update PIN & Login ➔";
+        }
+      }).catch(function(err) {
+        alert("Error: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "Update PIN & Login ➔";
+      });
+    }
+
+    function handleCustomerPinRegister(e) {
+      e.preventDefault();
+      var name = document.getElementById("custRegName").value.trim();
+      var mobile = document.getElementById("custRegMobile").value.trim();
+      var pin = document.getElementById("custRegPin").value.trim();
+
+      if (mobile.length !== 10) return alert("Please enter valid 10-digit mobile!");
+      if (pin.length !== 4) return alert("Please set a 4-digit PIN!");
+
+      var btn = document.getElementById("custRegSubmitBtn");
+      btn.disabled = true;
+      btn.innerText = "Creating Account...";
+
+      var newCust = { name: name, phone: mobile, pin: pin };
+
+      db.ref("customers/" + mobile).set(newCust).then(function() {
+        alert("✓ Account Created Successfully!");
+        customerLoginSuccess(newCust);
+      }).catch(function(err) {
+        alert("Error: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "Create Account & Log In ➔";
+      });
+    }
+
+    function handleCustomerPinLogin(e) {
+      e.preventDefault();
+      var mobile = document.getElementById("custPinLoginMobile").value.trim();
+      var pin = document.getElementById("custPinLoginPin").value.trim();
+
+      db.ref("customers/" + mobile).once("value").then(function(snapshot) {
+        var user = snapshot.val();
+        if (user && user.pin === pin) {
+          customerLoginSuccess(user);
+        } else {
+          alert("Invalid Mobile Number or PIN! Click 'Forgot PIN?' if you don't remember.");
+        }
+      });
+    }
+
+    function customerLoginSuccess(user) {
+      currentCustomer = { name: user.name, phone: user.phone };
+      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+      updateAuthHeaderUI();
+      closeLoginModal();
+
+      if (pendingShowroomAction) {
+        openUnifiedShowroom(pendingShowroomAction.storeIdx, pendingShowroomAction.preferredDressId);
+        pendingShowroomAction = null;
       }
     }
 
@@ -737,7 +843,6 @@
       });
     }
 
-    // Close profile popover when tapping outside
     document.addEventListener("click", function(e) {
       var pop = document.getElementById("profilePopover");
       var pill = document.getElementById("authPillContainer");
