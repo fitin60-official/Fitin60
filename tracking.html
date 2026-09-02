@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -36,7 +36,7 @@
 
   <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
 
-    <!-- 1. NOT LOGGED IN STATE (Screen shown if user hasn't logged in) -->
+    <!-- 1. NOT LOGGED IN STATE -->
     <div id="loginPromptCard" class="hidden bg-white rounded-3xl border border-slate-200 p-8 text-center shadow-lg space-y-4">
       <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
         🔒
@@ -71,7 +71,7 @@
       </a>
     </div>
 
-    <!-- 3. PRIVATE ORDERS CONTAINER (Visible only to this logged-in customer) -->
+    <!-- 3. PRIVATE ORDERS CONTAINER (Shows with Delete / Cancel Button) -->
     <div id="privateOrdersContainer" class="space-y-6"></div>
 
   </main>
@@ -124,7 +124,7 @@
           return;
         }
 
-        // Filter ONLY this customer's phone number
+        // Filter ONLY this customer's mobile number
         var myOrders = Object.values(orders).filter(function(o) {
           return String(o.customerPhone).trim() === String(phone).trim();
         }).reverse();
@@ -148,9 +148,12 @@
                   '<span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Reference</span>' +
                   '<h2 class="font-mono-num font-black text-xl text-slate-950">' + order.orderId + '</h2>' +
                 '</div>' +
-                '<span class="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1 rounded-xl">' +
-                  (order.paymentStatus || "Accepted") +
-                '</span>' +
+                '<div class="flex items-center gap-2">' +
+                  '<span class="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1 rounded-xl">' +
+                    (order.paymentStatus || "Processing") +
+                  '</span>' +
+                  '<button onclick="deleteCustomerOrder(\'' + order.orderId + '\')" title="Cancel / Delete Order" class="text-rose-600 hover:bg-rose-50 p-1.5 rounded-xl text-xs font-bold border border-rose-200 cursor-pointer">🗑️ Cancel</button>' +
+                '</div>' +
               '</div>' +
 
               '<div class="p-4 bg-slate-50 rounded-2xl space-y-2 text-xs">' +
@@ -182,6 +185,17 @@
 
         container.innerHTML = html;
       });
+    }
+
+    // CLOUD DELETE FUNCTION (Customer can cancel / remove order from Firebase)
+    function deleteCustomerOrder(orderId) {
+      if (confirm("Are you sure you want to cancel and delete order " + orderId + "?")) {
+        db.ref("orders/" + orderId).remove().then(function() {
+          alert("✓ Order successfully cancelled and removed!");
+        }).catch(function(err) {
+          alert("Delete failed: " + err.message);
+        });
+      }
     }
 
     window.addEventListener('DOMContentLoaded', checkAuth);
