@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Boutique Merchant Studio (Cloud Sync)</title>
+  <title>Fitin60 | Boutique Merchant Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Firebase SDKs -->
@@ -26,41 +26,41 @@
       <span class="text-xs bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded-md">MERCHANT STUDIO</span>
     </div>
     <div class="flex items-center gap-3">
-      <button id="logoutBtn" onclick="merchantLogout()" class="hidden text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl transition">Logout</button>
+      <button id="logoutBtn" onclick="merchantLogout()" class="hidden text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl transition cursor-pointer">Logout</button>
       <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl">← Customer Radar</a>
     </div>
   </header>
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- 1. REGISTRATION & LOGIN FORM -->
+    <!-- 1. STRICT AUTH GATEKEEPER -->
     <div id="authSection" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
       <div class="text-center space-y-1">
         <h2 class="font-brand font-black text-2xl text-slate-950">Boutique Partner Portal</h2>
-        <p class="text-xs text-slate-500">Private access to manage your clothing inventory & live customer orders.</p>
+        <p class="text-xs text-slate-500">Authorized store access only. Enter mobile & PIN to manage inventory and live orders.</p>
       </div>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl">
-        <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition">Partner Login</button>
-        <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition">Register New Boutique</button>
+        <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Partner Login</button>
+        <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register New Boutique</button>
       </div>
 
       <!-- Login Form -->
       <form id="loginForm" onsubmit="handleMerchantLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Registered Mobile Number</label>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Registered Mobile</label>
           <input type="tel" id="loginMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
         </div>
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Secret 4-Digit PIN</label>
           <input type="password" id="loginPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono">
         </div>
-        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md">
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
           Login to Private Studio ➔
         </button>
       </form>
 
-      <!-- Registration Form -->
+      <!-- Register Form -->
       <form id="registerForm" onsubmit="handleMerchantRegister(event)" class="space-y-4 hidden">
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Boutique / Store Name</label>
@@ -75,20 +75,20 @@
           <input type="tel" id="regMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
         </div>
         <div>
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Set Secret 4-Digit Security PIN</label>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Set 4-Digit Security PIN</label>
           <input type="password" id="regPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono">
         </div>
         <div>
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Store Merchant UPI ID (for direct payments)</label>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Store UPI ID</label>
           <input type="text" id="regUpi" required placeholder="e.g., storename@upi" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 font-mono">
         </div>
-        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md">
-          Complete Registration & Enter Studio
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Complete Registration & Enter
         </button>
       </form>
     </div>
 
-    <!-- 2. PRIVATE DASHBOARD -->
+    <!-- 2. PRIVATE SECURE DASHBOARD -->
     <div id="privateDashboard" class="hidden space-y-6">
 
       <div class="bg-slate-950 text-white p-6 rounded-[2rem] flex items-center justify-between shadow-xl">
@@ -99,54 +99,58 @@
             <p id="dashStoreMeta" class="text-xs text-slate-400">Area • UPI: store@upi</p>
           </div>
         </div>
-        <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">LIVE CLOUD</span>
+        <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">AUTHENTICATED</span>
       </div>
 
-      <!-- Live Customer Orders from Cloud -->
+      <!-- Live Incoming Orders with Delete Option -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
-          <h3 class="font-brand font-bold text-base text-slate-950">Incoming Customer Orders</h3>
-          <span id="orderCountBadge" class="text-xs bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">Listening to Cloud...</span>
+          <h3 class="font-brand font-bold text-base text-slate-950">Live Store Orders</h3>
+          <span id="orderCountBadge" class="text-xs bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
         </div>
-        <div id="incomingOrderBox" class="space-y-4">
-          <p class="text-center text-slate-400 text-xs py-6">No new orders for your boutique right now.</p>
-        </div>
+        <div id="incomingOrderBox" class="space-y-4"></div>
       </div>
 
-      <!-- Upload New Dress directly to Firebase -->
+      <!-- Upload New Outfit -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
-        <h3 class="font-brand font-bold text-base text-slate-950">Upload New Dress to Your Storefront</h3>
-        <form onsubmit="handleUploadProduct(event)" class="space-y-4">
+        <h3 class="font-brand font-bold text-base text-slate-950">+ Upload New Dress to Radar</h3>
+        <form onsubmit="handleUploadProduct(event)" class="space-y-3.5">
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Dress / Outfit Name</label>
-            <input type="text" id="prodName" required placeholder="e.g., Designer Embroidered Anarkali Set" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+            <input type="text" id="prodName" required placeholder="e.g., Designer Anarkali Kurta" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Price (₹)</label>
-              <input type="number" id="prodPrice" required placeholder="e.g., 999" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+              <input type="number" id="prodPrice" required placeholder="899" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
             </div>
             <div>
               <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Original Price (₹)</label>
-              <input type="number" id="prodOriginal" required placeholder="e.g., 1499" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+              <input type="number" id="prodOriginal" required placeholder="1499" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
             </div>
           </div>
           <div>
-            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Image URL (Direct Photo Link)</label>
-            <input type="url" id="prodImg" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Image URL</label>
+            <input type="url" id="prodImg" required placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
           </div>
           <div>
-            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Available Sizes (comma separated)</label>
-            <input type="text" id="prodSizes" required placeholder="S, M, L, XL" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-orange-500">
+            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Available Sizes</label>
+            <input type="text" id="prodSizes" required placeholder="S, M, L, XL" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
           </div>
           <div>
-            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Fabric & Description</label>
-            <textarea id="prodDesc" rows="2" required placeholder="Pure soft cotton fabric with rich work..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
+            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Description</label>
+            <textarea id="prodDesc" rows="2" required placeholder="Pure cotton fabric..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"></textarea>
           </div>
           <button type="submit" id="uploadSubmitBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
-            + Publish to Fitin60 Live Radar
+            + Publish Live to Fitin60
           </button>
         </form>
+      </div>
+
+      <!-- Manage & Delete Store Outfits -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
+        <h3 class="font-brand font-bold text-base text-slate-950">Manage Uploaded Outfits</h3>
+        <div id="storeProductsList" class="space-y-3"></div>
       </div>
 
     </div>
@@ -164,9 +168,7 @@
       appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
     };
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     var currentMerchant = null;
@@ -204,9 +206,8 @@
 
       var newPartner = { storeName: storeName, area: area, mobile: mobile, pin: pin, upi: upi };
 
-      // Save to Firebase Partner Store
       db.ref("partners/" + mobile).set(newPartner).then(function() {
-        alert("Registration Successful! Logging in to your studio...");
+        alert("Registration Successful!");
         loginSuccess(newPartner);
       });
     }
@@ -221,7 +222,7 @@
         if (partner && partner.pin === pin) {
           loginSuccess(partner);
         } else {
-          alert("Invalid Mobile or PIN! Please register if you are new.");
+          alert("Invalid Mobile or PIN! Please register first.");
         }
       });
     }
@@ -235,9 +236,10 @@
       document.getElementById("logoutBtn").classList.remove("hidden");
 
       document.getElementById("dashStoreName").innerText = partner.storeName;
-      document.getElementById("dashStoreMeta").innerText = "📍 " + partner.area + " • Mobile: " + partner.mobile + " • UPI: " + partner.upi;
+      document.getElementById("dashStoreMeta").innerText = "📍 " + partner.area + " • Mobile: " + partner.mobile;
 
       listenToStoreOrders();
+      listenToStoreProducts();
     }
 
     function merchantLogout() {
@@ -258,7 +260,7 @@
       var img = document.getElementById("prodImg").value.trim();
       var sizes = document.getElementById("prodSizes").value.split(",").map(function(s) { return s.trim(); });
       var desc = document.getElementById("prodDesc").value.trim();
-      var prodId = Date.now();
+      var prodId = "PROD-" + Date.now();
 
       var newProd = {
         id: prodId,
@@ -271,27 +273,26 @@
         image: img,
         sizes: sizes,
         desc: desc,
-        upi: currentMerchant.upi,
         eta: "35 MINS",
         rating: "5.0"
       };
 
       var btn = document.getElementById("uploadSubmitBtn");
       btn.disabled = true;
-      btn.innerText = "Syncing to Cloud...";
+      btn.innerText = "Publishing...";
 
       db.ref("boutique_products/" + prodId).set(newProd).then(function() {
-        alert("✓ Published live to Fitin60 Cloud!");
+        alert("✓ Published to Live Store!");
         btn.disabled = false;
-        btn.innerText = "+ Publish to Fitin60 Live Radar";
+        btn.innerText = "+ Publish Live to Fitin60";
         e.target.reset();
       });
     }
 
-    // Real-Time Cloud Orders Listener for this Store
+    // Real-Time Orders with Delete Function
     function listenToStoreOrders() {
       if (!currentMerchant) return;
-      
+
       db.ref("orders").orderByChild("store").equalTo(currentMerchant.storeName).on("value", function(snapshot) {
         var box = document.getElementById("incomingOrderBox");
         var badge = document.getElementById("orderCountBadge");
@@ -299,7 +300,7 @@
 
         if (!orders) {
           badge.innerText = "0 Orders";
-          box.innerHTML = "<p class='text-center text-slate-400 text-xs py-6'>No pending orders for your boutique right now.</p>";
+          box.innerHTML = "<p class='text-center text-slate-400 text-xs py-4'>No orders pending right now.</p>";
           return;
         }
 
@@ -308,28 +309,25 @@
 
         var html = "";
         list.forEach(function(order) {
-          var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
+          var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Outfit" };
           html += 
-            '<div class="p-5 bg-orange-50/60 border border-orange-200 rounded-2xl space-y-3">' +
+            '<div class="p-4 bg-orange-50/60 border border-orange-200 rounded-2xl space-y-2.5">' +
               '<div class="flex justify-between items-center">' +
-                '<span class="font-mono font-black text-slate-950 text-sm">' + order.orderId + '</span>' +
-                '<span class="text-xs font-bold ' + (order.boutiqueAccepted ? 'text-emerald-700 bg-emerald-100' : 'text-orange-700 bg-orange-100') + ' px-2.5 py-0.5 rounded-lg">' +
-                  (order.boutiqueAccepted ? "✓ Dispatched to Fleet" : "⏳ Pending Acceptance") +
-                '</span>' +
+                '<span class="font-mono font-black text-sm text-slate-950">' + order.orderId + '</span>' +
+                '<div class="flex items-center gap-2">' +
+                  '<span class="text-[10px] font-bold ' + (order.boutiqueAccepted ? 'text-emerald-700 bg-emerald-100' : 'text-orange-700 bg-orange-100') + ' px-2 py-0.5 rounded">' +
+                    (order.boutiqueAccepted ? "Dispatched" : "Pending") +
+                  '</span>' +
+                  '<button onclick="deleteCloudOrder(\'' + order.orderId + '\')" title="Delete Order" class="text-rose-600 hover:bg-rose-100 p-1 rounded font-bold text-xs cursor-pointer">🗑️</button>' +
+                '</div>' +
               '</div>' +
-              '<div class="text-xs text-slate-700 space-y-1">' +
-                '<p><strong>Outfit:</strong> ' + firstItem.name + '</p>' +
-                '<p><strong>Customer:</strong> ' + order.customerName + ' (' + order.customerPhone + ')</p>' +
-                '<p><strong>Address:</strong> ' + order.customerAddress + '</p>' +
-                '<p><strong>Amount:</strong> ₹' + order.totalAmount + '</p>' +
-              '</div>' +
-              '<div>' +
+              '<p class="text-xs text-slate-700"><strong>Outfit:</strong> ' + firstItem.name + ' • <strong>Customer:</strong> ' + order.customerName + ' (' + order.customerPhone + ')</p>' +
+              '<p class="text-xs text-slate-600"><strong>Address:</strong> ' + order.customerAddress + '</p>' +
+              '<div class="flex justify-between items-center pt-1">' +
+                '<span class="font-mono font-black text-sm">₹' + order.totalAmount + '</span>' +
                 (!order.boutiqueAccepted ? 
-                  '<button onclick="acceptCloudOrder(\'' + order.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">' +
-                    '✓ Accept & Send Alert to Rider' +
-                  '</button>' : 
-                  '<p class="text-xs font-bold text-emerald-700 text-center py-1">✓ Packaged & Dispatched</p>'
-                ) +
+                  '<button onclick="acceptCloudOrder(\'' + order.orderId + '\')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs uppercase cursor-pointer">✓ Accept & Send Rider</button>' : 
+                  '<span class="text-xs text-emerald-700 font-bold">✓ Accepted</span>') +
               '</div>' +
             '</div>';
         });
@@ -342,9 +340,58 @@
       db.ref("orders/" + orderId).update({
         boutiqueAccepted: true,
         paymentStatus: "Accepted by Boutique • Alert Sent to Rider 🛵"
-      }).then(function() {
-        alert("✓ Order accepted! Dispatched to online riders in real-time.");
       });
+    }
+
+    function deleteCloudOrder(orderId) {
+      if (confirm("Are you sure you want to permanently delete this order (" + orderId + ")?")) {
+        db.ref("orders/" + orderId).remove().then(function() {
+          alert("Order deleted from cloud.");
+        });
+      }
+    }
+
+    // Manage & Delete Store Outfits
+    function listenToStoreProducts() {
+      if (!currentMerchant) return;
+
+      db.ref("boutique_products").orderByChild("store").equalTo(currentMerchant.storeName).on("value", function(snapshot) {
+        var list = document.getElementById("storeProductsList");
+        var prods = snapshot.val();
+
+        if (!prods) {
+          list.innerHTML = "<p class='text-xs text-slate-400 py-3'>No custom outfits uploaded yet.</p>";
+          return;
+        }
+
+        var html = "";
+        Object.keys(prods).forEach(function(key) {
+          var p = prods[key];
+          html += 
+            '<div class="flex items-center justify-between p-3 bg-slate-50 border rounded-2xl text-xs">' +
+              '<div class="flex items-center gap-3">' +
+                '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg">' +
+                '<div>' +
+                  '<p class="font-bold text-slate-900">' + p.name + '</p>' +
+                  '<p class="text-slate-500 font-mono">₹' + p.price + '</p>' +
+                '</div>' +
+              '</div>' +
+              '<button onclick="deleteCloudProduct(\'' + key + '\')" class="text-rose-600 hover:bg-rose-100 p-2 rounded-xl text-xs font-bold cursor-pointer">' +
+                '🗑️ Delete' +
+              '</button>' +
+            '</div>';
+        });
+
+        list.innerHTML = html;
+      });
+    }
+
+    function deleteCloudProduct(key) {
+      if (confirm("Are you sure you want to delete this dress from your boutique radar?")) {
+        db.ref("boutique_products/" + key).remove().then(function() {
+          alert("Dress removed from live showroom!");
+        });
+      }
     }
 
     window.addEventListener('DOMContentLoaded', function() {
