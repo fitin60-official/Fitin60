@@ -77,7 +77,7 @@
           </div>
         </div>
 
-        <!-- Hub (Boutique & Rider) -->
+        <!-- Hub -->
         <div class="relative">
           <button id="businessHubBtn" onclick="toggleBusinessMenu(event)" class="bg-slate-950 hover:bg-slate-900 text-white px-3.5 py-2.5 rounded-2xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
             <span class="text-sm">💼</span>
@@ -125,7 +125,7 @@
           Explore Local Boutiques & Get Drops in <span class="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">60 Minutes</span>.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm md:text-base mt-4 font-normal leading-relaxed max-w-2xl">
-          Tap any boutique to view the outfit collection, select your size, and order instantly.
+          Tap any boutique to view the entire showroom in full screen, inspect dress details, select your size, and order instantly.
         </p>
 
         <div class="grid grid-cols-3 gap-3 sm:gap-6 mt-8 pt-8 border-t border-white/10 max-w-xl">
@@ -154,7 +154,7 @@
           <h2 class="font-brand text-xl md:text-2xl font-black text-slate-950">Nearby Boutiques & Studios</h2>
           <span id="resultsCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full border border-orange-200">0 Boutiques Active</span>
         </div>
-        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click on any boutique or dress to open the collection</p>
+        <p class="text-xs text-slate-500 mt-0.5 font-medium">Click on any boutique or dress to open the full showroom</p>
       </div>
 
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -184,102 +184,102 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="boutiqueStoreGrid"></div>
   </main>
 
-  <!-- ================= 2. UNIFIED BOUTIQUE MODAL (CLEAN FULL IMAGE VIEW) ================= -->
-  <div id="unifiedStoreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md">
-    <div class="bg-white w-full max-w-4xl max-h-[95vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
+  <!-- ================= 2. FULL-SCREEN LUXURY BOUTIQUE SHOWROOM ================= -->
+  <div id="unifiedStoreModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-0 md:p-4">
+    <div class="bg-white w-full h-full md:max-w-7xl md:h-[96vh] md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
       
-      <!-- Storefront Modal Header -->
-      <div class="p-5 sm:px-7 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
-        <div class="flex items-center gap-3.5">
+      <!-- Full Screen Header Bar -->
+      <div class="p-4 sm:px-8 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
+        <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-2xl font-bold">🏬</div>
           <div>
-            <div class="flex items-center gap-2">
-              <h3 id="uModalStoreName" class="font-brand font-black text-lg sm:text-xl text-white">Boutique Name</h3>
+            <div class="flex items-center gap-2.5">
+              <h3 id="uModalStoreName" class="font-brand font-black text-xl sm:text-2xl text-white">Boutique Name</h3>
               <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">Verified Studio</span>
             </div>
             <p id="uModalStoreMeta" class="text-xs text-slate-400 mt-0.5">Area • 60-Min Express Active</p>
           </div>
         </div>
-        <button onclick="closeUnifiedStoreModal()" class="text-slate-400 hover:text-white text-3xl font-bold p-1 cursor-pointer">&times;</button>
+        <button onclick="closeUnifiedStoreModal()" class="text-slate-400 hover:text-white text-3xl font-bold p-2 cursor-pointer transition">&times;</button>
       </div>
 
-      <!-- Scrollable Main Container -->
-      <div class="overflow-y-auto flex-1 p-5 sm:p-7 space-y-8 bg-[#fafaf9]" id="modalScrollBody">
+      <!-- Scrollable Big Full-Screen Main Content -->
+      <div class="overflow-y-auto flex-1 p-4 sm:p-8 space-y-10 bg-[#fafaf9]" id="modalScrollBody">
         
-        <!-- SECTION A: SELECTED DRESS (CLEAN FULL IMAGE VIEW) -->
-        <div class="bg-white rounded-[2rem] border border-slate-200/90 p-5 sm:p-7 shadow-md">
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <!-- SECTION A: SELECTED DRESS (BIG FULL-SCREEN HERO SECTION) -->
+        <div class="bg-white rounded-[2rem] border border-slate-200/90 p-6 sm:p-10 shadow-sm">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            <!-- Left: Clean Full Image Container -->
-            <div class="lg:col-span-6">
-              <div class="relative h-80 sm:h-96 w-full rounded-2xl overflow-hidden bg-slate-950 flex items-center justify-center border border-slate-200 shadow-inner">
+            <!-- Left: Big Full Image Viewport -->
+            <div class="lg:col-span-7">
+              <div class="relative h-[380px] sm:h-[480px] w-full rounded-3xl overflow-hidden bg-slate-950 flex items-center justify-center border border-slate-200 shadow-inner">
                 <img id="uHeroImage" src="" alt="Full Dress View" class="w-full h-full object-contain select-none">
-                <span class="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md text-white font-mono-num font-bold text-[10px] px-2.5 py-1 rounded-xl">⚡ 60-MIN EXPRESS</span>
+                <span class="absolute top-4 left-4 bg-slate-950/85 backdrop-blur-md text-white font-mono-num font-bold text-xs px-3 py-1.5 rounded-xl border border-white/10">⚡ 60-MIN EXPRESS</span>
               </div>
             </div>
 
-            <!-- Right: Dress Details, Size, Color, Add to Bag & Buy Now -->
-            <div class="lg:col-span-6 space-y-4">
+            <!-- Right: Details, Color, Size, Buy Now & Add to Bag -->
+            <div class="lg:col-span-5 space-y-5">
               <div>
                 <span class="text-xs font-bold text-orange-600 uppercase tracking-widest block">Selected Outfit</span>
-                <h2 id="uHeroTitle" class="font-brand font-black text-2xl text-slate-950 mt-1 leading-tight">Dress Name</h2>
-                <p id="uHeroDesc" class="text-xs text-slate-600 mt-1.5 leading-relaxed">Description goes here.</p>
+                <h2 id="uHeroTitle" class="font-brand font-black text-2xl sm:text-3xl text-slate-950 mt-1 leading-tight">Dress Name</h2>
+                <p id="uHeroDesc" class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">Description goes here.</p>
               </div>
 
-              <!-- Price -->
+              <!-- Price Display -->
               <div class="flex items-baseline gap-3 pt-1">
-                <span id="uHeroPrice" class="font-mono-num text-3xl font-black text-slate-950">₹0</span>
-                <span id="uHeroOriginal" class="font-mono-num text-sm font-bold text-slate-400 line-through">₹0</span>
-                <span id="uHeroDiscount" class="text-xs bg-rose-600 text-white font-bold px-2 py-0.5 rounded-lg">40% OFF</span>
+                <span id="uHeroPrice" class="font-mono-num text-3xl sm:text-4xl font-black text-slate-950">₹0</span>
+                <span id="uHeroOriginal" class="font-mono-num text-base font-bold text-slate-400 line-through">₹0</span>
+                <span id="uHeroDiscount" class="text-xs bg-rose-600 text-white font-bold px-2.5 py-1 rounded-lg">40% OFF</span>
               </div>
 
               <!-- Colors -->
               <div>
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="text-[11px] font-black uppercase text-slate-500">Color Choice</span>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[11px] font-black uppercase tracking-wider text-slate-500">Color Choice</span>
                   <span id="uHeroColorLabel" class="text-xs font-bold text-orange-600">Standard</span>
                 </div>
-                <div class="flex gap-2 items-center flex-wrap" id="uHeroColors"></div>
+                <div class="flex gap-2.5 items-center flex-wrap" id="uHeroColors"></div>
               </div>
 
               <!-- Sizes -->
               <div>
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="text-[11px] font-black uppercase text-slate-500">Select Size</span>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[11px] font-black uppercase tracking-wider text-slate-500">Select Size</span>
                   <span id="uHeroSizeLabel" class="text-xs font-bold text-slate-700">M</span>
                 </div>
-                <div class="flex gap-2 flex-wrap" id="uHeroSizes"></div>
+                <div class="flex gap-2.5 flex-wrap" id="uHeroSizes"></div>
               </div>
 
-              <!-- Action Buttons -->
-              <div class="pt-3 grid grid-cols-2 gap-3">
-                <button id="uHeroAddBagBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-950 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-1.5 cursor-pointer">
+              <!-- Big Direct Action Buttons -->
+              <div class="pt-4 grid grid-cols-2 gap-3.5">
+                <button id="uHeroAddBagBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-950 font-bold py-4 rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-2 cursor-pointer">
                   <span>🛍️</span> Add to Bag
                 </button>
-                <button id="uHeroBuyNowBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-xl flex items-center justify-center gap-1.5 cursor-pointer">
+                <button id="uHeroBuyNowBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition shadow-xl flex items-center justify-center gap-2 cursor-pointer">
                   <span>⚡</span> Buy Now
                 </button>
               </div>
 
-              <div class="flex items-center gap-2 text-[11px] text-emerald-700 font-semibold bg-emerald-50 border border-emerald-200/80 p-2.5 rounded-xl">
-                <span>✓</span> Verified boutique piece • 60-Minute doorstep delivery guaranteed
+              <div class="flex items-center gap-2 text-xs text-emerald-700 font-semibold bg-emerald-50 border border-emerald-200/80 p-3 rounded-2xl">
+                <span>✓</span> Verified local boutique collection • 60-Minute doorstep delivery guaranteed
               </div>
             </div>
 
           </div>
         </div>
 
-        <!-- SECTION B: ENTIRE BOUTIQUE COLLECTION -->
-        <div>
-          <div class="flex items-center justify-between mb-4">
+        <!-- SECTION B: ENTIRE BOUTIQUE SHOWROOM COLLECTION (LARGE VIEW) -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
             <div>
-              <h3 class="font-brand font-black text-lg text-slate-950">More Outfits from this Boutique</h3>
-              <p class="text-xs text-slate-500">Tap any dress below to inspect & order instantly above</p>
+              <h3 class="font-brand font-black text-xl text-slate-950">Complete Boutique Collection</h3>
+              <p class="text-xs text-slate-500">Tap any dress to display and order it in full screen above</p>
             </div>
-            <span id="uCollectionCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-3 py-1 rounded-xl border border-orange-200">3 Outfits</span>
+            <span id="uCollectionCountBadge" class="text-xs font-mono-num font-bold bg-orange-100 text-orange-700 px-3.5 py-1.5 rounded-xl border border-orange-200">0 Outfits</span>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" id="uCollectionGrid"></div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5" id="uCollectionGrid"></div>
         </div>
 
       </div>
@@ -596,7 +596,7 @@
       return Object.values(storesMap);
     }
 
-    // Step 1: Render Homepage Boutique Cards (Shop Name + 3 Clothes Images)
+    // Step 1: Render Homepage Boutique Cards
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("resultsCountBadge");
@@ -695,7 +695,7 @@
       grid.innerHTML = html;
     }
 
-    // Step 2 & 3: Open Unified Boutique Showroom (Full Image at Top + Entire Collection Below)
+    // Step 2 & 3: Open Big Full-Screen Showroom
     function openUnifiedShowroom(storeIdx, preferredDressId) {
       var stores = getGroupedStores();
       activeStoreData = stores[storeIdx];
@@ -718,14 +718,14 @@
       document.getElementById("modalScrollBody").scrollTop = 0;
     }
 
-    // Render Full Image & Order Form of Selected Dress
+    // Render Clean Full Image & Order Form of Selected Dress
     function renderHeroDressSection() {
       if (!activeDressObj) return;
 
-      // Full Image
+      // Clean Full Image
       document.getElementById("uHeroImage").src = activeDressObj.image;
 
-      // Title & Text
+      // Details
       document.getElementById("uHeroTitle").innerText = activeDressObj.name;
       document.getElementById("uHeroDesc").innerText = activeDressObj.desc || "Verified boutique collection piece with premium fabric finish.";
       document.getElementById("uHeroPrice").innerText = "₹" + activeDressObj.price;
@@ -789,7 +789,7 @@
       renderHeroDressSection();
     }
 
-    // Render Bottom Collection Grid
+    // Render Bottom Collection Grid (Large Full View)
     function renderBottomCollectionGrid() {
       if (!activeStoreData) return;
       var container = document.getElementById("uCollectionGrid");
@@ -800,14 +800,14 @@
 
         html += 
           '<div onclick="swapActiveHeroDress(' + p.id + ')" class="bg-white rounded-2xl border-2 transition duration-300 overflow-hidden cursor-pointer flex flex-col justify-between group ' + (isActive ? 'border-orange-500 shadow-lg ring-2 ring-orange-200' : 'border-slate-200 hover:border-slate-400') + '">' +
-            '<div class="relative h-44 bg-slate-100 overflow-hidden">' +
+            '<div class="relative h-48 sm:h-56 bg-slate-100 overflow-hidden">' +
               '<img src="' + p.image + '" alt="' + p.name + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">' +
               (isActive ? '<span class="absolute top-2 left-2 bg-orange-600 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow-md">✓ Selected</span>' : '') +
               '<span class="absolute bottom-2 right-2 bg-black/75 text-white font-mono-num font-bold text-xs px-2 py-0.5 rounded-lg">₹' + p.price + '</span>' +
             '</div>' +
-            '<div class="p-3 bg-white">' +
-              '<h4 class="font-bold text-xs text-slate-950 truncate group-hover:text-orange-600 transition">' + p.name + '</h4>' +
-              '<p class="text-[10px] text-slate-400 font-semibold mt-0.5">Tap to view & order</p>' +
+            '<div class="p-3.5 bg-white">' +
+              '<h4 class="font-bold text-xs sm:text-sm text-slate-950 truncate group-hover:text-orange-600 transition">' + p.name + '</h4>' +
+              '<p class="text-[11px] text-slate-400 font-semibold mt-0.5">Tap to view & order</p>' +
             '</div>' +
           '</div>';
       });
