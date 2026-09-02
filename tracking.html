@@ -3,127 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Live Hyperlocal Order Tracker</title>
+  <title>Fitin60 | Live 60-Min Radar Tracking</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-brand { font-family: 'Space Grotesk', sans-serif; }
-    .pulse-ring {
-      box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
-      animation: pulse-ring 2s infinite cubic-bezier(0.66, 0, 0, 1);
-    }
-    @keyframes pulse-ring {
-      to { box-shadow: 0 0 0 16px rgba(249, 115, 22, 0); }
-    }
+    .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen antialiased selection:bg-orange-500 selection:text-white pb-20">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
       <a href="index.html" class="flex flex-col">
-        <span class="font-brand text-2xl md:text-3xl font-black tracking-tight text-slate-950">
-          FITIN<span class="text-orange-600">60</span>
-        </span>
-        <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-slate-400">Hyperlocal Fashion</span>
+        <div class="flex items-center gap-1.5">
+          <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
+          <span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">LIVE RADAR</span>
+        </div>
       </a>
-      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl transition">
-        ← Back to Store
+      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-2xl transition">
+        ← Home
       </a>
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-8">
-    <!-- Active Status Banner -->
-    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-[2.5rem] p-8 md:p-10 text-white shadow-2xl border border-slate-800 text-center relative overflow-hidden">
-      <div class="w-16 h-16 bg-orange-600/20 text-orange-400 border border-orange-500/30 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-4 pulse-ring">⚡</div>
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 mt-8 space-y-6">
+
+    <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-xl space-y-6">
       
-      <span class="text-[10px] uppercase tracking-widest font-black bg-white/10 px-3 py-1 rounded-full text-orange-300">Live 60-Minute Radar</span>
-      <h1 class="font-brand text-3xl md:text-4xl font-black text-white mt-3">Order On The Way</h1>
-      <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-md mx-auto" id="etaBanner">Estimated delivery in <strong class="text-orange-400 font-black">35 Minutes</strong> • 20-Min Home Fitting Included</p>
-
-      <div class="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-white/10 text-left max-w-md mx-auto">
+      <!-- Order ID & Live 60-Min Radar Countdown -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-5">
         <div>
-          <p class="text-[10px] uppercase font-bold text-slate-400">Order ID</p>
-          <p class="font-brand font-black text-white text-base" id="orderIdText">FIT-8492</p>
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Reference</span>
+          <h2 id="trackOrderId" class="font-mono-num font-black text-2xl text-slate-950">FIT-XXXX</h2>
         </div>
-        <div>
-          <p class="text-[10px] uppercase font-bold text-slate-400">Fulfillment Store</p>
-          <p class="font-brand font-black text-orange-400 text-base truncate" id="storeNameText">Boutique Partner</p>
+        <div class="text-right">
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Radar Guaranteed ETA</span>
+          <p id="countdownTimer" class="font-mono-num font-black text-2xl text-orange-600">59:59</p>
         </div>
       </div>
-    </div>
 
-    <!-- Live Step Progression -->
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 mt-6 shadow-sm">
-      <h3 class="font-brand font-black text-base text-slate-950 mb-6">Delivery Milestones</h3>
-      
-      <div class="space-y-6 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-0.5 before:bg-orange-200">
-        <div class="flex items-start gap-4 relative">
-          <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold shadow-md z-10">✓</div>
+      <!-- Live Radar Tracking Steps -->
+      <div class="space-y-4 py-2">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">✓</div>
           <div>
-            <h4 class="font-brand font-bold text-sm text-slate-900">Order Received & Confirmed</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Boutique accepted the request and packed sizes</p>
+            <h4 class="font-bold text-xs text-slate-950">Order Placed & Boutique Alerted</h4>
+            <p id="trackStore" class="text-[11px] text-slate-500 font-medium">Boutique: Loading...</p>
           </div>
         </div>
 
-        <div class="flex items-start gap-4 relative">
-          <div class="w-8 h-8 rounded-full bg-orange-600 text-white flex items-center justify-center text-xs font-bold shadow-md z-10 animate-pulse">⚡</div>
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg animate-pulse">🛵</div>
           <div>
-            <h4 class="font-brand font-bold text-sm text-orange-600">Rider Dispatched (Within 20 KM)</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Delivery partner is on the way with trial package</p>
+            <h4 class="font-bold text-xs text-slate-950">Rider Dispatched to Store</h4>
+            <p class="text-[11px] text-orange-600 font-semibold">Picking up sealed outfit pack for 60-min delivery</p>
           </div>
         </div>
 
-        <div class="flex items-start gap-4 relative opacity-40">
-          <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold z-10">🏠</div>
+        <div class="flex items-center gap-4 opacity-50">
+          <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-lg">📍</div>
           <div>
-            <h4 class="font-brand font-bold text-sm text-slate-900">Doorstep 20-Min Home Fitting</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Try before keeping • Pay UPI/Cash instantly</p>
+            <h4 class="font-bold text-xs text-slate-950">Doorstep Handover</h4>
+            <p id="trackCustAddr" class="text-[11px] text-slate-500 font-medium">Delivering to your address</p>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Order Items Summary -->
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-8 mt-6 shadow-sm">
-      <h3 class="font-brand font-black text-base text-slate-950 mb-4">Items in Package</h3>
-      <div id="orderItemsSummary" class="space-y-3">
-        <!-- Rendered dynamically -->
+      <!-- WhatsApp Direct Dispatch Button -->
+      <div class="pt-4 border-t border-slate-100 space-y-3">
+        <a id="whatsappDispatchBtn" href="#" target="_blank" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-4 rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+          <span>📲</span> Dispatch Order via WhatsApp
+        </a>
+        <p class="text-[10px] text-center text-slate-400 font-medium">Instantly shares order summary with boutique merchant and delivery rider</p>
       </div>
 
-      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center font-black">
-        <span class="text-xs uppercase text-slate-400">Total Settlement</span>
-        <span class="font-brand text-xl text-slate-950" id="totalSummaryText">₹0</span>
+      <!-- Order Summary Card -->
+      <div class="p-5 bg-slate-50 border border-slate-200/80 rounded-3xl space-y-2.5 text-xs">
+        <div class="flex justify-between font-bold text-slate-700">
+          <span>Outfit:</span>
+          <span id="trackItemName" class="text-slate-950 font-black">Designer Outfit</span>
+        </div>
+        <div class="flex justify-between font-bold text-slate-700">
+          <span>Customer:</span>
+          <span id="trackCustomer" class="text-slate-950">Name (Phone)</span>
+        </div>
+        <div class="flex justify-between font-bold text-slate-700">
+          <span>Payment Status:</span>
+          <span id="trackPayment" class="text-emerald-600 font-black">Store UPI</span>
+        </div>
+        <div class="flex justify-between font-bold text-slate-700 pt-2 border-t border-slate-200">
+          <span>Total Amount:</span>
+          <span id="trackTotal" class="font-mono-num font-black text-slate-950 text-base">₹0</span>
+        </div>
       </div>
+
     </div>
+
   </main>
 
   <script>
-    var order = JSON.parse(localStorage.getItem("chitikelo_active_order") || "{}");
-    
-    if (order.orderId) {
-      document.getElementById("orderIdText").innerText = order.orderId;
-      document.getElementById("storeNameText").innerText = order.store || "Verified Boutique";
-      document.getElementById("totalSummaryText").innerText = "₹" + (order.totalAmount || 0);
+    // Live 60-Min Radar Countdown
+    var timeLeft = 59 * 60 + 59;
+    var timerEl = document.getElementById("countdownTimer");
+    setInterval(function() {
+      if (timeLeft <= 0) {
+        timerEl.innerText = "00:00";
+        return;
+      }
+      timeLeft--;
+      var m = Math.floor(timeLeft / 60);
+      var s = timeLeft % 60;
+      timerEl.innerText = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+    }, 1000);
 
-      var container = document.getElementById("orderItemsSummary");
-      var html = "";
-      (order.items || []).forEach(function(item) {
-        html += '<div class="flex justify-between items-center p-3.5 bg-slate-50 rounded-2xl text-xs">' +
-                  '<div>' +
-                    '<p class="font-bold text-slate-900">' + item.name + '</p>' +
-                    '<p class="text-[10px] text-slate-500 font-semibold mt-0.5">Size: <span class="text-orange-600">' + item.size + '</span> • ' + item.store + '</p>' +
-                  '</div>' +
-                  '<p class="font-black text-slate-900">₹' + item.price + '</p>' +
-                '</div>';
-      });
-      container.innerHTML = html;
-    }
+    window.addEventListener('DOMContentLoaded', function() {
+      var rawOrder = localStorage.getItem("chitikelo_active_order");
+      if (rawOrder) {
+        var order = JSON.parse(rawOrder);
+        var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "M" };
+
+        document.getElementById("trackOrderId").innerText = order.orderId;
+        document.getElementById("trackStore").innerText = "Boutique: " + order.store;
+        document.getElementById("trackCustAddr").innerText = "Deliver to: " + order.customerAddress;
+        document.getElementById("trackItemName").innerText = firstItem.name + " (" + (firstItem.size || "Standard") + ")";
+        document.getElementById("trackCustomer").innerText = order.customerName + " (" + order.customerPhone + ")";
+        document.getElementById("trackPayment").innerText = order.paymentStatus;
+        document.getElementById("trackTotal").innerText = "₹" + order.totalAmount;
+
+        // WhatsApp Direct Dispatch Message Text
+        var waText = "⚡ FITIN60 EXPRESS ORDER DISPATCH ⚡\n\n" +
+                     "📦 Order ID: " + order.orderId + "\n" +
+                     "🏬 Boutique: " + order.store + "\n" +
+                     "👗 Outfit: " + firstItem.name + " (" + (firstItem.size || "M") + ")\n" +
+                     "💰 Amount: ₹" + order.totalAmount + " (" + order.paymentStatus + ")\n" +
+                     "👤 Customer: " + order.customerName + " (" + order.customerPhone + ")\n" +
+                     "📍 Delivery Location: " + order.customerAddress + "\n\n" +
+                     "⏱️ Status: 60-Minute Radar Dispatch Active!";
+
+        document.getElementById("whatsappDispatchBtn").href = "https://wa.me/?text=" + encodeURIComponent(waText);
+      }
+    });
   </script>
 </body>
 </html>
