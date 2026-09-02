@@ -3,165 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Rider Fleet Station & Sound Radar</title>
+  <title>Fitin60 | Rider Fleet Station & GPS Radar</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
-    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-      <a href="index.html" class="flex flex-col">
-        <div class="flex items-center gap-1.5">
-          <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-          <span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">FLEET STATION</span>
-        </div>
-      </a>
-      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-2xl transition">
-        ← Customer Radar
-      </a>
+  <header class="bg-white border-b border-slate-200 px-6 h-20 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-2">
+      <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
+      <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">RIDER FLEET</span>
     </div>
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl">← Customer Radar</a>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-8 space-y-6">
+  <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- Rider Profile & On-Duty Switch Card -->
-    <div class="bg-slate-950 text-white p-7 rounded-[2.5rem] shadow-xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-4">
-        <div class="w-14 h-14 rounded-2xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-3xl font-bold">🛵</div>
+    <!-- Rider Duty Card -->
+    <div class="bg-slate-950 text-white p-6 rounded-3xl flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🛵</span>
         <div>
-          <div class="flex items-center gap-2">
-            <h2 class="font-brand font-black text-xl">Ramesh Varma</h2>
-            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-md font-bold">Verified Rider</span>
-          </div>
-          <p class="text-xs text-slate-400 mt-0.5">Fleet ID: #RDR-8821 • Anantapur Central Zone</p>
+          <h2 class="font-brand font-black text-xl">Ramesh Varma</h2>
+          <p class="text-xs text-slate-400">Fleet ID: #RDR-8821 • Anantapur Zone</p>
         </div>
       </div>
 
-      <!-- On-Duty Toggle -->
-      <div class="flex items-center gap-3 bg-white/10 p-2 px-4 rounded-2xl border border-white/10">
+      <div class="flex items-center gap-3 bg-white/10 p-2 px-4 rounded-2xl">
         <span class="text-xs font-bold" id="dutyStatusText">OFF DUTY</span>
-        <button id="dutyToggleBtn" onclick="toggleDuty()" class="w-14 h-8 bg-slate-700 rounded-full p-1 transition-colors duration-300 relative cursor-pointer">
-          <div id="dutyKnob" class="w-6 h-6 bg-white rounded-full transition-transform duration-300 transform translate-x-0"></div>
+        <button id="dutyToggleBtn" onclick="toggleDuty()" class="w-14 h-8 bg-slate-700 rounded-full p-1 transition relative cursor-pointer">
+          <div id="dutyKnob" class="w-6 h-6 bg-white rounded-full transition transform translate-x-0"></div>
         </button>
       </div>
     </div>
 
-    <!-- Active Status Banner -->
-    <div id="radarActiveBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
+    <!-- Active Listening Banner -->
+    <div id="dutyActiveBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-        <span>YOU ARE ONLINE • Listening for 60-minute express orders in your 20 KM zone...</span>
+        <span>ON DUTY • Broadcasting live GPS to customer & listening for boutique dispatches...</span>
       </div>
-      <span class="font-mono-num text-[11px] bg-emerald-200/60 px-2 py-0.5 rounded-lg">RADAR ACTIVE</span>
     </div>
 
-    <!-- Rider Instructions -->
-    <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
-      <h3 class="font-brand font-black text-base text-slate-950">Express Rider Protocol</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl">
-          <p class="font-black text-slate-900">1. Instant Pickup</p>
-          <p class="text-slate-500 mt-1">Reach the boutique within 15 minutes of receiving the order alert.</p>
-        </div>
-        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl">
-          <p class="font-black text-slate-900">2. Tamper Check</p>
-          <p class="text-slate-500 mt-1">Verify that the boutique tag and luxury pack are sealed and untampered.</p>
-        </div>
-        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl">
-          <p class="font-black text-slate-900">3. 60-Min Doorstep</p>
-          <p class="text-slate-500 mt-1">Deliver directly to the customer's doorstep and complete OTP/COD verification.</p>
-        </div>
+    <!-- Active Delivery Assignment Card (After Accept) -->
+    <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-6 shadow-md space-y-4">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-brand font-bold text-base text-slate-950">Active Delivery in Progress</h3>
+        <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Live Tracking</span>
       </div>
+
+      <div class="text-xs text-slate-700 space-y-1.5" id="activeDeliveryDetails"></div>
+
+      <!-- Turn-by-Turn Navigation to Customer Google Maps -->
+      <a id="gmapsNavBtn" href="#" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+        <span>🗺️</span> Navigate to Customer on Google Maps
+      </a>
     </div>
 
   </main>
 
-  <!-- ================= ON-DUTY LIVE ORDER POP-UP ALERT ================= -->
-  <div id="riderOrderAlertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div class="bg-white rounded-[2.5rem] max-w-md w-full p-7 border-2 border-orange-500 shadow-2xl space-y-5 transform animate-bounce-once">
-      
-      <!-- Pop-Up Header with Beep Badge -->
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <div class="flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-orange-600 animate-ping"></span>
-          <span class="font-brand font-black text-xs uppercase tracking-widest text-orange-600">⚡ New Dispatch Order!</span>
-        </div>
-        <span class="text-xs font-mono-num font-black bg-orange-100 text-orange-700 px-2.5 py-0.5 rounded-full" id="alertOrderId">FIT-XXXX</span>
+  <!-- LIVE ORDER POP-UP ALERT (Triggered ONLY when Boutique Accepts) -->
+  <div id="riderAlertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-orange-500 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <span class="text-xs font-black uppercase text-orange-600 animate-pulse">⚡ Boutique Dispatched New Order!</span>
+        <span class="text-xs font-mono font-bold bg-orange-100 text-orange-800 px-2 py-0.5 rounded" id="popOrderId">FIT-XXXX</span>
       </div>
 
-      <!-- Store & Delivery Info -->
-      <div class="space-y-3">
-        <div class="p-4 bg-orange-50/60 border border-orange-200/70 rounded-2xl">
-          <p class="text-[10px] font-black uppercase text-orange-600">Pickup Boutique</p>
-          <h4 class="font-brand font-black text-base text-slate-950" id="alertStoreName">Anu Ram Fashions</h4>
-          <p class="text-xs text-slate-600 mt-0.5" id="alertItemName">Dress Name (Size M)</p>
+      <div class="space-y-2 text-xs">
+        <div class="p-3 bg-orange-50 rounded-xl">
+          <p class="font-bold text-slate-900" id="popStore">Store: Anu Ram Fashions</p>
+          <p class="text-slate-500" id="popItem">Dress: Designer Outfit</p>
         </div>
-
-        <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-          <p class="text-[10px] font-black uppercase text-slate-400">Deliver To</p>
-          <h4 class="font-bold text-sm text-slate-950" id="alertCustomerName">Customer Name</h4>
-          <p class="text-xs text-slate-600 mt-0.5" id="alertCustomerAddr">Door No, Area, Street</p>
-        </div>
-
-        <div class="flex justify-between items-baseline px-1 pt-1">
-          <span class="text-xs font-bold text-slate-500">Collect / Status:</span>
-          <span class="font-mono-num font-black text-xl text-slate-950" id="alertTotalAmount">₹899 (UPI)</span>
+        <div class="p-3 bg-slate-50 rounded-xl">
+          <p class="font-bold text-slate-900" id="popCustomer">Deliver to: Name (Phone)</p>
+          <p class="text-slate-500" id="popAddr">Address goes here</p>
         </div>
       </div>
 
-      <!-- Accept Order Button (Opens WhatsApp Dispatch) -->
-      <div class="pt-2 space-y-2">
-        <a id="acceptDispatchBtn" href="#" target="_blank" onclick="closeAlertModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20">
-          <span>✓</span> Accept & Open WhatsApp Details
-        </a>
-        <button onclick="closeAlertModal()" class="w-full text-slate-400 hover:text-slate-600 text-xs font-bold py-2 cursor-pointer">
-          Dismiss Alert
+      <div class="pt-2 flex gap-2">
+        <button onclick="acceptOrderAsRider()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer">
+          ✓ Accept Order & Start GPS Navigation
         </button>
       </div>
-
     </div>
   </div>
 
   <script>
     var isDutyOn = false;
-    var dutyCheckInterval = null;
-    var lastAlertOrderId = null;
-
-    // Beep Sound for Rider Alert
-    function playAlertChime() {
-      try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.3);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.3);
-      } catch (e) {
-        console.log("Audio not allowed yet");
-      }
-    }
+    var dutyInterval = null;
+    var lastAlertId = null;
 
     function toggleDuty() {
       isDutyOn = !isDutyOn;
       var text = document.getElementById("dutyStatusText");
       var btn = document.getElementById("dutyToggleBtn");
       var knob = document.getElementById("dutyKnob");
-      var banner = document.getElementById("radarActiveBanner");
+      var banner = document.getElementById("dutyActiveBanner");
 
       if (isDutyOn) {
         text.innerText = "ON DUTY";
@@ -170,9 +114,8 @@
         knob.classList.replace("translate-x-0", "translate-x-6");
         banner.classList.remove("hidden");
 
-        // Start checking for orders
-        dutyCheckInterval = setInterval(checkForLiveOrders, 3000);
-        checkForLiveOrders();
+        dutyInterval = setInterval(listenForAcceptedOrders, 2000);
+        trackRiderLiveGPS();
       } else {
         text.innerText = "OFF DUTY";
         text.classList.remove("text-emerald-400");
@@ -180,49 +123,75 @@
         knob.classList.replace("translate-x-6", "translate-x-0");
         banner.classList.add("hidden");
 
-        clearInterval(dutyCheckInterval);
-        closeAlertModal();
+        clearInterval(dutyInterval);
+        document.getElementById("riderAlertModal").classList.add("hidden");
       }
     }
 
-    function checkForLiveOrders() {
+    function listenForAcceptedOrders() {
       if (!isDutyOn) return;
-      var rawOrder = localStorage.getItem("chitikelo_active_order");
-      if (!rawOrder) return;
+      var raw = localStorage.getItem("chitikelo_active_order");
+      if (!raw) return;
 
-      var order = JSON.parse(rawOrder);
-      if (order.orderId && order.orderId !== lastAlertOrderId) {
-        lastAlertOrderId = order.orderId;
-        showOrderAlertPopUp(order);
+      var order = JSON.parse(raw);
+      // Alert triggers ONLY if Boutique has accepted and rider hasn't accepted yet
+      if (order.boutiqueAccepted && !order.riderAssigned && order.orderId !== lastAlertId) {
+        lastAlertId = order.orderId;
+        showRiderPopup(order);
       }
     }
 
-    function showOrderAlertPopUp(order) {
-      playAlertChime();
-      var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress", size: "M" };
+    function showRiderPopup(order) {
+      var item = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
+      document.getElementById("popOrderId").innerText = order.orderId;
+      document.getElementById("popStore").innerText = "Pickup: " + order.store;
+      document.getElementById("popItem").innerText = "Item: " + item.name;
+      document.getElementById("popCustomer").innerText = "Customer: " + order.customerName + " (" + order.customerPhone + ")";
+      document.getElementById("popAddr").innerText = order.customerAddress;
 
-      document.getElementById("alertOrderId").innerText = order.orderId;
-      document.getElementById("alertStoreName").innerText = order.store;
-      document.getElementById("alertItemName").innerText = firstItem.name + " (" + (firstItem.size || "M") + ")";
-      document.getElementById("alertCustomerName").innerText = order.customerName + " (" + order.customerPhone + ")";
-      document.getElementById("alertCustomerAddr").innerText = order.customerAddress;
-      document.getElementById("alertTotalAmount").innerText = "₹" + order.totalAmount + " (" + order.paymentStatus + ")";
-
-      // Wire WhatsApp Button for Rider
-      var waText = "🛵 FITIN60 RIDER ORDER ACCEPTED\n\n" +
-                   "📦 Order ID: " + order.orderId + "\n" +
-                   "🏬 Pickup Boutique: " + order.store + "\n" +
-                   "👗 Outfit: " + firstItem.name + "\n" +
-                   "👤 Customer: " + order.customerName + " (" + order.customerPhone + ")\n" +
-                   "📍 Delivery Location: " + order.customerAddress + "\n\n" +
-                   "⚡ Rider Status: On the way for pickup!";
-
-      document.getElementById("acceptDispatchBtn").href = "https://wa.me/?text=" + encodeURIComponent(waText);
-      document.getElementById("riderOrderAlertModal").classList.remove("hidden");
+      document.getElementById("riderAlertModal").classList.remove("hidden");
     }
 
-    function closeAlertModal() {
-      document.getElementById("riderOrderAlertModal").classList.add("hidden");
+    function acceptOrderAsRider() {
+      var raw = localStorage.getItem("chitikelo_active_order");
+      if (!raw) return;
+      var order = JSON.parse(raw);
+      order.riderAssigned = true;
+      order.paymentStatus = "Rider On the Way to Customer 🛵";
+      localStorage.setItem("chitikelo_active_order", JSON.stringify(order));
+
+      document.getElementById("riderAlertModal").classList.add("hidden");
+      showActiveDelivery(order);
+    }
+
+    function showActiveDelivery(order) {
+      var card = document.getElementById("activeDeliveryCard");
+      var details = document.getElementById("activeDeliveryDetails");
+      var gmapsBtn = document.getElementById("gmapsNavBtn");
+
+      card.classList.remove("hidden");
+      details.innerHTML = 
+        "<p><strong>Order ID:</strong> " + order.orderId + "</p>" +
+        "<p><strong>Customer:</strong> " + order.customerName + " (" + order.customerPhone + ")</p>" +
+        "<p><strong>Address:</strong> " + order.customerAddress + "</p>";
+
+      // Direct Google Maps Link to Customer GPS Location
+      var lat = order.customerLat || "14.6819";
+      var lng = order.customerLng || "77.6006";
+      gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
+    }
+
+    // Continuously broadcast rider's GPS location to localStorage for customer tracking map
+    function trackRiderLiveGPS() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(function(pos) {
+          localStorage.setItem("fitin60_rider_gps", JSON.stringify({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            updatedAt: new Date().toLocaleTimeString()
+          }));
+        });
+      }
     }
   </script>
 </body>
