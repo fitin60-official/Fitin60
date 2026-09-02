@@ -1,78 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="overflow-x-hidden">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Fitin60 | My Orders & Live Tracking</title>
+  <title>Fitin60 | My Orders & History</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
+    html, body { overflow-x: hidden !important; width: 100% !important; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    #liveRadarMap { height: 230px; border-radius: 1.25rem; }
   </style>
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-2">
-      <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-md">MY ORDERS</span>
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-1.5">
+      <span class="font-brand text-xl font-black">FITIN<span class="text-orange-600">60</span></span>
+      <span class="text-[9px] bg-slate-100 text-slate-700 font-bold px-1.5 py-0.5 rounded">MY ORDERS</span>
     </div>
-    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-xl transition">
-      ← Home
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-xl">
+      ← Radar
     </a>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
+  <main class="max-w-lg mx-auto px-4 mt-6 space-y-6">
 
-    <!-- 1. NOT LOGGED IN STATE -->
-    <div id="loginPromptCard" class="hidden bg-white rounded-3xl border border-slate-200 p-8 text-center shadow-lg space-y-4">
-      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
-        🔒
-      </div>
-      <div>
-        <h2 class="font-brand font-black text-xl text-slate-950">Login to View Your Orders</h2>
-        <p class="text-xs text-slate-500 mt-1">Your orders are strictly private and secured with your mobile number.</p>
-      </div>
-
-      <form onsubmit="handleQuickLogin(event)" class="max-w-xs mx-auto space-y-3 pt-2 text-left">
-        <div>
-          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Your Name</label>
-          <input type="text" id="trackLoginName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
-        </div>
-        <div>
-          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Registered Mobile (10 Digits)</label>
-          <input type="tel" id="trackLoginPhone" required pattern="[0-9]{10}" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
-        </div>
-        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
-          View My Orders ➔
-        </button>
-      </form>
+    <div id="loginPromptCard" class="hidden bg-white rounded-3xl border border-slate-200 p-6 text-center shadow-lg space-y-3">
+      <div class="text-3xl">🔒</div>
+      <h2 class="font-brand font-black text-lg text-slate-950">Login to View Orders</h2>
+      <p class="text-xs text-slate-500">Your orders are strictly private to your registered mobile number.</p>
+      <a href="index.html" class="inline-block bg-slate-950 text-white font-bold px-4 py-2 rounded-xl text-xs uppercase">
+        Go to Login
+      </a>
     </div>
 
-    <!-- 2. NO ORDERS FOUND FOR THIS USER -->
-    <div id="emptyOrdersCard" class="hidden bg-white rounded-3xl border border-slate-200 p-8 text-center shadow-sm space-y-3">
+    <div id="emptyOrdersCard" class="hidden bg-white rounded-3xl border border-slate-200 p-8 text-center space-y-3">
       <div class="text-3xl">🛍️</div>
-      <h3 class="font-brand font-black text-lg text-slate-950">No Active Orders Yet</h3>
-      <p class="text-xs text-slate-500 max-w-sm mx-auto">You haven't placed any 60-min express orders yet. Explore boutiques to drop fresh fashion right to your door!</p>
-      <a href="index.html" class="inline-block bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition mt-2">
+      <h3 class="font-brand font-black text-lg text-slate-950">No Orders Found</h3>
+      <p class="text-xs text-slate-500">You have no active or completed orders yet.</p>
+      <a href="index.html" class="inline-block bg-orange-600 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase">
         Explore Boutiques
       </a>
     </div>
 
-    <!-- 3. PRIVATE ORDERS CONTAINER (Shows with Delete / Cancel Button) -->
-    <div id="privateOrdersContainer" class="space-y-6"></div>
+    <!-- Active & History Orders Container -->
+    <div id="privateOrdersContainer" class="space-y-4"></div>
 
   </main>
 
@@ -102,16 +81,6 @@
       }
     }
 
-    function handleQuickLogin(e) {
-      e.preventDefault();
-      var name = document.getElementById("trackLoginName").value.trim();
-      var phone = document.getElementById("trackLoginPhone").value.trim();
-      currentCustomer = { name: name, phone: phone };
-      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
-      document.getElementById("loginPromptCard").classList.add("hidden");
-      loadCustomerOrders(phone);
-    }
-
     function loadCustomerOrders(phone) {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
@@ -124,7 +93,6 @@
           return;
         }
 
-        // Filter ONLY this customer's mobile number
         var myOrders = Object.values(orders).filter(function(o) {
           return String(o.customerPhone).trim() === String(phone).trim();
         }).reverse();
@@ -140,45 +108,33 @@
 
         myOrders.forEach(function(order) {
           var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "M" };
+          var isCancelled = order.paymentStatus === "Cancelled by Customer";
+          var isDelivered = order.status === "Delivered";
 
           html += 
-            '<div class="bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-7 shadow-lg space-y-4">' +
-              '<div class="flex justify-between items-start border-b border-slate-100 pb-3">' +
+            '<div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-3">' +
+              '<div class="flex justify-between items-start border-b pb-3">' +
                 '<div>' +
-                  '<span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Reference</span>' +
-                  '<h2 class="font-mono-num font-black text-xl text-slate-950">' + order.orderId + '</h2>' +
+                  '<span class="text-[9px] font-black uppercase text-slate-400 tracking-wider">Order ID</span>' +
+                  '<h2 class="font-mono-num font-black text-lg text-slate-950">' + order.orderId + '</h2>' +
                 '</div>' +
-                '<div class="flex items-center gap-2">' +
-                  '<span class="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1 rounded-xl">' +
-                    (order.paymentStatus || "Processing") +
-                  '</span>' +
-                  '<button onclick="deleteCustomerOrder(\'' + order.orderId + '\')" title="Cancel / Delete Order" class="text-rose-600 hover:bg-rose-50 p-1.5 rounded-xl text-xs font-bold border border-rose-200 cursor-pointer">🗑️ Cancel</button>' +
-                '</div>' +
+                '<span class="text-[11px] font-bold ' + (isCancelled ? 'text-rose-600 bg-rose-50' : isDelivered ? 'text-emerald-700 bg-emerald-50' : 'text-orange-600 bg-orange-50') + ' border px-2.5 py-1 rounded-xl">' +
+                  order.paymentStatus +
+                '</span>' +
               '</div>' +
 
-              '<div class="p-4 bg-slate-50 rounded-2xl space-y-2 text-xs">' +
-                '<div class="flex justify-between items-center">' +
-                  '<h4 class="font-bold text-sm text-slate-900">' + firstItem.name + '</h4>' +
-                  '<span class="font-mono-num font-bold bg-white border border-slate-200 px-2 py-0.5 rounded text-[11px]">Size: ' + (firstItem.size || "M") + '</span>' +
-                '</div>' +
-                '<p class="text-slate-500">Boutique: <strong class="text-slate-800">' + order.store + '</strong></p>' +
-                '<div class="flex justify-between items-baseline pt-2 border-t border-slate-200/60 font-black">' +
-                  '<span class="text-[11px] text-slate-500 uppercase">Total Amount:</span>' +
-                  '<span class="font-mono-num text-xl text-slate-950">₹' + order.totalAmount + '</span>' +
-                '</div>' +
+              '<div class="p-3 bg-slate-50 rounded-2xl text-xs space-y-1">' +
+                '<p class="font-bold text-slate-900">' + firstItem.name + ' (' + (firstItem.size || "M") + ')</p>' +
+                '<p class="text-slate-500">Store: <strong>' + order.store + '</strong></p>' +
+                '<p class="font-mono-num font-black text-slate-950 pt-1">Total: ₹' + order.totalAmount + '</p>' +
               '</div>' +
 
-              '<div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-600">' +
-                '<strong>📍 Delivery Address:</strong> ' + order.customerAddress +
-              '</div>' +
-
-              '<div class="grid grid-cols-2 gap-2 pt-1">' +
-                '<a href="https://wa.me/?text=' + encodeURIComponent("Hello Fitin60 Support, query regarding my order " + order.orderId) + '" target="_blank" class="bg-slate-950 text-white font-bold py-2.5 rounded-xl text-[11px] uppercase text-center block">' +
-                  '💬 Support Chat' +
-                '</a>' +
-                '<button onclick="window.print()" class="bg-slate-100 text-slate-800 border border-slate-200 font-bold py-2.5 rounded-xl text-[11px] uppercase cursor-pointer">' +
-                  '🧾 Receipt' +
-                '</button>' +
+              '<div class="flex items-center gap-2 pt-1">' +
+                (!isCancelled && !isDelivered ? 
+                  '<button onclick="cancelCustomerOrder(\'' + order.orderId + '\')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold py-2 rounded-xl text-xs cursor-pointer">🚫 Cancel Order</button>' : 
+                  '<span class="flex-1 text-[11px] text-slate-400 font-bold text-center bg-slate-50 py-2 rounded-xl">' + (isCancelled ? 'Order Cancelled' : 'Order Delivered') + '</span>') +
+                
+                '<button onclick="deleteCustomerOrderPermanent(\'' + order.orderId + '\')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-3 py-2 rounded-xl text-xs cursor-pointer" title="Delete from History">🗑️ Delete</button>' +
               '</div>' +
             '</div>';
         });
@@ -187,13 +143,23 @@
       });
     }
 
-    // CLOUD DELETE FUNCTION (Customer can cancel / remove order from Firebase)
-    function deleteCustomerOrder(orderId) {
-      if (confirm("Are you sure you want to cancel and delete order " + orderId + "?")) {
+    // 1. CANCEL ORDER (Updates status, keeps in history)
+    function cancelCustomerOrder(orderId) {
+      if (confirm("Are you sure you want to cancel this order (" + orderId + ")?")) {
+        db.ref("orders/" + orderId).update({
+          paymentStatus: "Cancelled by Customer",
+          status: "Cancelled"
+        }).then(function() {
+          alert("✓ Order cancelled.");
+        });
+      }
+    }
+
+    // 2. PERMANENT DELETE (Removes completely from database)
+    function deleteCustomerOrderPermanent(orderId) {
+      if (confirm("Permanently delete this order record (" + orderId + ") from database?")) {
         db.ref("orders/" + orderId).remove().then(function() {
-          alert("✓ Order successfully cancelled and removed!");
-        }).catch(function(err) {
-          alert("Delete failed: " + err.message);
+          alert("✓ Order record deleted.");
         });
       }
     }
