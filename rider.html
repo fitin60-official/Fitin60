@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Rider Fleet Station (Cloud Realtime)</title>
+  <title>Fitin60 | Rider Fleet Station</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Firebase SDKs -->
@@ -20,73 +20,138 @@
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
 
+  <!-- Header -->
   <header class="bg-white border-b border-slate-200 px-6 h-20 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2">
       <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
       <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">RIDER FLEET</span>
     </div>
-    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl">← Customer Radar</a>
+    <div class="flex items-center gap-3">
+      <button id="logoutBtn" onclick="riderLogout()" class="hidden text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl transition cursor-pointer">Logout</button>
+      <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl">← Customer Radar</a>
+    </div>
   </header>
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- Duty Card -->
-    <div class="bg-slate-950 text-white p-6 rounded-3xl flex items-center justify-between shadow-xl">
-      <div class="flex items-center gap-3">
-        <span class="text-3xl">🛵</span>
+    <!-- 1. MANDATORY AUTH GATEKEEPER (Visible if rider is not logged in) -->
+    <div id="authSection" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
+      <div class="text-center space-y-1">
+        <h2 class="font-brand font-black text-2xl text-slate-950">Rider Fleet Portal</h2>
+        <p class="text-xs text-slate-500">Authorized delivery partners only. Login or register to start duty & receive dispatches.</p>
+      </div>
+
+      <div class="flex bg-slate-100 p-1 rounded-2xl">
+        <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Rider Login</button>
+        <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register New Rider</button>
+      </div>
+
+      <!-- Rider Login Form -->
+      <form id="loginForm" onsubmit="handleRiderLogin(event)" class="space-y-4">
         <div>
-          <h2 class="font-brand font-black text-xl">Ramesh Varma</h2>
-          <p class="text-xs text-slate-400">Fleet ID: #RDR-8821 • Cloud Active</p>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Registered Mobile</label>
+          <input type="tel" id="loginMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Secret 4-Digit PIN</label>
+          <input type="password" id="loginPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-emerald-500 tracking-widest font-mono">
+        </div>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Login to Fleet Station ➔
+        </button>
+      </form>
+
+      <!-- Rider Register Form (Auto logs in) -->
+      <form id="registerForm" onsubmit="handleRiderRegister(event)" class="space-y-4 hidden">
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Full Name</label>
+          <input type="text" id="regRiderName" required placeholder="e.g., Ramesh Varma" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Vehicle Type / Bike No</label>
+          <input type="text" id="regVehicle" required placeholder="e.g., Hero Splendor / AP 02 XX 1234" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Mobile Number</label>
+          <input type="tel" id="regMobile" required placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Set 4-Digit Security PIN</label>
+          <input type="password" id="regPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-emerald-500 tracking-widest font-mono">
+        </div>
+        <button type="submit" id="regSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Register & Start Delivering ➔
+        </button>
+      </form>
+    </div>
+
+    <!-- 2. PRIVATE RIDER DASHBOARD (Visible ONLY when logged in) -->
+    <div id="privateDashboard" class="hidden space-y-6">
+
+      <!-- Duty Toggle Card -->
+      <div class="bg-slate-950 text-white p-6 rounded-3xl flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🛵</span>
+          <div>
+            <h2 class="font-brand font-black text-xl" id="dashRiderName">Rider Name</h2>
+            <p class="text-xs text-slate-400" id="dashRiderMeta">Fleet ID: #RDR • AP 02</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 bg-white/10 p-2 px-4 rounded-2xl">
+          <span class="text-xs font-bold" id="dutyStatusText">OFF DUTY</span>
+          <button id="dutyToggleBtn" onclick="toggleDuty()" class="w-14 h-8 bg-slate-700 rounded-full p-1 transition relative cursor-pointer">
+            <div id="dutyKnob" class="w-6 h-6 bg-white rounded-full transition transform translate-x-0"></div>
+          </button>
         </div>
       </div>
 
-      <div class="flex items-center gap-3 bg-white/10 p-2 px-4 rounded-2xl">
-        <span class="text-xs font-bold" id="dutyStatusText">OFF DUTY</span>
-        <button id="dutyToggleBtn" onclick="toggleDuty()" class="w-14 h-8 bg-slate-700 rounded-full p-1 transition relative cursor-pointer">
-          <div id="dutyKnob" class="w-6 h-6 bg-white rounded-full transition transform translate-x-0"></div>
-        </button>
-      </div>
-    </div>
-
-    <div id="dutyActiveBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-        <span>ON DUTY • Listening to cloud dispatches across all boutiques in real-time...</span>
-      </div>
-    </div>
-
-    <!-- Active Delivery Order Card -->
-    <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-6 shadow-md space-y-4">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-brand font-bold text-base text-slate-950">Active Delivery Order</h3>
-        <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Live GPS Connected</span>
+      <div id="dutyActiveBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>ON DUTY • Listening to cloud dispatches across all boutiques in real-time...</span>
+        </div>
       </div>
 
-      <div class="text-xs text-slate-700 space-y-1.5" id="activeDeliveryDetails"></div>
+      <!-- Active Delivery Order Card -->
+      <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-6 shadow-md space-y-4">
+        <div class="flex justify-between items-center border-b pb-3">
+          <h3 class="font-brand font-bold text-base text-slate-950">Active Delivery Order</h3>
+          <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Live GPS Connected</span>
+        </div>
 
-      <a id="gmapsNavBtn" href="#" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
-        <span>🗺️</span> Open Turn-by-Turn Route on Google Maps
-      </a>
+        <div class="text-xs text-slate-700 space-y-1.5" id="activeDeliveryDetails"></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <a id="gmapsNavBtn" href="#" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+            <span>🗺️</span> Open Google Maps
+          </a>
+          <button onclick="markOrderDelivered()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md cursor-pointer">
+            <span>✓</span> Mark Delivered
+          </button>
+        </div>
+      </div>
+
     </div>
 
   </main>
 
-  <!-- LIVE POP-UP ALERT (Triggered Real-Time from Cloud) -->
+  <!-- LIVE POP-UP ALERT -->
   <div id="riderAlertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-orange-500 shadow-2xl space-y-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-emerald-500 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
-        <span class="text-xs font-black uppercase text-orange-600 animate-pulse">⚡ Boutique Dispatched New Order!</span>
-        <span class="text-xs font-mono font-bold bg-orange-100 text-orange-800 px-2 py-0.5 rounded" id="popOrderId">FIT-XXXX</span>
+        <span class="text-xs font-black uppercase text-emerald-600 animate-pulse">⚡ Boutique Dispatched New Order!</span>
+        <span class="text-xs font-mono font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded" id="popOrderId">FIT-XXXX</span>
       </div>
 
       <div class="space-y-2 text-xs">
-        <div class="p-3 bg-orange-50 rounded-xl">
+        <div class="p-3 bg-emerald-50 rounded-xl">
           <p class="font-bold text-slate-900" id="popStore">Store: Boutique Name</p>
-          <p class="text-slate-500" id="popItem">Item: Dress</p>
+          <p class="text-slate-600" id="popItem">Item: Dress</p>
         </div>
         <div class="p-3 bg-slate-50 rounded-xl">
           <p class="font-bold text-slate-900" id="popCustomer">Deliver to: Customer</p>
-          <p class="text-slate-500" id="popAddr">Address</p>
+          <p class="text-slate-600" id="popAddr">Address</p>
         </div>
       </div>
 
@@ -107,14 +172,97 @@
       appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
     };
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    var currentRider = null;
     var isDutyOn = false;
     var activeOrderObj = null;
     var lastAlertOrderId = null;
+
+    function switchAuthTab(tab) {
+      var loginF = document.getElementById("loginForm");
+      var regF = document.getElementById("registerForm");
+      var tLog = document.getElementById("tabLogin");
+      var tReg = document.getElementById("tabRegister");
+
+      if (tab === 'login') {
+        loginF.classList.remove("hidden");
+        regF.classList.add("hidden");
+        tLog.classList.add("bg-white", "text-slate-950", "shadow-sm");
+        tLog.classList.remove("text-slate-500");
+        tReg.classList.remove("bg-white", "text-slate-950", "shadow-sm");
+        tReg.classList.add("text-slate-500");
+      } else {
+        loginF.classList.add("hidden");
+        regF.classList.remove("hidden");
+        tReg.classList.add("bg-white", "text-slate-950", "shadow-sm");
+        tReg.classList.remove("text-slate-500");
+        tLog.classList.remove("bg-white", "text-slate-950", "shadow-sm");
+        tLog.classList.add("text-slate-500");
+      }
+    }
+
+    // REGISTRATION WITH IMMEDIATE AUTO-LOGIN
+    function handleRiderRegister(e) {
+      e.preventDefault();
+      var name = document.getElementById("regRiderName").value.trim();
+      var vehicle = document.getElementById("regVehicle").value.trim();
+      var mobile = document.getElementById("regMobile").value.trim();
+      var pin = document.getElementById("regPin").value.trim();
+      var riderId = "RDR-" + Math.floor(1000 + Math.random() * 9000);
+
+      var btn = document.getElementById("regSubmitBtn");
+      btn.disabled = true;
+      btn.innerText = "Registering...";
+
+      var newRider = { name: name, vehicle: vehicle, mobile: mobile, pin: pin, riderId: riderId };
+
+      db.ref("riders/" + mobile).set(newRider).then(function() {
+        alert("✓ Registration Successful! Welcome to Fitin60 Fleet.");
+        loginSuccess(newRider);
+      }).catch(function(err) {
+        alert("Error: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "Register & Start Delivering ➔";
+      });
+    }
+
+    function handleRiderLogin(e) {
+      e.preventDefault();
+      var mobile = document.getElementById("loginMobile").value.trim();
+      var pin = document.getElementById("loginPin").value.trim();
+
+      db.ref("riders/" + mobile).once("value").then(function(snapshot) {
+        var rider = snapshot.val();
+        if (rider && rider.pin === pin) {
+          loginSuccess(rider);
+        } else {
+          alert("Invalid Mobile or PIN! Please register first if you are new.");
+        }
+      });
+    }
+
+    function loginSuccess(rider) {
+      currentRider = rider;
+      localStorage.setItem("fitin60_active_rider", JSON.stringify(rider));
+
+      document.getElementById("authSection").classList.add("hidden");
+      document.getElementById("privateDashboard").classList.remove("hidden");
+      document.getElementById("logoutBtn").classList.remove("hidden");
+
+      document.getElementById("dashRiderName").innerText = rider.name;
+      document.getElementById("dashRiderMeta").innerText = "Fleet ID: #" + rider.riderId + " • " + rider.vehicle;
+    }
+
+    function riderLogout() {
+      if (isDutyOn) toggleDuty(); // Turn off duty on logout
+      currentRider = null;
+      localStorage.removeItem("fitin60_active_rider");
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("privateDashboard").classList.add("hidden");
+      document.getElementById("logoutBtn").classList.add("hidden");
+    }
 
     function playBeepSound() {
       try {
@@ -161,7 +309,6 @@
         var orders = snapshot.val();
         if (!orders) return;
 
-        // Find the most recent order that is boutiqueAccepted but NOT riderAssigned
         var targetOrder = null;
         Object.values(orders).forEach(function(o) {
           if (o.boutiqueAccepted && !o.riderAssigned) {
@@ -190,11 +337,13 @@
     }
 
     function acceptOrderAsRider() {
-      if (!activeOrderObj) return;
+      if (!activeOrderObj || !currentRider) return;
 
       db.ref("orders/" + activeOrderObj.orderId).update({
         riderAssigned: true,
-        paymentStatus: "Rider On the Way to Customer 🛵"
+        riderName: currentRider.name,
+        riderPhone: currentRider.mobile,
+        paymentStatus: "Rider " + currentRider.name + " on the way with outfit 🛵"
       }).then(function() {
         document.getElementById("riderAlertModal").classList.add("hidden");
         showActiveDelivery(activeOrderObj);
@@ -217,6 +366,26 @@
       var lng = order.customerLng || "77.6006";
       gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
     }
+
+    function markOrderDelivered() {
+      if (!activeOrderObj) return;
+      if (confirm("Confirm that this order is delivered to the customer?")) {
+        db.ref("orders/" + activeOrderObj.orderId).update({
+          paymentStatus: "Delivered Successfully! 🎉"
+        }).then(function() {
+          alert("✓ Delivery Completed! Great job.");
+          document.getElementById("activeDeliveryCard").classList.add("hidden");
+          activeOrderObj = null;
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      var saved = localStorage.getItem("fitin60_active_rider");
+      if (saved) {
+        loginSuccess(JSON.parse(saved));
+      }
+    });
   </script>
 </body>
 </html>
