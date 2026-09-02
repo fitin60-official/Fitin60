@@ -64,11 +64,11 @@
       <form id="registerForm" onsubmit="handleMerchantRegister(event)" class="space-y-4 hidden">
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Boutique / Store Name</label>
-          <input type="text" id="regStoreName" required placeholder="e.g., Anu Ram Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          <input type="text" id="regStoreName" required placeholder="e.g., Sai Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
         </div>
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Store Location / Area</label>
-          <input type="text" id="regArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
+          <input type="text" id="regArea" required placeholder="e.g., Near TV Tower, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500">
         </div>
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Merchant Mobile Number</label>
@@ -111,17 +111,17 @@
         <div id="incomingOrderBox" class="space-y-4"></div>
       </div>
 
-      <!-- Upload New Outfit -->
+      <!-- Upload New Outfit with Direct Photo Picker -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <h3 class="font-brand font-bold text-base text-slate-950">+ Upload New Dress to Radar</h3>
         <form onsubmit="handleUploadProduct(event)" class="space-y-3.5">
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Dress / Outfit Name</label>
-            <input type="text" id="prodName" required placeholder="e.g., Designer Anarkali Kurta" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+            <input type="text" id="prodName" required placeholder="e.g., Designer Silk Saree" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Price (₹)</label>
+              <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Selling Price (₹)</label>
               <input type="number" id="prodPrice" required placeholder="899" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
             </div>
             <div>
@@ -129,17 +129,33 @@
               <input type="number" id="prodOriginal" required placeholder="1499" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
             </div>
           </div>
+
+          <!-- DIRECT PHOTO UPLOAD / CAMERA PICKER -->
           <div>
-            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Image URL</label>
-            <input type="url" id="prodImg" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Dress Photo (Upload from Phone Gallery / Camera)</label>
+            <div class="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center bg-slate-50 hover:bg-slate-100 transition relative">
+              <input type="file" id="prodFileInput" accept="image/*" onchange="previewSelectedPhoto(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+              <div id="uploadPromptBox" class="space-y-1">
+                <span class="text-2xl">📸</span>
+                <p class="text-xs font-bold text-slate-700">Tap to Choose Photo or Take Picture</p>
+                <p class="text-[10px] text-slate-400">Supports JPG, PNG (Auto-compressed for fast loading)</p>
+              </div>
+              <div id="imagePreviewContainer" class="hidden flex flex-col items-center gap-2">
+                <img id="imagePreview" src="" class="h-28 w-28 object-cover rounded-xl border border-slate-300 shadow-sm">
+                <span class="text-[10px] text-emerald-600 font-bold">✓ Photo Selected! Tap to change</span>
+              </div>
+            </div>
+            <!-- Hidden input holding the compressed base64 data URL -->
+            <input type="hidden" id="prodBase64Image" value="">
           </div>
+
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Available Sizes</label>
-            <input type="text" id="prodSizes" required placeholder="S, M, L, XL" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+            <input type="text" id="prodSizes" required placeholder="Free Size (or S, M, L, XL)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
           </div>
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Description</label>
-            <textarea id="prodDesc" rows="2" required placeholder="Pure cotton fabric..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"></textarea>
+            <textarea id="prodDesc" rows="2" required placeholder="Pure soft fabric, premium finish..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"></textarea>
           </div>
           <button type="submit" id="uploadSubmitBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
             + Publish Live to Fitin60
@@ -269,14 +285,50 @@
       document.getElementById("logoutBtn").classList.add("hidden");
     }
 
+    // PHOTO PICKER & CLIENT-SIDE IMAGE COMPRESSOR
+    function previewSelectedPhoto(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          var MAX_WIDTH = 700;
+          var scaleSize = MAX_WIDTH / img.width;
+          canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+          canvas.height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
+
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Compress to JPEG with 0.7 quality (takes < 60KB)
+          var compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+
+          document.getElementById("prodBase64Image").value = compressedBase64;
+          document.getElementById("imagePreview").src = compressedBase64;
+          document.getElementById("uploadPromptBox").classList.add("hidden");
+          document.getElementById("imagePreviewContainer").classList.remove("hidden");
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     function handleUploadProduct(e) {
       e.preventDefault();
       if (!currentMerchant) return;
 
+      var base64Img = document.getElementById("prodBase64Image").value;
+      if (!base64Img) {
+        alert("Please select a photo for your dress first!");
+        return;
+      }
+
       var name = document.getElementById("prodName").value.trim();
       var price = parseInt(document.getElementById("prodPrice").value.trim(), 10);
       var orig = parseInt(document.getElementById("prodOriginal").value.trim(), 10);
-      var img = document.getElementById("prodImg").value.trim();
       var sizes = document.getElementById("prodSizes").value.split(",").map(function(s) { return s.trim(); });
       var desc = document.getElementById("prodDesc").value.trim();
       var prodId = "PROD-" + Date.now();
@@ -289,7 +341,7 @@
         price: price,
         originalPrice: orig,
         discount: Math.round(((orig - price) / orig) * 100) + "% OFF",
-        image: img,
+        image: base64Img,
         sizes: sizes,
         desc: desc,
         eta: "35 MINS",
@@ -301,10 +353,18 @@
       btn.innerText = "Publishing...";
 
       db.ref("boutique_products/" + prodId).set(newProd).then(function() {
-        alert("✓ Published to Live Store!");
+        alert("✓ Photo & Dress Published Live to Fitin60!");
         btn.disabled = false;
         btn.innerText = "+ Publish Live to Fitin60";
         e.target.reset();
+        document.getElementById("prodBase64Image").value = "";
+        document.getElementById("imagePreview").src = "";
+        document.getElementById("uploadPromptBox").classList.remove("hidden");
+        document.getElementById("imagePreviewContainer").classList.add("hidden");
+      }).catch(function(err) {
+        alert("Upload error: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "+ Publish Live to Fitin60";
       });
     }
 
@@ -387,7 +447,7 @@
           html += 
             '<div class="flex items-center justify-between p-3 bg-slate-50 border rounded-2xl text-xs">' +
               '<div class="flex items-center gap-3">' +
-                '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg">' +
+                '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg border">' +
                 '<div>' +
                   '<p class="font-bold text-slate-900">' + p.name + '</p>' +
                   '<p class="text-slate-500 font-mono">₹' + p.price + '</p>' +
@@ -411,7 +471,6 @@
       }
     }
 
-    // PERMANENT STORE DELETION FUNCTION
     function deleteEntireStorePermanently() {
       if (!currentMerchant) return;
 
@@ -423,7 +482,6 @@
         return;
       }
 
-      // Step A: Delete all products belonging to this store
       db.ref("boutique_products").orderByChild("store").equalTo(currentMerchant.storeName).once("value").then(function(snapshot) {
         var updates = {};
         if (snapshot.exists()) {
@@ -431,7 +489,6 @@
             updates["boutique_products/" + child.key] = null;
           });
         }
-        // Step B: Delete the partner record
         updates["partners/" + currentMerchant.mobile] = null;
 
         return db.ref().update(updates);
