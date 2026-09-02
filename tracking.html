@@ -3,103 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Live 60-Min Radar Tracking</title>
+  <title>Fitin60 | Live Radar Map & Order Tracking</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+    #liveRadarMap { height: 260px; border-radius: 1.5rem; }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-20">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-sm">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-      <a href="index.html" class="flex flex-col">
-        <div class="flex items-center gap-1.5">
-          <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-          <span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full border border-emerald-200">LIVE RADAR</span>
-        </div>
-      </a>
-      <a href="index.html" class="text-xs font-bold text-slate-700 hover:text-orange-600 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-2xl transition">
-        ← Home
-      </a>
+  <header class="bg-white border-b border-slate-200 px-6 h-20 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-1.5">
+      <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
+      <span class="text-[9px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded-full">LIVE RADAR</span>
     </div>
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl">← Home</a>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 sm:px-6 mt-8 space-y-6">
+  <main class="max-w-2xl mx-auto px-4 mt-8 space-y-6">
 
-    <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-xl space-y-6">
+    <div class="bg-white rounded-[2.5rem] border border-slate-200 p-6 sm:p-8 shadow-xl space-y-6">
       
-      <!-- Order ID & Live 60-Min Radar Countdown -->
-      <div class="flex items-center justify-between border-b border-slate-100 pb-5">
+      <!-- Countdown & Status -->
+      <div class="flex justify-between items-center border-b pb-4">
         <div>
-          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Reference</span>
-          <h2 id="trackOrderId" class="font-mono-num font-black text-2xl text-slate-950">FIT-XXXX</h2>
+          <span class="text-[10px] font-black uppercase text-slate-400">Order Reference</span>
+          <h2 id="trackOrderId" class="font-mono-num font-black text-2xl">FIT-XXXX</h2>
         </div>
         <div class="text-right">
-          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Radar Guaranteed ETA</span>
+          <span class="text-[10px] font-black uppercase text-slate-400">60-Min Radar ETA</span>
           <p id="countdownTimer" class="font-mono-num font-black text-2xl text-orange-600">59:59</p>
         </div>
       </div>
 
-      <!-- Live Radar Tracking Steps -->
-      <div class="space-y-4 py-2">
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg">✓</div>
-          <div>
-            <h4 class="font-bold text-xs text-slate-950">Order Placed & Boutique Alerted</h4>
-            <p id="trackStore" class="text-[11px] text-slate-500 font-medium">Boutique: Loading...</p>
-          </div>
+      <!-- Live Interactive Map Showing Delivery Boy & Customer -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs font-bold text-slate-700">🛵 Rider Live GPS Radar</span>
+          <span id="riderStatusPill" class="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-md font-bold">Connecting...</span>
         </div>
-
-        <div class="flex items-center gap-4">
-          <div class="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg animate-pulse">🛵</div>
-          <div>
-            <h4 class="font-bold text-xs text-slate-950">Rider Dispatched to Store</h4>
-            <p class="text-[11px] text-orange-600 font-semibold">Picking up sealed outfit pack for 60-min delivery</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-4 opacity-50">
-          <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-lg">📍</div>
-          <div>
-            <h4 class="font-bold text-xs text-slate-950">Doorstep Handover</h4>
-            <p id="trackCustAddr" class="text-[11px] text-slate-500 font-medium">Delivering to your address</p>
-          </div>
-        </div>
+        <div id="liveRadarMap" class="w-full border border-slate-200 shadow-inner"></div>
       </div>
 
-      <!-- WhatsApp Direct Dispatch Button -->
-      <div class="pt-4 border-t border-slate-100 space-y-3">
-        <a id="whatsappDispatchBtn" href="#" target="_blank" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-4 rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-          <span>📲</span> Dispatch Order via WhatsApp
-        </a>
-        <p class="text-[10px] text-center text-slate-400 font-medium">Instantly shares order summary with boutique merchant and delivery rider</p>
-      </div>
+      <!-- WhatsApp Dispatch Notification -->
+      <a id="whatsappDispatchBtn" href="#" target="_blank" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+        <span>📲</span> Notify Boutique & Rider on WhatsApp
+      </a>
 
-      <!-- Order Summary Card -->
-      <div class="p-5 bg-slate-50 border border-slate-200/80 rounded-3xl space-y-2.5 text-xs">
-        <div class="flex justify-between font-bold text-slate-700">
-          <span>Outfit:</span>
-          <span id="trackItemName" class="text-slate-950 font-black">Designer Outfit</span>
-        </div>
-        <div class="flex justify-between font-bold text-slate-700">
-          <span>Customer:</span>
-          <span id="trackCustomer" class="text-slate-950">Name (Phone)</span>
-        </div>
-        <div class="flex justify-between font-bold text-slate-700">
-          <span>Payment Status:</span>
-          <span id="trackPayment" class="text-emerald-600 font-black">Store UPI</span>
-        </div>
-        <div class="flex justify-between font-bold text-slate-700 pt-2 border-t border-slate-200">
-          <span>Total Amount:</span>
-          <span id="trackTotal" class="font-mono-num font-black text-slate-950 text-base">₹0</span>
-        </div>
+      <!-- Summary Details -->
+      <div class="p-4 bg-slate-50 rounded-2xl space-y-2 text-xs">
+        <p><strong>Item:</strong> <span id="trackItemName">Outfit</span></p>
+        <p><strong>Boutique:</strong> <span id="trackStore">Boutique</span></p>
+        <p><strong>Delivery Location:</strong> <span id="trackCustAddr">Address</span></p>
+        <p><strong>Current Status:</strong> <span id="trackPayment" class="text-orange-600 font-bold">Waiting for Boutique Acceptance</span></p>
       </div>
 
     </div>
@@ -107,47 +69,64 @@
   </main>
 
   <script>
-    // Live 60-Min Radar Countdown
-    var timeLeft = 59 * 60 + 59;
-    var timerEl = document.getElementById("countdownTimer");
-    setInterval(function() {
-      if (timeLeft <= 0) {
-        timerEl.innerText = "00:00";
-        return;
+    var map, riderMarker, customerMarker;
+
+    function initMap(cLat, cLng) {
+      map = L.map('liveRadarMap').setView([cLat, cLng], 14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      // Customer Pin
+      customerMarker = L.marker([cLat, cLng]).addTo(map).bindPopup("<b>Your Delivery Location</b>").openPopup();
+
+      // Initial Rider position slightly offset
+      riderMarker = L.marker([cLat + 0.005, cLng + 0.005]).addTo(map).bindPopup("<b>🛵 Fitin60 Rider</b>");
+    }
+
+    function updateRiderOnMap() {
+      var rawRiderGPS = localStorage.getItem("fitin60_rider_gps");
+      var pill = document.getElementById("riderStatusPill");
+      if (rawRiderGPS && riderMarker) {
+        var gps = JSON.parse(rawRiderGPS);
+        riderMarker.setLatLng([gps.lat, gps.lng]);
+        pill.innerText = "Live at " + gps.updatedAt;
+        pill.classList.replace("bg-orange-100", "bg-emerald-100");
+        pill.classList.replace("text-orange-700", "text-emerald-700");
       }
-      timeLeft--;
-      var m = Math.floor(timeLeft / 60);
-      var s = timeLeft % 60;
-      timerEl.innerText = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
-    }, 1000);
+    }
 
     window.addEventListener('DOMContentLoaded', function() {
       var rawOrder = localStorage.getItem("chitikelo_active_order");
       if (rawOrder) {
         var order = JSON.parse(rawOrder);
-        var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "M" };
+        var item = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
 
         document.getElementById("trackOrderId").innerText = order.orderId;
-        document.getElementById("trackStore").innerText = "Boutique: " + order.store;
-        document.getElementById("trackCustAddr").innerText = "Deliver to: " + order.customerAddress;
-        document.getElementById("trackItemName").innerText = firstItem.name + " (" + (firstItem.size || "Standard") + ")";
-        document.getElementById("trackCustomer").innerText = order.customerName + " (" + order.customerPhone + ")";
+        document.getElementById("trackItemName").innerText = item.name;
+        document.getElementById("trackStore").innerText = order.store;
+        document.getElementById("trackCustAddr").innerText = order.customerAddress;
         document.getElementById("trackPayment").innerText = order.paymentStatus;
-        document.getElementById("trackTotal").innerText = "₹" + order.totalAmount;
 
-        // WhatsApp Direct Dispatch Message Text
-        var waText = "⚡ FITIN60 EXPRESS ORDER DISPATCH ⚡\n\n" +
-                     "📦 Order ID: " + order.orderId + "\n" +
-                     "🏬 Boutique: " + order.store + "\n" +
-                     "👗 Outfit: " + firstItem.name + " (" + (firstItem.size || "M") + ")\n" +
-                     "💰 Amount: ₹" + order.totalAmount + " (" + order.paymentStatus + ")\n" +
-                     "👤 Customer: " + order.customerName + " (" + order.customerPhone + ")\n" +
-                     "📍 Delivery Location: " + order.customerAddress + "\n\n" +
-                     "⏱️ Status: 60-Minute Radar Dispatch Active!";
+        var cLat = parseFloat(order.customerLat) || 14.6819;
+        var cLng = parseFloat(order.customerLng) || 77.6006;
+        initMap(cLat, cLng);
 
+        var waText = "⚡ FITIN60 EXPRESS ORDER TRACKING\n\nOrder: " + order.orderId + "\nStore: " + order.store + "\nItem: " + item.name + "\nAddress: " + order.customerAddress;
         document.getElementById("whatsappDispatchBtn").href = "https://wa.me/?text=" + encodeURIComponent(waText);
       }
+      setInterval(updateRiderOnMap, 3000);
     });
+
+    // Countdown
+    var timeLeft = 59 * 60 + 59;
+    setInterval(function() {
+      if (timeLeft <= 0) return;
+      timeLeft--;
+      var m = Math.floor(timeLeft / 60);
+      var s = timeLeft % 60;
+      document.getElementById("countdownTimer").innerText = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+    }, 1000);
   </script>
 </body>
 </html>
