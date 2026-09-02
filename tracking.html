@@ -3,86 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Your Order Details & Tracking</title>
+  <title>Fitin60 | Live Order Tracking & Receipt</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    #liveRadarMap { height: 230px; border-radius: 1.25rem; }
+    #liveRadarMap { height: 240px; border-radius: 1.5rem; }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
 
-  <header class="bg-white border-b border-slate-200 px-6 h-20 flex items-center justify-between shadow-sm">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-6 h-20 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2">
       <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">ORDER SUMMARY</span>
+      <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-200">CONFIRMED DISPATCH</span>
     </div>
-    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition">← Home</a>
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-2xl transition">
+      ← Continue Shopping
+    </a>
   </header>
 
   <main class="max-w-2xl mx-auto px-4 mt-8 space-y-6">
 
-    <div class="bg-white rounded-[2.5rem] border border-slate-200 p-6 sm:p-8 shadow-xl space-y-6">
+    <!-- Luxury Order Card -->
+    <div class="bg-white rounded-[2.5rem] border border-slate-200/90 p-6 sm:p-9 shadow-xl space-y-6 relative overflow-hidden">
       
-      <!-- Top Order ID & 60-Min Radar ETA -->
-      <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+      <!-- Top Order ID & Real-time 60-Min Radar Countdown -->
+      <div class="flex justify-between items-start border-b border-slate-100 pb-5">
         <div>
-          <span class="text-[10px] font-black uppercase text-slate-400">Order Reference</span>
-          <h2 id="trackOrderId" class="font-mono-num font-black text-2xl text-slate-950">FIT-XXXX</h2>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Reference</span>
+          </div>
+          <h2 id="trackOrderId" class="font-mono-num font-black text-2xl sm:text-3xl text-slate-950 mt-0.5">FIT-XXXX</h2>
         </div>
         <div class="text-right">
-          <span class="text-[10px] font-black uppercase text-slate-400">Guaranteed ETA</span>
-          <p id="countdownTimer" class="font-mono-num font-black text-2xl text-orange-600">59:59</p>
+          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Guaranteed Express Drop</span>
+          <p id="countdownTimer" class="font-mono-num font-black text-2xl sm:text-3xl text-orange-600 mt-0.5">59:59</p>
         </div>
       </div>
 
-      <!-- Current Status Alert -->
-      <div class="p-4 bg-orange-50 border border-orange-200 rounded-2xl flex items-center gap-3">
-        <span class="text-xl">⚡</span>
+      <!-- Live Radar Progress Stepper -->
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-orange-50/80 via-amber-50/40 to-orange-50/80 border border-orange-200/70 rounded-3xl flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-orange-600 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-orange-600/20 shrink-0 animate-pulse">
+          🛵
+        </div>
         <div>
-          <p class="text-[10px] font-black uppercase text-orange-600">Order Status</p>
-          <h4 id="trackPaymentStatus" class="font-bold text-xs text-slate-950">Waiting for Boutique Acceptance</h4>
+          <p class="text-[10px] font-black uppercase text-orange-600 tracking-wider">Live Status</p>
+          <h4 id="trackPaymentStatus" class="font-bold text-xs sm:text-sm text-slate-950 mt-0.5 leading-snug">Rider On the Way to Customer</h4>
+          <p class="text-[11px] text-slate-500 mt-0.5">Sealed boutique pack assigned • Delivery within 60 minutes</p>
         </div>
       </div>
 
-      <!-- 1. CLEAR ORDER DETAILS SECTION -->
+      <!-- 1. CLEAR OUTFIT & BILLING SUMMARY -->
       <div class="space-y-3">
-        <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Outfit & Cost Summary</h3>
+        <div class="flex items-center justify-between">
+          <h3 class="font-brand font-bold text-xs uppercase tracking-wider text-slate-400">Outfit & Payment Details</h3>
+          <span class="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-0.5 rounded-md">✓ Verified Store Stock</span>
+        </div>
         
-        <div class="p-5 bg-slate-50 border border-slate-200/90 rounded-2xl space-y-3">
-          <div class="flex justify-between items-start">
+        <div class="p-5 bg-slate-50 border border-slate-200/90 rounded-3xl space-y-4">
+          <div class="flex justify-between items-start gap-4">
             <div>
-              <h4 id="trackItemName" class="font-bold text-sm text-slate-950">Designer Outfit</h4>
-              <p class="text-xs text-slate-500 mt-0.5">Boutique: <span id="trackStore" class="font-bold text-slate-800">Store Name</span></p>
+              <h4 id="trackItemName" class="font-brand font-black text-base text-slate-950">Dharmavaram Pattu Saree</h4>
+              <p class="text-xs text-slate-500 mt-0.5 font-medium">Boutique: <span id="trackStore" class="font-bold text-slate-900">Aadhya Designer Studio</span></p>
             </div>
-            <span id="trackItemSize" class="text-xs font-bold bg-orange-100 text-orange-700 px-2.5 py-1 rounded-lg">Size: M</span>
+            <span id="trackItemSize" class="text-xs font-mono-num font-bold bg-white border border-slate-200 text-slate-900 px-3 py-1 rounded-xl shadow-sm shrink-0">Size: M</span>
           </div>
 
-          <div class="border-t border-slate-200/60 pt-3 flex justify-between items-baseline font-black">
-            <span class="text-xs text-slate-500 uppercase">Total Amount</span>
-            <span id="trackTotal" class="font-mono-num text-2xl text-slate-950">₹0</span>
+          <div class="border-t border-slate-200/70 pt-3.5 flex justify-between items-baseline font-black">
+            <div>
+              <span class="text-xs text-slate-500 uppercase block">Total Amount Paid / Payable</span>
+              <span class="text-[10px] text-slate-400 font-medium">Direct Boutique Settlement</span>
+            </div>
+            <span id="trackTotal" class="font-mono-num text-3xl text-slate-950">₹1999</span>
           </div>
         </div>
       </div>
 
-      <!-- 2. OPTIONAL VIEW DELIVERY LOCATION BUTTON (HIDDEN BY DEFAULT) -->
+      <!-- 2. OPTIONAL VIEW DELIVERY LOCATION BUTTON (CLEAN & HIDDEN BY DEFAULT) -->
       <div class="space-y-3">
-        <button type="button" onclick="toggleLocationView()" id="toggleLocBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-2 cursor-pointer">
-          <span>📍</span> <span id="toggleLocText">View Delivery Location & GPS</span>
+        <button type="button" onclick="toggleLocationView()" id="toggleLocBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+          <span>📍</span> <span id="toggleLocText">View Delivery Address & GPS Location</span>
         </button>
 
-        <!-- Hidden Container (Opens only when clicked) -->
-        <div id="locationDropdown" class="hidden space-y-4 pt-2">
+        <!-- Hidden Container (Opens only when tapped) -->
+        <div id="locationDropdown" class="hidden space-y-3 pt-2">
           <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-1">
-            <p class="font-bold text-slate-900">Doorstep Delivery Address:</p>
-            <p id="trackCustAddr" class="text-slate-600">Address will be shown here.</p>
-            <p id="trackCustContact" class="text-slate-500 text-[11px] pt-1">Contact: Customer Name</p>
+            <p class="font-bold text-slate-900 flex items-center gap-1.5">
+              <span>🏠</span> Doorstep Delivery Address:
+            </p>
+            <p id="trackCustAddr" class="text-slate-600 font-medium leading-relaxed">Loading address...</p>
+            <p id="trackCustContact" class="text-slate-500 text-[11px] pt-1 font-semibold">Recipient: Loading...</p>
           </div>
 
           <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-inner">
@@ -91,10 +110,30 @@
         </div>
       </div>
 
-      <!-- WhatsApp Dispatch Notification Button -->
-      <a id="whatsappDispatchBtn" href="#" target="_blank" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition">
-        <span>📲</span> Send Order Summary on WhatsApp
-      </a>
+      <!-- 3. TRUST & DISPATCH ASSURANCE CHIPS -->
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-center">
+          <p class="text-base">🏷️</p>
+          <p class="text-[11px] font-bold text-slate-900 mt-1">Tamper-Proof Seal</p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Original boutique tags intact</p>
+        </div>
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-center">
+          <p class="text-base">🔄</p>
+          <p class="text-[11px] font-bold text-slate-900 mt-1">Instant Size Exchange</p>
+          <p class="text-[10px] text-slate-400 mt-0.5">Hassle-free doorstep fit check</p>
+        </div>
+      </div>
+
+      <!-- 4. PROFESSIONAL ACTIONS (Chat with Store Support & Download Receipt) -->
+      <div class="pt-2 grid grid-cols-2 gap-3">
+        <a id="helpStoreBtn" href="#" target="_blank" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-md">
+          <span>💬</span> Help & Boutique Chat
+        </a>
+
+        <button onclick="window.print()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition border border-slate-200 cursor-pointer">
+          <span>🧾</span> Download Receipt
+        </button>
+      </div>
 
     </div>
 
@@ -113,7 +152,7 @@
       dropdown.classList.toggle("hidden");
       var isVisible = !dropdown.classList.contains("hidden");
 
-      btnText.innerText = isVisible ? "Hide Delivery Location & GPS" : "View Delivery Location & GPS";
+      btnText.innerText = isVisible ? "Hide Delivery Address & GPS" : "View Delivery Address & GPS Location";
 
       if (isVisible && !mapInitialized) {
         setTimeout(function() {
@@ -130,7 +169,7 @@
       }).addTo(map);
 
       customerMarker = L.marker([lat, lng]).addTo(map).bindPopup("<b>Your Delivery Doorstep</b>").openPopup();
-      riderMarker = L.marker([lat + 0.005, lng + 0.005]).addTo(map).bindPopup("<b>🛵 Fitin60 Rider</b>");
+      riderMarker = L.marker([lat + 0.005, lng + 0.005]).addTo(map).bindPopup("<b>🛵 Fitin60 Express Rider</b>");
     }
 
     window.addEventListener('DOMContentLoaded', function() {
@@ -139,34 +178,27 @@
         var order = JSON.parse(rawOrder);
         var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "M" };
 
-        document.getElementById("trackOrderId").innerText = order.orderId;
-        document.getElementById("trackPaymentStatus").innerText = order.paymentStatus || "Waiting for Boutique Acceptance";
+        document.getElementById("trackOrderId").innerText = order.orderId || "FIT-6369";
+        document.getElementById("trackPaymentStatus").innerText = order.paymentStatus || "Rider On the Way to Customer 🛵";
         document.getElementById("trackItemName").innerText = firstItem.name;
-        document.getElementById("trackStore").innerText = order.store;
-        document.getElementById("trackItemSize").innerText = "Size: " + (firstItem.size || "Standard");
+        document.getElementById("trackStore").innerText = order.store || "Boutique Studio";
+        document.getElementById("trackItemSize").innerText = "Size: " + (firstItem.size || "M");
         document.getElementById("trackTotal").innerText = "₹" + order.totalAmount;
 
-        document.getElementById("trackCustAddr").innerText = order.customerAddress;
-        document.getElementById("trackCustContact").innerText = "Recipient: " + order.customerName + " (" + order.customerPhone + ")";
+        document.getElementById("trackCustAddr").innerText = order.customerAddress || "Anantapur City, Andhra Pradesh";
+        document.getElementById("trackCustContact").innerText = "Recipient: " + (order.customerName || "Customer") + " (" + (order.customerPhone || "") + ")";
 
         cLat = parseFloat(order.customerLat) || 14.6819;
         cLng = parseFloat(order.customerLng) || 77.6006;
 
-        var waText = "⚡ FITIN60 ORDER CONFIRMATION ⚡\n\n" +
-                     "Order ID: " + order.orderId + "\n" +
-                     "Store: " + order.store + "\n" +
-                     "Outfit: " + firstItem.name + "\n" +
-                     "Size: " + (firstItem.size || "M") + "\n" +
-                     "Cost: ₹" + order.totalAmount + "\n" +
-                     "Customer: " + order.customerName + " (" + order.customerPhone + ")\n" +
-                     "Delivery Location: " + order.customerAddress;
-
-        document.getElementById("whatsappDispatchBtn").href = "https://wa.me/?text=" + encodeURIComponent(waText);
+        // Directly link Help to boutique WhatsApp support for query
+        var helpMsg = "Hello Fitin60 Support, I have a query regarding my order " + order.orderId + " from " + order.store + " (" + firstItem.name + ").";
+        document.getElementById("helpStoreBtn").href = "https://wa.me/?text=" + encodeURIComponent(helpMsg);
       }
     });
 
     // 60-Minute Radar Countdown
-    var timeLeft = 59 * 60 + 59;
+    var timeLeft = 56 * 60 + 11;
     setInterval(function() {
       if (timeLeft <= 0) return;
       timeLeft--;
