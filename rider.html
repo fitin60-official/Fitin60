@@ -25,8 +25,8 @@
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- Rider Duty Card -->
-    <div class="bg-slate-950 text-white p-6 rounded-3xl flex items-center justify-between">
+    <!-- Duty Card -->
+    <div class="bg-slate-950 text-white p-6 rounded-3xl flex items-center justify-between shadow-xl">
       <div class="flex items-center gap-3">
         <span class="text-3xl">🛵</span>
         <div>
@@ -43,32 +43,32 @@
       </div>
     </div>
 
-    <!-- Active Listening Banner -->
+    <!-- Active Banner -->
     <div id="dutyActiveBanner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-        <span>ON DUTY • Broadcasting live GPS to customer & listening for boutique dispatches...</span>
+        <span>ON DUTY • Listening for boutique dispatches in your 20 KM zone...</span>
       </div>
     </div>
 
-    <!-- Active Delivery Assignment Card (After Accept) -->
+    <!-- Active Delivery Card with Google Maps Navigation -->
     <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-6 shadow-md space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-brand font-bold text-base text-slate-950">Active Delivery in Progress</h3>
-        <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Live Tracking</span>
+        <h3 class="font-brand font-bold text-base text-slate-950">Active Delivery Order</h3>
+        <span class="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-md">Live GPS Ready</span>
       </div>
 
       <div class="text-xs text-slate-700 space-y-1.5" id="activeDeliveryDetails"></div>
 
-      <!-- Turn-by-Turn Navigation to Customer Google Maps -->
-      <a id="gmapsNavBtn" href="#" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
+      <!-- Turn-by-Turn Route to Customer -->
+      <a id="gmapsNavBtn" href="#" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
         <span>🗺️</span> Navigate to Customer on Google Maps
       </a>
     </div>
 
   </main>
 
-  <!-- LIVE ORDER POP-UP ALERT (Triggered ONLY when Boutique Accepts) -->
+  <!-- RIDER POP-UP ALERT (Alerts ONLY when Boutique Accepts) -->
   <div id="riderAlertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-orange-500 shadow-2xl space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
@@ -78,20 +78,18 @@
 
       <div class="space-y-2 text-xs">
         <div class="p-3 bg-orange-50 rounded-xl">
-          <p class="font-bold text-slate-900" id="popStore">Store: Anu Ram Fashions</p>
-          <p class="text-slate-500" id="popItem">Dress: Designer Outfit</p>
+          <p class="font-bold text-slate-900" id="popStore">Pickup: Boutique Name</p>
+          <p class="text-slate-500" id="popItem">Outfit: Dress</p>
         </div>
         <div class="p-3 bg-slate-50 rounded-xl">
-          <p class="font-bold text-slate-900" id="popCustomer">Deliver to: Name (Phone)</p>
-          <p class="text-slate-500" id="popAddr">Address goes here</p>
+          <p class="font-bold text-slate-900" id="popCustomer">Deliver to: Customer</p>
+          <p class="text-slate-500" id="popAddr">Address</p>
         </div>
       </div>
 
-      <div class="pt-2 flex gap-2">
-        <button onclick="acceptOrderAsRider()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer">
-          ✓ Accept Order & Start GPS Navigation
-        </button>
-      </div>
+      <button onclick="acceptOrderAsRider()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-md">
+        ✓ Accept Order & Start GPS Route
+      </button>
     </div>
   </div>
 
@@ -115,7 +113,6 @@
         banner.classList.remove("hidden");
 
         dutyInterval = setInterval(listenForAcceptedOrders, 2000);
-        trackRiderLiveGPS();
       } else {
         text.innerText = "OFF DUTY";
         text.classList.remove("text-emerald-400");
@@ -134,7 +131,7 @@
       if (!raw) return;
 
       var order = JSON.parse(raw);
-      // Alert triggers ONLY if Boutique has accepted and rider hasn't accepted yet
+      // Alerts the rider ONLY when boutique has accepted
       if (order.boutiqueAccepted && !order.riderAssigned && order.orderId !== lastAlertId) {
         lastAlertId = order.orderId;
         showRiderPopup(order);
@@ -144,8 +141,8 @@
     function showRiderPopup(order) {
       var item = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
       document.getElementById("popOrderId").innerText = order.orderId;
-      document.getElementById("popStore").innerText = "Pickup: " + order.store;
-      document.getElementById("popItem").innerText = "Item: " + item.name;
+      document.getElementById("popStore").innerText = "Pickup Store: " + order.store;
+      document.getElementById("popItem").innerText = "Outfit: " + item.name;
       document.getElementById("popCustomer").innerText = "Customer: " + order.customerName + " (" + order.customerPhone + ")";
       document.getElementById("popAddr").innerText = order.customerAddress;
 
@@ -175,23 +172,10 @@
         "<p><strong>Customer:</strong> " + order.customerName + " (" + order.customerPhone + ")</p>" +
         "<p><strong>Address:</strong> " + order.customerAddress + "</p>";
 
-      // Direct Google Maps Link to Customer GPS Location
+      // Opens turn-by-turn navigation in Google Maps App using customer's GPS
       var lat = order.customerLat || "14.6819";
       var lng = order.customerLng || "77.6006";
       gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
-    }
-
-    // Continuously broadcast rider's GPS location to localStorage for customer tracking map
-    function trackRiderLiveGPS() {
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(function(pos) {
-          localStorage.setItem("fitin60_rider_gps", JSON.stringify({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-            updatedAt: new Date().toLocaleTimeString()
-          }));
-        });
-      }
     }
   </script>
 </body>
