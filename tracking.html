@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Live Order Tracking & Receipt</title>
+  <title>Fitin60 | Live Cloud Order Tracking</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -23,7 +27,7 @@
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-6 h-20 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2">
       <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-200">CONFIRMED DISPATCH</span>
+      <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-200">LIVE CLOUD RADAR</span>
     </div>
     <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-2xl transition">
       ← Continue Shopping
@@ -32,10 +36,9 @@
 
   <main class="max-w-2xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- Luxury Order Card -->
     <div class="bg-white rounded-[2.5rem] border border-slate-200/90 p-6 sm:p-9 shadow-xl space-y-6 relative overflow-hidden">
       
-      <!-- Top Order ID & Real-time 60-Min Radar Countdown -->
+      <!-- Top Order ID & Real-time Countdown -->
       <div class="flex justify-between items-start border-b border-slate-100 pb-5">
         <div>
           <div class="flex items-center gap-2">
@@ -56,13 +59,13 @@
           🛵
         </div>
         <div>
-          <p class="text-[10px] font-black uppercase text-orange-600 tracking-wider">Live Status</p>
-          <h4 id="trackPaymentStatus" class="font-bold text-xs sm:text-sm text-slate-950 mt-0.5 leading-snug">Rider On the Way to Customer</h4>
-          <p class="text-[11px] text-slate-500 mt-0.5">Sealed boutique pack assigned • Delivery within 60 minutes</p>
+          <p class="text-[10px] font-black uppercase text-orange-600 tracking-wider">Live Cloud Status</p>
+          <h4 id="trackPaymentStatus" class="font-bold text-xs sm:text-sm text-slate-950 mt-0.5 leading-snug">Connecting to Cloud...</h4>
+          <p class="text-[11px] text-slate-500 mt-0.5">Direct boutique & rider real-time synchronization</p>
         </div>
       </div>
 
-      <!-- 1. CLEAR OUTFIT & BILLING SUMMARY -->
+      <!-- Outfit & Billing Details -->
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="font-brand font-bold text-xs uppercase tracking-wider text-slate-400">Outfit & Payment Details</h3>
@@ -72,29 +75,28 @@
         <div class="p-5 bg-slate-50 border border-slate-200/90 rounded-3xl space-y-4">
           <div class="flex justify-between items-start gap-4">
             <div>
-              <h4 id="trackItemName" class="font-brand font-black text-base text-slate-950">Dharmavaram Pattu Saree</h4>
-              <p class="text-xs text-slate-500 mt-0.5 font-medium">Boutique: <span id="trackStore" class="font-bold text-slate-900">Aadhya Designer Studio</span></p>
+              <h4 id="trackItemName" class="font-brand font-black text-base text-slate-950">Designer Outfit</h4>
+              <p class="text-xs text-slate-500 mt-0.5 font-medium">Boutique: <span id="trackStore" class="font-bold text-slate-900">Boutique Name</span></p>
             </div>
             <span id="trackItemSize" class="text-xs font-mono-num font-bold bg-white border border-slate-200 text-slate-900 px-3 py-1 rounded-xl shadow-sm shrink-0">Size: M</span>
           </div>
 
           <div class="border-t border-slate-200/70 pt-3.5 flex justify-between items-baseline font-black">
             <div>
-              <span class="text-xs text-slate-500 uppercase block">Total Amount Paid / Payable</span>
+              <span class="text-xs text-slate-500 uppercase block">Total Amount</span>
               <span class="text-[10px] text-slate-400 font-medium">Direct Boutique Settlement</span>
             </div>
-            <span id="trackTotal" class="font-mono-num text-3xl text-slate-950">₹1999</span>
+            <span id="trackTotal" class="font-mono-num text-3xl text-slate-950">₹0</span>
           </div>
         </div>
       </div>
 
-      <!-- 2. OPTIONAL VIEW DELIVERY LOCATION BUTTON (CLEAN & HIDDEN BY DEFAULT) -->
+      <!-- Optional View Location & GPS -->
       <div class="space-y-3">
         <button type="button" onclick="toggleLocationView()" id="toggleLocBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm">
           <span>📍</span> <span id="toggleLocText">View Delivery Address & GPS Location</span>
         </button>
 
-        <!-- Hidden Container (Opens only when tapped) -->
         <div id="locationDropdown" class="hidden space-y-3 pt-2">
           <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-1">
             <p class="font-bold text-slate-900 flex items-center gap-1.5">
@@ -110,21 +112,7 @@
         </div>
       </div>
 
-      <!-- 3. TRUST & DISPATCH ASSURANCE CHIPS -->
-      <div class="grid grid-cols-2 gap-3 pt-2">
-        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-center">
-          <p class="text-base">🏷️</p>
-          <p class="text-[11px] font-bold text-slate-900 mt-1">Tamper-Proof Seal</p>
-          <p class="text-[10px] text-slate-400 mt-0.5">Original boutique tags intact</p>
-        </div>
-        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-center">
-          <p class="text-base">🔄</p>
-          <p class="text-[11px] font-bold text-slate-900 mt-1">Instant Size Exchange</p>
-          <p class="text-[10px] text-slate-400 mt-0.5">Hassle-free doorstep fit check</p>
-        </div>
-      </div>
-
-      <!-- 4. PROFESSIONAL ACTIONS (Chat with Store Support & Download Receipt) -->
+      <!-- Professional Actions -->
       <div class="pt-2 grid grid-cols-2 gap-3">
         <a id="helpStoreBtn" href="#" target="_blank" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-md">
           <span>💬</span> Help & Boutique Chat
@@ -140,18 +128,30 @@
   </main>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
+      authDomain: "fitin60.firebaseapp.com",
+      databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
+      projectId: "fitin60",
+      storageBucket: "fitin60.firebasestorage.app",
+      messagingSenderId: "349862141371",
+      appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
     var map = null;
-    var customerMarker, riderMarker;
     var mapInitialized = false;
     var cLat = 14.6819, cLng = 77.6006;
 
     function toggleLocationView() {
       var dropdown = document.getElementById("locationDropdown");
       var btnText = document.getElementById("toggleLocText");
-      
       dropdown.classList.toggle("hidden");
       var isVisible = !dropdown.classList.contains("hidden");
-
       btnText.innerText = isVisible ? "Hide Delivery Address & GPS" : "View Delivery Address & GPS Location";
 
       if (isVisible && !mapInitialized) {
@@ -168,37 +168,42 @@
         attribution: '© OpenStreetMap'
       }).addTo(map);
 
-      customerMarker = L.marker([lat, lng]).addTo(map).bindPopup("<b>Your Delivery Doorstep</b>").openPopup();
-      riderMarker = L.marker([lat + 0.005, lng + 0.005]).addTo(map).bindPopup("<b>🛵 Fitin60 Express Rider</b>");
+      L.marker([lat, lng]).addTo(map).bindPopup("<b>Your Delivery Doorstep</b>").openPopup();
+      L.marker([lat + 0.005, lng + 0.005]).addTo(map).bindPopup("<b>🛵 Fitin60 Express Rider</b>");
     }
 
     window.addEventListener('DOMContentLoaded', function() {
       var rawOrder = localStorage.getItem("chitikelo_active_order");
       if (rawOrder) {
-        var order = JSON.parse(rawOrder);
-        var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "M" };
+        var localOrder = JSON.parse(rawOrder);
+        var orderId = localOrder.orderId;
 
-        document.getElementById("trackOrderId").innerText = order.orderId || "FIT-6369";
-        document.getElementById("trackPaymentStatus").innerText = order.paymentStatus || "Rider On the Way to Customer 🛵";
+        document.getElementById("trackOrderId").innerText = orderId;
+        var firstItem = localOrder.items && localOrder.items[0] ? localOrder.items[0] : { name: "Designer Outfit" };
         document.getElementById("trackItemName").innerText = firstItem.name;
-        document.getElementById("trackStore").innerText = order.store || "Boutique Studio";
-        document.getElementById("trackItemSize").innerText = "Size: " + (firstItem.size || "M");
-        document.getElementById("trackTotal").innerText = "₹" + order.totalAmount;
+        document.getElementById("trackStore").innerText = localOrder.store;
+        document.getElementById("trackTotal").innerText = "₹" + localOrder.totalAmount;
+        document.getElementById("trackCustAddr").innerText = localOrder.customerAddress;
+        document.getElementById("trackCustContact").innerText = "Recipient: " + localOrder.customerName + " (" + localOrder.customerPhone + ")";
 
-        document.getElementById("trackCustAddr").innerText = order.customerAddress || "Anantapur City, Andhra Pradesh";
-        document.getElementById("trackCustContact").innerText = "Recipient: " + (order.customerName || "Customer") + " (" + (order.customerPhone || "") + ")";
+        cLat = parseFloat(localOrder.customerLat) || 14.6819;
+        cLng = parseFloat(localOrder.customerLng) || 77.6006;
 
-        cLat = parseFloat(order.customerLat) || 14.6819;
-        cLng = parseFloat(order.customerLng) || 77.6006;
-
-        // Directly link Help to boutique WhatsApp support for query
-        var helpMsg = "Hello Fitin60 Support, I have a query regarding my order " + order.orderId + " from " + order.store + " (" + firstItem.name + ").";
+        var helpMsg = "Hello Fitin60 Support, query regarding order " + orderId + " from " + localOrder.store;
         document.getElementById("helpStoreBtn").href = "https://wa.me/?text=" + encodeURIComponent(helpMsg);
+
+        // Listen to Real-Time Updates from Firebase Cloud
+        db.ref("orders/" + orderId).on("value", function(snapshot) {
+          var cloudOrder = snapshot.val();
+          if (cloudOrder && cloudOrder.paymentStatus) {
+            document.getElementById("trackPaymentStatus").innerText = cloudOrder.paymentStatus;
+          }
+        });
       }
     });
 
-    // 60-Minute Radar Countdown
-    var timeLeft = 56 * 60 + 11;
+    // 60-Min Countdown
+    var timeLeft = 59 * 60 + 59;
     setInterval(function() {
       if (timeLeft <= 0) return;
       timeLeft--;
