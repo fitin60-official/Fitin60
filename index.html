@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fitin60 | 60-Minute Luxury Hyperlocal Fashion Radar</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
@@ -30,7 +35,7 @@
   <!-- Top Announcement Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[11px] font-bold py-2 px-4 text-center tracking-wider flex items-center justify-center gap-2 border-b border-slate-800">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 EXPRESS</strong> • Direct Boutique Catalogs • 60-Min Doorstep Dispatch</span>
+    <span>⚡ <strong>FITIN60 EXPRESS</strong> • Live Cloud Database Connected • 60-Min Doorstep Dispatch</span>
   </div>
 
   <!-- Header -->
@@ -83,7 +88,7 @@
           </div>
         </div>
 
-        <!-- Business Hub (Partner & Fleet) -->
+        <!-- Business Hub -->
         <div class="relative">
           <button id="businessHubBtn" onclick="toggleBusinessMenu(event)" class="bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200 px-3.5 py-2.5 rounded-2xl transition flex items-center gap-1.5 cursor-pointer shadow-sm">
             <span class="text-sm">💼</span>
@@ -157,7 +162,7 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
     <div class="flex justify-between items-center mb-6">
       <h2 class="font-brand font-black text-2xl text-slate-950">Active Boutiques & Studios</h2>
-      <span id="boutiqueCountBadge" class="text-xs bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full border border-orange-200">Loading...</span>
+      <span id="boutiqueCountBadge" class="text-xs bg-orange-100 text-orange-700 font-bold px-3 py-1 rounded-full border border-orange-200">Syncing with Cloud...</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="boutiqueStoreGrid"></div>
   </main>
@@ -166,7 +171,6 @@
   <div id="unifiedStoreModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-0 md:p-4">
     <div class="bg-white w-full h-full md:max-w-7xl md:h-[96vh] md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
       
-      <!-- Full Screen Header Bar -->
       <div class="p-4 sm:px-8 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-orange-600/20 text-orange-400 border border-orange-500/30 flex items-center justify-center text-2xl font-bold">🏬</div>
@@ -181,14 +185,12 @@
         <button onclick="closeUnifiedStoreModal()" class="text-slate-400 hover:text-white text-3xl font-bold p-2 cursor-pointer transition">&times;</button>
       </div>
 
-      <!-- Scrollable Big Full-Screen Main Content -->
       <div class="overflow-y-auto flex-1 p-4 sm:p-8 space-y-10 bg-[#fafaf9]" id="modalScrollBody">
         
-        <!-- SECTION A: SELECTED DRESS (BIG FULL-SCREEN HERO SECTION) -->
+        <!-- SECTION A: SELECTED DRESS -->
         <div class="bg-white rounded-[2rem] border border-slate-200/90 p-6 sm:p-10 shadow-sm">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            <!-- Left: Big Full Image Viewport -->
             <div class="lg:col-span-7">
               <div class="relative h-[380px] sm:h-[480px] w-full rounded-3xl overflow-hidden bg-slate-950 flex items-center justify-center border border-slate-200 shadow-inner">
                 <img id="uHeroImage" src="" alt="Full Dress View" class="w-full h-full object-contain select-none">
@@ -196,7 +198,6 @@
               </div>
             </div>
 
-            <!-- Right: Details, Color, Size, Buy Now & Add to Bag -->
             <div class="lg:col-span-5 space-y-5">
               <div>
                 <span class="text-xs font-bold text-orange-600 uppercase tracking-widest block">Selected Outfit</span>
@@ -204,14 +205,12 @@
                 <p id="uHeroDesc" class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">Description goes here.</p>
               </div>
 
-              <!-- Price Display -->
               <div class="flex items-baseline gap-3 pt-1">
                 <span id="uHeroPrice" class="font-mono-num text-3xl sm:text-4xl font-black text-slate-950">₹0</span>
                 <span id="uHeroOriginal" class="font-mono-num text-base font-bold text-slate-400 line-through">₹0</span>
                 <span id="uHeroDiscount" class="text-xs bg-rose-600 text-white font-bold px-2.5 py-1 rounded-lg">40% OFF</span>
               </div>
 
-              <!-- Sizes -->
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-[11px] font-black uppercase tracking-wider text-slate-500">Select Size</span>
@@ -220,7 +219,6 @@
                 <div class="flex gap-2.5 flex-wrap" id="uHeroSizes"></div>
               </div>
 
-              <!-- Big Direct Action Buttons -->
               <div class="pt-4 grid grid-cols-2 gap-3.5">
                 <button id="uHeroAddBagBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-950 font-bold py-4 rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-2 cursor-pointer">
                   <span>🛍️</span> Add to Bag
@@ -238,13 +236,10 @@
           </div>
         </div>
 
-        <!-- SECTION B: ENTIRE BOUTIQUE SHOWROOM COLLECTION (LARGE VIEW) -->
+        <!-- SECTION B: ENTIRE BOUTIQUE SHOWROOM COLLECTION -->
         <div class="space-y-4">
           <div class="flex items-center justify-between">
-            <div>
-              <h3 class="font-brand font-black text-xl text-slate-950">Complete Boutique Collection</h3>
-              <p class="text-xs text-slate-500">Tap any dress to display and order it in full screen above</p>
-            </div>
+            <h3 class="font-brand font-black text-xl text-slate-950">Complete Boutique Collection</h3>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5" id="uCollectionGrid"></div>
         </div>
@@ -254,7 +249,7 @@
     </div>
   </div>
 
-  <!-- ================= ONE-TAP CUSTOMER LOGIN / PROFILE MODAL ================= -->
+  <!-- ONE-TAP CUSTOMER LOGIN MODAL -->
   <div id="customerLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-[2.5rem] max-w-sm w-full p-7 border border-slate-100 shadow-2xl text-center relative">
       <button onclick="closeLoginModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 text-2xl font-bold">&times;</button>
@@ -279,12 +274,10 @@
           ⚡ Verify & Continue
         </button>
       </form>
-
-      <p class="text-[10px] text-slate-400 mt-4">By continuing, you agree to Fitin60 terms & 60-minute express doorstep delivery.</p>
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer with Auto-Filled Customer Profile -->
+  <!-- Shopping Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -329,7 +322,7 @@
           <span class="text-xs uppercase text-slate-500">Total Amount</span>
           <span id="cartTotal" class="font-mono-num text-2xl">₹0</span>
         </div>
-        <button onclick="handleCheckout()" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition">
+        <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">
           ⚡ Place 60-Min Express Order
         </button>
       </div>
@@ -338,6 +331,22 @@
   </div>
 
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
+      authDomain: "fitin60.firebaseapp.com",
+      databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
+      projectId: "fitin60",
+      storageBucket: "fitin60.firebasestorage.app",
+      messagingSenderId: "349862141371",
+      appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
     var baseProducts = [
       {
         id: 1,
@@ -383,12 +392,11 @@
       }
     ];
 
+    var cloudProducts = [];
     var items = [];
     var selectedSizes = {};
     var activeStoreData = null;
     var activeDressObj = null;
-
-    // Customer Authentication Management
     var currentCustomer = null;
 
     function initCustomerAuth() {
@@ -405,7 +413,7 @@
         container.innerHTML = 
           '<div class="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3.5 py-2 rounded-2xl">' +
             '<span class="text-xs font-bold text-slate-900">👤 ' + currentCustomer.name.split(" ")[0] + '</span>' +
-            '<button onclick="customerLogout()" title="Logout" class="text-slate-400 hover:text-red-600 text-xs font-bold">✕</button>' +
+            '<button onclick="customerLogout()" title="Logout" class="text-slate-400 hover:text-red-600 text-xs font-bold cursor-pointer">✕</button>' +
           '</div>';
 
         document.getElementById("custName").value = currentCustomer.name;
@@ -447,19 +455,24 @@
       updateAuthHeaderUI();
     }
 
-    function getAllProducts() {
-      try {
-        var custom = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
-        return custom.concat(baseProducts);
-      } catch (e) {
-        return baseProducts;
-      }
+    // Sync Products from Firebase Realtime Database
+    function listenToCloudProducts() {
+      db.ref("boutique_products").on("value", function(snapshot) {
+        var data = snapshot.val();
+        cloudProducts = [];
+        if (data) {
+          Object.keys(data).forEach(function(k) {
+            cloudProducts.push(data[k]);
+          });
+        }
+        renderBoutiqueStores();
+      });
     }
 
     function getGroupedStores() {
-      var allProducts = getAllProducts();
+      var all = cloudProducts.concat(baseProducts);
       var storesMap = {};
-      allProducts.forEach(function(p) {
+      all.forEach(function(p) {
         var storeName = p.store || "Boutique Studio";
         if (!storesMap[storeName]) {
           storesMap[storeName] = {
@@ -479,7 +492,7 @@
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
       var stores = getGroupedStores();
-      badge.innerText = stores.length + " Boutiques Active";
+      badge.innerText = stores.length + " Boutiques Live";
 
       var html = "";
       stores.forEach(function(store, storeIdx) {
@@ -504,7 +517,7 @@
               '<p class="text-xs text-slate-500">📍 ' + store.area + '</p>' +
               '<div class="grid grid-cols-3 gap-2 mt-4">' + previewImages + '</div>' +
             '</div>' +
-            '<button onclick="openUnifiedShowroom(' + storeIdx + ', null)" class="w-full mt-5 bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition">' +
+            '<button onclick="openUnifiedShowroom(' + storeIdx + ', null)" class="w-full mt-5 bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">' +
               'View Boutique Collection ➔' +
             '</button>' +
           '</div>';
@@ -534,7 +547,7 @@
 
       document.getElementById("uHeroImage").src = activeDressObj.image;
       document.getElementById("uHeroTitle").innerText = activeDressObj.name;
-      document.getElementById("uHeroDesc").innerText = activeDressObj.desc;
+      document.getElementById("uHeroDesc").innerText = activeDressObj.desc || "Curated boutique piece.";
       document.getElementById("uHeroPrice").innerText = "₹" + activeDressObj.price;
       document.getElementById("uHeroOriginal").innerText = "₹" + (activeDressObj.originalPrice || Math.round(activeDressObj.price * 1.5));
       document.getElementById("uHeroDiscount").innerText = activeDressObj.discount || "SPECIAL OFFER";
@@ -547,7 +560,7 @@
       var sizeHtml = "";
       sizes.forEach(function(s) {
         var isSel = (s === activeSize);
-        sizeHtml += '<button onclick="selectHeroSize(\'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-50 text-orange-600 font-bold' : 'border-slate-200 text-slate-700 bg-slate-50') + ' px-4 py-2 text-xs rounded-xl font-bold">' + s + '</button> ';
+        sizeHtml += '<button onclick="selectHeroSize(\'' + s + '\')" class="border ' + (isSel ? 'border-orange-500 bg-orange-50 text-orange-600 font-bold' : 'border-slate-200 text-slate-700 bg-slate-50') + ' px-4 py-2 text-xs rounded-xl font-bold cursor-pointer">' + s + '</button> ';
       });
       sizeContainer.innerHTML = sizeHtml;
 
@@ -648,6 +661,7 @@
       }
     }
 
+    // PUSH ORDER LIVE TO FIREBASE REALTIME CLOUD DATABASE
     function handleCheckout() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -656,6 +670,10 @@
       var lng = document.getElementById("custLng").value || "77.6006";
 
       if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
+
+      var orderBtn = document.getElementById("checkoutSubmitBtn");
+      orderBtn.disabled = true;
+      orderBtn.innerText = "Dispatching to Cloud...";
 
       var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
       var total = items.reduce(function(acc, i) { return acc + i.price; }, 0);
@@ -672,11 +690,19 @@
         paymentStatus: "Waiting for Boutique Acceptance",
         store: items[0].store,
         boutiqueAccepted: false,
-        riderAssigned: false
+        riderAssigned: false,
+        timestamp: Date.now()
       };
 
-      localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
-      window.location.href = "tracking.html";
+      // Save to Firebase Realtime Database
+      db.ref("orders/" + orderId).set(orderData).then(function() {
+        localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
+        window.location.href = "tracking.html";
+      }).catch(function(err) {
+        alert("Cloud dispatch failed: " + err.message);
+        orderBtn.disabled = false;
+        orderBtn.innerText = "⚡ Place 60-Min Express Order";
+      });
     }
 
     function toggleCustomerMenu(e) {
@@ -706,7 +732,7 @@
             '<div class="space-y-2">' +
               '<div class="flex items-center justify-between">' +
                 '<span class="font-mono-num font-black text-slate-900">' + order.orderId + '</span>' +
-                '<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-[10px]">On the Way 🛵</span>' +
+                '<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded text-[10px]">Active Order</span>' +
               '</div>' +
               '<p class="text-slate-600 text-[11px] truncate">🛍️ ' + firstItem + '</p>' +
               '<a href="tracking.html" class="block text-center bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 rounded-xl text-[11px] transition mt-2">' +
@@ -736,6 +762,7 @@
 
     window.addEventListener('DOMContentLoaded', function() {
       initCustomerAuth();
+      listenToCloudProducts();
       renderBoutiqueStores();
       renderMenuOrderBox();
     });
