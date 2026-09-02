@@ -20,7 +20,6 @@
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
 
-  <!-- Header -->
   <header class="bg-white border-b border-slate-200 px-6 h-20 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2">
       <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
@@ -34,7 +33,7 @@
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- 1. MANDATORY AUTH CARD (Visible if not logged in) -->
+    <!-- 1. AUTH GATEKEEPER -->
     <div id="authSection" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
       <div class="text-center space-y-1">
         <h2 class="font-brand font-black text-2xl text-slate-950">Boutique Partner Portal</h2>
@@ -61,7 +60,7 @@
         </button>
       </form>
 
-      <!-- Registration Form (Auto-Logs in on submit) -->
+      <!-- Registration Form -->
       <form id="registerForm" onsubmit="handleMerchantRegister(event)" class="space-y-4 hidden">
         <div>
           <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Boutique / Store Name</label>
@@ -89,7 +88,7 @@
       </form>
     </div>
 
-    <!-- 2. PRIVATE DASHBOARD (Visible ONLY when logged in) -->
+    <!-- 2. PRIVATE SECURE DASHBOARD -->
     <div id="privateDashboard" class="hidden space-y-6">
 
       <div class="bg-slate-950 text-white p-6 rounded-[2rem] flex items-center justify-between shadow-xl">
@@ -103,7 +102,7 @@
         <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">AUTHENTICATED</span>
       </div>
 
-      <!-- Live Incoming Orders with Delete Option -->
+      <!-- Live Store Orders -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
           <h3 class="font-brand font-bold text-base text-slate-950">Live Store Orders</h3>
@@ -112,7 +111,7 @@
         <div id="incomingOrderBox" class="space-y-4"></div>
       </div>
 
-      <!-- Upload New Outfit directly to Firebase -->
+      <!-- Upload New Outfit -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <h3 class="font-brand font-bold text-base text-slate-950">+ Upload New Dress to Radar</h3>
         <form onsubmit="handleUploadProduct(event)" class="space-y-3.5">
@@ -152,6 +151,17 @@
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <h3 class="font-brand font-bold text-base text-slate-950">Manage Uploaded Outfits</h3>
         <div id="storeProductsList" class="space-y-3"></div>
+      </div>
+
+      <!-- PERMANENT STORE DELETION DANGER ZONE -->
+      <div class="bg-rose-50/70 border border-rose-200 rounded-3xl p-6 space-y-3">
+        <h4 class="font-brand font-bold text-sm text-rose-900">⚠️ Danger Zone: Delete Store</h4>
+        <p class="text-xs text-rose-700 leading-relaxed">
+          Permanently delete this boutique profile and all uploaded clothing from the Fitin60 radar. This action cannot be undone.
+        </p>
+        <button onclick="deleteEntireStorePermanently()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition shadow-sm cursor-pointer">
+          🗑️ Delete My Store & Account Permanently
+        </button>
       </div>
 
     </div>
@@ -197,7 +207,6 @@
       }
     }
 
-    // REGISTRATION WITH IMMEDIATE AUTO-LOGIN
     function handleMerchantRegister(e) {
       e.preventDefault();
       var storeName = document.getElementById("regStoreName").value.trim();
@@ -400,6 +409,38 @@
           alert("Dress removed!");
         });
       }
+    }
+
+    // PERMANENT STORE DELETION FUNCTION
+    function deleteEntireStorePermanently() {
+      if (!currentMerchant) return;
+
+      var enteredPin = prompt("⚠️ WARNING: This will permanently delete your store and all uploaded clothing from Fitin60!\n\nPlease enter your 4-digit PIN to confirm:");
+      if (!enteredPin) return;
+
+      if (enteredPin !== currentMerchant.pin) {
+        alert("Incorrect PIN! Store deletion cancelled.");
+        return;
+      }
+
+      // Step A: Delete all products belonging to this store
+      db.ref("boutique_products").orderByChild("store").equalTo(currentMerchant.storeName).once("value").then(function(snapshot) {
+        var updates = {};
+        if (snapshot.exists()) {
+          snapshot.forEach(function(child) {
+            updates["boutique_products/" + child.key] = null;
+          });
+        }
+        // Step B: Delete the partner record
+        updates["partners/" + currentMerchant.mobile] = null;
+
+        return db.ref().update(updates);
+      }).then(function() {
+        alert("✓ Your boutique and all related clothing have been permanently deleted.");
+        merchantLogout();
+      }).catch(function(err) {
+        alert("Deletion failed: " + err.message);
+      });
     }
 
     window.addEventListener('DOMContentLoaded', function() {
