@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Live Cloud Order Tracking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fitin60 | My Orders & Live Tracking</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Firebase SDKs -->
@@ -18,112 +18,61 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    #liveRadarMap { height: 240px; border-radius: 1.5rem; }
+    #liveRadarMap { height: 230px; border-radius: 1.25rem; }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-6 h-20 flex items-center justify-between shadow-sm">
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2">
       <span class="font-brand text-2xl font-black">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full border border-emerald-200">LIVE CLOUD RADAR</span>
+      <span class="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-md">MY ORDERS</span>
     </div>
-    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-2xl transition">
-      ← Continue Shopping
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-xl transition">
+      ← Home
     </a>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 mt-8 space-y-6">
+  <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
 
-    <div class="bg-white rounded-[2.5rem] border border-slate-200/90 p-6 sm:p-9 shadow-xl space-y-6 relative overflow-hidden">
-      
-      <!-- Top Order ID & Real-time Countdown -->
-      <div class="flex justify-between items-start border-b border-slate-100 pb-5">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Reference</span>
-          </div>
-          <h2 id="trackOrderId" class="font-mono-num font-black text-2xl sm:text-3xl text-slate-950 mt-0.5">FIT-XXXX</h2>
-        </div>
-        <div class="text-right">
-          <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Guaranteed Express Drop</span>
-          <p id="countdownTimer" class="font-mono-num font-black text-2xl sm:text-3xl text-orange-600 mt-0.5">59:59</p>
-        </div>
+    <!-- 1. NOT LOGGED IN STATE (Screen shown if user hasn't logged in) -->
+    <div id="loginPromptCard" class="hidden bg-white rounded-3xl border border-slate-200 p-8 text-center shadow-lg space-y-4">
+      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
+        🔒
+      </div>
+      <div>
+        <h2 class="font-brand font-black text-xl text-slate-950">Login to View Your Orders</h2>
+        <p class="text-xs text-slate-500 mt-1">Your orders are strictly private and secured with your mobile number.</p>
       </div>
 
-      <!-- Live Radar Progress Stepper -->
-      <div class="p-4 sm:p-5 bg-gradient-to-r from-orange-50/80 via-amber-50/40 to-orange-50/80 border border-orange-200/70 rounded-3xl flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-orange-600 text-white flex items-center justify-center text-xl font-bold shadow-md shadow-orange-600/20 shrink-0 animate-pulse">
-          🛵
+      <form onsubmit="handleQuickLogin(event)" class="max-w-xs mx-auto space-y-3 pt-2 text-left">
+        <div>
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Your Name</label>
+          <input type="text" id="trackLoginName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
         </div>
         <div>
-          <p class="text-[10px] font-black uppercase text-orange-600 tracking-wider">Live Cloud Status</p>
-          <h4 id="trackPaymentStatus" class="font-bold text-xs sm:text-sm text-slate-950 mt-0.5 leading-snug">Connecting to Cloud...</h4>
-          <p class="text-[11px] text-slate-500 mt-0.5">Direct boutique & rider real-time synchronization</p>
+          <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Registered Mobile (10 Digits)</label>
+          <input type="tel" id="trackLoginPhone" required pattern="[0-9]{10}" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
         </div>
-      </div>
-
-      <!-- Outfit & Billing Details -->
-      <div class="space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="font-brand font-bold text-xs uppercase tracking-wider text-slate-400">Outfit & Payment Details</h3>
-          <span class="text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-0.5 rounded-md">✓ Verified Store Stock</span>
-        </div>
-        
-        <div class="p-5 bg-slate-50 border border-slate-200/90 rounded-3xl space-y-4">
-          <div class="flex justify-between items-start gap-4">
-            <div>
-              <h4 id="trackItemName" class="font-brand font-black text-base text-slate-950">Designer Outfit</h4>
-              <p class="text-xs text-slate-500 mt-0.5 font-medium">Boutique: <span id="trackStore" class="font-bold text-slate-900">Boutique Name</span></p>
-            </div>
-            <span id="trackItemSize" class="text-xs font-mono-num font-bold bg-white border border-slate-200 text-slate-900 px-3 py-1 rounded-xl shadow-sm shrink-0">Size: M</span>
-          </div>
-
-          <div class="border-t border-slate-200/70 pt-3.5 flex justify-between items-baseline font-black">
-            <div>
-              <span class="text-xs text-slate-500 uppercase block">Total Amount</span>
-              <span class="text-[10px] text-slate-400 font-medium">Direct Boutique Settlement</span>
-            </div>
-            <span id="trackTotal" class="font-mono-num text-3xl text-slate-950">₹0</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Optional View Location & GPS -->
-      <div class="space-y-3">
-        <button type="button" onclick="toggleLocationView()" id="toggleLocBtn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition border border-slate-200 flex items-center justify-center gap-2 cursor-pointer shadow-sm">
-          <span>📍</span> <span id="toggleLocText">View Delivery Address & GPS Location</span>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+          View My Orders ➔
         </button>
-
-        <div id="locationDropdown" class="hidden space-y-3 pt-2">
-          <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-1">
-            <p class="font-bold text-slate-900 flex items-center gap-1.5">
-              <span>🏠</span> Doorstep Delivery Address:
-            </p>
-            <p id="trackCustAddr" class="text-slate-600 font-medium leading-relaxed">Loading address...</p>
-            <p id="trackCustContact" class="text-slate-500 text-[11px] pt-1 font-semibold">Recipient: Loading...</p>
-          </div>
-
-          <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-inner">
-            <div id="liveRadarMap" class="w-full"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Professional Actions -->
-      <div class="pt-2 grid grid-cols-2 gap-3">
-        <a id="helpStoreBtn" href="#" target="_blank" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-md">
-          <span>💬</span> Help & Boutique Chat
-        </a>
-
-        <button onclick="window.print()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition border border-slate-200 cursor-pointer">
-          <span>🧾</span> Download Receipt
-        </button>
-      </div>
-
+      </form>
     </div>
+
+    <!-- 2. NO ORDERS FOUND FOR THIS USER -->
+    <div id="emptyOrdersCard" class="hidden bg-white rounded-3xl border border-slate-200 p-8 text-center shadow-sm space-y-3">
+      <div class="text-3xl">🛍️</div>
+      <h3 class="font-brand font-black text-lg text-slate-950">No Active Orders Yet</h3>
+      <p class="text-xs text-slate-500 max-w-sm mx-auto">You haven't placed any 60-min express orders yet. Explore boutiques to drop fresh fashion right to your door!</p>
+      <a href="index.html" class="inline-block bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase tracking-wider transition mt-2">
+        Explore Boutiques
+      </a>
+    </div>
+
+    <!-- 3. PRIVATE ORDERS CONTAINER (Visible only to this logged-in customer) -->
+    <div id="privateOrdersContainer" class="space-y-6"></div>
 
   </main>
 
@@ -138,79 +87,104 @@
       appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
     };
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    var map = null;
-    var mapInitialized = false;
-    var cLat = 14.6819, cLng = 77.6006;
+    var currentCustomer = null;
 
-    function toggleLocationView() {
-      var dropdown = document.getElementById("locationDropdown");
-      var btnText = document.getElementById("toggleLocText");
-      dropdown.classList.toggle("hidden");
-      var isVisible = !dropdown.classList.contains("hidden");
-      btnText.innerText = isVisible ? "Hide Delivery Address & GPS" : "View Delivery Address & GPS Location";
-
-      if (isVisible && !mapInitialized) {
-        setTimeout(function() {
-          initMap(cLat, cLng);
-          mapInitialized = true;
-        }, 150);
+    function checkAuth() {
+      var saved = localStorage.getItem("fitin60_customer_user");
+      if (saved) {
+        currentCustomer = JSON.parse(saved);
+        loadCustomerOrders(currentCustomer.phone);
+      } else {
+        document.getElementById("loginPromptCard").classList.remove("hidden");
       }
     }
 
-    function initMap(lat, lng) {
-      map = L.map('liveRadarMap').setView([lat, lng], 14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-      }).addTo(map);
-
-      L.marker([lat, lng]).addTo(map).bindPopup("<b>Your Delivery Doorstep</b>").openPopup();
-      L.marker([lat + 0.005, lng + 0.005]).addTo(map).bindPopup("<b>🛵 Fitin60 Express Rider</b>");
+    function handleQuickLogin(e) {
+      e.preventDefault();
+      var name = document.getElementById("trackLoginName").value.trim();
+      var phone = document.getElementById("trackLoginPhone").value.trim();
+      currentCustomer = { name: name, phone: phone };
+      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+      document.getElementById("loginPromptCard").classList.add("hidden");
+      loadCustomerOrders(phone);
     }
 
-    window.addEventListener('DOMContentLoaded', function() {
-      var rawOrder = localStorage.getItem("chitikelo_active_order");
-      if (rawOrder) {
-        var localOrder = JSON.parse(rawOrder);
-        var orderId = localOrder.orderId;
+    function loadCustomerOrders(phone) {
+      db.ref("orders").on("value", function(snapshot) {
+        var orders = snapshot.val();
+        var container = document.getElementById("privateOrdersContainer");
+        var emptyCard = document.getElementById("emptyOrdersCard");
 
-        document.getElementById("trackOrderId").innerText = orderId;
-        var firstItem = localOrder.items && localOrder.items[0] ? localOrder.items[0] : { name: "Designer Outfit" };
-        document.getElementById("trackItemName").innerText = firstItem.name;
-        document.getElementById("trackStore").innerText = localOrder.store;
-        document.getElementById("trackTotal").innerText = "₹" + localOrder.totalAmount;
-        document.getElementById("trackCustAddr").innerText = localOrder.customerAddress;
-        document.getElementById("trackCustContact").innerText = "Recipient: " + localOrder.customerName + " (" + localOrder.customerPhone + ")";
+        if (!orders) {
+          emptyCard.classList.remove("hidden");
+          container.innerHTML = "";
+          return;
+        }
 
-        cLat = parseFloat(localOrder.customerLat) || 14.6819;
-        cLng = parseFloat(localOrder.customerLng) || 77.6006;
+        // Filter ONLY this customer's phone number
+        var myOrders = Object.values(orders).filter(function(o) {
+          return String(o.customerPhone).trim() === String(phone).trim();
+        }).reverse();
 
-        var helpMsg = "Hello Fitin60 Support, query regarding order " + orderId + " from " + localOrder.store;
-        document.getElementById("helpStoreBtn").href = "https://wa.me/?text=" + encodeURIComponent(helpMsg);
+        if (myOrders.length === 0) {
+          emptyCard.classList.remove("hidden");
+          container.innerHTML = "";
+          return;
+        }
 
-        // Listen to Real-Time Updates from Firebase Cloud
-        db.ref("orders/" + orderId).on("value", function(snapshot) {
-          var cloudOrder = snapshot.val();
-          if (cloudOrder && cloudOrder.paymentStatus) {
-            document.getElementById("trackPaymentStatus").innerText = cloudOrder.paymentStatus;
-          }
+        emptyCard.classList.add("hidden");
+        var html = "";
+
+        myOrders.forEach(function(order) {
+          var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "M" };
+
+          html += 
+            '<div class="bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-7 shadow-lg space-y-4">' +
+              '<div class="flex justify-between items-start border-b border-slate-100 pb-3">' +
+                '<div>' +
+                  '<span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Reference</span>' +
+                  '<h2 class="font-mono-num font-black text-xl text-slate-950">' + order.orderId + '</h2>' +
+                '</div>' +
+                '<span class="text-xs font-bold text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1 rounded-xl">' +
+                  (order.paymentStatus || "Accepted") +
+                '</span>' +
+              '</div>' +
+
+              '<div class="p-4 bg-slate-50 rounded-2xl space-y-2 text-xs">' +
+                '<div class="flex justify-between items-center">' +
+                  '<h4 class="font-bold text-sm text-slate-900">' + firstItem.name + '</h4>' +
+                  '<span class="font-mono-num font-bold bg-white border border-slate-200 px-2 py-0.5 rounded text-[11px]">Size: ' + (firstItem.size || "M") + '</span>' +
+                '</div>' +
+                '<p class="text-slate-500">Boutique: <strong class="text-slate-800">' + order.store + '</strong></p>' +
+                '<div class="flex justify-between items-baseline pt-2 border-t border-slate-200/60 font-black">' +
+                  '<span class="text-[11px] text-slate-500 uppercase">Total Amount:</span>' +
+                  '<span class="font-mono-num text-xl text-slate-950">₹' + order.totalAmount + '</span>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-600">' +
+                '<strong>📍 Delivery Address:</strong> ' + order.customerAddress +
+              '</div>' +
+
+              '<div class="grid grid-cols-2 gap-2 pt-1">' +
+                '<a href="https://wa.me/?text=' + encodeURIComponent("Hello Fitin60 Support, query regarding my order " + order.orderId) + '" target="_blank" class="bg-slate-950 text-white font-bold py-2.5 rounded-xl text-[11px] uppercase text-center block">' +
+                  '💬 Support Chat' +
+                '</a>' +
+                '<button onclick="window.print()" class="bg-slate-100 text-slate-800 border border-slate-200 font-bold py-2.5 rounded-xl text-[11px] uppercase cursor-pointer">' +
+                  '🧾 Receipt' +
+                '</button>' +
+              '</div>' +
+            '</div>';
         });
-      }
-    });
 
-    // 60-Min Countdown
-    var timeLeft = 59 * 60 + 59;
-    setInterval(function() {
-      if (timeLeft <= 0) return;
-      timeLeft--;
-      var m = Math.floor(timeLeft / 60);
-      var s = timeLeft % 60;
-      document.getElementById("countdownTimer").innerText = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
-    }, 1000);
+        container.innerHTML = html;
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', checkAuth);
   </script>
 </body>
 </html>
