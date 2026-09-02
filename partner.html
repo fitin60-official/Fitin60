@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitin60 | Boutique Merchant Studio & Private Portal</title>
+  <title>Fitin60 | Boutique Merchant Studio (Cloud Sync)</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
@@ -28,14 +33,13 @@
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- ================= 1. REGISTRATION & LOGIN FORM ================= -->
+    <!-- 1. REGISTRATION & LOGIN FORM -->
     <div id="authSection" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
       <div class="text-center space-y-1">
         <h2 class="font-brand font-black text-2xl text-slate-950">Boutique Partner Portal</h2>
-        <p class="text-xs text-slate-500">Private access to manage your clothing inventory & customer orders.</p>
+        <p class="text-xs text-slate-500">Private access to manage your clothing inventory & live customer orders.</p>
       </div>
 
-      <!-- Tab Switcher -->
       <div class="flex bg-slate-100 p-1 rounded-2xl">
         <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition">Partner Login</button>
         <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition">Register New Boutique</button>
@@ -84,10 +88,9 @@
       </form>
     </div>
 
-    <!-- ================= 2. PRIVATE DASHBOARD (VISIBLE ONLY TO LOGGED-IN PARTNER) ================= -->
+    <!-- 2. PRIVATE DASHBOARD -->
     <div id="privateDashboard" class="hidden space-y-6">
 
-      <!-- Store Profile Banner -->
       <div class="bg-slate-950 text-white p-6 rounded-[2rem] flex items-center justify-between shadow-xl">
         <div class="flex items-center gap-3.5">
           <span class="text-3xl">🏬</span>
@@ -96,21 +99,21 @@
             <p id="dashStoreMeta" class="text-xs text-slate-400">Area • UPI: store@upi</p>
           </div>
         </div>
-        <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">PRIVATE ACCESS</span>
+        <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">LIVE CLOUD</span>
       </div>
 
-      <!-- Incoming Orders Alert Card -->
+      <!-- Live Customer Orders from Cloud -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
-          <h3 class="font-brand font-bold text-base text-slate-950">Customer Orders Received</h3>
-          <span id="orderCountBadge" class="text-xs bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
+          <h3 class="font-brand font-bold text-base text-slate-950">Incoming Customer Orders</h3>
+          <span id="orderCountBadge" class="text-xs bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">Listening to Cloud...</span>
         </div>
-        <div id="incomingOrderBox">
+        <div id="incomingOrderBox" class="space-y-4">
           <p class="text-center text-slate-400 text-xs py-6">No new orders for your boutique right now.</p>
         </div>
       </div>
 
-      <!-- Add New Clothing Item to Store -->
+      <!-- Upload New Dress directly to Firebase -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <h3 class="font-brand font-bold text-base text-slate-950">Upload New Dress to Your Storefront</h3>
         <form onsubmit="handleUploadProduct(event)" class="space-y-4">
@@ -140,17 +143,10 @@
             <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Fabric & Description</label>
             <textarea id="prodDesc" rows="2" required placeholder="Pure soft cotton fabric with rich work..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-orange-500"></textarea>
           </div>
-          <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          <button type="submit" id="uploadSubmitBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
             + Publish to Fitin60 Live Radar
           </button>
         </form>
-      </div>
-
-      <!-- Manage Current Store Inventory (Private Delete Option) -->
-      <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
-        <h3 class="font-brand font-bold text-base text-slate-950">Your Active Boutique Catalog</h3>
-        <p class="text-xs text-slate-500">These items appear directly under your store name on the homepage.</p>
-        <div id="privateInventoryList" class="space-y-3"></div>
       </div>
 
     </div>
@@ -158,6 +154,21 @@
   </main>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
+      authDomain: "fitin60.firebaseapp.com",
+      databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
+      projectId: "fitin60",
+      storageBucket: "fitin60.firebasestorage.app",
+      messagingSenderId: "349862141371",
+      appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
     var currentMerchant = null;
 
     function switchAuthTab(tab) {
@@ -191,22 +202,13 @@
       var pin = document.getElementById("regPin").value.trim();
       var upi = document.getElementById("regUpi").value.trim();
 
-      var partners = JSON.parse(localStorage.getItem("fitin60_partners") || "[]");
-      var exists = partners.find(function(p) { return p.mobile === mobile; });
-      if (exists) return alert("A boutique is already registered with this mobile number. Please login!");
+      var newPartner = { storeName: storeName, area: area, mobile: mobile, pin: pin, upi: upi };
 
-      var newPartner = {
-        storeName: storeName,
-        area: area,
-        mobile: mobile,
-        pin: pin,
-        upi: upi
-      };
-
-      partners.push(newPartner);
-      localStorage.setItem("fitin60_partners", JSON.stringify(partners));
-      alert("Registration Successful! Logging in to your private studio...");
-      loginSuccess(newPartner);
+      // Save to Firebase Partner Store
+      db.ref("partners/" + mobile).set(newPartner).then(function() {
+        alert("Registration Successful! Logging in to your studio...");
+        loginSuccess(newPartner);
+      });
     }
 
     function handleMerchantLogin(e) {
@@ -214,14 +216,14 @@
       var mobile = document.getElementById("loginMobile").value.trim();
       var pin = document.getElementById("loginPin").value.trim();
 
-      var partners = JSON.parse(localStorage.getItem("fitin60_partners") || "[]");
-      var match = partners.find(function(p) { return p.mobile === mobile && p.pin === pin; });
-
-      if (match) {
-        loginSuccess(match);
-      } else {
-        alert("Invalid Mobile Number or Security PIN! Please register if you are new.");
-      }
+      db.ref("partners/" + mobile).once("value").then(function(snapshot) {
+        var partner = snapshot.val();
+        if (partner && partner.pin === pin) {
+          loginSuccess(partner);
+        } else {
+          alert("Invalid Mobile or PIN! Please register if you are new.");
+        }
+      });
     }
 
     function loginSuccess(partner) {
@@ -235,8 +237,7 @@
       document.getElementById("dashStoreName").innerText = partner.storeName;
       document.getElementById("dashStoreMeta").innerText = "📍 " + partner.area + " • Mobile: " + partner.mobile + " • UPI: " + partner.upi;
 
-      renderMerchantInventory();
-      checkMerchantOrders();
+      listenToStoreOrders();
     }
 
     function merchantLogout() {
@@ -247,7 +248,6 @@
       document.getElementById("logoutBtn").classList.add("hidden");
     }
 
-    // Add clothes strictly mapped to this logged-in store
     function handleUploadProduct(e) {
       e.preventDefault();
       if (!currentMerchant) return;
@@ -258,11 +258,10 @@
       var img = document.getElementById("prodImg").value.trim();
       var sizes = document.getElementById("prodSizes").value.split(",").map(function(s) { return s.trim(); });
       var desc = document.getElementById("prodDesc").value.trim();
-
-      var customProducts = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
+      var prodId = Date.now();
 
       var newProd = {
-        id: Date.now(),
+        id: prodId,
         name: name,
         store: currentMerchant.storeName,
         area: currentMerchant.area,
@@ -274,131 +273,78 @@
         desc: desc,
         upi: currentMerchant.upi,
         eta: "35 MINS",
-        rating: "5.0",
-        merchantMobile: currentMerchant.mobile
+        rating: "5.0"
       };
 
-      customProducts.unshift(newProd);
-      localStorage.setItem("fitin60_custom_products", JSON.stringify(customProducts));
+      var btn = document.getElementById("uploadSubmitBtn");
+      btn.disabled = true;
+      btn.innerText = "Syncing to Cloud...";
 
-      alert("✓ Outfit successfully uploaded to your boutique catalog!");
-      e.target.reset();
-      renderMerchantInventory();
-    }
-
-    // Only this partner can delete their clothes
-    function deleteProduct(prodId) {
-      if (!confirm("Are you sure you want to remove this item from your boutique?")) return;
-      var customProducts = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
-      customProducts = customProducts.filter(function(p) { return p.id !== prodId; });
-      localStorage.setItem("fitin60_custom_products", JSON.stringify(customProducts));
-      renderMerchantInventory();
-    }
-
-    function renderMerchantInventory() {
-      if (!currentMerchant) return;
-      var list = document.getElementById("privateInventoryList");
-      var customProducts = JSON.parse(localStorage.getItem("fitin60_custom_products") || "[]");
-
-      // Filter only this merchant's items
-      var myProds = customProducts.filter(function(p) { return p.store === currentMerchant.storeName; });
-
-      if (myProds.length === 0) {
-        list.innerHTML = "<p class='text-xs text-slate-400 py-4 text-center'>No items uploaded yet. Add your first dress above!</p>";
-        return;
-      }
-
-      var html = "";
-      myProds.forEach(function(p) {
-        html += 
-          '<div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-2xl">' +
-            '<div class="flex items-center gap-3">' +
-              '<img src="' + p.image + '" alt="" class="w-14 h-14 object-cover rounded-xl border border-slate-200">' +
-              '<div>' +
-                '<h4 class="font-bold text-xs text-slate-950">' + p.name + '</h4>' +
-                '<p class="text-[11px] text-slate-500 font-mono font-bold mt-0.5">₹' + p.price + ' <span class="line-through text-slate-400 text-[10px]">₹' + p.originalPrice + '</span></p>' +
-              '</div>' +
-            '</div>' +
-            '<button onclick="deleteProduct(' + p.id + ')" class="text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 px-3 py-1.5 rounded-xl transition cursor-pointer">' +
-              'Delete' +
-            '</button>' +
-          '</div>';
+      db.ref("boutique_products/" + prodId).set(newProd).then(function() {
+        alert("✓ Published live to Fitin60 Cloud!");
+        btn.disabled = false;
+        btn.innerText = "+ Publish to Fitin60 Live Radar";
+        e.target.reset();
       });
-      list.innerHTML = html;
     }
 
-    // Step 3: Orders management for this boutique
-    function checkMerchantOrders() {
+    // Real-Time Cloud Orders Listener for this Store
+    function listenToStoreOrders() {
       if (!currentMerchant) return;
-      var rawOrder = localStorage.getItem("chitikelo_active_order");
-      var box = document.getElementById("incomingOrderBox");
-      var badge = document.getElementById("orderCountBadge");
+      
+      db.ref("orders").orderByChild("store").equalTo(currentMerchant.storeName).on("value", function(snapshot) {
+        var box = document.getElementById("incomingOrderBox");
+        var badge = document.getElementById("orderCountBadge");
+        var orders = snapshot.val();
 
-      if (!rawOrder) {
-        badge.innerText = "0 Orders";
-        box.innerHTML = "<p class='text-center text-slate-400 text-xs py-6'>No pending orders right now.</p>";
-        return;
-      }
+        if (!orders) {
+          badge.innerText = "0 Orders";
+          box.innerHTML = "<p class='text-center text-slate-400 text-xs py-6'>No pending orders for your boutique right now.</p>";
+          return;
+        }
 
-      var order = JSON.parse(rawOrder);
-      if (order.store !== currentMerchant.storeName) {
-        badge.innerText = "0 Orders";
-        box.innerHTML = "<p class='text-center text-slate-400 text-xs py-6'>No pending orders for your boutique right now.</p>";
-        return;
-      }
+        var list = Object.values(orders).reverse();
+        badge.innerText = list.length + " Orders";
 
-      var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
-      badge.innerText = order.boutiqueAccepted ? "Dispatched" : "1 New Order!";
+        var html = "";
+        list.forEach(function(order) {
+          var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
+          html += 
+            '<div class="p-5 bg-orange-50/60 border border-orange-200 rounded-2xl space-y-3">' +
+              '<div class="flex justify-between items-center">' +
+                '<span class="font-mono font-black text-slate-950 text-sm">' + order.orderId + '</span>' +
+                '<span class="text-xs font-bold ' + (order.boutiqueAccepted ? 'text-emerald-700 bg-emerald-100' : 'text-orange-700 bg-orange-100') + ' px-2.5 py-0.5 rounded-lg">' +
+                  (order.boutiqueAccepted ? "✓ Dispatched to Fleet" : "⏳ Pending Acceptance") +
+                '</span>' +
+              '</div>' +
+              '<div class="text-xs text-slate-700 space-y-1">' +
+                '<p><strong>Outfit:</strong> ' + firstItem.name + '</p>' +
+                '<p><strong>Customer:</strong> ' + order.customerName + ' (' + order.customerPhone + ')</p>' +
+                '<p><strong>Address:</strong> ' + order.customerAddress + '</p>' +
+                '<p><strong>Amount:</strong> ₹' + order.totalAmount + '</p>' +
+              '</div>' +
+              '<div>' +
+                (!order.boutiqueAccepted ? 
+                  '<button onclick="acceptCloudOrder(\'' + order.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">' +
+                    '✓ Accept & Send Alert to Rider' +
+                  '</button>' : 
+                  '<p class="text-xs font-bold text-emerald-700 text-center py-1">✓ Packaged & Dispatched</p>'
+                ) +
+              '</div>' +
+            '</div>';
+        });
 
-      var waBoutiqueNotify = "⚡ FITIN60 ORDER ACCEPTED BY BOUTIQUE ⚡\n\n" +
-                             "Order: " + order.orderId + "\n" +
-                             "Store: " + order.store + "\n" +
-                             "Outfit: " + firstItem.name + "\n" +
-                             "Amount: ₹" + order.totalAmount + "\n" +
-                             "Customer: " + order.customerName + " (" + order.customerPhone + ")\n" +
-                             "Delivery Address: " + order.customerAddress + "\n\n" +
-                             "Status: Packed & Handover Alert Dispatched to Fleet!";
-
-      var waUrl = "https://wa.me/?text=" + encodeURIComponent(waBoutiqueNotify);
-
-      box.innerHTML = 
-        '<div class="p-5 bg-orange-50/60 border border-orange-200 rounded-2xl space-y-3">' +
-          '<div class="flex justify-between items-center">' +
-            '<span class="font-mono font-black text-slate-950 text-sm">' + order.orderId + '</span>' +
-            '<span class="text-xs font-bold ' + (order.boutiqueAccepted ? 'text-emerald-700 bg-emerald-100' : 'text-orange-700 bg-orange-100') + ' px-2.5 py-0.5 rounded-lg">' +
-              (order.boutiqueAccepted ? "✓ Dispatched to Rider" : "⏳ Order Pending Your Acceptance") +
-            '</span>' +
-          '</div>' +
-
-          '<div class="text-xs text-slate-700 space-y-1">' +
-            '<p><strong>Outfit:</strong> ' + firstItem.name + '</p>' +
-            '<p><strong>Customer:</strong> ' + order.customerName + ' (' + order.customerPhone + ')</p>' +
-            '<p><strong>Delivery Address:</strong> ' + order.customerAddress + '</p>' +
-            '<p><strong>Order Value:</strong> ₹' + order.totalAmount + '</p>' +
-          '</div>' +
-
-          '<div class="pt-2">' +
-            (!order.boutiqueAccepted ? 
-              '<button onclick="acceptOrderByBoutique()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">' +
-                '✓ Accept & Dispatch Alert to Rider' +
-              '</button>' : 
-              '<a href="' + waUrl + '" target="_blank" class="w-full bg-[#25D366] text-white font-bold py-3.5 rounded-xl text-xs uppercase text-center block shadow-md">' +
-                '📲 Send WhatsApp Confirmation' +
-              '</a>'
-            ) +
-          '</div>' +
-        '</div>';
+        box.innerHTML = html;
+      });
     }
 
-    function acceptOrderByBoutique() {
-      var rawOrder = localStorage.getItem("chitikelo_active_order");
-      if (!rawOrder) return;
-      var order = JSON.parse(rawOrder);
-      order.boutiqueAccepted = true;
-      order.paymentStatus = "Accepted by Boutique • Alert Sent to Rider 🛵";
-      localStorage.setItem("chitikelo_active_order", JSON.stringify(order));
-      checkMerchantOrders();
-      alert("✓ Order accepted! Active delivery riders will now receive the pop-up alert.");
+    function acceptCloudOrder(orderId) {
+      db.ref("orders/" + orderId).update({
+        boutiqueAccepted: true,
+        paymentStatus: "Accepted by Boutique • Alert Sent to Rider 🛵"
+      }).then(function() {
+        alert("✓ Order accepted! Dispatched to online riders in real-time.");
+      });
     }
 
     window.addEventListener('DOMContentLoaded', function() {
@@ -406,7 +352,6 @@
       if (saved) {
         loginSuccess(JSON.parse(saved));
       }
-      setInterval(checkMerchantOrders, 2000);
     });
   </script>
 </body>
