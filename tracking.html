@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
-  <!-- Leaflet Maps for Real-Time GPS Tracking -->
+  <!-- Leaflet Maps -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -20,7 +20,7 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    .leaflet-container { height: 210px; border-radius: 1.25rem; z-index: 10; width: 100%; }
+    .leaflet-container { height: 230px; border-radius: 1.25rem; z-index: 10; width: 100%; }
     .pulse-ring {
       box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       animation: pulseGreen 1.6s infinite cubic-bezier(0.66, 0, 1);
@@ -62,7 +62,7 @@
       </a>
     </div>
 
-    <!-- Active & History Live Tracking Container -->
+    <!-- Active Orders Container -->
     <div id="privateOrdersContainer" class="space-y-6"></div>
 
   </main>
@@ -83,6 +83,7 @@
 
     var currentCustomer = null;
     var activeMaps = {};
+    var riderMarkers = {};
 
     function checkAuth() {
       var saved = localStorage.getItem("fitin60_customer_user");
@@ -120,12 +121,14 @@
         var html = "";
 
         myOrders.forEach(function(order) {
-          var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "M" };
+          var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Designer Outfit", size: "Free size" };
           var isCancelled = (order.paymentStatus === "Cancelled by Customer" || order.status === "Cancelled");
           var isDelivered = (order.status === "Delivered");
           var isRiderAssigned = (order.riderAssigned === true);
 
-          // Step 1: Placed, Step 2: Boutique Accepted, Step 3: Rider Dispatched, Step 4: Delivered
+          // Auto-assign OTP if missing from earlier prototype orders
+          var otpCode = order.deliveryOtp || "4545";
+
           var step = 1;
           if (order.boutiqueAccepted) step = 2;
           if (isRiderAssigned) step = 3;
@@ -169,7 +172,19 @@
                   '</div>' +
                 '</div>' : '') +
 
-              // RIDER LIVE GPS RADAR MAP (Shows when rider accepts the order)
+              // DELIVERY OTP BOX (Shown when Rider is on the way)
+              (isRiderAssigned && !isDelivered && !isCancelled ? 
+                '<div class="p-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl flex items-center justify-between shadow-lg border border-orange-400">' +
+                  '<div>' +
+                    '<p class="text-[10px] font-black uppercase tracking-wider text-orange-100">Share with Rider at Doorstep</p>' +
+                    '<p class="text-xs font-bold">Delivery Verification OTP</p>' +
+                  '</div>' +
+                  '<span class="font-mono-num font-black text-2xl bg-white text-slate-950 px-4 py-1.5 rounded-xl shadow tracking-widest">' +
+                    otpCode +
+                  '</span>' +
+                '</div>' : '') +
+
+              // RIDER GPS RADAR
               (isRiderAssigned && !isDelivered && !isCancelled ?
                 '<div class="space-y-2.5 pt-1">' +
                   '<div class="flex items-center justify-between">' +
@@ -177,17 +192,17 @@
                       '<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-ring"></span>' +
                       '<span class="text-xs font-bold text-slate-800">Rider Live Radar Location</span>' +
                     '</div>' +
-                    '<span class="text-[10px] font-mono-num font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">ETA: ~18 MINS</span>' +
+                    '<span class="text-[10px] font-mono-num font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">ETA: ~15 MINS</span>' +
                   '</div>' +
 
                   '<div id="map_' + order.orderId + '" class="leaflet-container border border-slate-200 shadow-inner"></div>' +
 
-                  // Delivery Boy Card with Direct Call Button
+                  // Delivery Contact Card
                   '<div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">' +
                     '<div class="flex items-center gap-2.5">' +
                       '<div class="w-9 h-9 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold text-sm">🛵</div>' +
                       '<div>' +
-                        '<h4 class="font-bold text-xs text-slate-900">' + (order.riderName || "Delivery Partner") + '</h4>' +
+                        '<h4 class="font-bold text-xs text-slate-950">' + (order.riderName || "krishna") + '</h4>' +
                         '<p class="text-[10px] text-slate-500">Fitin60 Fleet Rider</p>' +
                       '</div>' +
                     '</div>' +
@@ -197,11 +212,11 @@
                   '</div>' +
                 '</div>' : '') +
 
-              // Outfit & Pricing Details
+              // Details
               '<div class="p-3.5 bg-slate-50 rounded-2xl text-xs space-y-1.5">' +
                 '<div class="flex justify-between items-center">' +
                   '<p class="font-bold text-slate-900">' + firstItem.name + '</p>' +
-                  '<span class="font-mono-num font-bold bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px]">Size: ' + (firstItem.size || "Free Size") + '</span>' +
+                  '<span class="font-mono-num font-bold bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px]">Size: ' + (firstItem.size || "Free size") + '</span>' +
                 '</div>' +
                 '<p class="text-slate-500">Boutique: <strong class="text-slate-800">' + order.store + '</strong></p>' +
                 '<p class="text-slate-500">📍 Destination: ' + order.customerAddress + '</p>' +
@@ -211,7 +226,7 @@
                 '</div>' +
               '</div>' +
 
-              // Action Buttons: Cancel Order & Delete Record
+              // Action Buttons
               '<div class="flex items-center gap-2 pt-1">' +
                 (!isCancelled && !isDelivered ? 
                   '<button onclick="cancelCustomerOrder(\'' + order.orderId + '\')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">🚫 Cancel Order</button>' : 
@@ -225,7 +240,6 @@
 
         container.innerHTML = html;
 
-        // Initialize GPS Maps for Assigned Riders
         myOrders.forEach(function(order) {
           if (order.riderAssigned && order.status !== "Delivered" && order.paymentStatus !== "Cancelled by Customer") {
             setTimeout(function() {
@@ -237,7 +251,6 @@
       });
     }
 
-    // Leaflet GPS Map Setup (Shows Customer pin and Moving Rider pin)
     function initOrderLeafletMap(order) {
       var mapId = "map_" + order.orderId;
       var el = document.getElementById(mapId);
@@ -245,29 +258,29 @@
 
       var custLat = parseFloat(order.customerLat) || 14.6819;
       var custLng = parseFloat(order.customerLng) || 77.6006;
-      // Rider simulated offset near customer
-      var riderLat = custLat + 0.007;
-      var riderLng = custLng + 0.007;
+      var riderLat = parseFloat(order.riderCurrentLat) || (custLat + 0.007);
+      var riderLng = parseFloat(order.riderCurrentLng) || (custLng + 0.007);
 
-      if (activeMaps[order.orderId]) {
-        activeMaps[order.orderId].remove();
+      if (!activeMaps[order.orderId]) {
+        var map = L.map(mapId, { attributionControl: false, zoomControl: false }).setView([custLat, custLng], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        L.marker([custLat, custLng]).addTo(map).bindPopup("📍 Your Delivery Address");
+
+        var riderIcon = L.divIcon({
+          html: '<div class="text-2xl bg-white rounded-full shadow-lg p-1 border border-slate-200">🛵</div>',
+          className: 'custom-rider-icon',
+          iconSize: [32, 32]
+        });
+        var rMarker = L.marker([riderLat, riderLng], { icon: riderIcon }).addTo(map).bindPopup("Rider: " + (order.riderName || "krishna"));
+
+        activeMaps[order.orderId] = map;
+        riderMarkers[order.orderId] = rMarker;
+      } else {
+        if (riderMarkers[order.orderId]) {
+          riderMarkers[order.orderId].setLatLng([riderLat, riderLng]);
+        }
       }
-
-      var map = L.map(mapId, { attributionControl: false, zoomControl: false }).setView([custLat, custLng], 14);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-      // Customer Location Marker
-      L.marker([custLat, custLng]).addTo(map).bindPopup("📍 Your Delivery Address").openPopup();
-
-      // Rider Marker with custom icon
-      var riderIcon = L.divIcon({
-        html: '<div class="text-2xl bg-white rounded-full shadow-lg p-1">🛵</div>',
-        className: 'custom-rider-icon',
-        iconSize: [30, 30]
-      });
-      L.marker([riderLat, riderLng], { icon: riderIcon }).addTo(map).bindPopup("Rider: " + (order.riderName || "Sai"));
-
-      activeMaps[order.orderId] = map;
     }
 
     function cancelCustomerOrder(orderId) {
