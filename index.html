@@ -221,7 +221,7 @@
     <img id="zoomedImageTag" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl select-none">
   </div>
 
-  <!-- CUSTOMER MOBILE + 4-DIGIT PIN AUTH MODAL (WITH FORGOT PIN OPTION) -->
+  <!-- CUSTOMER AUTH MODAL -->
   <div id="customerLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 text-2xl font-bold cursor-pointer">&times;</button>
@@ -229,7 +229,6 @@
       <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1" id="custModalSubtitle">Login with your Mobile & 4-Digit PIN</p>
 
-      <!-- Tabs for Login / Register -->
       <div id="authNavTabs" class="flex bg-slate-100 p-1 rounded-2xl mt-4">
         <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition">Login</button>
         <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition">Register</button>
@@ -282,7 +281,7 @@
           <input type="tel" id="resetMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:border-orange-500">
         </div>
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Your Full Name (As Registered)</label>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Your Full Name</label>
           <input type="text" id="resetName" required placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-orange-500">
         </div>
         <div>
@@ -300,36 +299,67 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer -->
+  <!-- Shopping Bag Drawer with Doorstep Payment Options -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
       <div class="p-4 bg-slate-950 text-white flex items-center justify-between">
         <h3 class="font-brand font-bold text-sm">Express Bag</h3>
-        <button onclick="toggleCart()" class="text-slate-400 text-2xl">&times;</button>
+        <button onclick="toggleCart()" class="text-slate-400 text-2xl cursor-pointer">&times;</button>
       </div>
 
-      <div class="flex-1 p-4 overflow-y-auto space-y-3">
+      <div class="flex-1 p-4 overflow-y-auto space-y-3.5">
         <div id="cartItems" class="space-y-2"></div>
-        <div id="addressSection" class="hidden pt-3 border-t border-slate-200 space-y-2.5">
+        
+        <!-- Address & Payment Selection -->
+        <div id="addressSection" class="hidden pt-3 border-t border-slate-200 space-y-3">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Delivery Details</h4>
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
-          <textarea id="custAddress" rows="2" required placeholder="Full Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
+          <textarea id="custAddress" rows="2" required placeholder="Full Delivery Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
           
           <button type="button" onclick="captureLiveGPS()" id="gpsBtn" class="w-full bg-emerald-50 border border-emerald-300 py-2 rounded-xl text-xs font-bold text-emerald-800">
             📍 <span id="gpsBtnText">Use My Live GPS</span>
           </button>
           <input type="hidden" id="custLat" value="">
           <input type="hidden" id="custLng" value="">
+
+          <!-- PAYMENT METHODS -->
+          <div class="pt-2 border-t border-slate-100 space-y-2">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Select Payment Method</h4>
+            
+            <label class="flex items-center justify-between p-3 rounded-xl border border-orange-500 bg-orange-50/60 cursor-pointer transition">
+              <div class="flex items-center gap-2.5">
+                <input type="radio" name="payOption" value="UPI at Doorstep" checked class="text-orange-600 focus:ring-orange-500">
+                <div>
+                  <p class="text-xs font-bold text-slate-900">⚡ Pay via UPI at Doorstep</p>
+                  <p class="text-[10px] text-slate-500">Scan QR via PhonePe / GPay / Paytm when Rider arrives</p>
+                </div>
+              </div>
+              <span class="text-lg">📱</span>
+            </label>
+
+            <label class="flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50 cursor-pointer transition">
+              <div class="flex items-center gap-2.5">
+                <input type="radio" name="payOption" value="Cash on Delivery (COD)" class="text-orange-600 focus:ring-orange-500">
+                <div>
+                  <p class="text-xs font-bold text-slate-900">💵 Cash on Delivery (COD)</p>
+                  <p class="text-[10px] text-slate-500">Pay hard cash directly to the rider</p>
+                </div>
+              </div>
+              <span class="text-lg">🤝</span>
+            </label>
+          </div>
+
         </div>
       </div>
 
       <div class="p-4 bg-slate-50 border-t border-slate-200 space-y-2">
         <div class="flex justify-between items-baseline font-black">
-          <span class="text-xs text-slate-500 uppercase">Total</span>
+          <span class="text-xs text-slate-500 uppercase">Total Amount</span>
           <span id="cartTotal" class="font-mono-num text-xl">₹0</span>
         </div>
-        <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-orange-600 text-white font-black py-3.5 rounded-xl text-xs uppercase cursor-pointer">
+        <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase cursor-pointer shadow-md transition">
           ⚡ Place Express Order
         </button>
       </div>
@@ -474,7 +504,6 @@
       if (mob) document.getElementById("resetMobile").value = mob;
     }
 
-    // Handle Reset PIN Verification & Save
     function handleResetPinSubmit(e) {
       e.preventDefault();
       var mobile = document.getElementById("resetMobile").value.trim();
@@ -491,21 +520,16 @@
       db.ref("customers/" + mobile).once("value").then(function(snapshot) {
         var user = snapshot.val();
         if (user && user.name.trim().toLowerCase() === name) {
-          // Name and Mobile match, update the PIN
           db.ref("customers/" + mobile).update({ pin: newPin }).then(function() {
             alert("✓ PIN Updated Successfully! Auto-logging in...");
             user.pin = newPin;
             customerLoginSuccess(user);
           });
         } else {
-          alert("Verification Failed: Mobile Number or Name does not match our records. Please verify or create a new account.");
+          alert("Verification Failed: Mobile Number or Name does not match our records.");
           btn.disabled = false;
           btn.innerText = "Update PIN & Login ➔";
         }
-      }).catch(function(err) {
-        alert("Error: " + err.message);
-        btn.disabled = false;
-        btn.innerText = "Update PIN & Login ➔";
       });
     }
 
@@ -527,10 +551,6 @@
       db.ref("customers/" + mobile).set(newCust).then(function() {
         alert("✓ Account Created Successfully!");
         customerLoginSuccess(newCust);
-      }).catch(function(err) {
-        alert("Error: " + err.message);
-        btn.disabled = false;
-        btn.innerText = "Create Account & Log In ➔";
       });
     }
 
@@ -780,7 +800,7 @@
               '<span>' + i.name + ' (' + i.size + ')</span>' +
               '<span class="block text-slate-500 text-[10px]">₹' + i.price + '</span>' +
             '</div>' +
-            '<button onclick="removeCartItem(' + idx + ')" class="text-rose-600 font-bold p-1 hover:bg-rose-50 rounded">🗑️</button>' +
+            '<button onclick="removeCartItem(' + idx + ')" class="text-rose-600 font-bold p-1 hover:bg-rose-50 rounded cursor-pointer">🗑️</button>' +
           '</div>';
       });
       list.innerHTML = html;
@@ -805,12 +825,17 @@
       }
     }
 
+    // CHECKOUT WITH SELECTED PAYMENT OPTION
     function handleCheckout() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
       var addr = document.getElementById("custAddress").value.trim();
       var lat = document.getElementById("custLat").value || "14.6819";
       var lng = document.getElementById("custLng").value || "77.6006";
+
+      // Selected Payment Option
+      var payOptionElem = document.querySelector('input[name="payOption"]:checked');
+      var selectedPayment = payOptionElem ? payOptionElem.value : "UPI at Doorstep";
 
       if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
 
@@ -820,6 +845,7 @@
 
       var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
       var total = items.reduce(function(acc, i) { return acc + i.price; }, 0);
+      var deliveryOtp = String(Math.floor(1000 + Math.random() * 9000));
 
       var orderData = {
         orderId: orderId,
@@ -830,7 +856,9 @@
         customerLng: lng,
         items: items,
         totalAmount: total,
+        paymentMethod: selectedPayment,
         paymentStatus: "Waiting for Boutique Acceptance",
+        deliveryOtp: deliveryOtp,
         store: items[0].store,
         boutiqueAccepted: false,
         riderAssigned: false,
