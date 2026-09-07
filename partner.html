@@ -11,10 +11,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased">
@@ -32,7 +35,7 @@
 
   <main class="max-w-3xl mx-auto px-4 mt-8 space-y-6">
 
-    <!-- 1. AUTH GATEKEEPER WITH FORGOT PIN -->
+    <!-- 1. AUTH GATEKEEPER -->
     <div id="authSection" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
       <div class="text-center space-y-1">
         <h2 id="authTitle" class="font-brand font-black text-2xl text-slate-950">Boutique Partner Portal</h2>
@@ -81,7 +84,7 @@
           <input type="password" id="regPin" required maxlength="4" placeholder="**" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 tracking-widest font-mono text-center">
         </div>
         <div>
-          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Store UPI ID</label>
+          <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Store UPI ID (For Direct Payouts)</label>
           <input type="text" id="regUpi" required placeholder="e.g., storename@upi" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-orange-500 font-mono">
         </div>
         <button type="submit" id="regSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
@@ -118,6 +121,7 @@
     <!-- 2. PRIVATE SECURE DASHBOARD -->
     <div id="privateDashboard" class="hidden space-y-6">
 
+      <!-- Store Profile Banner -->
       <div class="bg-slate-950 text-white p-6 rounded-[2rem] flex items-center justify-between shadow-xl">
         <div class="flex items-center gap-3.5">
           <span class="text-3xl">🏬</span>
@@ -129,6 +133,32 @@
         <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full font-bold">AUTHENTICATED</span>
       </div>
 
+      <!-- FEATURE 4: MERCHANT PAYOUTS & EARNINGS DASHBOARD -->
+      <div class="bg-gradient-to-br from-slate-900 via-neutral-900 to-slate-950 text-white rounded-3xl p-6 shadow-xl border border-slate-800 space-y-4">
+        <div class="flex justify-between items-center border-b border-white/10 pb-3">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-orange-400 tracking-wider">Merchant Payouts</span>
+            <h3 class="font-brand font-black text-lg">Sales & Financial Overview</h3>
+          </div>
+          <span id="payoutUpiBadge" class="text-[10px] font-mono bg-white/10 px-2.5 py-1 rounded-xl text-slate-300">UPI: store@upi</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="bg-white/5 p-3 rounded-2xl border border-white/10">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Revenue</span>
+            <span id="statTotalRev" class="font-mono-num font-black text-xl text-emerald-400">₹0</span>
+          </div>
+          <div class="bg-white/5 p-3 rounded-2xl border border-white/10">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Orders Delivered</span>
+            <span id="statDeliveredCount" class="font-mono-num font-black text-xl text-white">0</span>
+          </div>
+          <div class="bg-white/5 p-3 rounded-2xl border border-white/10">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Active Pending</span>
+            <span id="statActiveCount" class="font-mono-num font-black text-xl text-orange-400">0</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Live Store Orders -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
@@ -138,41 +168,42 @@
         <div id="incomingOrderBox" class="space-y-4"></div>
       </div>
 
-      <!-- Upload New Outfit with Direct Photo Picker -->
+      <!-- FEATURE 1: UPLOAD OUTFIT WITH MULTI-PHOTO GALLERY SLIDER -->
       <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
-        <h3 class="font-brand font-bold text-base text-slate-950">+ Upload New Dress to Radar</h3>
+        <div>
+          <h3 class="font-brand font-bold text-base text-slate-950">+ Upload New Dress / Saree to Radar</h3>
+          <p class="text-xs text-slate-500">Upload multiple photos (Main, Pallu, Blouse piece, Border) for customer sliding.</p>
+        </div>
+
         <form onsubmit="handleUploadProduct(event)" class="space-y-3.5">
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Dress / Outfit Name</label>
-            <input type="text" id="prodName" required placeholder="e.g., Designer Silk Saree" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+            <input type="text" id="prodName" required placeholder="e.g., Dharmavaram Pure Silk Saree" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Selling Price (₹)</label>
-              <input type="number" id="prodPrice" required placeholder="899" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+              <input type="number" id="prodPrice" required placeholder="1999" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono">
             </div>
             <div>
               <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Original Price (₹)</label>
-              <input type="number" id="prodOriginal" required placeholder="1499" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs">
+              <input type="number" id="prodOriginal" required placeholder="2999" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-mono">
             </div>
           </div>
 
-          <!-- DIRECT PHOTO UPLOAD / CAMERA PICKER -->
+          <!-- MULTI-PHOTO PICKER -->
           <div>
-            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Dress Photo (Upload from Phone Gallery / Camera)</label>
+            <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Dress Photos (Select up to 4 angles for slider)</label>
             <div class="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center bg-slate-50 hover:bg-slate-100 transition relative">
-              <input type="file" id="prodFileInput" accept="image/*" onchange="previewSelectedPhoto(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+              <input type="file" id="prodFileInput" accept="image/*" multiple onchange="handleMultiplePhotosSelect(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
               <div id="uploadPromptBox" class="space-y-1">
-                <span class="text-2xl">📸</span>
-                <p class="text-xs font-bold text-slate-700">Tap to Choose Photo or Take Picture</p>
-                <p class="text-[10px] text-slate-400">Supports JPG, PNG (Auto-compressed for fast loading)</p>
+                <span class="text-3xl">📸</span>
+                <p class="text-xs font-bold text-slate-700">Tap to Select Multiple Photos</p>
+                <p class="text-[10px] text-slate-400">Select 1 to 4 images from phone gallery (Auto-compressed)</p>
               </div>
-              <div id="imagePreviewContainer" class="hidden flex flex-col items-center gap-2">
-                <img id="imagePreview" src="" class="h-28 w-28 object-cover rounded-xl border border-slate-300 shadow-sm">
-                <span class="text-[10px] text-emerald-600 font-bold">✓ Photo Selected! Tap to change</span>
-              </div>
+              <!-- Thumbnails Preview Grid -->
+              <div id="galleryPreviewContainer" class="hidden grid grid-cols-4 gap-2 pt-2"></div>
             </div>
-            <input type="hidden" id="prodBase64Image" value="">
           </div>
 
           <div>
@@ -181,7 +212,7 @@
           </div>
           <div>
             <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Description</label>
-            <textarea id="prodDesc" rows="2" required placeholder="Pure soft fabric, premium finish..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"></textarea>
+            <textarea id="prodDesc" rows="2" required placeholder="Pure silk fabric with rich zari work and traditional border..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs"></textarea>
           </div>
           <button type="submit" id="uploadSubmitBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
             + Publish Live to Fitin60
@@ -199,7 +230,7 @@
       <div class="bg-rose-50/70 border border-rose-200 rounded-3xl p-6 space-y-3">
         <h4 class="font-brand font-bold text-sm text-rose-900">⚠️ Danger Zone: Delete Store</h4>
         <p class="text-xs text-rose-700 leading-relaxed">
-          Permanently delete this boutique profile and all uploaded clothing from the Fitin60 radar. This action cannot be undone.
+          Permanently delete this boutique profile and all uploaded clothing from the Fitin60 radar.
         </p>
         <button onclick="deleteEntireStorePermanently()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider transition shadow-sm cursor-pointer">
           🗑️ Delete My Store & Account Permanently
@@ -225,6 +256,7 @@
     const db = firebase.database();
 
     var currentMerchant = null;
+    var uploadedBase64Gallery = [];
 
     function switchAuthTab(tab) {
       var loginF = document.getElementById("loginForm");
@@ -292,10 +324,6 @@
           btn.disabled = false;
           btn.innerText = "Reset PIN & Enter Studio ➔";
         }
-      }).catch(function(err) {
-        alert("Error: " + err.message);
-        btn.disabled = false;
-        btn.innerText = "Reset PIN & Enter Studio ➔";
       });
     }
 
@@ -316,10 +344,6 @@
       db.ref("partners/" + mobile).set(newPartner).then(function() {
         alert("✓ Registration Successful!");
         loginSuccess(newPartner);
-      }).catch(function(err) {
-        alert("Error: " + err.message);
-        btn.disabled = false;
-        btn.innerText = "Complete Registration & Enter Studio ➔";
       });
     }
 
@@ -348,6 +372,7 @@
 
       document.getElementById("dashStoreName").innerText = partner.storeName;
       document.getElementById("dashStoreMeta").innerText = "📍 " + partner.area + " • Mobile: " + partner.mobile;
+      document.getElementById("payoutUpiBadge").innerText = "UPI: " + (partner.upi || "Not Linked");
 
       listenToStoreOrders();
       listenToStoreProducts();
@@ -361,41 +386,50 @@
       document.getElementById("logoutBtn").classList.add("hidden");
     }
 
-    function previewSelectedPhoto(event) {
-      var file = event.target.files[0];
-      if (!file) return;
+    // MULTI-PHOTO GALLERY PROCESSOR & COMPRESSOR
+    function handleMultiplePhotosSelect(event) {
+      var files = Array.from(event.target.files).slice(0, 4);
+      if (!files.length) return;
 
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var img = new Image();
-        img.onload = function() {
-          var canvas = document.createElement("canvas");
-          var MAX_WIDTH = 700;
-          var scaleSize = MAX_WIDTH / img.width;
-          canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
-          canvas.height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
+      uploadedBase64Gallery = [];
+      var container = document.getElementById("galleryPreviewContainer");
+      container.innerHTML = "";
 
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      var count = 0;
+      files.forEach(function(file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement("canvas");
+            var MAX_WIDTH = 700;
+            var scale = MAX_WIDTH / img.width;
+            canvas.width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+            canvas.height = (img.width > MAX_WIDTH) ? (img.height * scale) : img.height;
 
-          var compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            var comp = canvas.toDataURL("image/jpeg", 0.7);
 
-          document.getElementById("prodBase64Image").value = compressedBase64;
-          document.getElementById("imagePreview").src = compressedBase64;
-          document.getElementById("uploadPromptBox").classList.add("hidden");
-          document.getElementById("imagePreviewContainer").classList.remove("hidden");
+            uploadedBase64Gallery.push(comp);
+            container.innerHTML += '<img src="' + comp + '" class="h-20 w-full object-cover rounded-xl border border-slate-300 shadow-sm">';
+            count++;
+            if (count === files.length) {
+              document.getElementById("uploadPromptBox").classList.add("hidden");
+              container.classList.remove("hidden");
+            }
+          };
+          img.src = e.target.result;
         };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      });
     }
 
     function handleUploadProduct(e) {
       e.preventDefault();
       if (!currentMerchant) return;
 
-      var base64Img = document.getElementById("prodBase64Image").value;
-      if (!base64Img) return alert("Please select a photo first!");
+      if (!uploadedBase64Gallery.length) return alert("Please select at least 1 photo for this outfit!");
 
       var name = document.getElementById("prodName").value.trim();
       var price = parseInt(document.getElementById("prodPrice").value.trim(), 10);
@@ -412,7 +446,8 @@
         price: price,
         originalPrice: orig,
         discount: Math.round(((orig - price) / orig) * 100) + "% OFF",
-        image: base64Img,
+        image: uploadedBase64Gallery[0],
+        images: uploadedBase64Gallery,
         sizes: sizes,
         desc: desc,
         eta: "35 MINS",
@@ -421,20 +456,21 @@
 
       var btn = document.getElementById("uploadSubmitBtn");
       btn.disabled = true;
-      btn.innerText = "Publishing...";
+      btn.innerText = "Publishing Gallery...";
 
       db.ref("boutique_products/" + prodId).set(newProd).then(function() {
-        alert("✓ Photo & Dress Published Live to Fitin60!");
+        alert("✓ Outfit Published with Multi-Photo Gallery!");
         btn.disabled = false;
         btn.innerText = "+ Publish Live to Fitin60";
         e.target.reset();
-        document.getElementById("prodBase64Image").value = "";
-        document.getElementById("imagePreview").src = "";
+        uploadedBase64Gallery = [];
         document.getElementById("uploadPromptBox").classList.remove("hidden");
-        document.getElementById("imagePreviewContainer").classList.add("hidden");
+        document.getElementById("galleryPreviewContainer").classList.add("hidden");
+        document.getElementById("galleryPreviewContainer").innerHTML = "";
       });
     }
 
+    // LIVE ORDERS & FINANCIAL PAYOUTS CALCULATOR
     function listenToStoreOrders() {
       if (!currentMerchant) return;
 
@@ -445,34 +481,40 @@
 
         if (!orders) {
           badge.innerText = "0 Orders";
-          box.innerHTML = "<p class='text-center text-slate-400 text-xs py-4'>No orders pending right now.</p>";
+          box.innerHTML = "<p class='text-center text-slate-400 text-xs py-4'>No orders received yet.</p>";
+          updateFinancialStats([], currentMerchant);
           return;
         }
 
         var list = Object.values(orders).reverse();
         badge.innerText = list.length + " Orders";
+        updateFinancialStats(list, currentMerchant);
 
         var html = "";
         list.forEach(function(order) {
           var firstItem = order.items && order.items[0] ? order.items[0] : { name: "Outfit" };
+          var isDelivered = order.status === "Delivered";
+          var isCancelled = (order.paymentStatus === "Cancelled by Customer");
+
           html += 
             '<div class="p-4 bg-orange-50/60 border border-orange-200 rounded-2xl space-y-2.5">' +
               '<div class="flex justify-between items-center">' +
                 '<span class="font-mono font-black text-sm text-slate-950">' + order.orderId + '</span>' +
                 '<div class="flex items-center gap-2">' +
-                  '<span class="text-[10px] font-bold ' + (order.boutiqueAccepted ? 'text-emerald-700 bg-emerald-100' : 'text-orange-700 bg-orange-100') + ' px-2 py-0.5 rounded">' +
-                    (order.boutiqueAccepted ? "Dispatched" : "Pending") +
+                  '<span class="text-[10px] font-bold ' + 
+                    (isDelivered ? 'text-emerald-700 bg-emerald-100' : isCancelled ? 'text-rose-700 bg-rose-100' : order.boutiqueAccepted ? 'text-blue-700 bg-blue-100' : 'text-orange-700 bg-orange-100') + ' px-2.5 py-0.5 rounded-full">' +
+                    (isDelivered ? "Delivered & Paid" : isCancelled ? "Cancelled" : order.boutiqueAccepted ? "Dispatched" : "Pending Action") +
                   '</span>' +
                   '<button onclick="deleteCloudOrder(\'' + order.orderId + '\')" title="Delete Order" class="text-rose-600 hover:bg-rose-100 p-1 rounded font-bold text-xs cursor-pointer">🗑️</button>' +
                 '</div>' +
               '</div>' +
               '<p class="text-xs text-slate-700"><strong>Outfit:</strong> ' + firstItem.name + ' • <strong>Customer:</strong> ' + order.customerName + ' (' + order.customerPhone + ')</p>' +
               '<p class="text-xs text-slate-600"><strong>Address:</strong> ' + order.customerAddress + '</p>' +
-              '<div class="flex justify-between items-center pt-1">' +
+              '<div class="flex justify-between items-center pt-1 border-t border-orange-200/50">' +
                 '<span class="font-mono font-black text-sm">₹' + order.totalAmount + '</span>' +
-                (!order.boutiqueAccepted ? 
-                  '<button onclick="acceptCloudOrder(\'' + order.orderId + '\')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs uppercase cursor-pointer">✓ Accept & Send Rider</button>' : 
-                  '<span class="text-xs text-emerald-700 font-bold">✓ Accepted</span>') +
+                (!order.boutiqueAccepted && !isCancelled ? 
+                  '<button onclick="acceptCloudOrder(\'' + order.orderId + '\')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs uppercase cursor-pointer">✓ Accept & Dispatch Rider</button>' : 
+                  '<span class="text-xs font-bold ' + (isDelivered ? 'text-emerald-700' : 'text-slate-600') + '">' + (isDelivered ? '✓ Completed' : order.paymentStatus) + '</span>') +
               '</div>' +
             '</div>';
         });
@@ -481,9 +523,32 @@
       });
     }
 
+    function updateFinancialStats(orderList, merchant) {
+      var totalRev = 0;
+      var deliveredCount = 0;
+      var activeCount = 0;
+
+      orderList.forEach(function(o) {
+        if (o.status === "Delivered") {
+          totalRev += (parseInt(o.totalAmount, 10) || 0);
+          deliveredCount++;
+        } else if (o.paymentStatus !== "Cancelled by Customer") {
+          activeCount++;
+        }
+      });
+
+      document.getElementById("statTotalRev").innerText = "₹" + totalRev;
+      document.getElementById("statDeliveredCount").innerText = deliveredCount;
+      document.getElementById("statActiveCount").innerText = activeCount;
+    }
+
     function acceptCloudOrder(orderId) {
+      // Generate 4-digit Delivery Completion OTP for this order
+      var deliveryOtp = String(Math.floor(1000 + Math.random() * 9000));
+
       db.ref("orders/" + orderId).update({
         boutiqueAccepted: true,
+        deliveryOtp: deliveryOtp,
         paymentStatus: "Accepted by Boutique • Alert Sent to Rider 🛵"
       });
     }
@@ -511,13 +576,14 @@
         var html = "";
         Object.keys(prods).forEach(function(key) {
           var p = prods[key];
+          var imgCount = p.images ? p.images.length : 1;
           html += 
             '<div class="flex items-center justify-between p-3 bg-slate-50 border rounded-2xl text-xs">' +
               '<div class="flex items-center gap-3">' +
                 '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg border">' +
                 '<div>' +
                   '<p class="font-bold text-slate-900">' + p.name + '</p>' +
-                  '<p class="text-slate-500 font-mono">₹' + p.price + '</p>' +
+                  '<p class="text-slate-500 font-mono">₹' + p.price + ' • <span class="text-orange-600 font-bold">' + imgCount + ' Photos</span></p>' +
                 '</div>' +
               '</div>' +
               '<button onclick="deleteCloudProduct(\'' + key + '\')" class="text-rose-600 hover:bg-rose-100 p-2 rounded-xl text-xs font-bold cursor-pointer">' +
