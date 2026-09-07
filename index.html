@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Fitin60 | 60-Minute Hyperlocal Fashion Radar</title>
+  
+  <!-- PWA Settings -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Firebase SDKs -->
@@ -51,12 +58,16 @@
     </a>
 
     <div class="flex items-center gap-2 shrink-0">
+      <!-- PWA Install Button (Shown on Mobile) -->
+      <button id="pwaInstallBtn" onclick="installFitin60PWA()" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-700 text-xs font-bold px-2.5 py-1.5 rounded-xl flex items-center gap-1">
+        <span>📲</span> <span>App</span>
+      </button>
+
       <button onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer">
         <span class="text-sm">🛍️</span>
         <span id="cart-count" class="bg-white text-orange-600 text-[10px] font-mono-num font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
       </button>
 
-      <!-- Customer Pill with Protected Profile Dropdown -->
       <div id="authPillContainer" class="relative">
         <button onclick="openLoginModal()" class="bg-slate-950 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer">
           <span>👤</span>
@@ -85,7 +96,25 @@
     </button>
   </div>
 
-  <!-- Hero Section -->
+  <!-- Search & Filter Section -->
+  <section class="w-full px-4 mt-4 space-y-3">
+    <!-- Live Search Input -->
+    <div class="relative">
+      <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">🔍</span>
+      <input type="text" id="storeSearchInput" oninput="handleSearchAndFilter()" placeholder="Search boutique name or outfit style..." class="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-orange-500">
+    </div>
+
+    <!-- Category Filter Chips -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold" id="categoryChips">
+      <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0">All Outfits</button>
+      <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">🥻 Sarees</button>
+      <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">👗 Kurtis</button>
+      <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">✨ Lehengas</button>
+      <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">👔 Men's Wear</button>
+    </div>
+  </section>
+
+  <!-- Hero Banner -->
   <section class="w-full px-4 mt-4">
     <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl border border-slate-800 w-full">
       <div class="inline-flex items-center gap-2 bg-white/10 border border-white/15 px-3 py-1 rounded-full text-[10px] font-bold text-orange-300 mb-3">
@@ -95,34 +124,24 @@
         Explore Local Boutiques & Get Drops in <span class="text-orange-400">60 Minutes</span>.
       </h1>
       <p class="text-slate-300 text-xs mt-2 font-normal leading-relaxed">
-        Tap any boutique to view the showroom in full screen, pick size & order instantly.
+        Select your style, get express delivery to your doorstep, and pay via UPI or Cash.
       </p>
-
-      <div class="grid grid-cols-3 gap-2 mt-6 pt-5 border-t border-white/10 text-center">
-        <div>
-          <p class="font-mono-num text-lg font-black text-white">60 <span class="text-orange-400 text-xs">MINS</span></p>
-          <p class="text-[9px] text-slate-400 uppercase">Express Drop</p>
-        </div>
-        <div>
-          <p class="font-mono-num text-lg font-black text-white">20 <span class="text-orange-400 text-xs">KM</span></p>
-          <p class="text-[9px] text-slate-400 uppercase">Zone</p>
-        </div>
-        <div>
-          <p class="font-mono-num text-lg font-black text-white">100%</p>
-          <p class="text-[9px] text-slate-400 uppercase">Direct Store</p>
-        </div>
-      </div>
     </div>
   </section>
 
   <!-- Stores Section -->
-  <main class="w-full px-4 mt-8">
+  <main class="w-full px-4 mt-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="font-brand font-black text-xl text-slate-950">Active Boutiques</h2>
       <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Syncing...</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full" id="boutiqueStoreGrid"></div>
   </main>
+
+  <!-- Floating WhatsApp Support Button -->
+  <a href="https://wa.me/919876543210?text=Hello%20Fitin60%20Support,%20I%20need%20help%20with%20an%20order" target="_blank" class="fixed bottom-20 right-4 z-40 bg-emerald-500 hover:bg-emerald-600 text-white p-3 rounded-full shadow-2xl flex items-center justify-center transition" title="WhatsApp Support">
+    <span class="text-2xl">💬</span>
+  </a>
 
   <!-- Bottom Navigation -->
   <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2.5 px-6 flex items-center justify-around z-40 shadow-lg">
@@ -234,7 +253,6 @@
         <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition">Register</button>
       </div>
 
-      <!-- 1. Customer Login Form -->
       <form id="custLoginForm" onsubmit="handleCustomerPinLogin(event)" class="space-y-3 text-left mt-4">
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile Number</label>
@@ -252,7 +270,6 @@
         </button>
       </form>
 
-      <!-- 2. Customer Register Form -->
       <form id="custRegisterForm" onsubmit="handleCustomerPinRegister(event)" class="space-y-3 text-left mt-4 hidden">
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Full Name</label>
@@ -271,7 +288,6 @@
         </button>
       </form>
 
-      <!-- 3. Forgot / Reset PIN Form -->
       <form id="custForgotForm" onsubmit="handleResetPinSubmit(event)" class="space-y-3 text-left mt-4 hidden">
         <div class="p-2.5 bg-orange-50 border border-orange-200 rounded-xl text-[11px] text-slate-600">
           Enter your registered Mobile Number and Name to verify identity & reset your PIN.
@@ -299,7 +315,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer with Doorstep Payment Options -->
+  <!-- Shopping Bag Drawer with ITEM DETAILS & CLEAR BILLING BREAKDOWN -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -308,11 +324,11 @@
         <button onclick="toggleCart()" class="text-slate-400 text-2xl cursor-pointer">&times;</button>
       </div>
 
-      <div class="flex-1 p-4 overflow-y-auto space-y-3.5">
+      <div class="flex-1 p-4 overflow-y-auto space-y-4">
         <div id="cartItems" class="space-y-2"></div>
         
         <!-- Address & Payment Selection -->
-        <div id="addressSection" class="hidden pt-3 border-t border-slate-200 space-y-3">
+        <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
           <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Delivery Details</h4>
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
@@ -351,14 +367,31 @@
             </label>
           </div>
 
+          <!-- DETAILED BILL RECEIPT BREAKDOWN -->
+          <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
+            <h5 class="font-bold text-slate-900 uppercase tracking-wider text-[10px]">Bill Summary</h5>
+            <div class="flex justify-between text-slate-600">
+              <span>Item Total</span>
+              <span class="font-mono-num font-bold" id="billItemTotal">₹0</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>60-Min Express Dispatch</span>
+              <span class="font-mono-num font-bold text-emerald-600">₹49</span>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Boutique Eco-Packaging</span>
+              <span class="font-mono-num font-bold">₹10</span>
+            </div>
+            <div class="border-t border-slate-200 pt-2 flex justify-between font-black text-slate-950 text-sm">
+              <span>To Pay</span>
+              <span class="font-mono-num text-base text-orange-600" id="billFinalPayable">₹0</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
       <div class="p-4 bg-slate-50 border-t border-slate-200 space-y-2">
-        <div class="flex justify-between items-baseline font-black">
-          <span class="text-xs text-slate-500 uppercase">Total Amount</span>
-          <span id="cartTotal" class="font-mono-num text-xl">₹0</span>
-        </div>
         <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase cursor-pointer shadow-md transition">
           ⚡ Place Express Order
         </button>
@@ -406,6 +439,25 @@
     var currentCustomer = null;
     var pendingShowroomAction = null;
     var currentActiveImageSrc = "";
+    var currentCategoryFilter = "All";
+    var deferredPrompt = null;
+
+    // PWA Install Event Handler
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      var btn = document.getElementById("pwaInstallBtn");
+      if (btn) btn.classList.remove("hidden");
+    });
+
+    function installFitin60PWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(choiceResult) {
+          deferredPrompt = null;
+        });
+      }
+    }
 
     function initCustomerAuth() {
       var saved = localStorage.getItem("fitin60_customer_user");
@@ -596,21 +648,52 @@
       });
     }
 
+    // CATEGORY & SEARCH FILTERING
+    function filterByCategory(cat) {
+      currentCategoryFilter = cat;
+      var buttons = document.querySelectorAll(".cat-chip");
+      buttons.forEach(function(btn) {
+        if (btn.innerText.includes(cat) || (cat === "All" && btn.innerText.includes("All"))) {
+          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0";
+        } else {
+          btn.className = "cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0";
+        }
+      });
+      renderBoutiqueStores();
+    }
+
+    function handleSearchAndFilter() {
+      renderBoutiqueStores();
+    }
+
     function getGroupedStores() {
       var all = cloudProducts.concat(baseProducts);
+      var searchKeyword = document.getElementById("storeSearchInput").value.trim().toLowerCase();
+
       var storesMap = {};
       all.forEach(function(p) {
         var storeName = p.store || "Boutique Studio";
-        if (!storesMap[storeName]) {
-          storesMap[storeName] = {
-            storeName: storeName,
-            area: p.area || "City Central",
-            eta: p.eta || "35 MINS",
-            rating: p.rating || "5.0",
-            products: []
-          };
+        var outfitName = (p.name || "").toLowerCase();
+        var storeArea = (p.area || "").toLowerCase();
+
+        // Check Search Keyword
+        var matchesSearch = !searchKeyword || outfitName.includes(searchKeyword) || storeName.toLowerCase().includes(searchKeyword) || storeArea.includes(searchKeyword);
+
+        // Check Category
+        var matchesCategory = (currentCategoryFilter === "All") || outfitName.includes(currentCategoryFilter.toLowerCase());
+
+        if (matchesSearch && matchesCategory) {
+          if (!storesMap[storeName]) {
+            storesMap[storeName] = {
+              storeName: storeName,
+              area: p.area || "City Central",
+              eta: p.eta || "35 MINS",
+              rating: p.rating || "5.0",
+              products: []
+            };
+          }
+          storesMap[storeName].products.push(p);
         }
-        storesMap[storeName].products.push(p);
       });
       return Object.values(storesMap);
     }
@@ -620,6 +703,11 @@
       var badge = document.getElementById("boutiqueCountBadge");
       var stores = getGroupedStores();
       badge.innerText = stores.length + " Boutiques Live";
+
+      if (stores.length === 0) {
+        grid.innerHTML = "<div class='col-span-full py-12 text-center text-slate-400 text-xs'>No outfits match your search or filter criteria.</div>";
+        return;
+      }
 
       var html = "";
       stores.forEach(function(store, storeIdx) {
@@ -782,8 +870,14 @@
       document.getElementById("cart-count").innerText = items.length;
       var list = document.getElementById("cartItems");
       var addr = document.getElementById("addressSection");
-      var sum = items.reduce(function(acc, i) { return acc + i.price; }, 0);
-      document.getElementById("cartTotal").innerText = "₹" + sum;
+      var itemTotal = items.reduce(function(acc, i) { return acc + i.price; }, 0);
+      
+      var deliveryFee = items.length > 0 ? 49 : 0;
+      var packFee = items.length > 0 ? 10 : 0;
+      var finalPayable = itemTotal + deliveryFee + packFee;
+
+      document.getElementById("billItemTotal").innerText = "₹" + itemTotal;
+      document.getElementById("billFinalPayable").innerText = "₹" + finalPayable;
 
       if (items.length === 0) {
         list.innerHTML = "<p class='text-xs text-slate-400 text-center py-4'>Bag is empty.</p>";
@@ -795,12 +889,12 @@
       var html = "";
       items.forEach(function(i, idx) {
         html += 
-          '<div class="flex justify-between items-center p-2 bg-slate-50 border rounded-lg text-xs font-bold">' +
+          '<div class="flex justify-between items-center p-2.5 bg-slate-50 border rounded-xl text-xs font-bold">' +
             '<div>' +
               '<span>' + i.name + ' (' + i.size + ')</span>' +
               '<span class="block text-slate-500 text-[10px]">₹' + i.price + '</span>' +
             '</div>' +
-            '<button onclick="removeCartItem(' + idx + ')" class="text-rose-600 font-bold p-1 hover:bg-rose-50 rounded cursor-pointer">🗑️</button>' +
+            '<button onclick="removeCartItem(' + idx + ')" class="text-rose-600 font-bold p-1.5 hover:bg-rose-50 rounded cursor-pointer">🗑️</button>' +
           '</div>';
       });
       list.innerHTML = html;
@@ -825,7 +919,6 @@
       }
     }
 
-    // CHECKOUT WITH SELECTED PAYMENT OPTION
     function handleCheckout() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -833,18 +926,21 @@
       var lat = document.getElementById("custLat").value || "14.6819";
       var lng = document.getElementById("custLng").value || "77.6006";
 
-      // Selected Payment Option
       var payOptionElem = document.querySelector('input[name="payOption"]:checked');
       var selectedPayment = payOptionElem ? payOptionElem.value : "UPI at Doorstep";
 
       if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
+
+      var itemTotal = items.reduce(function(acc, i) { return acc + i.price; }, 0);
+      var deliveryFee = 49;
+      var packagingFee = 10;
+      var finalPayable = itemTotal + deliveryFee + packagingFee;
 
       var orderBtn = document.getElementById("checkoutSubmitBtn");
       orderBtn.disabled = true;
       orderBtn.innerText = "Dispatching...";
 
       var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
-      var total = items.reduce(function(acc, i) { return acc + i.price; }, 0);
       var deliveryOtp = String(Math.floor(1000 + Math.random() * 9000));
 
       var orderData = {
@@ -855,7 +951,10 @@
         customerLat: lat,
         customerLng: lng,
         items: items,
-        totalAmount: total,
+        itemTotal: itemTotal,
+        deliveryFee: deliveryFee,
+        packagingFee: packagingFee,
+        totalAmount: finalPayable,
         paymentMethod: selectedPayment,
         paymentStatus: "Waiting for Boutique Acceptance",
         deliveryOtp: deliveryOtp,
