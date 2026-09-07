@@ -134,26 +134,29 @@
         </div>
       </div>
 
-      <div id="dutyActiveBanner" class="hidden p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
-        <span>ON DUTY • Active & Listening for orders...</span>
+      <div id="dutyActiveBanner" class="hidden p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
+          <span>ON DUTY • Live GPS Tracking Active</span>
+        </div>
+        <span id="gpsLiveStatus" class="text-[9px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-md font-mono">GPS: Syncing...</span>
       </div>
 
-      <!-- Active Ongoing Delivery Card -->
-      <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-4 shadow-md space-y-3">
+      <!-- ACTIVE DELIVERY ORDER CARD WITH OTP COMPLETION -->
+      <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-4 shadow-md space-y-3.5">
         <div class="flex justify-between items-center border-b pb-2">
-          <h3 class="font-brand font-bold text-sm text-slate-950">Active Delivery</h3>
-          <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">GPS Navigating</span>
+          <h3 class="font-brand font-bold text-sm text-slate-950">Active Delivery Order</h3>
+          <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">GPS Broadcasting</span>
         </div>
 
         <div class="text-xs text-slate-700 space-y-1" id="activeDeliveryDetails"></div>
 
         <div class="grid grid-cols-2 gap-2 pt-1">
           <a id="gmapsNavBtn" href="#" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 shadow">
-            <span>🗺️</span> Maps
+            <span>🗺️</span> Open Google Maps
           </a>
-          <button onclick="markOrderDelivered()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 shadow cursor-pointer">
-            <span>✓</span> Delivered
+          <button onclick="promptDeliveryOtp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 shadow cursor-pointer">
+            <span>🔐</span> Enter Customer OTP
           </button>
         </div>
       </div>
@@ -184,7 +187,7 @@
   <div id="riderAlertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 border-2 border-emerald-500 shadow-2xl space-y-3.5">
       <div class="flex justify-between items-center border-b pb-2">
-        <span class="text-xs font-black uppercase text-emerald-600 animate-pulse">⚡ NEW ORDER ALERT!</span>
+        <span class="text-xs font-black uppercase text-emerald-600 animate-pulse">⚡ NEW DISPATCH ALERT!</span>
         <span class="text-xs font-mono font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded" id="popOrderId">FIT-XXXX</span>
       </div>
 
@@ -199,8 +202,8 @@
         </div>
       </div>
 
-      <button onclick="acceptOrderAsRider()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer">
-        ✓ Accept Order & Start GPS
+      <button onclick="acceptOrderAsRider()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-md">
+        ✓ Accept Order & Start GPS Navigation
       </button>
     </div>
   </div>
@@ -223,6 +226,7 @@
     var isDutyOn = false;
     var activeOrderObj = null;
     var dismissedAlerts = {};
+    var watchPositionId = null;
 
     function switchAuthTab(tab) {
       var loginF = document.getElementById("loginForm");
@@ -284,14 +288,10 @@
             loginSuccess(rider);
           });
         } else {
-          alert("Verification Failed: Mobile or Name does not match our fleet records!");
+          alert("Verification Failed: Mobile or Name does not match our records!");
           btn.disabled = false;
           btn.innerText = "Reset PIN & Start Duty ➔";
         }
-      }).catch(function(err) {
-        alert("Error: " + err.message);
-        btn.disabled = false;
-        btn.innerText = "Reset PIN & Start Duty ➔";
       });
     }
 
@@ -363,6 +363,43 @@
       } catch(e){}
     }
 
+    // FEATURE 3: LIVE RIDER GEO-TRACKING (Transmits continuous coordinates)
+    function startBroadcastingRiderGPS() {
+      if (navigator.geolocation) {
+        watchPositionId = navigator.geolocation.watchPosition(function(pos) {
+          var lat = pos.coords.latitude;
+          var lng = pos.coords.longitude;
+          document.getElementById("gpsLiveStatus").innerText = "GPS: " + lat.toFixed(4) + ", " + lng.toFixed(4);
+
+          // Update rider live GPS in database
+          if (currentRider) {
+            db.ref("rider_locations/" + currentRider.mobile).set({
+              lat: lat,
+              lng: lng,
+              updatedAt: Date.now()
+            });
+          }
+
+          // If rider has an active order, update order directly
+          if (activeOrderObj) {
+            db.ref("orders/" + activeOrderObj.orderId).update({
+              riderCurrentLat: lat,
+              riderCurrentLng: lng
+            });
+          }
+        }, function(err) {
+          document.getElementById("gpsLiveStatus").innerText = "GPS: Standby";
+        }, { enableHighAccuracy: true, maximumAge: 5000 });
+      }
+    }
+
+    function stopBroadcastingRiderGPS() {
+      if (watchPositionId && navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchPositionId);
+        watchPositionId = null;
+      }
+    }
+
     function toggleDuty() {
       isDutyOn = !isDutyOn;
       var text = document.getElementById("dutyStatusText");
@@ -376,6 +413,7 @@
         btn.classList.replace("bg-slate-700", "bg-emerald-500");
         knob.classList.replace("translate-x-0", "translate-x-6");
         banner.classList.remove("hidden");
+        startBroadcastingRiderGPS();
         listenToCloudDispatches();
       } else {
         text.innerText = "OFF DUTY";
@@ -383,6 +421,7 @@
         btn.classList.replace("bg-emerald-500", "bg-slate-700");
         knob.classList.replace("translate-x-6", "translate-x-0");
         banner.classList.add("hidden");
+        stopBroadcastingRiderGPS();
         db.ref("orders").off("value");
         document.getElementById("riderAlertModal").classList.add("hidden");
       }
@@ -440,29 +479,40 @@
       card.classList.remove("hidden");
       details.innerHTML = 
         "<p><strong>Order ID:</strong> " + order.orderId + "</p>" +
-        "<p><strong>Boutique:</strong> " + order.store + "</p>" +
+        "<p><strong>Pickup Boutique:</strong> " + order.store + "</p>" +
         "<p><strong>Customer:</strong> " + order.customerName + " (" + order.customerPhone + ")</p>" +
-        "<p><strong>Address:</strong> " + order.customerAddress + "</p>";
+        "<p><strong>Delivery Address:</strong> " + order.customerAddress + "</p>";
 
       var lat = order.customerLat || "14.6819";
       var lng = order.customerLng || "77.6006";
       gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
     }
 
-    function markOrderDelivered() {
+    // FEATURE 2: DELIVERY COMPLETION OTP VERIFICATION
+    function promptDeliveryOtp() {
       if (!activeOrderObj) return;
-      if (confirm("Confirm delivered to customer?")) {
-        db.ref("orders/" + activeOrderObj.orderId).update({
-          paymentStatus: "Delivered Successfully! 🎉",
-          status: "Delivered",
-          deliveredTime: Date.now()
-        }).then(function() {
-          alert("✓ Delivery Completed!");
-          document.getElementById("activeDeliveryCard").classList.add("hidden");
-          activeOrderObj = null;
-          loadRiderHistory();
-        });
-      }
+
+      var enteredOtp = prompt("🔐 Enter the 4-digit Delivery OTP shown on Customer's phone screen:");
+      if (!enteredOtp) return;
+
+      db.ref("orders/" + activeOrderObj.orderId).once("value").then(function(snapshot) {
+        var ord = snapshot.val();
+        if (ord && String(ord.deliveryOtp).trim() === String(enteredOtp).trim()) {
+          // OTP Matches! Complete delivery
+          db.ref("orders/" + activeOrderObj.orderId).update({
+            paymentStatus: "Delivered Successfully! 🎉",
+            status: "Delivered",
+            deliveredTime: Date.now()
+          }).then(function() {
+            alert("✓ OTP Verified! Delivery successfully completed.");
+            document.getElementById("activeDeliveryCard").classList.add("hidden");
+            activeOrderObj = null;
+            loadRiderHistory();
+          });
+        } else {
+          alert("❌ Incorrect OTP! Please ask the customer to show the 4-digit code on their tracking screen.");
+        }
+      });
     }
 
     function loadRiderHistory() {
@@ -503,10 +553,7 @@
       var enteredPin = prompt("Enter your 4-digit PIN to permanently delete your Rider ID:");
       if (!enteredPin) return;
 
-      if (enteredPin !== currentRider.pin) {
-        alert("Incorrect PIN!");
-        return;
-      }
+      if (enteredPin !== currentRider.pin) return alert("Incorrect PIN!");
 
       db.ref("riders/" + currentRider.mobile).remove().then(function() {
         alert("✓ Rider account permanently deleted.");
