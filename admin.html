@@ -50,34 +50,54 @@
       <h2 class="font-brand font-black text-lg text-white" id="authBoxHeading">Master Security Deck</h2>
       <p class="text-xs text-slate-400" id="authBoxSub">Enter master credentials to moderate platforms and catalog.</p>
 
-      <!-- Standard Login Form -->
+      <!-- Standard Login Form with Eye Icon -->
       <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-3 text-left">
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="block text-[10px] font-bold uppercase text-slate-400">Master Passcode</label>
             <button type="button" onclick="showForgotAdminPasscode()" class="text-[10px] text-orange-400 font-bold hover:underline cursor-pointer">Forgot Passcode?</button>
           </div>
-          <input type="password" id="adminKeyInput" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-xs font-mono tracking-widest text-center text-white focus:outline-none focus:border-orange-500">
+          
+          <div class="relative flex items-center">
+            <input type="password" id="adminKeyInput" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-3.5 pr-10 py-3 text-xs font-mono tracking-widest text-center text-white focus:outline-none focus:border-orange-500">
+            <button type="button" onclick="togglePasscodeVisibility('adminKeyInput', 'eyeIconMain')" class="absolute right-3 text-slate-400 hover:text-white transition cursor-pointer p-1 text-sm select-none" title="Show / Hide Passcode">
+              <span id="eyeIconMain">👁️</span>
+            </button>
+          </div>
         </div>
+
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-orange-600/20 cursor-pointer">
           Unlock Master Control ➔
         </button>
       </form>
 
-      <!-- Recovery / Reset Form (Shows when Forgot Passcode clicked) -->
+      <!-- Recovery / Reset Form -->
       <form id="adminResetForm" onsubmit="handleAdminResetSubmit(event)" class="space-y-3 text-left hidden">
         <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-[11px] text-slate-400">
           Enter your Master Recovery Key to set a new admin passcode.
         </div>
+        
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Master Recovery Key</label>
-          <input type="password" id="recoveryKeyInput" required placeholder="Enter Recovery Key" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
+          <div class="relative flex items-center">
+            <input type="password" id="recoveryKeyInput" required placeholder="Enter Recovery Key" class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-3.5 pr-10 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500 font-mono">
+            <button type="button" onclick="togglePasscodeVisibility('recoveryKeyInput', 'eyeIconRec')" class="absolute right-3 text-slate-400 hover:text-white transition cursor-pointer p-1 text-xs select-none">
+              <span id="eyeIconRec">👁️</span>
+            </button>
+          </div>
           <p class="text-[9px] text-slate-500 mt-1">Default Key: <code class="text-orange-400 font-bold">FITIN60-OWNER</code></p>
         </div>
+
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Set New Admin Passcode</label>
-          <input type="password" id="newPasscodeInput" required placeholder="New Passcode" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
+          <div class="relative flex items-center">
+            <input type="password" id="newPasscodeInput" required placeholder="New Passcode" class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-3.5 pr-10 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500 font-mono">
+            <button type="button" onclick="togglePasscodeVisibility('newPasscodeInput', 'eyeIconNew')" class="absolute right-3 text-slate-400 hover:text-white transition cursor-pointer p-1 text-xs select-none">
+              <span id="eyeIconNew">👁️</span>
+            </button>
+          </div>
         </div>
+
         <button type="submit" id="resetSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
           Update Passcode & Login ➔
         </button>
@@ -252,12 +272,25 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Default Fallback Passcode & Master Recovery Key
     var currentMasterPasscode = "admin4545";
     const MASTER_RECOVERY_KEY = "FITIN60-OWNER";
     var loadedProductsData = {};
 
-    // Sync Master Passcode from Database
+    // Toggle Password Visibility (Eye Icon Toggle)
+    function togglePasscodeVisibility(inputId, iconId) {
+      var input = document.getElementById(inputId);
+      var icon = document.getElementById(iconId);
+      if (!input || !icon) return;
+
+      if (input.type === "password") {
+        input.type = "text";
+        icon.innerText = "🙈";
+      } else {
+        input.type = "password";
+        icon.innerText = "👁️";
+      }
+    }
+
     function syncAdminCredentials() {
       db.ref("system_config/admin_passcode").on("value", function(snap) {
         if (snap.val()) {
@@ -412,7 +445,6 @@
       grid.innerHTML = html;
     }
 
-    // Open Edit Modal
     function openAdminEditModal(key) {
       var p = loadedProductsData[key];
       if (!p) return;
@@ -473,7 +505,6 @@
       }
     }
 
-    // Render Live Orders
     function renderAdminOrders(data) {
       var container = document.getElementById("adminOrdersContainer");
       var list = Object.values(data).reverse();
@@ -513,7 +544,6 @@
       }
     }
 
-    // Render Boutiques
     function renderAdminBoutiques(data) {
       var container = document.getElementById("adminBoutiquesContainer");
       var keys = Object.keys(data);
@@ -547,7 +577,6 @@
       }
     }
 
-    // Render Riders
     function renderAdminRiders(data) {
       var container = document.getElementById("adminRidersContainer");
       var keys = Object.keys(data);
