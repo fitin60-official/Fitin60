@@ -13,7 +13,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -23,12 +22,7 @@
   
   <style>
     *, *::before, *::after { box-sizing: border-box; }
-    html, body {
-      overflow-x: hidden !important;
-      width: 100% !important;
-      margin: 0;
-      padding: 0;
-    }
+    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
@@ -40,10 +34,7 @@
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       opacity: 0;
     }
-    #quickToast.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    #quickToast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white">
@@ -220,7 +211,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer (WITH PAYMENT MODE SELECTOR) -->
+  <!-- Shopping Bag Drawer (WITH DISTANCE SLAB CALCULATOR) -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -233,25 +224,35 @@
         <div id="cartItems" class="space-y-2"></div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
-          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Details</h4>
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address & Distance</h4>
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <textarea id="custAddress" rows="2" required placeholder="Full Delivery Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
 
-          <!-- PAYMENT METHOD SELECTOR -->
+          <!-- DYNAMIC DISTANCE SELECTOR SLABS -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Delivery Distance from Boutique</label>
+            <select id="deliveryDistanceSelect" onchange="recalculateDistanceFee()" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
+              <option value="2.5" selected>📍 0 to 3 KM (Local Express) - ₹49</option>
+              <option value="5.5">📍 3 to 7 KM (Mid Distance) - ₹79</option>
+              <option value="9.5">📍 7 to 12 KM (Long Range) - ₹99</option>
+              <option value="14.0">📍 12 to 15 KM (Outer Border) - ₹129</option>
+            </select>
+          </div>
+
+          <!-- Payment Method -->
           <div class="pt-2 border-t border-slate-200 space-y-2">
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Method</h4>
-            
             <div class="grid grid-cols-1 gap-2">
-              <label class="flex items-center gap-3 p-3 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer transition has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50" id="labelPayPOD">
+              <label class="flex items-center gap-3 p-3 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="POD" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
                   <p class="font-black text-slate-900">Pay on Delivery (Doorstep UPI QR / Cash)</p>
-                  <p class="text-[10px] text-slate-500">Scan QR via PhonePe/GPay or pay cash to rider</p>
+                  <p class="text-[10px] text-slate-500">Scan QR via PhonePe/GPay or cash to rider</p>
                 </div>
               </label>
 
-              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer transition has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50" id="labelPayUPI">
+              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
                   <p class="font-black text-slate-900">Instant Online UPI (PhonePe / GPay / Paytm)</p>
@@ -269,8 +270,8 @@
               <span class="font-mono-num font-bold" id="billItemTotal">₹0</span>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>60-Min Express Dispatch</span>
-              <span class="font-mono-num font-bold text-emerald-600">₹49</span>
+              <span>Delivery Fee (<span id="billDistanceLabel">~2.5 KM</span>)</span>
+              <span class="font-mono-num font-bold text-emerald-600" id="billDeliveryFee">₹49</span>
             </div>
             <div class="border-t border-slate-200 pt-2 flex justify-between font-black text-slate-950 text-sm">
               <span>To Pay</span>
@@ -285,59 +286,6 @@
           ⚡ Place Express Order
         </button>
       </div>
-    </div>
-  </div>
-
-  <!-- DIRECT OWNER EDIT MODAL -->
-  <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
-      <div class="flex items-center justify-between border-b pb-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">✏️</span>
-          <h3 class="font-brand font-bold text-sm text-slate-900">Owner Fast Edit</h3>
-        </div>
-        <button onclick="closeDirectOwnerEditModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
-      </div>
-
-      <form onsubmit="handleDirectOwnerSave(event)" class="space-y-3 text-xs">
-        <input type="hidden" id="directEditKey">
-
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
-          <input type="text" id="directEditName" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900">
-        </div>
-
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Area / Location</label>
-          <input type="text" id="directEditArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900 font-bold">
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
-            <input type="number" id="directEditPrice" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 font-mono text-slate-900">
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Category</label>
-            <select id="directEditCategory" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900 font-bold">
-              <option value="Saree">🥻 Saree</option>
-              <option value="Kurti">👗 Kurti</option>
-              <option value="Kids">🧸 Kids Wear</option>
-              <option value="Lehenga">✨ Lehenga</option>
-              <option value="Men">👔 Men's Wear</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes (comma separated)</label>
-          <input type="text" id="directEditSizes" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900">
-        </div>
-
-        <button type="submit" id="directSaveBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          ✓ Save Updates Instantly
-        </button>
-      </form>
     </div>
   </div>
 
@@ -375,8 +323,6 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
-
     var baseProducts = [
       {
         id: "base_1",
@@ -395,11 +341,22 @@
     ];
 
     var cloudProducts = [];
-    var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
     var items = [];
     var currentCustomer = null;
     var currentCategoryFilter = "All";
+
+    // Distance Calculation Logic
+    function getDistanceFee(distKm) {
+      if (distKm <= 3) return 49;
+      if (distKm <= 7) return 79;
+      if (distKm <= 12) return 99;
+      return 129;
+    }
+
+    function recalculateDistanceFee() {
+      renderCart();
+    }
 
     window.openLoginModal = function() {
       switchCustAuthTab('login');
@@ -433,54 +390,6 @@
       document.getElementById("custLoginForm").classList.add("hidden");
       document.getElementById("custRegisterForm").classList.add("hidden");
       document.getElementById("custForgotForm").classList.remove("hidden");
-    };
-
-    window.directOwnerDelete = function(key) {
-      if (confirm("Owner: Delete this outfit immediately?")) {
-        db.ref("boutique_products/" + key).remove().then(function() {
-          showQuickToast("✓ Deleted");
-        });
-      }
-    };
-
-    window.openDirectOwnerEdit = function(key) {
-      var prod = cloudProductsMap[key];
-      if (!prod) return;
-
-      document.getElementById("directEditKey").value = key;
-      document.getElementById("directEditName").value = prod.name || "";
-      document.getElementById("directEditArea").value = prod.area || (boutiqueLocationsMap[prod.store] ? boutiqueLocationsMap[prod.store] : "");
-      document.getElementById("directEditPrice").value = prod.price || 0;
-      document.getElementById("directEditCategory").value = prod.category || "Saree";
-      document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
-
-      document.getElementById("directOwnerEditModal").classList.remove("hidden");
-    };
-
-    window.closeDirectOwnerEditModal = function() {
-      document.getElementById("directOwnerEditModal").classList.add("hidden");
-    };
-
-    window.handleDirectOwnerSave = function(e) {
-      e.preventDefault();
-      var key = document.getElementById("directEditKey").value;
-      if (!key) return;
-
-      var sizesStr = document.getElementById("directEditSizes").value.trim();
-      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
-
-      var updateData = {
-        name: document.getElementById("directEditName").value.trim(),
-        area: document.getElementById("directEditArea").value.trim(),
-        price: parseInt(document.getElementById("directEditPrice").value),
-        category: document.getElementById("directEditCategory").value,
-        sizes: sizes
-      };
-
-      db.ref("boutique_products/" + key).update(updateData).then(function() {
-        closeDirectOwnerEditModal();
-        showQuickToast("✓ Updated");
-      });
     };
 
     window.filterByCategory = function(cat) {
@@ -546,16 +455,10 @@
       stores.forEach(function(store) {
         var previewImages = "";
         store.products.slice(0, 3).forEach(function(p) {
-          var isCloud = !!p.cloudKey;
           previewImages += 
             '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">' +
               '<img src="' + p.image + '" alt="" class="w-full h-full object-cover">' +
               '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
-              (isOwnerActive && isCloud ? 
-                '<div class="absolute top-1 right-1 flex gap-1 z-10">' +
-                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer" title="Edit Outfit">✏️</button>' +
-                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer" title="Delete Outfit">🗑️</button>' +
-                '</div>' : '') +
             '</div>';
         });
 
@@ -599,11 +502,7 @@
     function handlePaymentModeChange() {
       var selected = document.querySelector('input[name="payOption"]:checked').value;
       var btn = document.getElementById("checkoutSubmitBtn");
-      if (selected === "ONLINE_UPI") {
-        btn.innerText = "⚡ Pay via UPI & Order";
-      } else {
-        btn.innerText = "⚡ Place Express Order (Pay on Delivery)";
-      }
+      btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via UPI & Order" : "⚡ Place Express Order (Pay on Delivery)";
     }
 
     function renderCart() {
@@ -612,8 +511,14 @@
       var addr = document.getElementById("addressSection");
       var total = items.reduce(function(a, b) { return a + b.price; }, 0);
 
+      var distSelect = document.getElementById("deliveryDistanceSelect");
+      var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
+      var deliveryFee = getDistanceFee(distVal);
+
       document.getElementById("billItemTotal").innerText = "₹" + total;
-      document.getElementById("billFinalPayable").innerText = "₹" + (total > 0 ? (total + 49) : 0);
+      document.getElementById("billDistanceLabel").innerText = "~" + distVal + " KM";
+      document.getElementById("billDeliveryFee").innerText = "₹" + deliveryFee;
+      document.getElementById("billFinalPayable").innerText = "₹" + (total > 0 ? (total + deliveryFee) : 0);
 
       if (items.length === 0) {
         list.innerHTML = "<p class='text-xs text-slate-400 text-center py-4'>Bag is empty.</p>";
@@ -647,22 +552,18 @@
       var pin = document.getElementById("custPinLoginPin").value.trim();
 
       if (pin === "4545") {
-        isOwnerActive = true;
-        localStorage.setItem("fitin60_owner_session", "active");
         currentCustomer = { name: "Platform Owner", phone: mob };
         localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
         updateAuthHeaderUI();
         closeLoginModal();
         renderBoutiqueStores();
-        showQuickToast("🛡️ Welcome Owner! Direct Edit Enabled");
+        showQuickToast("🛡️ Welcome Owner!");
         return;
       }
 
       db.ref("customers/" + mob).once("value").then(function(snap) {
         var user = snap.val();
         if (user && user.pin === pin) {
-          isOwnerActive = false;
-          localStorage.removeItem("fitin60_owner_session");
           currentCustomer = user;
           localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
           updateAuthHeaderUI();
@@ -677,27 +578,17 @@
 
     function updateAuthHeaderUI() {
       var container = document.getElementById("authPillContainer");
-      var ownerBadge = document.getElementById("ownerBadgeInProfile");
-
       if (currentCustomer) {
         var firstName = currentCustomer.name.split(" ")[0];
         container.innerHTML = 
           '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
-            '<span>👤</span>' +
-            '<span class="text-slate-900">' + firstName + '</span>' +
-            '<span class="text-[9px] text-slate-400">▼</span>' +
+            '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
           '</button>';
 
         document.getElementById("custName").value = currentCustomer.name || "";
         document.getElementById("custPhone").value = currentCustomer.phone || "";
         document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
         document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
-
-        if (isOwnerActive && ownerBadge) {
-          ownerBadge.classList.remove("hidden");
-        } else if (ownerBadge) {
-          ownerBadge.classList.add("hidden");
-        }
       } else {
         container.innerHTML = 
           '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
@@ -713,9 +604,7 @@
     function customerLogout() {
       if (confirm("Log out of Fitin60?")) {
         currentCustomer = null;
-        isOwnerActive = false;
         localStorage.removeItem("fitin60_customer_user");
-        localStorage.removeItem("fitin60_owner_session");
         document.getElementById("profilePopover").classList.add("hidden");
         document.getElementById("custName").value = "";
         document.getElementById("custPhone").value = "";
@@ -759,7 +648,7 @@
       });
     };
 
-    // CHECKOUT HANDLER WITH AUTOMATIC FINANCIAL SPLIT & PAYMENT RECORDING
+    // CHECKOUT HANDLER: DYNAMIC DISTANCE BASED RIDER EARNINGS
     window.handleCheckout = function() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -770,16 +659,16 @@
       var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
       var payMethod = payMethodRadio ? payMethodRadio.value : "POD";
 
+      var distSelect = document.getElementById("deliveryDistanceSelect");
+      var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
+      var deliveryFee = getDistanceFee(distVal);
+
       var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
       var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
-      var deliveryFee = 49;
       var totalPayable = itemSubtotal + deliveryFee;
 
-      // Automated Financial Split:
-      // 15% Platform Commission from item value
       var platformFee = Math.round(itemSubtotal * 0.15);
       var storeNetPayout = itemSubtotal - platformFee;
-      var riderPayout = deliveryFee;
 
       var orderData = {
         orderId: orderId,
@@ -788,10 +677,11 @@
         customerAddress: addr,
         items: items,
         itemTotal: itemSubtotal,
+        distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
         paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
-        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (To be collected at doorstep)",
+        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
         boutiqueAccepted: false,
@@ -799,7 +689,7 @@
         financialSplit: {
           storeNetPayout: storeNetPayout,
           platformCommission: platformFee,
-          riderFee: riderPayout,
+          riderFee: deliveryFee, // Full distance delivery fee goes to rider
           storeSettlementStatus: "Pending",
           riderSettlementStatus: "Pending"
         },
@@ -830,7 +720,6 @@
     db.ref("boutique_products").on("value", function(snapshot) {
       var data = snapshot.val();
       cloudProducts = [];
-      cloudProductsMap = data || {};
       if (data) {
         Object.keys(data).forEach(function(k) {
           var p = data[k];
