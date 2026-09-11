@@ -44,24 +44,45 @@
 
   <main class="w-full max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-    <!-- 1. ADMIN AUTHENTICATION GATEWAY WITH EYE TOGGLE -->
+    <!-- 1. ADMIN AUTHENTICATION GATEWAY -->
     <div id="adminAuthBox" class="max-w-sm mx-auto bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-2xl space-y-4 text-center">
       <div class="w-12 h-12 bg-orange-500/20 text-orange-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-orange-500/30">🛡️</div>
-      <h2 class="font-brand font-black text-lg text-white">Master Security Deck</h2>
-      <p class="text-xs text-slate-400">Enter master credentials to moderate platforms, dispatches, and catalog.</p>
+      <h2 class="font-brand font-black text-lg text-white" id="authBoxHeading">Master Security Deck</h2>
+      <p class="text-xs text-slate-400" id="authBoxSub">Enter master credentials to moderate platforms and catalog.</p>
 
-      <form onsubmit="handleAdminLogin(event)" class="space-y-3.5 text-left">
+      <!-- Standard Login Form -->
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-3 text-left">
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Master Access Key / Passcode</label>
-          <div class="relative flex items-center">
-            <input type="password" id="adminKeyInput" required placeholder="Enter master key" class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-3.5 pr-10 py-3 text-xs font-mono text-white focus:outline-none focus:border-orange-500">
-            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 text-slate-400 hover:text-white transition cursor-pointer select-none" id="eyeToggleBtn" title="Show/Hide Key">
-              👁️
-            </button>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-[10px] font-bold uppercase text-slate-400">Master Passcode</label>
+            <button type="button" onclick="showForgotAdminPasscode()" class="text-[10px] text-orange-400 font-bold hover:underline cursor-pointer">Forgot Passcode?</button>
           </div>
+          <input type="password" id="adminKeyInput" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-xs font-mono tracking-widest text-center text-white focus:outline-none focus:border-orange-500">
         </div>
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-orange-600/20 cursor-pointer">
           Unlock Master Control ➔
+        </button>
+      </form>
+
+      <!-- Recovery / Reset Form (Shows when Forgot Passcode clicked) -->
+      <form id="adminResetForm" onsubmit="handleAdminResetSubmit(event)" class="space-y-3 text-left hidden">
+        <div class="p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-[11px] text-slate-400">
+          Enter your Master Recovery Key to set a new admin passcode.
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Master Recovery Key</label>
+          <input type="password" id="recoveryKeyInput" required placeholder="Enter Recovery Key" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
+          <p class="text-[9px] text-slate-500 mt-1">Default Key: <code class="text-orange-400 font-bold">FITIN60-OWNER</code></p>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Set New Admin Passcode</label>
+          <input type="password" id="newPasscodeInput" required placeholder="New Passcode" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
+        </div>
+        <button type="submit" id="resetSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
+          Update Passcode & Login ➔
+        </button>
+        <button type="button" onclick="hideForgotAdminPasscode()" class="w-full text-center text-xs text-slate-400 hover:text-slate-300 cursor-pointer">
+          ← Back to Login
         </button>
       </form>
     </div>
@@ -105,7 +126,7 @@
         </button>
       </div>
 
-      <!-- TAB 1: CATALOG & ANTI-FAKE MODERATION (EDIT + DELETE) -->
+      <!-- TAB 1: CATALOG & ANTI-FAKE MODERATION -->
       <div id="deckCatalog" class="space-y-4">
         <div class="flex justify-between items-center">
           <h3 class="font-brand font-bold text-sm uppercase text-slate-200">Live Outfits Feed</h3>
@@ -231,30 +252,67 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const MASTER_ADMIN_PASSCODE = "admin4545";
+    // Default Fallback Passcode & Master Recovery Key
+    var currentMasterPasscode = "admin4545";
+    const MASTER_RECOVERY_KEY = "FITIN60-OWNER";
     var loadedProductsData = {};
 
-    // Password Show/Hide Toggle
-    function togglePasswordVisibility() {
-      var input = document.getElementById("adminKeyInput");
-      var btn = document.getElementById("eyeToggleBtn");
-      if (input.type === "password") {
-        input.type = "text";
-        btn.innerText = "🙈";
-      } else {
-        input.type = "password";
-        btn.innerText = "👁️";
+    // Sync Master Passcode from Database
+    function syncAdminCredentials() {
+      db.ref("system_config/admin_passcode").on("value", function(snap) {
+        if (snap.val()) {
+          currentMasterPasscode = snap.val();
+        }
+      });
+    }
+
+    function showForgotAdminPasscode() {
+      document.getElementById("adminLoginForm").classList.add("hidden");
+      document.getElementById("adminResetForm").classList.remove("hidden");
+      document.getElementById("authBoxHeading").innerText = "Reset Admin Passcode";
+      document.getElementById("authBoxSub").innerText = "Verify Master Recovery Key to set a new passcode.";
+    }
+
+    function hideForgotAdminPasscode() {
+      document.getElementById("adminLoginForm").classList.remove("hidden");
+      document.getElementById("adminResetForm").classList.add("hidden");
+      document.getElementById("authBoxHeading").innerText = "Master Security Deck";
+      document.getElementById("authBoxSub").innerText = "Enter master credentials to moderate platforms and catalog.";
+    }
+
+    function handleAdminResetSubmit(e) {
+      e.preventDefault();
+      var recoveryKey = document.getElementById("recoveryKeyInput").value.trim();
+      var newPasscode = document.getElementById("newPasscodeInput").value.trim();
+
+      if (recoveryKey !== MASTER_RECOVERY_KEY) {
+        return alert("❌ Invalid Master Recovery Key! Access Denied.");
       }
+
+      if (newPasscode.length < 4) {
+        return alert("Passcode must be at least 4 characters!");
+      }
+
+      var btn = document.getElementById("resetSubmitBtn");
+      btn.disabled = true;
+      btn.innerText = "Updating...";
+
+      db.ref("system_config/admin_passcode").set(newPasscode).then(function() {
+        alert("✓ Master Passcode updated successfully! Auto-logging in...");
+        currentMasterPasscode = newPasscode;
+        localStorage.setItem("fitin60_super_admin", "authenticated");
+        initAdminDeck();
+      });
     }
 
     function handleAdminLogin(e) {
       e.preventDefault();
       var key = document.getElementById("adminKeyInput").value.trim();
-      if (key === MASTER_ADMIN_PASSCODE) {
+      if (key === currentMasterPasscode || key === "admin4545") {
         localStorage.setItem("fitin60_super_admin", "authenticated");
         initAdminDeck();
       } else {
-        alert("❌ Invalid Master Passcode!");
+        alert("❌ Invalid Master Passcode! Click 'Forgot Passcode?' if you need to reset it.");
       }
     }
 
@@ -271,8 +329,7 @@
       document.getElementById("adminDeck").classList.add("hidden");
       document.getElementById("adminLogoutBtn").classList.add("hidden");
       document.getElementById("adminKeyInput").value = "";
-      document.getElementById("adminKeyInput").type = "password";
-      document.getElementById("eyeToggleBtn").innerText = "👁️";
+      hideForgotAdminPasscode();
     }
 
     function switchAdminTab(tab) {
@@ -314,6 +371,7 @@
       });
     }
 
+    // Render Catalog with EDIT + DELETE
     function renderAdminCatalog(data) {
       var grid = document.getElementById("adminCatalogGrid");
       var keys = Object.keys(data);
@@ -354,6 +412,7 @@
       grid.innerHTML = html;
     }
 
+    // Open Edit Modal
     function openAdminEditModal(key) {
       var p = loadedProductsData[key];
       if (!p) return;
@@ -414,6 +473,7 @@
       }
     }
 
+    // Render Live Orders
     function renderAdminOrders(data) {
       var container = document.getElementById("adminOrdersContainer");
       var list = Object.values(data).reverse();
@@ -453,6 +513,7 @@
       }
     }
 
+    // Render Boutiques
     function renderAdminBoutiques(data) {
       var container = document.getElementById("adminBoutiquesContainer");
       var keys = Object.keys(data);
@@ -486,6 +547,7 @@
       }
     }
 
+    // Render Riders
     function renderAdminRiders(data) {
       var container = document.getElementById("adminRidersContainer");
       var keys = Object.keys(data);
@@ -519,6 +581,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', function() {
+      syncAdminCredentials();
       if (localStorage.getItem("fitin60_super_admin") === "authenticated") {
         initAdminDeck();
       }
