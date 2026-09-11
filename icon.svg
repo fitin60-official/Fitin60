@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#f97316" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded App Icon Background -->
+  <rect width="512" height="512" rx="115" fill="url(#bgGrad)" />
+  <rect x="12" y="12" width="488" height="488" rx="103" fill="none" stroke="#ea580c" stroke-width="6" opacity="0.3" />
+
+  <!-- Speed Lightning Element -->
+  <path d="M280 80 L180 260 L260 260 L232 432 L352 240 L272 240 Z" fill="url(#accentGrad)" />
+
+  <!-- Brand Typography FITIN60 -->
+  <text x="256" y="468" font-family="'Syne', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="44" fill="#ffffff" text-anchor="middle" letter-spacing="2">
+    FITIN<tspan fill="#f97316">60</tspan>
+  </text>
+</svg>
