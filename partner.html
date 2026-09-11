@@ -54,7 +54,7 @@
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🏬</div>
         <h2 id="partnerAuthTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Boutique Merchant Studio</h2>
-        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Manage catalog, radar, payouts & settlement history.</p>
+        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Catalog, orders, radar & daily 10 PM settlements.</p>
       </div>
 
       <div id="partnerTabsNav" class="flex bg-slate-100 p-1 rounded-2xl">
@@ -146,7 +146,7 @@
         </span>
       </div>
 
-      <!-- Financial Quick Stats (GROSS & NET PAYOUT) -->
+      <!-- Financial Quick Stats (DAILY SETTLEMENT HIGHLIGHT) -->
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-[10px] uppercase font-bold text-slate-400">Total Net Payout (85%)</p>
@@ -156,7 +156,7 @@
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-[10px] uppercase font-bold text-slate-400">Delivered Orders</p>
           <p class="font-mono-num font-black text-2xl text-slate-950 mt-1" id="dashOrderCount">0</p>
-          <p class="text-[9px] text-slate-400 mt-0.5">Commission Paid: 15%</p>
+          <p class="text-[9px] text-emerald-600 font-bold mt-0.5">Daily Payout Active</p>
         </div>
       </div>
 
@@ -174,15 +174,25 @@
         </div>
       </div>
 
-      <!-- PAYMENT & SETTLEMENT HISTORY SECTION -->
+      <!-- DAILY PAYMENT & SETTLEMENT HISTORY SECTION -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b pb-2">
           <div class="flex items-center gap-1.5">
-            <span class="text-base">💳</span>
-            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Earnings & Settlement History</h3>
+            <span class="text-base">⚡</span>
+            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Daily Settlement History</h3>
           </div>
-          <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Weekly Settlement</span>
+          <span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+            Daily by 10 PM
+          </span>
         </div>
+
+        <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex items-center justify-between">
+          <div>
+            <p class="text-[11px] font-bold text-emerald-950">Daily Direct Settlement</p>
+            <p class="text-[10px] text-emerald-700">Earnings from all orders completed today are transferred directly to your account by 10:00 PM tonight.</p>
+          </div>
+        </div>
+
         <div id="settlementHistoryList" class="space-y-2.5 text-xs">
           <p class="text-slate-400 text-center py-4">No completed order payouts yet.</p>
         </div>
@@ -489,7 +499,7 @@
       document.getElementById("cancelEditBtn").classList.add("hidden");
     }
 
-    // LIVE ORDER AND FINANCIAL SETTLEMENT CALCULATOR
+    // LIVE ORDER AND DAILY FINANCIAL SETTLEMENT CALCULATOR
     function loadStoreOrdersAndFinancials(storeName) {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
@@ -541,14 +551,14 @@
                     '<span class="font-mono font-bold text-slate-900">' + o.orderId + '</span>' +
                     '<span class="text-[9px] px-2 py-0.5 rounded-full font-bold ' + 
                       (split.storeSettlementStatus === "Settled" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800") + '">' + 
-                      split.storeSettlementStatus + 
+                      (split.storeSettlementStatus === "Settled" ? "Settled (Paid)" : "Scheduled Tonight (10 PM)") + 
                     '</span>' +
                   '</div>' +
-                  '<p class="text-[10px] text-slate-500 mt-0.5">Item: ₹' + itemVal + ' - Fitin60 Fee (15%): ₹' + split.platformCommission + '</p>' +
+                  '<p class="text-[10px] text-slate-500 mt-0.5">Item: ₹' + itemVal + ' - Fee (15%): ₹' + split.platformCommission + '</p>' +
                 '</div>' +
                 '<div class="text-right">' +
                   '<span class="font-mono-num font-black text-sm text-emerald-600">₹' + split.storeNetPayout + '</span>' +
-                  '<p class="text-[9px] text-slate-400">Net Earned</p>' +
+                  '<p class="text-[9px] text-slate-400">Net Daily Payout</p>' +
                 '</div>' +
               '</div>';
           }
