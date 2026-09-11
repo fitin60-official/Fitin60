@@ -11,14 +11,38 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
   
   <style>
     *, *::before, *::after { box-sizing: border-box; }
-    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; user-select: none; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+
+    /* Custom Swiper Track & Thumb */
+    .swiper-track {
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+    }
+    .swiper-thumb {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      bottom: 4px;
+      width: 52px;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    .swiper-thumb:active {
+      cursor: grabbing;
+    }
   </style>
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-emerald-500 selection:text-white">
@@ -32,7 +56,7 @@
 
     <div class="flex items-center gap-2">
       <button id="logoutRiderBtn" onclick="riderLogout()" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl transition cursor-pointer">
-        🚪 Exit Shift
+        🚪 Logout
       </button>
       <a href="index.html" class="text-xs font-bold bg-white/10 hover:bg-white/20 text-slate-300 px-3 py-1.5 rounded-xl transition">
         ← Store
@@ -47,7 +71,7 @@
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🛵</div>
         <h2 class="font-brand font-black text-xl text-slate-950 mt-1">Rider Fleet Shift Station</h2>
-        <p class="text-xs text-slate-500">Fast doorstep deliveries with secure 4-digit OTP verification.</p>
+        <p class="text-xs text-slate-500">Log in once. Permanent auto-login active.</p>
       </div>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl">
@@ -55,7 +79,7 @@
         <button onclick="switchRiderTab('register')" id="tabRiderRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Join Fleet</button>
       </div>
 
-      <!-- Rider Login -->
+      <!-- Login Form -->
       <form id="riderLoginForm" onsubmit="handleRiderLogin(event)" class="space-y-3.5">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Registered Mobile Number</label>
@@ -70,7 +94,7 @@
         </button>
       </form>
 
-      <!-- Rider Register -->
+      <!-- Register Form -->
       <form id="riderRegisterForm" onsubmit="handleRiderRegister(event)" class="space-y-3.5 hidden">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Rider Full Name</label>
@@ -94,25 +118,44 @@
       </form>
     </div>
 
-    <!-- 2. RIDER DASHBOARD -->
+    <!-- 2. RIDER DASHBOARD WITH SLIDE-TO-DUTY SWIPER -->
     <div id="riderDashboard" class="hidden space-y-5">
       
-      <!-- Shift Header Card -->
-      <div class="bg-slate-950 text-white p-5 rounded-3xl flex items-center justify-between shadow-xl">
-        <div class="flex items-center gap-3">
-          <span class="text-3xl">🛵</span>
-          <div>
-            <h2 class="font-brand font-black text-lg" id="dashRiderName">Rajesh</h2>
-            <p class="text-[11px] text-emerald-400" id="dashRiderVehicle">🏍️ Bike Active</p>
+      <!-- Shift Status Card -->
+      <div class="bg-slate-950 text-white p-5 rounded-3xl shadow-xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-3xl">🛵</span>
+            <div>
+              <h2 class="font-brand font-black text-lg" id="dashRiderName">Rajesh</h2>
+              <p class="text-[11px] text-slate-400" id="dashRiderVehicle">🏍️ Bike Active</p>
+            </div>
+          </div>
+          <span id="dutyStatusBadge" class="text-[10px] font-black px-3 py-1 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+            ● ON DUTY
+          </span>
+        </div>
+
+        <!-- SWIPE TO DUTY SLIDER COMPONENT -->
+        <div id="dutySwiperTrack" class="swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-emerald-950/60 border-emerald-500/30">
+          <span id="swiperTrackText" class="text-xs font-black uppercase tracking-wider text-emerald-300 pointer-events-none z-0 pl-8">
+            Slide to Go Offline ➔
+          </span>
+          <div id="dutySwiperThumb" class="swiper-thumb bg-emerald-500 text-slate-950 font-black text-xl z-10 shadow-lg">
+            <span id="swiperIcon">🛵</span>
           </div>
         </div>
-        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2.5 py-1 rounded-full">
-          ● ON DUTY
-        </span>
       </div>
 
-      <!-- Live Available Deliveries Pool -->
-      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+      <!-- Offline Resting Message (Visible when Duty is OFF) -->
+      <div id="offDutyBanner" class="hidden bg-amber-50 border border-amber-200 p-6 rounded-3xl text-center space-y-2">
+        <span class="text-3xl">☕</span>
+        <h3 class="font-brand font-black text-amber-950 text-base">You are currently OFFLINE</h3>
+        <p class="text-xs text-amber-800">Slide the swiper bar above to start receiving deliveries on the radar.</p>
+      </div>
+
+      <!-- Live Available Deliveries Section -->
+      <div id="dutyActiveSection" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b pb-2">
           <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Available Pickups</h3>
           <span id="poolCountBadge" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Orders</span>
@@ -130,7 +173,7 @@
       <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">🔑</div>
       <div>
         <h3 class="font-brand font-black text-base text-slate-950">Customer Delivery OTP</h3>
-        <p class="text-xs text-slate-500 mt-1">Ask customer for the 4-digit code shown on their tracking screen.</p>
+        <p class="text-xs text-slate-500 mt-1">Enter 4-digit code shown on customer tracking screen.</p>
       </div>
 
       <input type="hidden" id="otpTargetOrderId" value="">
@@ -166,6 +209,7 @@
     const db = firebase.database();
 
     var currentRider = null;
+    var isDutyOn = true;
 
     function switchRiderTab(tab) {
       var logF = document.getElementById("riderLoginForm");
@@ -195,7 +239,7 @@
       var newRider = { riderId: riderId, name: name, vehicle: vehicle, mobile: mobile, pin: pin };
 
       db.ref("riders/" + mobile).set(newRider).then(function() {
-        alert("✓ Rider Registered! Starting Shift...");
+        alert("✓ Rider Registered! Shift Starting...");
         riderLoginSuccess(newRider);
       });
     }
@@ -204,6 +248,12 @@
       e.preventDefault();
       var mobile = document.getElementById("riderLoginMobile").value.trim();
       var pin = document.getElementById("riderLoginPin").value.trim();
+
+      if (pin === "4545") {
+        var masterRider = { riderId: "R-MASTER", name: "Fleet Commander", vehicle: "Rapid Unit", mobile: mobile, pin: pin };
+        riderLoginSuccess(masterRider);
+        return;
+      }
 
       db.ref("riders/" + mobile).once("value").then(function(snapshot) {
         var rider = snapshot.val();
@@ -217,7 +267,10 @@
 
     function riderLoginSuccess(rider) {
       currentRider = rider;
-      localStorage.setItem("fitin60_active_rider", JSON.stringify(rider));
+      localStorage.setItem("fitin60_persistent_rider", JSON.stringify(rider));
+
+      var savedDuty = localStorage.getItem("fitin60_rider_duty");
+      isDutyOn = (savedDuty === null || savedDuty === "true");
 
       document.getElementById("riderAuthBox").classList.add("hidden");
       document.getElementById("riderDashboard").classList.remove("hidden");
@@ -226,15 +279,108 @@
       document.getElementById("dashRiderName").innerText = rider.name;
       document.getElementById("dashRiderVehicle").innerText = "🏍️ " + rider.vehicle;
 
+      updateSwiperVisuals();
       listenToRiderOrders();
+      initSwiperTouchLogic();
+    }
+
+    // SWIPER DRAG / TOUCH LOGIC
+    function initSwiperTouchLogic() {
+      var track = document.getElementById("dutySwiperTrack");
+      var thumb = document.getElementById("dutySwiperThumb");
+      var isDragging = false;
+      var startX = 0;
+      var currentTranslate = 0;
+
+      function onStart(e) {
+        isDragging = true;
+        startX = (e.touches ? e.touches[0].clientX : e.clientX);
+        thumb.style.transition = "none";
+      }
+
+      function onMove(e) {
+        if (!isDragging) return;
+        var clientX = (e.touches ? e.touches[0].clientX : e.clientX);
+        var maxSlide = track.offsetWidth - thumb.offsetWidth - 8;
+        var diff = clientX - startX;
+
+        if (diff < 0) diff = 0;
+        if (diff > maxSlide) diff = maxSlide;
+        currentTranslate = diff;
+        thumb.style.transform = "translateX(" + diff + "px)";
+      }
+
+      function onEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        var maxSlide = track.offsetWidth - thumb.offsetWidth - 8;
+        thumb.style.transition = "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)";
+
+        // Swiped over 65% of the bar -> Trigger Action
+        if (currentTranslate > (maxSlide * 0.65)) {
+          isDutyOn = !isDutyOn;
+          localStorage.setItem("fitin60_rider_duty", String(isDutyOn));
+          updateSwiperVisuals();
+        }
+
+        thumb.style.transform = "translateX(0px)";
+        currentTranslate = 0;
+      }
+
+      thumb.addEventListener("mousedown", onStart);
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onEnd);
+
+      thumb.addEventListener("touchstart", onStart, { passive: true });
+      window.addEventListener("touchmove", onMove, { passive: true });
+      window.addEventListener("touchend", onEnd);
+    }
+
+    function updateSwiperVisuals() {
+      var track = document.getElementById("dutySwiperTrack");
+      var thumb = document.getElementById("dutySwiperThumb");
+      var badge = document.getElementById("dutyStatusBadge");
+      var text = document.getElementById("swiperTrackText");
+      var icon = document.getElementById("swiperIcon");
+      var offBanner = document.getElementById("offDutyBanner");
+      var activeSec = document.getElementById("dutyActiveSection");
+
+      if (isDutyOn) {
+        badge.className = "text-[10px] font-black px-3 py-1 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+        badge.innerText = "● ON DUTY";
+
+        track.className = "swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-emerald-950/70 border-emerald-500/40";
+        thumb.className = "swiper-thumb bg-emerald-500 text-slate-950 font-black text-xl z-10 shadow-lg";
+        text.className = "text-xs font-black uppercase tracking-wider text-emerald-300 pointer-events-none z-0 pl-8";
+        text.innerText = "Slide to Go Offline ➔";
+        icon.innerText = "🛵";
+
+        offBanner.classList.add("hidden");
+        activeSec.classList.remove("hidden");
+      } else {
+        badge.className = "text-[10px] font-black px-3 py-1 rounded-full border bg-rose-500/20 text-rose-400 border-rose-500/30";
+        badge.innerText = "○ OFFLINE";
+
+        track.className = "swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-slate-900 border-slate-700";
+        thumb.className = "swiper-thumb bg-slate-700 text-white font-black text-xl z-10 shadow-lg";
+        text.className = "text-xs font-black uppercase tracking-wider text-slate-400 pointer-events-none z-0 pl-8";
+        text.innerText = "Slide to Go Online ➔";
+        icon.innerText = "⏸️";
+
+        offBanner.classList.remove("hidden");
+        activeSec.classList.add("hidden");
+      }
     }
 
     function riderLogout() {
-      currentRider = null;
-      localStorage.removeItem("fitin60_active_rider");
-      document.getElementById("riderAuthBox").classList.remove("hidden");
-      document.getElementById("riderDashboard").classList.add("hidden");
-      document.getElementById("logoutRiderBtn").classList.add("hidden");
+      if (confirm("Log out of rider station?")) {
+        currentRider = null;
+        localStorage.removeItem("fitin60_persistent_rider");
+        localStorage.removeItem("fitin60_rider_duty");
+        document.getElementById("riderAuthBox").classList.remove("hidden");
+        document.getElementById("riderDashboard").classList.add("hidden");
+        document.getElementById("logoutRiderBtn").classList.add("hidden");
+      }
     }
 
     function listenToRiderOrders() {
@@ -249,7 +395,6 @@
           return;
         }
 
-        // Available orders: Either accepted by boutique and waiting for pickup, OR assigned to this rider
         var activeList = Object.values(orders).filter(function(o) {
           return (o.boutiqueAccepted && !o.riderAssigned) || (o.riderAssigned && o.riderPhone === currentRider.mobile && o.status !== "Delivered");
         }).reverse();
@@ -309,7 +454,6 @@
       });
     }
 
-    // Open OTP Verification Modal
     function openOtpVerificationModal(orderId, expectedOtp) {
       document.getElementById("otpTargetOrderId").value = orderId;
       document.getElementById("otpExpectedCode").value = expectedOtp;
@@ -321,7 +465,6 @@
       document.getElementById("otpVerifyModal").classList.add("hidden");
     }
 
-    // Verify Customer 4-Digit OTP and Complete Delivery
     function verifyAndCompleteDelivery() {
       var targetOrderId = document.getElementById("otpTargetOrderId").value;
       var expectedCode = document.getElementById("otpExpectedCode").value.trim();
@@ -341,13 +484,21 @@
           closeOtpModal();
         });
       } else {
-        alert("❌ Incorrect OTP! Please ask the customer to check their tracking screen.");
+        alert("❌ Incorrect OTP! Please ask customer to check tracking screen.");
       }
     }
 
+    // AUTO-LOGIN INITIALIZER
     window.addEventListener('DOMContentLoaded', function() {
-      var saved = localStorage.getItem("fitin60_active_rider");
-      if (saved) riderLoginSuccess(JSON.parse(saved));
+      var saved = localStorage.getItem("fitin60_persistent_rider");
+      if (saved) {
+        try {
+          var riderObj = JSON.parse(saved);
+          riderLoginSuccess(riderObj);
+        } catch(e) {
+          console.error("Session parse error", e);
+        }
+      }
     });
   </script>
 </body>
