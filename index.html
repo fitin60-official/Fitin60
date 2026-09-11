@@ -71,6 +71,11 @@
     </a>
 
     <div class="flex items-center gap-2 shrink-0">
+      <!-- Direct Owner Mode Toggle Button -->
+      <button onclick="toggleOwnerMode()" id="ownerModeBtn" class="text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700" title="Owner Fast Edit Mode">
+        <span>🛡️</span> <span id="ownerModeText">Owner</span>
+      </button>
+
       <button id="pwaInstallBtn" onclick="installFitin60PWA()" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-700 text-xs font-bold px-2.5 py-1.5 rounded-xl flex items-center gap-1">
         <span>📲</span> <span>App</span>
       </button>
@@ -484,6 +489,54 @@
     </div>
   </div>
 
+  <!-- DIRECT OWNER ON-SCREEN EDIT MODAL -->
+  <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
+      <div class="flex items-center justify-between border-b pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">✏️</span>
+          <h3 class="font-brand font-bold text-sm text-slate-900">Owner Fast Edit</h3>
+        </div>
+        <button onclick="closeDirectOwnerEditModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <form onsubmit="handleDirectOwnerSave(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="directEditKey">
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
+          <input type="text" id="directEditName" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
+            <input type="number" id="directEditPrice" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 font-mono text-slate-900">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Category</label>
+            <select id="directEditCategory" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900 font-bold">
+              <option value="Saree">🥻 Saree</option>
+              <option value="Kurti">👗 Kurti</option>
+              <option value="Kids">🧸 Kids Wear</option>
+              <option value="Lehenga">✨ Lehenga</option>
+              <option value="Men">👔 Men's Wear</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes (comma separated)</label>
+          <input type="text" id="directEditSizes" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900">
+        </div>
+
+        <button type="submit" id="directSaveBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          ✓ Save Updates Instantly
+        </button>
+      </form>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
@@ -498,10 +551,12 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Default Customer coordinates (Upparapalli/Anantapur core)
     var currentCustLat = 14.6819;
     var currentCustLng = 77.6006;
     var isGpsSynced = false;
+
+    // Owner Mode State
+    var isOwnerModeActive = (localStorage.getItem("fitin60_owner_mode") === "true");
 
     var baseProducts = [
       {
@@ -525,6 +580,7 @@
     ];
 
     var cloudProducts = [];
+    var cloudProductsMap = {};
     var items = [];
     var selectedSizes = {};
     var activeStoreData = null;
@@ -536,9 +592,99 @@
     var deferredPrompt = null;
     var toastTimer = null;
 
+    // Owner Mode Toggle
+    function toggleOwnerMode() {
+      if (isOwnerModeActive) {
+        isOwnerModeActive = false;
+        localStorage.removeItem("fitin60_owner_mode");
+        updateOwnerBtnUI();
+        renderBoutiqueStores();
+        showQuickToast("Owner Mode Turned OFF");
+      } else {
+        var pin = prompt("Enter Master Owner Passcode to activate on-screen edit/delete:");
+        if (pin === "admin4545") {
+          isOwnerModeActive = true;
+          localStorage.setItem("fitin60_owner_mode", "true");
+          updateOwnerBtnUI();
+          renderBoutiqueStores();
+          showQuickToast("🛡️ Owner Mode Active: Edit/Delete enabled");
+        } else if (pin !== null) {
+          alert("❌ Incorrect Passcode!");
+        }
+      }
+    }
+
+    function updateOwnerBtnUI() {
+      var btn = document.getElementById("ownerModeBtn");
+      var text = document.getElementById("ownerModeText");
+      if (isOwnerModeActive) {
+        btn.className = "text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-emerald-500 border-emerald-600 text-white shadow-sm";
+        text.innerText = "Owner: ON";
+      } else {
+        btn.className = "text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700";
+        text.innerText = "Owner";
+      }
+    }
+
+    // Direct Delete by Owner from Store Front
+    function directOwnerDelete(key) {
+      if (confirm("Owner Action: Delete this outfit immediately from the store?")) {
+        db.ref("boutique_products/" + key).remove().then(function() {
+          showQuickToast("✓ Outfit deleted permanently");
+        });
+      }
+    }
+
+    // Direct Edit by Owner from Store Front
+    function openDirectOwnerEdit(key) {
+      var prod = cloudProductsMap[key];
+      if (!prod) return;
+
+      document.getElementById("directEditKey").value = key;
+      document.getElementById("directEditName").value = prod.name;
+      document.getElementById("directEditPrice").value = prod.price;
+      document.getElementById("directEditCategory").value = prod.category || "Saree";
+      document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
+
+      document.getElementById("directOwnerEditModal").classList.remove("hidden");
+    }
+
+    function closeDirectOwnerEditModal() {
+      document.getElementById("directOwnerEditModal").classList.add("hidden");
+    }
+
+    function handleDirectOwnerSave(e) {
+      e.preventDefault();
+      var key = document.getElementById("directEditKey").value;
+      if (!key) return;
+
+      var btn = document.getElementById("directSaveBtn");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      var sizesStr = document.getElementById("directEditSizes").value.trim();
+      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
+
+      var updateData = {
+        name: document.getElementById("directEditName").value.trim(),
+        price: parseInt(document.getElementById("directEditPrice").value),
+        category: document.getElementById("directEditCategory").value,
+        sizes: sizes,
+        moderatedByOwner: true,
+        lastEditedAt: Date.now()
+      };
+
+      db.ref("boutique_products/" + key).update(updateData).then(function() {
+        btn.disabled = false;
+        btn.innerText = "✓ Save Updates Instantly";
+        closeDirectOwnerEditModal();
+        showQuickToast("✓ Updated Successfully!");
+      });
+    }
+
     // Haversine Distance Formula (In Kilometers)
     function calculateDistanceKm(lat1, lon1, lat2, lon2) {
-      var R = 6371; // Earth's radius in KM
+      var R = 6371;
       var dLat = (lat2 - lat1) * Math.PI / 180;
       var dLon = (lon2 - lon1) * Math.PI / 180;
       var a = 
@@ -787,6 +933,7 @@
       db.ref("boutique_products").on("value", function(snapshot) {
         var data = snapshot.val();
         cloudProducts = [];
+        cloudProductsMap = data || {};
         if (data) {
           Object.keys(data).forEach(function(k) {
             var item = data[k];
@@ -815,7 +962,7 @@
       renderBoutiqueStores();
     }
 
-    // STRICT 15-KM RADIUS + CATEGORY (INCL. KIDS WEAR) FILTERING
+    // 15-KM RADIUS & CATEGORY FILTERING
     function getGroupedStores() {
       var all = cloudProducts.concat(baseProducts);
       var searchKeyword = document.getElementById("storeSearchInput").value.trim().toLowerCase();
@@ -827,18 +974,13 @@
         var storeArea = (p.area || "").toLowerCase();
         var category = (p.category || "").toLowerCase();
 
-        // 1. Calculate Distance from Customer Location
         var storeLat = parseFloat(p.lat) || 14.6819;
         var storeLng = parseFloat(p.lng) || 77.6006;
         var distanceKm = calculateDistanceKm(currentCustLat, currentCustLng, storeLat, storeLng);
 
-        // Strict 15 KM boundary check
         var isWithin15Km = (distanceKm <= 15.0);
 
-        // 2. Search Keyword check
         var matchesSearch = !searchKeyword || outfitName.includes(searchKeyword) || storeName.toLowerCase().includes(searchKeyword) || storeArea.includes(searchKeyword);
-
-        // 3. Category Match (including Kids Wear)
         var matchesCategory = (currentCategoryFilter === "All") || 
                               outfitName.includes(currentCategoryFilter.toLowerCase()) || 
                               category.includes(currentCategoryFilter.toLowerCase());
@@ -882,10 +1024,19 @@
         var previewImages = "";
         
         displayProds.forEach(function(p) {
+          var isCloudItem = !!p.cloudKey;
+          
           previewImages += 
-            '<div onclick="triggerShowroomProtected(' + storeIdx + ', \'' + p.id + '\')" class="relative h-24 bg-slate-100 rounded-xl overflow-hidden cursor-pointer border border-slate-200">' +
-              '<img src="' + p.image + '" alt="" class="w-full h-full object-cover">' +
-              '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
+            '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 group">' +
+              '<img src="' + p.image + '" alt="" onclick="triggerShowroomProtected(' + storeIdx + ', \'' + p.id + '\')" class="w-full h-full object-cover cursor-pointer">' +
+              '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded pointer-events-none">₹' + p.price + '</span>' +
+
+              // DIRECT OWNER CONTROLS OVERLAY (Shown only when Owner Mode is Active)
+              (isOwnerModeActive && isCloudItem ? 
+                '<div class="absolute top-1 right-1 flex items-center gap-1 z-10">' +
+                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer" title="Edit Outfit">✏️</button>' +
+                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer" title="Delete Outfit">🗑️</button>' +
+                '</div>' : '') +
             '</div>';
         });
 
@@ -1117,8 +1268,6 @@
         navigator.geolocation.getCurrentPosition(function(pos) {
           document.getElementById("custLat").value = pos.coords.latitude;
           document.getElementById("custLng").value = pos.coords.longitude;
-          currentCustLat = pos.coords.latitude;
-          currentCustLng = pos.coords.longitude;
           btnText.innerText = "✓ GPS Saved";
         }, function() {
           alert("Could not fetch GPS.");
@@ -1164,32 +1313,3 @@
         totalAmount: finalPayable,
         paymentMethod: selectedPayment,
         paymentStatus: "Waiting for Boutique Acceptance",
-        deliveryOtp: deliveryOtp,
-        store: items[0].store,
-        boutiqueAccepted: false,
-        riderAssigned: false,
-        timestamp: Date.now()
-      };
-
-      db.ref("orders/" + orderId).set(orderData).then(function() {
-        localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
-        window.location.href = "tracking.html";
-      });
-    }
-
-    document.addEventListener("click", function(e) {
-      var pop = document.getElementById("profilePopover");
-      var pill = document.getElementById("authPillContainer");
-      if (pop && !pop.contains(e.target) && !pill.contains(e.target)) {
-        pop.classList.add("hidden");
-      }
-    });
-
-    window.addEventListener('DOMContentLoaded', function() {
-      initCustomerAuth();
-      syncCustomerGPS(false);
-      listenToCloudProducts();
-    });
-  </script>
-</body>
-</html>
