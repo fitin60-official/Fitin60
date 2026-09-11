@@ -14,219 +14,140 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
   
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-    html, body { 
-      overflow-x: hidden !important; 
-      width: 100% !important; 
-      max-width: 100% !important;
-      position: relative; 
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-emerald-500 selection:text-white w-full">
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-emerald-500 selection:text-white">
 
-  <!-- Strictly Contained Header (No Horizontal Overflow) -->
-  <header class="bg-slate-950 text-white border-b border-slate-800 px-3.5 h-16 flex items-center justify-between shadow-md w-full sticky top-0 z-40">
-    <div class="flex items-center gap-1.5 min-w-0">
-      <span class="font-brand text-lg font-black tracking-tight shrink-0">FITIN<span class="text-orange-500">60</span></span>
-      <span class="text-[8px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-1.5 py-0.5 rounded-md shrink-0">FLEET</span>
+  <!-- Header -->
+  <header class="bg-slate-950 text-white border-b border-slate-800 px-4 h-16 flex items-center justify-between shadow-md sticky top-0 z-40">
+    <div class="flex items-center gap-2">
+      <span class="font-brand text-lg font-black tracking-tight">FITIN<span class="text-emerald-400">60</span></span>
+      <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2 py-0.5 rounded-full">RIDER FLEET</span>
     </div>
 
-    <div class="flex items-center gap-1.5 shrink-0">
-      <button id="logoutBtn" onclick="riderLogout()" class="hidden text-[11px] font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-2.5 py-1.5 rounded-lg transition cursor-pointer">
-        🚪 Logout
+    <div class="flex items-center gap-2">
+      <button id="logoutRiderBtn" onclick="riderLogout()" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl transition cursor-pointer">
+        🚪 Exit Shift
       </button>
-      <a href="index.html" class="text-[11px] font-bold bg-white/10 hover:bg-white/20 text-slate-300 px-2.5 py-1.5 rounded-lg transition shrink-0">
+      <a href="index.html" class="text-xs font-bold bg-white/10 hover:bg-white/20 text-slate-300 px-3 py-1.5 rounded-xl transition">
         ← Store
       </a>
     </div>
   </header>
 
-  <!-- Mobile-Safe Main Container -->
-  <main class="w-full max-w-md mx-auto px-3.5 mt-4 space-y-4 overflow-hidden">
+  <main class="w-full max-w-xl mx-auto px-4 mt-5 space-y-5">
 
-    <!-- 1. AUTH GATEWAY -->
-    <div id="authSection" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-xl space-y-4 w-full">
+    <!-- 1. RIDER AUTHENTICATION -->
+    <div id="riderAuthBox" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl space-y-4">
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🛵</div>
-        <h2 id="riderAuthTitle" class="font-brand font-black text-lg text-slate-950 mt-1">Rider Fleet Station</h2>
-        <p id="riderAuthSubtitle" class="text-[11px] text-slate-500">Login with your Rider PIN to access rides.</p>
+        <h2 class="font-brand font-black text-xl text-slate-950 mt-1">Rider Fleet Shift Station</h2>
+        <p class="text-xs text-slate-500">Fast doorstep deliveries with secure 4-digit OTP verification.</p>
       </div>
 
-      <div id="riderTabsNav" class="flex bg-slate-100 p-1 rounded-2xl">
-        <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Rider Login</button>
-        <button onclick="switchAuthTab('register')" id="tabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register New Rider</button>
+      <div class="flex bg-slate-100 p-1 rounded-2xl">
+        <button onclick="switchRiderTab('login')" id="tabRiderLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Rider Login</button>
+        <button onclick="switchRiderTab('register')" id="tabRiderRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Join Fleet</button>
       </div>
 
-      <!-- Rider Login Form -->
-      <form id="loginForm" onsubmit="handleRiderLogin(event)" class="space-y-3">
+      <!-- Rider Login -->
+      <form id="riderLoginForm" onsubmit="handleRiderLogin(event)" class="space-y-3.5">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Registered Mobile Number</label>
-          <input type="tel" id="loginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-mono focus:outline-none focus:border-emerald-500">
+          <input type="tel" id="riderLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-xs font-mono focus:outline-none focus:border-emerald-500">
         </div>
         <div>
-          <div class="flex justify-between items-center mb-1">
-            <label class="block text-[10px] font-bold uppercase text-slate-400">Secret 4-Digit PIN</label>
-            <button type="button" onclick="openRiderForgotPin()" class="text-[10px] text-emerald-600 font-bold hover:underline cursor-pointer">Forgot PIN?</button>
-          </div>
-          <input type="password" id="loginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs tracking-widest font-mono text-center focus:outline-none focus:border-emerald-500">
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Rider 4-Digit PIN</label>
+          <input type="password" id="riderLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-xs font-mono tracking-widest text-center focus:outline-none focus:border-emerald-500">
         </div>
-        <button type="submit" id="riderLoginBtn" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
-          Verify & Enter Fleet Station ➔
+        <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Start Active Shift ➔
         </button>
       </form>
 
-      <!-- Rider Register Form -->
-      <form id="registerForm" onsubmit="handleRiderRegister(event)" class="space-y-3 hidden">
+      <!-- Rider Register -->
+      <form id="riderRegisterForm" onsubmit="handleRiderRegister(event)" class="space-y-3.5 hidden">
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Full Name</label>
-          <input type="text" id="regRiderName" required placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Rider Full Name</label>
+          <input type="text" id="regRiderName" required placeholder="e.g., Rajesh Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
         </div>
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Vehicle / Bike No</label>
-          <input type="text" id="regVehicle" required placeholder="AP 16 BZ 9504" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Vehicle Details</label>
+          <input type="text" id="regRiderVehicle" required placeholder="e.g., Hero Splendor (AP 02 XX 1234)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
         </div>
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Mobile Number</label>
-          <input type="tel" id="regMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono">
+          <input type="tel" id="regRiderMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
         </div>
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Create 4-Digit PIN</label>
-          <input type="password" id="regPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs tracking-widest font-mono text-center">
+          <input type="password" id="regRiderPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs tracking-widest font-mono text-center">
         </div>
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
-          Complete Registration & Login ➔
-        </button>
-      </form>
-
-      <!-- Rider Reset PIN Form -->
-      <form id="riderForgotForm" onsubmit="handleRiderResetPin(event)" class="space-y-3 hidden">
-        <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-[11px] text-emerald-800">
-          Verify registered name & mobile to reset PIN.
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Registered Mobile</label>
-          <input type="tel" id="riderResetMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Rider Full Name</label>
-          <input type="text" id="riderResetName" required placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Set New 4-Digit PIN</label>
-          <input type="password" id="riderResetNewPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs tracking-widest font-mono text-center">
-        </div>
-        <button type="submit" id="riderResetBtn" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
-          Update PIN & Open Station ➔
-        </button>
-        <button type="button" onclick="switchAuthTab('login')" class="w-full text-center text-xs text-slate-400 hover:text-slate-600 cursor-pointer">
-          ← Back to Login
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Register & Activate Fleet Pass ➔
         </button>
       </form>
     </div>
 
-    <!-- 2. PRIVATE RIDER DASHBOARD -->
-    <div id="privateDashboard" class="hidden space-y-3.5 w-full">
-
-      <!-- Rider Profile Card -->
-      <div class="bg-slate-950 text-white p-4 rounded-3xl flex items-center justify-between shadow-xl w-full">
-        <div class="flex items-center gap-2.5 min-w-0 pr-2">
-          <span class="text-2xl shrink-0">🛵</span>
-          <div class="min-w-0">
-            <h2 class="font-brand font-black text-base truncate" id="dashRiderName">Sai</h2>
-            <p class="text-[10px] text-slate-400 truncate" id="dashRiderMeta">#RDR-4466 • AP 16 BZ 9504</p>
+    <!-- 2. RIDER DASHBOARD -->
+    <div id="riderDashboard" class="hidden space-y-5">
+      
+      <!-- Shift Header Card -->
+      <div class="bg-slate-950 text-white p-5 rounded-3xl flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🛵</span>
+          <div>
+            <h2 class="font-brand font-black text-lg" id="dashRiderName">Rajesh</h2>
+            <p class="text-[11px] text-emerald-400" id="dashRiderVehicle">🏍️ Bike Active</p>
           </div>
         </div>
-
-        <div class="flex items-center gap-2 bg-white/10 p-1.5 px-2.5 rounded-2xl shrink-0">
-          <span class="text-[9px] font-bold" id="dutyStatusText">OFF DUTY</span>
-          <button id="dutyToggleBtn" onclick="toggleDuty()" class="w-11 h-6 bg-slate-700 rounded-full p-0.5 transition relative cursor-pointer shrink-0">
-            <div id="dutyKnob" class="w-5 h-5 bg-white rounded-full transition transform translate-x-0"></div>
-          </button>
-        </div>
+        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2.5 py-1 rounded-full">
+          ● ON DUTY
+        </span>
       </div>
 
-      <!-- Duty Active Banner -->
-      <div id="dutyActiveBanner" class="hidden p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center justify-between shadow-sm w-full">
-        <div class="flex items-center gap-2 min-w-0">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
-          <span class="truncate">ON DUTY • Live Radar Active</span>
-        </div>
-        <span id="gpsLiveStatus" class="text-[9px] bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-md font-mono shrink-0">GPS Sync</span>
-      </div>
-
-      <!-- Active Ongoing Delivery Card -->
-      <div id="activeDeliveryCard" class="hidden bg-white rounded-3xl border border-slate-200 p-4 shadow-md space-y-3 w-full">
+      <!-- Live Available Deliveries Pool -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b pb-2">
-          <h3 class="font-brand font-bold text-xs text-slate-950">Active Delivery</h3>
-          <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Express</span>
+          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Available Pickups</h3>
+          <span id="poolCountBadge" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Orders</span>
         </div>
-
-        <div class="text-xs text-slate-700 space-y-1.5 break-words" id="activeDeliveryDetails"></div>
-
-        <div class="grid grid-cols-2 gap-2 pt-1">
-          <a id="gmapsNavBtn" href="#" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 shadow">
-            <span>🗺️</span> Maps
-          </a>
-          <button onclick="promptDeliveryOtp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 shadow cursor-pointer">
-            <span>🔐</span> Enter OTP
-          </button>
-        </div>
-      </div>
-
-      <!-- Rider Completed History -->
-      <div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3 w-full">
-        <div class="flex justify-between items-center">
-          <h3 class="font-brand font-bold text-xs text-slate-950 uppercase tracking-wider">My Completed Rides</h3>
-          <span id="historyCountBadge" class="text-[10px] bg-slate-100 font-bold px-2 py-0.5 rounded">0 Done</span>
-        </div>
-        <div id="riderHistoryContainer" class="space-y-2 text-xs">
-          <p class="text-slate-400 text-center py-2 text-xs">No rides delivered yet.</p>
-        </div>
-      </div>
-
-      <!-- Danger Zone -->
-      <div class="bg-rose-50/70 border border-rose-200 rounded-3xl p-4 space-y-2 w-full">
-        <h4 class="font-brand font-bold text-xs text-rose-900 uppercase tracking-wider">⚠️ Danger Zone</h4>
-        <p class="text-[11px] text-rose-700">Permanently delete your Rider ID from the fleet station.</p>
-        <button onclick="deleteRiderPermanently()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-xs uppercase cursor-pointer transition">
-          🗑️ Delete My Rider ID
-        </button>
+        <div id="riderOrdersPool" class="space-y-3"></div>
       </div>
 
     </div>
 
   </main>
 
-  <!-- Live Dispatch Modal Alert -->
-  <div id="riderAlertModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-xs w-full p-5 border-2 border-emerald-500 shadow-2xl space-y-3.5">
-      <div class="flex justify-between items-center border-b pb-2">
-        <span class="text-[11px] font-black uppercase text-emerald-600 animate-pulse">⚡ NEW DISPATCH ALERT!</span>
-        <span class="text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded" id="popOrderId">FIT-XXXX</span>
+  <!-- SECURE CUSTOMER OTP MODAL -->
+  <div id="otpVerifyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl relative border border-slate-200">
+      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">🔑</div>
+      <div>
+        <h3 class="font-brand font-black text-base text-slate-950">Customer Delivery OTP</h3>
+        <p class="text-xs text-slate-500 mt-1">Ask customer for the 4-digit code shown on their tracking screen.</p>
       </div>
 
-      <div class="space-y-2 text-xs break-words">
-        <div class="p-2.5 bg-emerald-50 rounded-xl">
-          <p class="font-bold text-slate-900" id="popStore">Store: Boutique</p>
-          <p class="text-slate-600" id="popItem">Item: Dress</p>
-        </div>
-        <div class="p-2.5 bg-slate-50 rounded-xl">
-          <p class="font-bold text-slate-900" id="popCustomer">Deliver to: Customer</p>
-          <p class="text-slate-600" id="popAddr">Address</p>
-        </div>
+      <input type="hidden" id="otpTargetOrderId" value="">
+      <input type="hidden" id="otpExpectedCode" value="">
+
+      <div>
+        <input type="tel" id="enteredCustomerOtp" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border-2 border-slate-300 rounded-2xl py-3 text-center font-mono-num text-2xl font-black tracking-widest text-slate-950 focus:outline-none focus:border-emerald-500">
       </div>
 
-      <button onclick="acceptOrderAsRider()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-md">
-        ✓ Accept Order & Start GPS
-      </button>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="closeOtpModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl text-xs cursor-pointer">
+          Cancel
+        </button>
+        <button onclick="verifyAndCompleteDelivery()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs cursor-pointer shadow-md">
+          Verify & Finish
+        </button>
+      </div>
     </div>
   </div>
 
@@ -245,362 +166,188 @@
     const db = firebase.database();
 
     var currentRider = null;
-    var isDutyOn = false;
-    var activeOrderObj = null;
-    var dismissedAlerts = {};
-    var watchPositionId = null;
 
-    function switchAuthTab(tab) {
-      var loginF = document.getElementById("loginForm");
-      var regF = document.getElementById("registerForm");
-      var forgF = document.getElementById("riderForgotForm");
-      var tabs = document.getElementById("riderTabsNav");
-
-      tabs.classList.remove("hidden");
-      forgF.classList.add("hidden");
+    function switchRiderTab(tab) {
+      var logF = document.getElementById("riderLoginForm");
+      var regF = document.getElementById("riderRegisterForm");
 
       if (tab === 'login') {
-        document.getElementById("riderAuthTitle").innerText = "Rider Fleet Station";
-        document.getElementById("riderAuthSubtitle").innerText = "Login with your Rider PIN to access rides.";
-        loginF.classList.remove("hidden");
+        logF.classList.remove("hidden");
         regF.classList.add("hidden");
-        document.getElementById("tabLogin").classList.add("bg-white", "text-slate-950", "shadow-sm");
-        document.getElementById("tabRegister").classList.remove("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("tabRiderLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("tabRiderRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       } else {
-        document.getElementById("riderAuthTitle").innerText = "Register New Rider";
-        document.getElementById("riderAuthSubtitle").innerText = "Join the 60-min express fleet.";
-        loginF.classList.add("hidden");
+        logF.classList.add("hidden");
         regF.classList.remove("hidden");
-        document.getElementById("tabRegister").classList.add("bg-white", "text-slate-950", "shadow-sm");
-        document.getElementById("tabLogin").classList.remove("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("tabRiderRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("tabRiderLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       }
-    }
-
-    function openRiderForgotPin() {
-      document.getElementById("loginForm").classList.add("hidden");
-      document.getElementById("registerForm").classList.add("hidden");
-      document.getElementById("riderTabsNav").classList.add("hidden");
-      document.getElementById("riderForgotForm").classList.remove("hidden");
-
-      document.getElementById("riderAuthTitle").innerText = "Reset Rider PIN";
-      document.getElementById("riderAuthSubtitle").innerText = "Verify identity to set a new PIN";
-
-      var m = document.getElementById("loginMobile").value.trim();
-      if (m) document.getElementById("riderResetMobile").value = m;
-    }
-
-    function handleRiderResetPin(e) {
-      e.preventDefault();
-      var mobile = document.getElementById("riderResetMobile").value.trim();
-      var name = document.getElementById("riderResetName").value.trim().toLowerCase();
-      var newPin = document.getElementById("riderResetNewPin").value.trim();
-
-      if (newPin.length !== 4) return alert("PIN must be 4 digits!");
-
-      var btn = document.getElementById("riderResetBtn");
-      btn.disabled = true;
-      btn.innerText = "Verifying...";
-
-      db.ref("riders/" + mobile).once("value").then(function(snapshot) {
-        var rider = snapshot.val();
-        if (rider && rider.name.trim().toLowerCase() === name) {
-          db.ref("riders/" + mobile).update({ pin: newPin }).then(function() {
-            alert("✓ Rider PIN updated successfully!");
-            rider.pin = newPin;
-            loginSuccess(rider);
-          });
-        } else {
-          alert("Verification Failed: Mobile or Name does not match!");
-          btn.disabled = false;
-          btn.innerText = "Update PIN & Open Station ➔";
-        }
-      });
     }
 
     function handleRiderRegister(e) {
       e.preventDefault();
       var name = document.getElementById("regRiderName").value.trim();
-      var vehicle = document.getElementById("regVehicle").value.trim();
-      var mobile = document.getElementById("regMobile").value.trim();
-      var pin = document.getElementById("regPin").value.trim();
-      var riderId = "RDR-" + Math.floor(1000 + Math.random() * 9000);
+      var vehicle = document.getElementById("regRiderVehicle").value.trim();
+      var mobile = document.getElementById("regRiderMobile").value.trim();
+      var pin = document.getElementById("regRiderPin").value.trim();
 
-      var newRider = { name: name, vehicle: vehicle, mobile: mobile, pin: pin, riderId: riderId };
+      var riderId = "R-" + Math.floor(100 + Math.random() * 900);
+      var newRider = { riderId: riderId, name: name, vehicle: vehicle, mobile: mobile, pin: pin };
 
       db.ref("riders/" + mobile).set(newRider).then(function() {
-        alert("Registration Successful!");
-        loginSuccess(newRider);
+        alert("✓ Rider Registered! Starting Shift...");
+        riderLoginSuccess(newRider);
       });
     }
 
     function handleRiderLogin(e) {
       e.preventDefault();
-      var mobile = document.getElementById("loginMobile").value.trim();
-      var pin = document.getElementById("loginPin").value.trim();
-
-      var btn = document.getElementById("riderLoginBtn");
-      btn.disabled = true;
-      btn.innerText = "Authenticating...";
+      var mobile = document.getElementById("riderLoginMobile").value.trim();
+      var pin = document.getElementById("riderLoginPin").value.trim();
 
       db.ref("riders/" + mobile).once("value").then(function(snapshot) {
         var rider = snapshot.val();
         if (rider && rider.pin === pin) {
-          loginSuccess(rider);
+          riderLoginSuccess(rider);
         } else {
           alert("Invalid Mobile or PIN!");
-          btn.disabled = false;
-          btn.innerText = "Verify & Enter Fleet Station ➔";
         }
       });
     }
 
-    function loginSuccess(rider) {
+    function riderLoginSuccess(rider) {
       currentRider = rider;
       localStorage.setItem("fitin60_active_rider", JSON.stringify(rider));
 
-      document.getElementById("authSection").classList.add("hidden");
-      document.getElementById("privateDashboard").classList.remove("hidden");
-      document.getElementById("logoutBtn").classList.remove("hidden");
+      document.getElementById("riderAuthBox").classList.add("hidden");
+      document.getElementById("riderDashboard").classList.remove("hidden");
+      document.getElementById("logoutRiderBtn").classList.remove("hidden");
 
       document.getElementById("dashRiderName").innerText = rider.name;
-      document.getElementById("dashRiderMeta").innerText = "#" + rider.riderId + " • " + rider.vehicle;
+      document.getElementById("dashRiderVehicle").innerText = "🏍️ " + rider.vehicle;
 
-      loadRiderHistory(rider.mobile);
+      listenToRiderOrders();
     }
 
     function riderLogout() {
-      if (isDutyOn) toggleDuty();
       currentRider = null;
       localStorage.removeItem("fitin60_active_rider");
-
-      document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("privateDashboard").classList.add("hidden");
-      document.getElementById("logoutBtn").classList.add("hidden");
-      document.getElementById("loginForm").reset();
-      document.getElementById("riderHistoryContainer").innerHTML = "<p class='text-slate-400 text-center py-2 text-xs'>No rides delivered yet.</p>";
-      document.getElementById("historyCountBadge").innerText = "0 Done";
-      document.getElementById("riderLoginBtn").disabled = false;
-      document.getElementById("riderLoginBtn").innerText = "Verify & Enter Fleet Station ➔";
+      document.getElementById("riderAuthBox").classList.remove("hidden");
+      document.getElementById("riderDashboard").classList.add("hidden");
+      document.getElementById("logoutRiderBtn").classList.add("hidden");
     }
 
-    function playBeepSound() {
-      try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.35);
-      } catch(e){}
-    }
-
-    function startBroadcastingRiderGPS() {
-      if (navigator.geolocation) {
-        watchPositionId = navigator.geolocation.watchPosition(function(pos) {
-          var lat = pos.coords.latitude;
-          var lng = pos.coords.longitude;
-          document.getElementById("gpsLiveStatus").innerText = "GPS: " + lat.toFixed(3) + ", " + lng.toFixed(3);
-
-          if (currentRider) {
-            db.ref("rider_locations/" + currentRider.mobile).set({
-              lat: lat,
-              lng: lng,
-              riderName: currentRider.name,
-              updatedAt: Date.now()
-            });
-          }
-
-          if (activeOrderObj) {
-            db.ref("orders/" + activeOrderObj.orderId).update({
-              riderCurrentLat: lat,
-              riderCurrentLng: lng
-            });
-          }
-        }, function() {
-          document.getElementById("gpsLiveStatus").innerText = "GPS Active";
-        }, { enableHighAccuracy: true, maximumAge: 5000 });
-      }
-    }
-
-    function stopBroadcastingRiderGPS() {
-      if (watchPositionId && navigator.geolocation) {
-        navigator.geolocation.clearWatch(watchPositionId);
-        watchPositionId = null;
-      }
-    }
-
-    function toggleDuty() {
-      if (!currentRider) return;
-
-      isDutyOn = !isDutyOn;
-      var text = document.getElementById("dutyStatusText");
-      var btn = document.getElementById("dutyToggleBtn");
-      var knob = document.getElementById("dutyKnob");
-      var banner = document.getElementById("dutyActiveBanner");
-
-      if (isDutyOn) {
-        text.innerText = "ON DUTY";
-        text.classList.add("text-emerald-400");
-        btn.classList.replace("bg-slate-700", "bg-emerald-500");
-        knob.classList.replace("translate-x-0", "translate-x-5");
-        banner.classList.remove("hidden");
-        startBroadcastingRiderGPS();
-        listenToCloudDispatches();
-      } else {
-        text.innerText = "OFF DUTY";
-        text.classList.remove("text-emerald-400");
-        btn.classList.replace("bg-emerald-500", "bg-slate-700");
-        knob.classList.replace("translate-x-5", "translate-x-0");
-        banner.classList.add("hidden");
-        stopBroadcastingRiderGPS();
-        db.ref("orders").off("value");
-        document.getElementById("riderAlertModal").classList.add("hidden");
-      }
-    }
-
-    function listenToCloudDispatches() {
+    function listenToRiderOrders() {
       db.ref("orders").on("value", function(snapshot) {
-        if (!isDutyOn || !currentRider) return;
         var orders = snapshot.val();
-        if (!orders) return;
-
-        Object.values(orders).forEach(function(o) {
-          var isPendingRider = (o.boutiqueAccepted === true) && (!o.riderAssigned) && (o.paymentStatus !== "Cancelled by Customer") && (o.status !== "Delivered");
-          
-          if (isPendingRider && !dismissedAlerts[o.orderId]) {
-            activeOrderObj = o;
-            showRiderPopup(o);
-          }
-        });
-      });
-    }
-
-    function showRiderPopup(order) {
-      playBeepSound();
-      var item = order.items && order.items[0] ? order.items[0] : { name: "Designer Dress" };
-      document.getElementById("popOrderId").innerText = order.orderId;
-      document.getElementById("popStore").innerText = "Pickup: " + order.store;
-      document.getElementById("popItem").innerText = "Outfit: " + item.name;
-      document.getElementById("popCustomer").innerText = "Customer: " + order.customerName + " (" + order.customerPhone + ")";
-      document.getElementById("popAddr").innerText = order.customerAddress;
-
-      document.getElementById("riderAlertModal").classList.remove("hidden");
-    }
-
-    function acceptOrderAsRider() {
-      if (!activeOrderObj || !currentRider) return;
-
-      dismissedAlerts[activeOrderObj.orderId] = true;
-      db.ref("orders/" + activeOrderObj.orderId).update({
-        riderAssigned: true,
-        riderName: currentRider.name,
-        riderPhone: currentRider.mobile,
-        paymentStatus: "Rider " + currentRider.name + " on the way 🛵"
-      }).then(function() {
-        document.getElementById("riderAlertModal").classList.add("hidden");
-        showActiveDelivery(activeOrderObj);
-      });
-    }
-
-    function showActiveDelivery(order) {
-      var card = document.getElementById("activeDeliveryCard");
-      var details = document.getElementById("activeDeliveryDetails");
-      var gmapsBtn = document.getElementById("gmapsNavBtn");
-
-      card.classList.remove("hidden");
-      details.innerHTML = 
-        "<p><strong>Order ID:</strong> " + order.orderId + "</p>" +
-        "<p><strong>Pickup:</strong> " + order.store + "</p>" +
-        "<p><strong>Customer:</strong> " + order.customerName + " (" + order.customerPhone + ")</p>" +
-        "<p><strong>Address:</strong> " + order.customerAddress + "</p>";
-
-      var lat = order.customerLat || "14.6819";
-      var lng = order.customerLng || "77.6006";
-      gmapsBtn.href = "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + lng;
-    }
-
-    function promptDeliveryOtp() {
-      if (!activeOrderObj) return;
-
-      var enteredOtp = prompt("Enter 4-digit OTP shown on customer tracking screen:");
-      if (!enteredOtp) return;
-
-      db.ref("orders/" + activeOrderObj.orderId).once("value").then(function(snapshot) {
-        var ord = snapshot.val();
-        if (ord && String(ord.deliveryOtp).trim() === String(enteredOtp).trim()) {
-          db.ref("orders/" + activeOrderObj.orderId).update({
-            paymentStatus: "Delivered Successfully! 🎉",
-            status: "Delivered",
-            deliveredTime: Date.now()
-          }).then(function() {
-            alert("✓ OTP Verified! Delivery complete.");
-            document.getElementById("activeDeliveryCard").classList.add("hidden");
-            activeOrderObj = null;
-            if (currentRider) loadRiderHistory(currentRider.mobile);
-          });
-        } else {
-          alert("❌ Incorrect OTP!");
-        }
-      });
-    }
-
-    function loadRiderHistory(riderPhone) {
-      if (!riderPhone) return;
-
-      db.ref("orders").orderByChild("riderPhone").equalTo(riderPhone).on("value", function(snapshot) {
-        var orders = snapshot.val();
-        var container = document.getElementById("riderHistoryContainer");
-        var badge = document.getElementById("historyCountBadge");
+        var pool = document.getElementById("riderOrdersPool");
+        var badge = document.getElementById("poolCountBadge");
 
         if (!orders) {
-          badge.innerText = "0 Done";
-          container.innerHTML = "<p class='text-slate-400 text-center py-2 text-xs'>No rides delivered yet.</p>";
+          badge.innerText = "0 Orders";
+          pool.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No orders right now.</p>";
           return;
         }
 
-        var list = Object.values(orders).reverse();
-        badge.innerText = list.length + " Done";
+        // Available orders: Either accepted by boutique and waiting for pickup, OR assigned to this rider
+        var activeList = Object.values(orders).filter(function(o) {
+          return (o.boutiqueAccepted && !o.riderAssigned) || (o.riderAssigned && o.riderPhone === currentRider.mobile && o.status !== "Delivered");
+        }).reverse();
+
+        badge.innerText = activeList.length + " Active";
+
+        if (activeList.length === 0) {
+          pool.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No active deliveries right now.</p>";
+          return;
+        }
 
         var html = "";
-        list.forEach(function(o) {
+        activeList.forEach(function(o) {
+          var isAssignedToMe = (o.riderAssigned && o.riderPhone === currentRider.mobile);
+
           html += 
-            '<div class="p-2.5 bg-slate-50 border rounded-xl flex justify-between items-center break-words">' +
-              '<div class="min-w-0 pr-2">' +
-                '<p class="font-mono font-bold text-slate-900 truncate">' + o.orderId + '</p>' +
-                '<p class="text-[10px] text-slate-500 truncate">' + o.store + ' ➔ ' + o.customerName + '</p>' +
+            '<div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs">' +
+              '<div class="flex justify-between items-start">' +
+                '<div>' +
+                  '<span class="font-mono font-black text-slate-950 text-sm">' + o.orderId + '</span>' +
+                  '<p class="text-orange-600 font-bold text-[11px]">🏬 Pickup: ' + o.store + '</p>' +
+                '</div>' +
+                '<span class="font-mono-num font-black text-emerald-600 text-sm">₹' + o.totalAmount + '</span>' +
               '</div>' +
-              '<span class="text-[10px] font-bold ' + (o.status === "Delivered" ? 'text-emerald-700 bg-emerald-100' : 'text-blue-700 bg-blue-100') + ' px-2 py-0.5 rounded shrink-0">' +
-                (o.status === "Delivered" ? "Delivered" : "Active") +
-              '</span>' +
+
+              '<div class="p-2.5 bg-white rounded-xl border border-slate-200 space-y-1 text-[11px]">' +
+                '<p class="text-slate-900 font-bold">📍 Deliver to: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                '<p class="text-slate-500">🏠 Address: ' + o.customerAddress + '</p>' +
+                '<p class="text-slate-500">💵 Payment: <strong class="text-slate-800">' + (o.paymentMethod || 'Doorstep') + '</strong></p>' +
+              '</div>' +
+
+              '<div class="pt-1">' +
+                (!isAssignedToMe ? 
+                  '<button onclick="acceptRiderDelivery(\'' + o.orderId + '\')" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-sm transition">⚡ Accept Delivery Task</button>' : 
+                  '<div class="grid grid-cols-2 gap-2">' +
+                    '<a href="tel:' + o.customerPhone + '" class="bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs text-center flex items-center justify-center gap-1">📞 Call Customer</a>' +
+                    '<button onclick="openOtpVerificationModal(\'' + o.orderId + '\', \'' + o.deliveryOtp + '\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-md">🔑 Complete via OTP</button>' +
+                  '</div>'
+                ) +
+              '</div>' +
             '</div>';
         });
-        container.innerHTML = html;
+
+        pool.innerHTML = html;
       });
     }
 
-    function deleteRiderPermanently() {
-      if (!currentRider) return;
-      var enteredPin = prompt("Enter your 4-digit PIN to delete Rider ID:");
-      if (!enteredPin) return;
-
-      if (enteredPin !== currentRider.pin) return alert("Incorrect PIN!");
-
-      db.ref("riders/" + currentRider.mobile).remove().then(function() {
-        alert("✓ Rider ID deleted.");
-        riderLogout();
+    function acceptRiderDelivery(orderId) {
+      db.ref("orders/" + orderId).update({
+        riderAssigned: true,
+        riderName: currentRider.name,
+        riderPhone: currentRider.mobile,
+        riderVehicle: currentRider.vehicle,
+        paymentStatus: "Rider Out for Delivery"
+      }).then(function() {
+        alert("✓ Delivery Accepted! Pick up package from boutique.");
       });
+    }
+
+    // Open OTP Verification Modal
+    function openOtpVerificationModal(orderId, expectedOtp) {
+      document.getElementById("otpTargetOrderId").value = orderId;
+      document.getElementById("otpExpectedCode").value = expectedOtp;
+      document.getElementById("enteredCustomerOtp").value = "";
+      document.getElementById("otpVerifyModal").classList.remove("hidden");
+    }
+
+    function closeOtpModal() {
+      document.getElementById("otpVerifyModal").classList.add("hidden");
+    }
+
+    // Verify Customer 4-Digit OTP and Complete Delivery
+    function verifyAndCompleteDelivery() {
+      var targetOrderId = document.getElementById("otpTargetOrderId").value;
+      var expectedCode = document.getElementById("otpExpectedCode").value.trim();
+      var enteredCode = document.getElementById("enteredCustomerOtp").value.trim();
+
+      if (enteredCode.length !== 4) {
+        return alert("Please enter the complete 4-digit OTP!");
+      }
+
+      if (enteredCode === expectedCode) {
+        db.ref("orders/" + targetOrderId).update({
+          status: "Delivered",
+          paymentStatus: "Delivered Successfully 🎉",
+          deliveredAt: Date.now()
+        }).then(function() {
+          alert("🎉 OTP Verified! Order Successfully Delivered!");
+          closeOtpModal();
+        });
+      } else {
+        alert("❌ Incorrect OTP! Please ask the customer to check their tracking screen.");
+      }
     }
 
     window.addEventListener('DOMContentLoaded', function() {
       var saved = localStorage.getItem("fitin60_active_rider");
-      if (saved) {
-        loginSuccess(JSON.parse(saved));
-      } else {
-        riderLogout();
-      }
+      if (saved) riderLoginSuccess(JSON.parse(saved));
     });
   </script>
 </body>
