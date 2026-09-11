@@ -173,6 +173,13 @@
         </div>
       </div>
 
+      <!-- STRICT RIDER-ONLY ACCOUNT DELETION LINK -->
+      <div class="pt-4 pb-2 text-center">
+        <button onclick="handleDeleteRiderPermanently()" class="text-[11px] text-rose-500/70 hover:text-rose-600 font-semibold underline decoration-rose-300 transition cursor-pointer">
+          Leave Fleet & Delete Rider Account
+        </button>
+      </div>
+
     </div>
 
   </main>
@@ -254,16 +261,11 @@
       });
     }
 
+    // STRICT: ONLY REGISTERED RIDER PIN ALLOWED
     function handleRiderLogin(e) {
       e.preventDefault();
       var mobile = document.getElementById("riderLoginMobile").value.trim();
       var pin = document.getElementById("riderLoginPin").value.trim();
-
-      if (pin === "4545") {
-        var masterRider = { riderId: "R-MASTER", name: "Fleet Commander", vehicle: "Rapid Unit", mobile: mobile, pin: pin };
-        riderLoginSuccess(masterRider);
-        return;
-      }
 
       db.ref("riders/" + mobile).once("value").then(function(snapshot) {
         var rider = snapshot.val();
@@ -389,6 +391,34 @@
       }
     }
 
+    // STRICT: ONLY REGISTERED RIDER PIN CAN DELETE ACCOUNT
+    function handleDeleteRiderPermanently() {
+      if (!currentRider) return;
+
+      var enteredPin = prompt("⚠️ DELETE RIDER ACCOUNT\n\nEnter your registered 4-digit Rider PIN to permanently delete your account (" + currentRider.name + "):");
+
+      if (enteredPin === null) return;
+
+      if (enteredPin !== currentRider.pin) {
+        return alert("❌ Incorrect Rider PIN! Deletion cancelled.");
+      }
+
+      var riderMobileToRemove = currentRider.mobile;
+      var riderNameToRemove = currentRider.name;
+
+      db.ref("riders/" + riderMobileToRemove).remove().then(function() {
+        alert("✓ Rider account for '" + riderNameToRemove + "' has been permanently deleted.");
+        currentRider = null;
+        localStorage.removeItem("fitin60_persistent_rider");
+        localStorage.removeItem("fitin60_rider_duty");
+        document.getElementById("riderAuthBox").classList.remove("hidden");
+        document.getElementById("riderDashboard").classList.add("hidden");
+        document.getElementById("logoutRiderBtn").classList.add("hidden");
+      }).catch(function(err) {
+        alert("Error deleting rider account: " + err.message);
+      });
+    }
+
     // LISTENER FOR ORDERS AND INSTANT SETTLEMENT TRIP EARNINGS
     function listenToRiderOrdersAndEarnings() {
       db.ref("orders").on("value", function(snapshot) {
@@ -454,7 +484,6 @@
           pool.innerHTML = html;
         }
 
-        // Instant Settled Delivered Trips by this rider
         var myDeliveredTrips = allOrders.filter(function(o) {
           return o.status === "Delivered" && o.riderPhone === currentRider.mobile;
         }).reverse();
@@ -519,7 +548,6 @@
       document.getElementById("otpVerifyModal").classList.add("hidden");
     }
 
-    // OTP VERIFICATION + INSTANT RIDER FINANCIAL SETTLEMENT
     function verifyAndCompleteDelivery() {
       var targetOrderId = document.getElementById("otpTargetOrderId").value;
       var expectedCode = document.getElementById("otpExpectedCode").value.trim();
