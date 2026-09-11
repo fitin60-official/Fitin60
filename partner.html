@@ -25,7 +25,7 @@
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
 
-  <!-- Responsive Clean Header -->
+  <!-- Responsive Header -->
   <header class="bg-slate-950 text-white border-b border-slate-800 px-3 h-16 flex items-center justify-between sticky top-0 z-40 w-full">
     <div class="flex items-center gap-1.5 shrink-0">
       <span class="font-brand text-lg font-black tracking-tight text-white">FITIN<span class="text-orange-500">60</span></span>
@@ -54,7 +54,7 @@
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🏬</div>
         <h2 id="partnerAuthTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Boutique Merchant Studio</h2>
-        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Instant settlements, live order dispatch & price manager.</p>
+        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Boutique, school uniform catalog & instant settlements.</p>
       </div>
 
       <div id="partnerTabsNav" class="flex bg-slate-100 p-1 rounded-2xl">
@@ -84,7 +84,7 @@
       <form id="partnerRegisterForm" onsubmit="handlePartnerRegister(event)" class="space-y-3.5 hidden">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Boutique / Store Name</label>
-          <input type="text" id="regStoreName" required placeholder="e.g., Sai Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
+          <input type="text" id="regStoreName" required placeholder="e.g., Sai Fashions / City Uniforms" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
         </div>
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Address / Exact Area</label>
@@ -146,7 +146,7 @@
         </span>
       </div>
 
-      <!-- Financial Quick Stats (INSTANT SETTLEMENT) -->
+      <!-- Financial Quick Stats -->
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-[10px] uppercase font-bold text-slate-400">Total Net Payout (85%)</p>
@@ -198,27 +198,28 @@
         </div>
       </div>
 
-      <!-- Upload / Edit Outfit Section -->
+      <!-- Upload / Edit Outfit Section (INCLUDES UNIFORM CATEGORY) -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4" id="uploadFormContainer">
         <div class="flex justify-between items-center">
           <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider" id="formHeaderTitle">Upload New Collection</h3>
-          <span id="editingModeBadge" class="hidden text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Editing Dress</span>
+          <span id="editingModeBadge" class="hidden text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Editing Outfit</span>
         </div>
         
         <form onsubmit="handlePublishProduct(event)" class="space-y-3 text-xs" id="productForm">
           <input type="hidden" id="editingProdKey" value="">
 
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
-            <input type="text" id="prodName" required placeholder="e.g., Pure Kanchi Pattu Saree" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Uniform Name</label>
+            <input type="text" id="prodName" required placeholder="e.g., Kanchi Saree / Bhashyam School Uniform Set" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
           </div>
 
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Outfit Category</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Category</label>
             <select id="prodCategory" required class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800">
+              <option value="Uniform">🎒 School Uniform (Boys & Girls)</option>
+              <option value="Kids">🧸 Kids Fashion Wear</option>
               <option value="Saree">🥻 Saree</option>
               <option value="Kurti">👗 Kurti / Anarkali</option>
-              <option value="Kids">🧸 Kids Wear (Boys & Girls)</option>
               <option value="Lehenga">✨ Lehenga / Ethnic</option>
               <option value="Men">👔 Men's Wear</option>
             </select>
@@ -227,11 +228,11 @@
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
-              <input type="number" id="prodPrice" required placeholder="1499" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
+              <input type="number" id="prodPrice" required placeholder="699" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
             </div>
             <div>
               <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Original Price (₹)</label>
-              <input type="number" id="prodOriginal" placeholder="2499" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
+              <input type="number" id="prodOriginal" placeholder="999" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
             </div>
           </div>
 
@@ -243,12 +244,12 @@
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes (comma separated)</label>
-            <input type="text" id="prodSizes" placeholder="Free size, S, M, L, XL" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+            <input type="text" id="prodSizes" placeholder="e.g., 26, 28, 30, 32 or S, M, L, XL" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
           </div>
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Description</label>
-            <textarea id="prodDesc" rows="2" placeholder="Pure fabric details, premium stitching, border work..." class="w-full bg-slate-50 border rounded-xl px-3.5 py-2"></textarea>
+            <textarea id="prodDesc" rows="2" placeholder="School name, cloth quality, stitching details..." class="w-full bg-slate-50 border rounded-xl px-3.5 py-2"></textarea>
           </div>
 
           <div class="flex gap-2">
@@ -265,15 +266,15 @@
       <!-- Manage Uploaded Outfits with Edit & Price Controls -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center">
-          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Manage Store Outfits</h3>
-          <span class="text-[10px] text-slate-400 font-medium">Edit price or outfit details</span>
+          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Manage Store Outfits & Uniforms</h3>
+          <span class="text-[10px] text-slate-400 font-medium">Edit price or details</span>
         </div>
         <div id="myUploadedProductsList" class="space-y-2">
           <p class="text-slate-400 text-center py-4 text-xs">No custom outfits uploaded yet.</p>
         </div>
       </div>
 
-      <!-- SUBTLE COMPACT STORE DELETION LINK -->
+      <!-- SUBTLE STORE DELETION LINK -->
       <div class="pt-4 pb-2 text-center">
         <button onclick="handleDeleteStorePermanently()" class="text-[11px] text-rose-500/70 hover:text-rose-600 font-semibold underline decoration-rose-300 transition cursor-pointer">
           Close & Delete this Boutique Account
@@ -450,7 +451,6 @@
       });
     }
 
-    // PUBLISH OR UPDATE DRESS
     function handlePublishProduct(e) {
       e.preventDefault();
       if (!currentPartner) return;
@@ -464,7 +464,7 @@
       var desc = document.getElementById("prodDesc").value.trim();
 
       var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
-      var mainImg = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64[0] : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].image : "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80");
+      var mainImg = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64[0] : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].image : "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80");
       var imgList = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64 : (editingKey && currentStoreProducts[editingKey] ? (currentStoreProducts[editingKey].images || [mainImg]) : [mainImg]);
 
       var targetKey = editingKey || db.ref("boutique_products").push().key;
@@ -488,30 +488,28 @@
       };
 
       db.ref("boutique_products/" + targetKey).set(productData).then(function() {
-        alert(editingKey ? "✓ Outfit & Price Updated Successfully!" : "✓ Product Published Live!");
+        alert(editingKey ? "✓ Item & Price Updated Successfully!" : "✓ Published Live to Fitin60!");
         cancelProductEdit();
       });
     }
 
-    // START EDITING EXISTING DRESS
     function startEditProduct(key) {
       var prod = currentStoreProducts[key];
       if (!prod) return;
 
       document.getElementById("editingProdKey").value = key;
       document.getElementById("prodName").value = prod.name || "";
-      document.getElementById("prodCategory").value = prod.category || "Saree";
+      document.getElementById("prodCategory").value = prod.category || "Uniform";
       document.getElementById("prodPrice").value = prod.price || 0;
       document.getElementById("prodOriginal").value = prod.originalPrice || "";
       document.getElementById("prodSizes").value = (prod.sizes || []).join(", ");
       document.getElementById("prodDesc").value = prod.desc || "";
 
-      document.getElementById("formHeaderTitle").innerText = "Edit Outfit Details & Price";
+      document.getElementById("formHeaderTitle").innerText = "Edit Details & Price";
       document.getElementById("editingModeBadge").classList.remove("hidden");
-      document.getElementById("publishBtn").innerText = "✓ Save Outfit Changes";
+      document.getElementById("publishBtn").innerText = "✓ Save Changes";
       document.getElementById("cancelEditBtn").classList.remove("hidden");
 
-      // Scroll smoothly to form
       document.getElementById("uploadFormContainer").scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -526,7 +524,6 @@
       document.getElementById("cancelEditBtn").classList.add("hidden");
     }
 
-    // LIVE ORDER AND AT-A-TIME INSTANT FINANCIAL SETTLEMENT
     function loadStoreOrdersAndFinancials(storeName) {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
@@ -587,7 +584,7 @@
               '</div>';
           }
 
-          var firstItem = o.items && o.items[0] ? o.items[0] : { name: "Designer Dress" };
+          var firstItem = o.items && o.items[0] ? o.items[0] : { name: "Dress / Uniform" };
 
           ordersHtml += 
             '<div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 text-xs">' +
@@ -625,11 +622,10 @@
         boutiqueAccepted: true,
         paymentStatus: "Boutique Accepted • Assigning Express Rider"
       }).then(function() {
-        alert("✓ Order accepted! Rider fleet has been alerted.");
+        alert("✓ Order accepted! Rider fleet alerted.");
       });
     }
 
-    // LOAD PRODUCTS WITH EDIT & DELETE BUTTONS
     function loadUploadedProducts(storeName) {
       db.ref("boutique_products").orderByChild("store").equalTo(storeName).on("value", function(snapshot) {
         var data = snapshot.val();
