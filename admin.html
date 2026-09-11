@@ -1,1 +1,513 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Fitin60 | Master Admin Control Deck</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen pb-20 antialiased selection:bg-orange-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 h-16 flex items-center justify-between sticky top-0 z-40">
+    <div class="flex items-center gap-2">
+      <span class="font-brand text-xl font-black text-white tracking-tight">FITIN<span class="text-orange-500">60</span></span>
+      <span class="text-[9px] bg-red-500/20 text-red-400 border border-red-500/40 font-bold px-2 py-0.5 rounded-full">SUPER ADMIN</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button id="adminLogoutBtn" onclick="adminLogout()" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl border border-rose-500/30 transition cursor-pointer">
+        🚪 Exit Deck
+      </button>
+      <a href="index.html" class="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-xl border border-slate-700 transition">
+        ← Store
+      </a>
+    </div>
+  </header>
+
+  <main class="w-full max-w-5xl mx-auto px-4 mt-6 space-y-6">
+
+    <!-- 1. ADMIN AUTHENTICATION GATEWAY -->
+    <div id="adminAuthBox" class="max-w-sm mx-auto bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-2xl space-y-4 text-center">
+      <div class="w-12 h-12 bg-orange-500/20 text-orange-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-orange-500/30">🛡️</div>
+      <h2 class="font-brand font-black text-lg text-white">Master Security Deck</h2>
+      <p class="text-xs text-slate-400">Enter master credentials to moderate platforms, dispatches, and catalog.</p>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-left">
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Master Access Key / Passcode</label>
+          <input type="password" id="adminKeyInput" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-xs font-mono tracking-widest text-center text-white focus:outline-none focus:border-orange-500">
+        </div>
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-orange-600/20 cursor-pointer">
+          Unlock Master Control ➔
+        </button>
+      </form>
+    </div>
+
+    <!-- 2. ADMIN DASHBOARD DECK -->
+    <div id="adminDeck" class="hidden space-y-6">
+
+      <!-- Platform Overview Metrics -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Active Boutiques</p>
+          <p class="font-mono-num font-black text-2xl text-white mt-1" id="metricBoutiques">0</p>
+        </div>
+        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Published Products</p>
+          <p class="font-mono-num font-black text-2xl text-white mt-1" id="metricProducts">0</p>
+        </div>
+        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Total Fleet Riders</p>
+          <p class="font-mono-num font-black text-2xl text-white mt-1" id="metricRiders">0</p>
+        </div>
+        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Total Platform Orders</p>
+          <p class="font-mono-num font-black text-2xl text-orange-400 mt-1" id="metricOrders">0</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar border-b border-slate-800 pb-2">
+        <button onclick="switchAdminTab('catalog')" id="tabCatalog" class="bg-orange-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer shrink-0">
+          🛍️ Catalog & Moderation
+        </button>
+        <button onclick="switchAdminTab('orders')" id="tabOrders" class="bg-slate-900 text-slate-400 hover:text-white font-bold text-xs px-4 py-2 rounded-xl border border-slate-800 transition cursor-pointer shrink-0">
+          📦 Live Orders & OTPs
+        </button>
+        <button onclick="switchAdminTab('boutiques')" id="tabBoutiques" class="bg-slate-900 text-slate-400 hover:text-white font-bold text-xs px-4 py-2 rounded-xl border border-slate-800 transition cursor-pointer shrink-0">
+          🏬 Boutique Partners
+        </button>
+        <button onclick="switchAdminTab('riders')" id="tabRiders" class="bg-slate-900 text-slate-400 hover:text-white font-bold text-xs px-4 py-2 rounded-xl border border-slate-800 transition cursor-pointer shrink-0">
+          🛵 Rider Fleet
+        </button>
+      </div>
+
+      <!-- TAB 1: CATALOG & ANTI-FAKE MODERATION (EDIT + DELETE) -->
+      <div id="deckCatalog" class="space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="font-brand font-bold text-sm uppercase text-slate-200">Live Outfits Feed</h3>
+          <span class="text-[11px] text-slate-400">Moderate fake prices, titles, or delete instantly</span>
+        </div>
+        <div id="adminCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+      </div>
+
+      <!-- TAB 2: LIVE ORDERS MONITOR -->
+      <div id="deckOrders" class="space-y-4 hidden">
+        <div class="flex justify-between items-center">
+          <h3 class="font-brand font-bold text-sm uppercase text-slate-200">Dispatches & Orders</h3>
+          <span class="text-[11px] text-slate-400">Real-time OTPs and Status</span>
+        </div>
+        <div id="adminOrdersContainer" class="space-y-2.5"></div>
+      </div>
+
+      <!-- TAB 3: BOUTIQUE PARTNERS -->
+      <div id="deckBoutiques" class="space-y-4 hidden">
+        <div class="flex justify-between items-center">
+          <h3 class="font-brand font-bold text-sm uppercase text-slate-200">Registered Boutique Stores</h3>
+          <span class="text-[11px] text-slate-400">Location GPS & Account Control</span>
+        </div>
+        <div id="adminBoutiquesContainer" class="space-y-2.5"></div>
+      </div>
+
+      <!-- TAB 4: FLEET RIDERS -->
+      <div id="deckRiders" class="space-y-4 hidden">
+        <div class="flex justify-between items-center">
+          <h3 class="font-brand font-bold text-sm uppercase text-slate-200">Active Delivery Fleet</h3>
+          <span class="text-[11px] text-slate-400">Rider Contact & Security PINs</span>
+        </div>
+        <div id="adminRidersContainer" class="space-y-2.5"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MASTER EDIT PRODUCT MODAL -->
+  <div id="adminEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 space-y-4 text-slate-100 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">✏️</span>
+          <div>
+            <h3 class="font-brand font-bold text-sm text-white">Moderate & Edit Outfit</h3>
+            <p class="text-[10px] text-slate-400">Super Admin Direct Override</p>
+          </div>
+        </div>
+        <button onclick="closeAdminEditModal()" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <form onsubmit="handleAdminSaveEdit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="editKey">
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
+          <input type="text" id="editName" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-orange-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Category</label>
+            <select id="editCategory" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-orange-500 font-bold">
+              <option value="Saree">🥻 Saree</option>
+              <option value="Kurti">👗 Kurti</option>
+              <option value="Kids">🧸 Kids Wear</option>
+              <option value="Lehenga">✨ Lehenga</option>
+              <option value="Men">👔 Men's Wear</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Boutique Name</label>
+            <input type="text" id="editStore" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-orange-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
+            <input type="number" id="editPrice" required class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 font-mono text-white focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Original Price (₹)</label>
+            <input type="number" id="editOriginal" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 font-mono text-white focus:outline-none focus:border-orange-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes (comma separated)</label>
+          <input type="text" id="editSizes" placeholder="Free size, S, M, L" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-orange-500">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Description</label>
+          <textarea id="editDesc" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-orange-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button type="button" onclick="closeAdminEditModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" id="saveEditBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+            ✓ Save Updates
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
+      authDomain: "fitin60.firebaseapp.com",
+      databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
+      projectId: "fitin60",
+      storageBucket: "fitin60.firebasestorage.app",
+      messagingSenderId: "349862141371",
+      appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const MASTER_ADMIN_PASSCODE = "admin4545";
+    var loadedProductsData = {};
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      var key = document.getElementById("adminKeyInput").value.trim();
+      if (key === MASTER_ADMIN_PASSCODE) {
+        localStorage.setItem("fitin60_super_admin", "authenticated");
+        initAdminDeck();
+      } else {
+        alert("❌ Invalid Master Passcode!");
+      }
+    }
+
+    function initAdminDeck() {
+      document.getElementById("adminAuthBox").classList.add("hidden");
+      document.getElementById("adminDeck").classList.remove("hidden");
+      document.getElementById("adminLogoutBtn").classList.remove("hidden");
+      loadAllPlatformData();
+    }
+
+    function adminLogout() {
+      localStorage.removeItem("fitin60_super_admin");
+      document.getElementById("adminAuthBox").classList.remove("hidden");
+      document.getElementById("adminDeck").classList.add("hidden");
+      document.getElementById("adminLogoutBtn").classList.add("hidden");
+      document.getElementById("adminKeyInput").value = "";
+    }
+
+    function switchAdminTab(tab) {
+      var tabs = ['catalog', 'orders', 'boutiques', 'riders'];
+      tabs.forEach(function(t) {
+        document.getElementById('deck' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('hidden');
+        var btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+        btn.className = "bg-slate-900 text-slate-400 hover:text-white font-bold text-xs px-4 py-2 rounded-xl border border-slate-800 transition cursor-pointer shrink-0";
+      });
+
+      document.getElementById('deck' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "bg-orange-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer shrink-0";
+    }
+
+    function loadAllPlatformData() {
+      db.ref("boutiques").on("value", function(snap) {
+        var data = snap.val() || {};
+        document.getElementById("metricBoutiques").innerText = Object.values(data).length;
+        renderAdminBoutiques(data);
+      });
+
+      db.ref("boutique_products").on("value", function(snap) {
+        var data = snap.val() || {};
+        loadedProductsData = data;
+        document.getElementById("metricProducts").innerText = Object.keys(data).length;
+        renderAdminCatalog(data);
+      });
+
+      db.ref("riders").on("value", function(snap) {
+        var data = snap.val() || {};
+        document.getElementById("metricRiders").innerText = Object.values(data).length;
+        renderAdminRiders(data);
+      });
+
+      db.ref("orders").on("value", function(snap) {
+        var data = snap.val() || {};
+        document.getElementById("metricOrders").innerText = Object.values(data).length;
+        renderAdminOrders(data);
+      });
+    }
+
+    // Render Catalog with EDIT + DELETE
+    function renderAdminCatalog(data) {
+      var grid = document.getElementById("adminCatalogGrid");
+      var keys = Object.keys(data);
+
+      if (keys.length === 0) {
+        grid.innerHTML = "<p class='col-span-full py-8 text-center text-slate-500 text-xs'>No products in database.</p>";
+        return;
+      }
+
+      var html = "";
+      keys.reverse().forEach(function(k) {
+        var p = data[k];
+        html += 
+          '<div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden p-3 space-y-2.5 flex flex-col justify-between">' +
+            '<div class="space-y-2">' +
+              '<div class="relative h-40 bg-slate-950 rounded-xl overflow-hidden">' +
+                '<img src="' + p.image + '" class="w-full h-full object-cover">' +
+                '<span class="absolute top-2 left-2 bg-slate-950/80 text-orange-400 font-bold text-[9px] px-2 py-0.5 rounded">' + (p.category || 'General') + '</span>' +
+              '</div>' +
+              '<div>' +
+                '<h4 class="font-bold text-xs text-white truncate">' + p.name + '</h4>' +
+                '<p class="text-[10px] text-slate-400">Store: <strong class="text-slate-200">' + p.store + '</strong></p>' +
+                '<p class="font-mono-num font-black text-sm text-slate-100 mt-1">₹' + p.price + '</p>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="grid grid-cols-2 gap-1.5 pt-2 border-t border-slate-800/80">' +
+              '<button onclick="openAdminEditModal(\'' + k + '\')" class="bg-blue-500/10 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-500/20 font-bold py-2 rounded-xl text-[11px] transition cursor-pointer text-center">' +
+                '✏️ Edit' +
+              '</button>' +
+              '<button onclick="adminDeleteProductPermanent(\'' + k + '\')" class="bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/20 font-bold py-2 rounded-xl text-[11px] transition cursor-pointer text-center">' +
+                '🗑️ Delete' +
+              '</button>' +
+            '</div>' +
+
+          '</div>';
+      });
+      grid.innerHTML = html;
+    }
+
+    // Open Edit Modal
+    function openAdminEditModal(key) {
+      var p = loadedProductsData[key];
+      if (!p) return;
+
+      document.getElementById("editKey").value = key;
+      document.getElementById("editName").value = p.name || "";
+      document.getElementById("editCategory").value = p.category || "Saree";
+      document.getElementById("editStore").value = p.store || "";
+      document.getElementById("editPrice").value = p.price || 0;
+      document.getElementById("editOriginal").value = p.originalPrice || "";
+      document.getElementById("editSizes").value = (p.sizes || []).join(", ");
+      document.getElementById("editDesc").value = p.desc || "";
+
+      document.getElementById("adminEditModal").classList.remove("hidden");
+    }
+
+    function closeAdminEditModal() {
+      document.getElementById("adminEditModal").classList.add("hidden");
+    }
+
+    function handleAdminSaveEdit(e) {
+      e.preventDefault();
+      var key = document.getElementById("editKey").value;
+      if (!key) return;
+
+      var btn = document.getElementById("saveEditBtn");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
+
+      var sizesStr = document.getElementById("editSizes").value.trim();
+      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
+
+      var updateData = {
+        name: document.getElementById("editName").value.trim(),
+        category: document.getElementById("editCategory").value,
+        store: document.getElementById("editStore").value.trim(),
+        price: parseInt(document.getElementById("editPrice").value),
+        originalPrice: parseInt(document.getElementById("editOriginal").value) || 0,
+        sizes: sizes,
+        desc: document.getElementById("editDesc").value.trim(),
+        moderatedByAdmin: true,
+        lastModeratedAt: Date.now()
+      };
+
+      db.ref("boutique_products/" + key).update(updateData).then(function() {
+        alert("✓ Product updated successfully by Super Admin!");
+        btn.disabled = false;
+        btn.innerText = "✓ Save Updates";
+        closeAdminEditModal();
+      });
+    }
+
+    function adminDeleteProductPermanent(key) {
+      if (confirm("Master Admin Action: Permanently delete this product from the platform?")) {
+        db.ref("boutique_products/" + key).remove().then(function() {
+          alert("✓ Outfit removed from platform.");
+        });
+      }
+    }
+
+    // Render Live Orders
+    function renderAdminOrders(data) {
+      var container = document.getElementById("adminOrdersContainer");
+      var list = Object.values(data).reverse();
+
+      if (list.length === 0) {
+        container.innerHTML = "<p class='py-8 text-center text-slate-500 text-xs'>No orders placed yet.</p>";
+        return;
+      }
+
+      var html = "";
+      list.forEach(function(o) {
+        html += 
+          '<div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">' +
+            '<div>' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="font-mono font-bold text-white">' + o.orderId + '</span>' +
+                '<span class="text-[10px] bg-slate-800 text-orange-400 px-2 py-0.5 rounded font-bold">' + (o.paymentMethod || 'Doorstep') + '</span>' +
+                '<span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-bold">OTP: ' + (o.deliveryOtp || '----') + '</span>' +
+              '</div>' +
+              '<p class="text-[11px] text-slate-400 mt-1">Store: <strong class="text-slate-200">' + o.store + '</strong> ➔ Customer: <strong class="text-slate-200">' + o.customerName + ' (' + o.customerPhone + ')</strong></p>' +
+              '<p class="text-[10px] text-slate-500">Status: ' + o.paymentStatus + '</p>' +
+            '</div>' +
+            '<div class="flex items-center gap-2 shrink-0">' +
+              '<span class="font-mono-num font-black text-sm text-white">₹' + o.totalAmount + '</span>' +
+              '<button onclick="adminDeleteOrderPermanent(\'' + o.orderId + '\')" class="text-rose-400 hover:text-white bg-rose-500/10 hover:bg-rose-600 p-1.5 rounded-lg border border-rose-500/20 text-[11px] cursor-pointer" title="Purge Order">' +
+                '🗑️' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function adminDeleteOrderPermanent(orderId) {
+      if (confirm("Master Admin Action: Permanently delete order " + orderId + "?")) {
+        db.ref("orders/" + orderId).remove();
+      }
+    }
+
+    // Render Boutiques
+    function renderAdminBoutiques(data) {
+      var container = document.getElementById("adminBoutiquesContainer");
+      var keys = Object.keys(data);
+
+      if (keys.length === 0) {
+        container.innerHTML = "<p class='py-8 text-center text-slate-500 text-xs'>No boutiques registered.</p>";
+        return;
+      }
+
+      var html = "";
+      keys.forEach(function(mobile) {
+        var b = data[mobile];
+        html += 
+          '<div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex items-center justify-between text-xs">' +
+            '<div>' +
+              '<h4 class="font-bold text-white text-sm">' + b.storeName + '</h4>' +
+              '<p class="text-[11px] text-slate-400">📍 ' + b.area + ' • Mobile: ' + mobile + '</p>' +
+              '<p class="text-[10px] font-mono text-slate-500">Coordinates: ' + (b.lat || '14.6819') + ', ' + (b.lng || '77.6006') + '</p>' +
+            '</div>' +
+            '<button onclick="adminDeleteBoutique(\'' + mobile + '\')" class="bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/20 px-3 py-1.5 rounded-xl font-bold text-[11px] cursor-pointer">' +
+              'Remove Store' +
+            '</button>' +
+          '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function adminDeleteBoutique(mobile) {
+      if (confirm("Master Admin Action: Remove this boutique account?")) {
+        db.ref("boutiques/" + mobile).remove();
+      }
+    }
+
+    // Render Riders
+    function renderAdminRiders(data) {
+      var container = document.getElementById("adminRidersContainer");
+      var keys = Object.keys(data);
+
+      if (keys.length === 0) {
+        container.innerHTML = "<p class='py-8 text-center text-slate-500 text-xs'>No riders registered.</p>";
+        return;
+      }
+
+      var html = "";
+      keys.forEach(function(mobile) {
+        var r = data[mobile];
+        html += 
+          '<div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl flex items-center justify-between text-xs">' +
+            '<div>' +
+              '<h4 class="font-bold text-white text-sm">' + r.name + ' (' + (r.vehicle || 'Bike') + ')</h4>' +
+              '<p class="text-[11px] text-slate-400">ID: #' + r.riderId + ' • Mobile: ' + mobile + '</p>' +
+            '</div>' +
+            '<button onclick="adminDeleteRider(\'' + mobile + '\')" class="bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/20 px-3 py-1.5 rounded-xl font-bold text-[11px] cursor-pointer">' +
+              'Remove Rider' +
+            '</button>' +
+          '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function adminDeleteRider(mobile) {
+      if (confirm("Master Admin Action: Remove this rider from fleet?")) {
+        db.ref("riders/" + mobile).remove();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      if (localStorage.getItem("fitin60_super_admin") === "authenticated") {
+        initAdminDeck();
+      }
+    });
+  </script>
+</body>
+</html>
