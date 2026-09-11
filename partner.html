@@ -50,17 +50,17 @@
 
   <main class="w-full max-w-xl mx-auto px-4 mt-5 space-y-5">
 
-    <!-- 1. AUTH GATEWAY (SHOWN WHEN LOGGED OUT) -->
+    <!-- 1. AUTH GATEWAY -->
     <div id="partnerAuthSection" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl space-y-4">
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🏬</div>
         <h2 id="partnerAuthTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Boutique Merchant Studio</h2>
-        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Manage your catalog, stock, and live incoming dispatches.</p>
+        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Manage catalog, 15KM radar boundary, and orders.</p>
       </div>
 
       <div id="partnerTabsNav" class="flex bg-slate-100 p-1 rounded-2xl">
         <button onclick="switchPartnerTab('login')" id="tabBoutiqueLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Merchant Login</button>
-        <button onclick="switchPartnerTab('register')" id="tabBoutiqueRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register New Boutique</button>
+        <button onclick="switchPartnerTab('register')" id="tabBoutiqueRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register Boutique</button>
       </div>
 
       <!-- Login Form -->
@@ -81,7 +81,7 @@
         </button>
       </form>
 
-      <!-- Register Form -->
+      <!-- Register Form with 15km Location Setup -->
       <form id="partnerRegisterForm" onsubmit="handlePartnerRegister(event)" class="space-y-3.5 hidden">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Boutique / Store Name</label>
@@ -89,8 +89,18 @@
         </div>
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Address / Area</label>
-          <input type="text" id="regStoreArea" required placeholder="e.g., Near TV Tower, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
+          <input type="text" id="regStoreArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
         </div>
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">15-KM Radar Location Pin</label>
+          <button type="button" onclick="captureStoreGPS()" id="storeGpsBtn" class="w-full bg-orange-50 border border-orange-300 py-2.5 rounded-xl text-xs font-bold text-orange-800">
+            📍 <span id="storeGpsBtnText">Capture Store GPS for 15KM Radar</span>
+          </button>
+          <input type="hidden" id="regStoreLat" value="14.6819">
+          <input type="hidden" id="regStoreLng" value="77.6006">
+        </div>
+
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Owner Mobile Number</label>
           <input type="tel" id="regPartnerMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
@@ -139,15 +149,15 @@
           <span class="text-3xl shrink-0">🏬</span>
           <div class="min-w-0">
             <h2 class="font-brand font-black text-lg truncate" id="dashStoreName">Sai Fashions</h2>
-            <p class="text-[11px] text-slate-400 truncate" id="dashStoreArea">📍 Near TV tower</p>
+            <p class="text-[11px] text-slate-400 truncate" id="dashStoreArea">📍 Subhash Road</p>
           </div>
         </div>
         <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2.5 py-1 rounded-full shrink-0">
-          ● VERIFIED
+          ● 15KM RADAR ACTIVE
         </span>
       </div>
 
-      <!-- Financial & Orders Quick Stats -->
+      <!-- Financial Quick Stats -->
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-[10px] uppercase font-bold text-slate-400">Total Store Revenue</p>
@@ -170,28 +180,41 @@
         </div>
       </div>
 
-      <!-- Upload New Outfit Section -->
+      <!-- Upload New Outfit Section (Includes Category Selection) -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-        <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Upload New Collection</h3>
+        <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider" id="formHeaderTitle">Upload New Collection</h3>
         
-        <form onsubmit="handlePublishProduct(event)" class="space-y-3 text-xs">
+        <form onsubmit="handlePublishProduct(event)" class="space-y-3 text-xs" id="productForm">
+          <input type="hidden" id="editingProdKey" value="">
+
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Saree Name</label>
-            <input type="text" id="prodName" required placeholder="e.g., Dharmavaram Pattu Saree" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
+            <input type="text" id="prodName" required placeholder="e.g., Kids Silk Pattu Pavadai" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+          </div>
+
+          <!-- Category Selection including KIDS WEAR -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Outfit Category</label>
+            <select id="prodCategory" required class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800">
+              <option value="Saree">🥻 Saree</option>
+              <option value="Kurti">👗 Kurti / Anarkali</option>
+              <option value="Lehenga">✨ Lehenga / Ethnic</option>
+              <option value="Kids">🧸 Kids Wear (Boys & Girls)</option>
+              <option value="Men">👔 Men's Wear</option>
+            </select>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
-              <input type="number" id="prodPrice" required placeholder="1999" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
+              <input type="number" id="prodPrice" required placeholder="1499" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
             </div>
             <div>
               <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Original Price (₹)</label>
-              <input type="number" id="prodOriginal" placeholder="2999" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
+              <input type="number" id="prodOriginal" placeholder="2499" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
             </div>
           </div>
 
-          <!-- Multiple Photos Picker -->
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Product Images (Up to 4 Photos)</label>
             <input type="file" id="prodPhotosInput" accept="image/*" multiple onchange="previewUploadedPhotos(event)" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
@@ -200,29 +223,37 @@
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes (comma separated)</label>
-            <input type="text" id="prodSizes" placeholder="Free size, S, M, L, XL" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+            <input type="text" id="prodSizes" placeholder="Free size, S, M, L, 2-3Y, 4-5Y" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
           </div>
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Description</label>
-            <textarea id="prodDesc" rows="2" placeholder="Fabric details, rich pallu, border work..." class="w-full bg-slate-50 border rounded-xl px-3.5 py-2"></textarea>
+            <textarea id="prodDesc" rows="2" placeholder="Pure fabric details, premium stitching, border work..." class="w-full bg-slate-50 border rounded-xl px-3.5 py-2"></textarea>
           </div>
 
-          <button type="submit" id="publishBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow cursor-pointer">
-            + Publish Live to Fitin60
-          </button>
+          <div class="flex gap-2">
+            <button type="submit" id="publishBtn" class="flex-1 bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow cursor-pointer">
+              + Publish Live to Fitin60
+            </button>
+            <button type="button" id="cancelEditBtn" onclick="cancelProductEdit()" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-3.5 rounded-2xl text-xs uppercase cursor-pointer">
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
 
-      <!-- Manage Uploaded Outfits -->
+      <!-- Manage & Edit Uploaded Outfits (Anti-Fake / Removal Control) -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-        <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Manage Uploaded Outfits</h3>
+        <div class="flex justify-between items-center">
+          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Manage Store Outfits</h3>
+          <span class="text-[10px] text-slate-400 font-medium">Edit details or remove fake items</span>
+        </div>
         <div id="myUploadedProductsList" class="space-y-2">
           <p class="text-slate-400 text-center py-4 text-xs">No custom outfits uploaded yet.</p>
         </div>
       </div>
 
-      <!-- REDESIGNED COMPACT DANGER ZONE (Clean, Subtle & Small) -->
+      <!-- Compact Danger Zone -->
       <div class="p-3.5 rounded-2xl bg-rose-50/50 border border-rose-100 flex items-center justify-between text-xs">
         <div>
           <span class="font-bold text-rose-900 text-[11px] block">Store Management</span>
@@ -253,6 +284,21 @@
 
     var currentPartner = null;
     var uploadedPhotosBase64 = [];
+    var currentStoreProducts = {};
+
+    function captureStoreGPS() {
+      var btnText = document.getElementById("storeGpsBtnText");
+      if (navigator.geolocation) {
+        btnText.innerText = "Locating Exact GPS Coordinates...";
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          document.getElementById("regStoreLat").value = pos.coords.latitude;
+          document.getElementById("regStoreLng").value = pos.coords.longitude;
+          btnText.innerText = "✓ Store GPS Saved (" + pos.coords.latitude.toFixed(4) + ", " + pos.coords.longitude.toFixed(4) + ")";
+        }, function() {
+          alert("Could not fetch GPS. Setting default location.");
+        });
+      }
+    }
 
     function switchPartnerTab(tab) {
       var logF = document.getElementById("partnerLoginForm");
@@ -265,14 +311,14 @@
 
       if (tab === 'login') {
         document.getElementById("partnerAuthTitle").innerText = "Boutique Merchant Studio";
-        document.getElementById("partnerAuthSubtitle").innerText = "Manage your catalog, stock, and live incoming dispatches.";
+        document.getElementById("partnerAuthSubtitle").innerText = "Manage catalog, 15KM radar boundary, and orders.";
         logF.classList.remove("hidden");
         regF.classList.add("hidden");
         document.getElementById("tabBoutiqueLogin").classList.add("bg-white", "text-slate-950", "shadow-sm");
         document.getElementById("tabBoutiqueRegister").classList.remove("bg-white", "text-slate-950", "shadow-sm");
       } else {
         document.getElementById("partnerAuthTitle").innerText = "Register New Boutique";
-        document.getElementById("partnerAuthSubtitle").innerText = "Join the 60-min express hyperlocal fashion network.";
+        document.getElementById("partnerAuthSubtitle").innerText = "Join the 15KM express hyperlocal fashion network.";
         logF.classList.add("hidden");
         regF.classList.remove("hidden");
         document.getElementById("tabBoutiqueRegister").classList.add("bg-white", "text-slate-950", "shadow-sm");
@@ -324,8 +370,17 @@
       var area = document.getElementById("regStoreArea").value.trim();
       var mobile = document.getElementById("regPartnerMobile").value.trim();
       var pin = document.getElementById("regPartnerPin").value.trim();
+      var lat = parseFloat(document.getElementById("regStoreLat").value) || 14.6819;
+      var lng = parseFloat(document.getElementById("regStoreLng").value) || 77.6006;
 
-      var newPartner = { storeName: store, area: area, mobile: mobile, pin: pin };
+      var newPartner = { 
+        storeName: store, 
+        area: area, 
+        mobile: mobile, 
+        pin: pin,
+        lat: lat,
+        lng: lng
+      };
 
       db.ref("boutiques/" + mobile).set(newPartner).then(function() {
         alert("✓ Boutique Registered Successfully!");
@@ -347,7 +402,7 @@
         if (partner && partner.pin === pin) {
           partnerLoginSuccess(partner);
         } else {
-          alert("Invalid Mobile or PIN! Please register if you are new.");
+          alert("Invalid Mobile or PIN!");
           btn.disabled = false;
           btn.innerText = "Access Store Studio ➔";
         }
@@ -406,49 +461,84 @@
       });
     }
 
+    // Publish OR Edit/Update Existing Product
     function handlePublishProduct(e) {
       e.preventDefault();
       if (!currentPartner) return;
 
+      var editingKey = document.getElementById("editingProdKey").value;
       var name = document.getElementById("prodName").value.trim();
+      var category = document.getElementById("prodCategory").value;
       var price = parseInt(document.getElementById("prodPrice").value);
       var orig = parseInt(document.getElementById("prodOriginal").value) || Math.round(price * 1.4);
       var sizesStr = document.getElementById("prodSizes").value.trim();
       var desc = document.getElementById("prodDesc").value.trim();
 
       var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
-      var mainImg = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64[0] : "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80";
+      var mainImg = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64[0] : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].image : "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80");
+      var imgList = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64 : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].images : [mainImg]);
 
       var btn = document.getElementById("publishBtn");
       btn.disabled = true;
-      btn.innerText = "Publishing...";
+      btn.innerText = editingKey ? "Updating..." : "Publishing...";
 
-      var newProdKey = db.ref("boutique_products").push().key;
+      var targetKey = editingKey || db.ref("boutique_products").push().key;
+
       var productData = {
-        id: newProdKey,
+        id: targetKey,
         name: name,
+        category: category,
         price: price,
         originalPrice: orig,
         discount: "SPECIAL OFFER",
         sizes: sizes,
         desc: desc,
         image: mainImg,
-        images: uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64 : [mainImg],
+        images: imgList,
         store: currentPartner.storeName,
         area: currentPartner.area,
+        lat: currentPartner.lat || 14.6819,
+        lng: currentPartner.lng || 77.6006,
         eta: "35 MINS",
         rating: "5.0",
         timestamp: Date.now()
       };
 
-      db.ref("boutique_products/" + newProdKey).set(productData).then(function() {
-        alert("✓ Product Published Live to Fitin60 Store!");
-        e.target.reset();
-        document.getElementById("photosPreviewContainer").innerHTML = "";
-        uploadedPhotosBase64 = [];
+      db.ref("boutique_products/" + targetKey).set(productData).then(function() {
+        alert(editingKey ? "✓ Outfit Updated Successfully!" : "✓ Product Published Live to Fitin60 Store!");
+        cancelProductEdit();
         btn.disabled = false;
-        btn.innerText = "+ Publish Live to Fitin60";
       });
+    }
+
+    // Trigger Outfit Edit (Anti-Fake modification)
+    function startEditProduct(key) {
+      var prod = currentStoreProducts[key];
+      if (!prod) return;
+
+      document.getElementById("editingProdKey").value = key;
+      document.getElementById("prodName").value = prod.name;
+      document.getElementById("prodCategory").value = prod.category || "Saree";
+      document.getElementById("prodPrice").value = prod.price;
+      document.getElementById("prodOriginal").value = prod.originalPrice || "";
+      document.getElementById("prodSizes").value = (prod.sizes || []).join(", ");
+      document.getElementById("prodDesc").value = prod.desc || "";
+
+      document.getElementById("formHeaderTitle").innerText = "Edit Outfit Details";
+      document.getElementById("publishBtn").innerText = "✓ Save Changes";
+      document.getElementById("cancelEditBtn").classList.remove("hidden");
+
+      window.scrollTo({ top: document.getElementById("productForm").offsetTop - 80, behavior: 'smooth' });
+    }
+
+    function cancelProductEdit() {
+      document.getElementById("editingProdKey").value = "";
+      document.getElementById("productForm").reset();
+      document.getElementById("photosPreviewContainer").innerHTML = "";
+      uploadedPhotosBase64 = [];
+      document.getElementById("formHeaderTitle").innerText = "Upload New Collection";
+      document.getElementById("publishBtn").innerText = "+ Publish Live to Fitin60";
+      document.getElementById("cancelEditBtn").classList.add("hidden");
     }
 
     function loadStoreOrders(storeName) {
@@ -518,6 +608,7 @@
       db.ref("boutique_products").orderByChild("store").equalTo(storeName).on("value", function(snapshot) {
         var data = snapshot.val();
         var container = document.getElementById("myUploadedProductsList");
+        currentStoreProducts = data || {};
 
         if (!data) {
           container.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No custom outfits uploaded yet.</p>";
@@ -529,14 +620,17 @@
           var p = data[k];
           html += 
             '<div class="p-2.5 bg-slate-50 border rounded-xl flex items-center justify-between text-xs">' +
-              '<div class="flex items-center gap-2.5">' +
-                '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg border">' +
-                '<div>' +
-                  '<p class="font-bold text-slate-900 truncate max-w-[150px]">' + p.name + '</p>' +
-                  '<p class="font-mono-num text-[11px] text-slate-500">₹' + p.price + '</p>' +
+              '<div class="flex items-center gap-2.5 min-w-0 pr-2">' +
+                '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg border shrink-0">' +
+                '<div class="min-w-0">' +
+                  '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
+                  '<p class="font-mono-num text-[11px] text-slate-500">₹' + p.price + ' • <span class="text-orange-600 font-bold">' + (p.category || 'General') + '</span></p>' +
                 '</div>' +
               '</div>' +
-              '<button onclick="deleteProductPermanent(\'' + k + '\')" class="text-rose-600 hover:bg-rose-100 p-1.5 rounded-lg font-bold cursor-pointer transition">🗑️</button>' +
+              '<div class="flex items-center gap-1.5 shrink-0">' +
+                '<button onclick="startEditProduct(\'' + k + '\')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-lg font-bold cursor-pointer transition text-[11px]">✏️ Edit</button>' +
+                '<button onclick="deleteProductPermanent(\'' + k + '\')" class="text-rose-600 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg font-bold cursor-pointer transition text-[11px]">🗑️ Delete</button>' +
+              '</div>' +
             '</div>';
         });
         container.innerHTML = html;
@@ -544,8 +638,10 @@
     }
 
     function deleteProductPermanent(key) {
-      if (confirm("Remove this outfit from Fitin60 live store?")) {
-        db.ref("boutique_products/" + key).remove();
+      if (confirm("Remove this outfit completely from Fitin60 live store?")) {
+        db.ref("boutique_products/" + key).remove().then(function() {
+          alert("✓ Outfit removed from store.");
+        });
       }
     }
 
