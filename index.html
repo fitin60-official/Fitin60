@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Fitin60 | 60-Minute Hyperlocal Fashion Radar</title>
+  <title>Fitin60 | 60-Minute Hyperlocal Fashion Radar (15KM Radius)</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ea580c">
@@ -58,7 +58,7 @@
   <!-- Top Bar -->
   <div class="bg-gradient-to-r from-slate-950 via-neutral-900 to-slate-950 text-white text-[10px] sm:text-[11px] font-bold py-1.5 px-3 text-center tracking-wider flex items-center justify-center gap-1.5 border-b border-slate-800">
     <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 EXPRESS</strong> • 60-Min Doorstep Dispatch</span>
+    <span>⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • 60-Min Drops</span>
   </div>
 
   <!-- Header -->
@@ -67,7 +67,7 @@
       <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
         FITIN<span class="text-orange-600">60</span>
       </span>
-      <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-1.5 py-0.5 rounded-full border border-orange-200">RADAR</span>
+      <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-1.5 py-0.5 rounded-full border border-orange-200">15KM</span>
     </a>
 
     <div class="flex items-center gap-2 shrink-0">
@@ -108,27 +108,50 @@
     </button>
   </div>
 
-  <!-- Search & Category Filters -->
+  <!-- Search & Category Filters (Includes KIDS WEAR) -->
   <section class="w-full px-4 mt-4 space-y-3">
     <div class="relative">
       <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">🔍</span>
       <input type="text" id="storeSearchInput" oninput="handleSearchAndFilter()" placeholder="Search boutique name or outfit style..." class="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-orange-500">
     </div>
 
+    <!-- Category Chips with Kids Wear Added -->
     <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold" id="categoryChips">
       <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0">All Outfits</button>
       <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">🥻 Sarees</button>
       <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">👗 Kurtis</button>
+      <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">🧸 Kids Wear</button>
       <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">✨ Lehengas</button>
       <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">👔 Men's Wear</button>
+    </div>
+  </section>
+
+  <!-- 15KM Radar Banner with Location Sync -->
+  <section class="w-full px-4 mt-4">
+    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-5 text-white shadow-xl border border-slate-800 w-full">
+      <div class="flex justify-between items-center mb-2">
+        <div class="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-orange-300">
+          <span class="w-2 h-2 rounded-full bg-orange-400 badge-pulse"></span> 15-KM Hyperlocal Zone
+        </div>
+        <button onclick="syncCustomerGPS(true)" class="text-[10px] font-bold bg-orange-600/80 hover:bg-orange-500 text-white px-2.5 py-1 rounded-xl transition">
+          📍 <span id="radarGpsStatus">Sync GPS</span>
+        </button>
+      </div>
+
+      <h1 class="font-brand text-xl sm:text-3xl font-black tracking-tight leading-tight text-white">
+        Boutiques within <span class="text-orange-400">15 Kilometers</span>. Delivered in 60 Mins.
+      </h1>
+      <p class="text-slate-400 text-[11px] mt-1.5 leading-relaxed">
+        Only active local fashion showrooms near you appear here for guaranteed express delivery.
+      </p>
     </div>
   </section>
 
   <!-- Active Boutiques Section -->
   <main class="w-full px-4 mt-6">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="font-brand font-black text-xl text-slate-950">Active Boutiques</h2>
-      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Syncing...</span>
+      <h2 class="font-brand font-black text-xl text-slate-950">Boutiques in 15KM</h2>
+      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Scanning Radar...</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full" id="boutiqueStoreGrid"></div>
   </main>
@@ -144,11 +167,10 @@
     <span class="text-xl">🎧</span>
   </button>
 
-  <!-- IN-APP SUPPORT HUB MODAL (Clean, Professional & Native Feel) -->
+  <!-- In-App Support Hub Modal -->
   <div id="supportModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative border border-slate-200">
       
-      <!-- Modal Header -->
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2">
           <div class="w-9 h-9 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-lg">🎧</div>
@@ -160,7 +182,6 @@
         <button onclick="closeSupportModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">&times;</button>
       </div>
 
-      <!-- Quick Assistance Actions -->
       <div class="space-y-2">
         <a href="tracking.html" class="flex items-center justify-between p-3 rounded-2xl bg-orange-50/70 border border-orange-200 hover:bg-orange-100/70 transition">
           <div class="flex items-center gap-2.5">
@@ -183,17 +204,16 @@
         </div>
       </div>
 
-      <!-- Common FAQs Accordion -->
       <div class="pt-2 border-t border-slate-100 space-y-2">
         <h4 class="text-[10px] font-black uppercase tracking-wider text-slate-400">Frequently Asked Questions</h4>
         
         <details class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs group cursor-pointer">
           <summary class="font-bold text-slate-900 list-none flex justify-between items-center">
-            <span>⚡ How fast is 60-Min delivery?</span>
+            <span>📍 Why is there a 15KM limit?</span>
             <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
           </summary>
           <p class="text-slate-500 text-[11px] mt-1.5 leading-relaxed">
-            Our delivery partners pick up your outfit directly from the nearest boutique in your locality and deliver straight to your doorstep within 60 minutes of store confirmation.
+            To strictly ensure 60-minute express doorstep delivery, our fleet operates exclusively within a 15-kilometer radar from partner boutiques.
           </p>
         </details>
 
@@ -203,17 +223,7 @@
             <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
           </summary>
           <p class="text-slate-500 text-[11px] mt-1.5 leading-relaxed">
-            You can verify the size right when the rider arrives at your doorstep. If there is a sizing issue, you can request an instant size replacement through our support line.
-          </p>
-        </details>
-
-        <details class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs group cursor-pointer">
-          <summary class="font-bold text-slate-900 list-none flex justify-between items-center">
-            <span>💵 Which payment modes are accepted?</span>
-            <span class="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-          </summary>
-          <p class="text-slate-500 text-[11px] mt-1.5 leading-relaxed">
-            You can pay comfortably at your doorstep using Cash or scan any UPI QR (PhonePe, Google Pay, Paytm) with our delivery partner.
+            Verify fit when rider arrives at doorstep. Instant replacements can be coordinated via our local support line.
           </p>
         </details>
       </div>
@@ -488,12 +498,20 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // Default Customer coordinates (Upparapalli/Anantapur core)
+    var currentCustLat = 14.6819;
+    var currentCustLng = 77.6006;
+    var isGpsSynced = false;
+
     var baseProducts = [
       {
         id: "base_1",
         name: "Floral Designer Anarkali Kurta Set",
         store: "Anu Ram Fashions",
+        category: "Kurti",
         area: "Subhash Road, Anantapur",
+        lat: 14.6819,
+        lng: 77.6006,
         price: 899,
         originalPrice: 1499,
         discount: "40% OFF",
@@ -517,6 +535,36 @@
     var currentCategoryFilter = "All";
     var deferredPrompt = null;
     var toastTimer = null;
+
+    // Haversine Distance Formula (In Kilometers)
+    function calculateDistanceKm(lat1, lon1, lat2, lon2) {
+      var R = 6371; // Earth's radius in KM
+      var dLat = (lat2 - lat1) * Math.PI / 180;
+      var dLon = (lon2 - lon1) * Math.PI / 180;
+      var a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function syncCustomerGPS(showNotification) {
+      if (navigator.geolocation) {
+        document.getElementById("radarGpsStatus").innerText = "Syncing...";
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          currentCustLat = pos.coords.latitude;
+          currentCustLng = pos.coords.longitude;
+          isGpsSynced = true;
+          document.getElementById("radarGpsStatus").innerText = "✓ 15KM Radar Active";
+          if (showNotification) showQuickToast("✓ GPS Synced to Current Location");
+          renderBoutiqueStores();
+        }, function() {
+          document.getElementById("radarGpsStatus").innerText = "15KM Default Area";
+          renderBoutiqueStores();
+        }, { enableHighAccuracy: true });
+      }
+    }
 
     function openSupportModal() {
       document.getElementById("supportModal").classList.remove("hidden");
@@ -767,6 +815,7 @@
       renderBoutiqueStores();
     }
 
+    // STRICT 15-KM RADIUS + CATEGORY (INCL. KIDS WEAR) FILTERING
     function getGroupedStores() {
       var all = cloudProducts.concat(baseProducts);
       var searchKeyword = document.getElementById("storeSearchInput").value.trim().toLowerCase();
@@ -776,15 +825,30 @@
         var storeName = p.store || "Boutique Studio";
         var outfitName = (p.name || "").toLowerCase();
         var storeArea = (p.area || "").toLowerCase();
+        var category = (p.category || "").toLowerCase();
 
+        // 1. Calculate Distance from Customer Location
+        var storeLat = parseFloat(p.lat) || 14.6819;
+        var storeLng = parseFloat(p.lng) || 77.6006;
+        var distanceKm = calculateDistanceKm(currentCustLat, currentCustLng, storeLat, storeLng);
+
+        // Strict 15 KM boundary check
+        var isWithin15Km = (distanceKm <= 15.0);
+
+        // 2. Search Keyword check
         var matchesSearch = !searchKeyword || outfitName.includes(searchKeyword) || storeName.toLowerCase().includes(searchKeyword) || storeArea.includes(searchKeyword);
-        var matchesCategory = (currentCategoryFilter === "All") || outfitName.includes(currentCategoryFilter.toLowerCase());
 
-        if (matchesSearch && matchesCategory) {
+        // 3. Category Match (including Kids Wear)
+        var matchesCategory = (currentCategoryFilter === "All") || 
+                              outfitName.includes(currentCategoryFilter.toLowerCase()) || 
+                              category.includes(currentCategoryFilter.toLowerCase());
+
+        if (isWithin15Km && matchesSearch && matchesCategory) {
           if (!storesMap[storeName]) {
             storesMap[storeName] = {
               storeName: storeName,
               area: p.area || "City Central",
+              distanceKm: distanceKm.toFixed(1),
               eta: p.eta || "35 MINS",
               rating: p.rating || "5.0",
               products: []
@@ -800,10 +864,15 @@
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
       var stores = getGroupedStores();
-      badge.innerText = stores.length + " Boutiques Live";
+      badge.innerText = stores.length + " Boutiques within 15KM";
 
       if (stores.length === 0) {
-        grid.innerHTML = "<div class='col-span-full py-12 text-center text-slate-400 text-xs'>No outfits match your search or filter.</div>";
+        grid.innerHTML = 
+          "<div class='col-span-full py-12 text-center text-slate-400 text-xs space-y-2'>" +
+            "<p class='text-2xl'>📍</p>" +
+            "<p class='font-bold text-slate-700'>No Boutiques Found within 15 Kilometers</p>" +
+            "<p class='text-[11px] text-slate-400'>Try resetting category or syncing your current GPS location.</p>" +
+          "</div>";
         return;
       }
 
@@ -825,7 +894,7 @@
             '<div>' +
               '<div onclick="triggerShowroomProtected(' + storeIdx + ', null)" class="cursor-pointer">' +
                 '<div class="flex justify-between items-center">' +
-                  '<span class="text-[10px] font-mono-num font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
+                  '<span class="text-[10px] font-mono-num font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + ' (' + store.distanceKm + ' km away)</span>' +
                   '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
                 '</div>' +
                 '<h3 class="font-brand font-black text-xl text-slate-950 mt-2">' + store.storeName + '</h3>' +
@@ -1048,6 +1117,8 @@
         navigator.geolocation.getCurrentPosition(function(pos) {
           document.getElementById("custLat").value = pos.coords.latitude;
           document.getElementById("custLng").value = pos.coords.longitude;
+          currentCustLat = pos.coords.latitude;
+          currentCustLng = pos.coords.longitude;
           btnText.innerText = "✓ GPS Saved";
         }, function() {
           alert("Could not fetch GPS.");
@@ -1059,8 +1130,8 @@
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
       var addr = document.getElementById("custAddress").value.trim();
-      var lat = document.getElementById("custLat").value || "14.6819";
-      var lng = document.getElementById("custLng").value || "77.6006";
+      var lat = document.getElementById("custLat").value || currentCustLat;
+      var lng = document.getElementById("custLng").value || currentCustLng;
 
       var payOptionElem = document.querySelector('input[name="payOption"]:checked');
       var selectedPayment = payOptionElem ? payOptionElem.value : "UPI at Doorstep";
@@ -1116,8 +1187,8 @@
 
     window.addEventListener('DOMContentLoaded', function() {
       initCustomerAuth();
+      syncCustomerGPS(false);
       listenToCloudProducts();
-      renderBoutiqueStores();
     });
   </script>
 </body>
