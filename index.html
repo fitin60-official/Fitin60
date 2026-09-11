@@ -72,7 +72,7 @@
 
     <div class="flex items-center gap-2 shrink-0">
       <!-- Direct Owner Mode Button -->
-      <button onclick="toggleOwnerMode()" id="ownerModeBtn" class="text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700 cursor-pointer" title="Owner Fast Edit Mode">
+      <button type="button" onclick="toggleOwnerMode()" id="ownerModeBtn" class="text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700 cursor-pointer" title="Owner Fast Edit Mode">
         <span>🛡️</span> <span id="ownerModeText">Owner</span>
       </button>
 
@@ -86,7 +86,7 @@
       </button>
 
       <div id="authPillContainer" class="relative">
-        <button onclick="openLoginModal()" class="bg-slate-950 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer">
+        <button type="button" onclick="openLoginModal()" class="bg-slate-950 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer">
           <span>👤</span>
           <span>Login</span>
         </button>
@@ -156,7 +156,7 @@
   <main class="w-full px-4 mt-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="font-brand font-black text-xl text-slate-950">Boutiques in 15KM</h2>
-      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Loading Boutiques...</span>
+      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Checking Stores...</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full" id="boutiqueStoreGrid"></div>
   </main>
@@ -326,14 +326,14 @@
   <!-- Customer Auth Modal -->
   <div id="customerLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
-      <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 text-2xl font-bold cursor-pointer">&times;</button>
+      <button type="button" onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
       <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1" id="custModalSubtitle">Login with your Mobile & 4-Digit PIN</p>
 
       <div id="authNavTabs" class="flex bg-slate-100 p-1 rounded-2xl mt-4">
-        <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
-        <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
+        <button type="button" onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
+        <button type="button" onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
       </div>
 
       <form id="custLoginForm" onsubmit="handleCustomerPinLogin(event)" class="space-y-3 text-left mt-4">
@@ -528,6 +528,7 @@
   </div>
 
   <script>
+    // 1. Core Config
     const firebaseConfig = {
       apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
       authDomain: "fitin60.firebaseapp.com",
@@ -541,6 +542,7 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // 2. Global State Variables
     var currentCustLat = 14.6819;
     var currentCustLng = 77.6006;
     var isOwnerModeActive = (localStorage.getItem("fitin60_owner_mode") === "true");
@@ -579,14 +581,18 @@
     var deferredPrompt = null;
     var toastTimer = null;
 
-    // Direct Login Modal Trigger (Always reliable)
+    // 3. Independent Core Functions (Always Active)
     function openLoginModal() {
-      switchCustAuthTab('login');
-      document.getElementById("customerLoginModal").classList.remove("hidden");
+      var modal = document.getElementById("customerLoginModal");
+      if (modal) {
+        switchCustAuthTab('login');
+        modal.classList.remove("hidden");
+      }
     }
 
     function closeLoginModal() {
-      document.getElementById("customerLoginModal").classList.add("hidden");
+      var modal = document.getElementById("customerLoginModal");
+      if (modal) modal.classList.add("hidden");
     }
 
     function switchCustAuthTab(tab) {
@@ -597,40 +603,46 @@
       var title = document.getElementById("custModalTitle");
       var sub = document.getElementById("custModalSubtitle");
 
-      navTabs.classList.remove("hidden");
-      forgF.classList.add("hidden");
+      if (navTabs) navTabs.classList.remove("hidden");
+      if (forgF) forgF.classList.add("hidden");
 
       if (tab === 'login') {
-        title.innerText = "Customer Account";
-        sub.innerText = "Login with your Mobile & 4-Digit PIN";
-        loginF.classList.remove("hidden");
-        regF.classList.add("hidden");
-        document.getElementById("custTabLogin").className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
-        document.getElementById("custTabRegister").className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+        if (title) title.innerText = "Customer Account";
+        if (sub) sub.innerText = "Login with your Mobile & 4-Digit PIN";
+        if (loginF) loginF.classList.remove("hidden");
+        if (regF) regF.classList.add("hidden");
+        var tabL = document.getElementById("custTabLogin");
+        var tabR = document.getElementById("custTabRegister");
+        if (tabL) tabL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        if (tabR) tabR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       } else {
-        title.innerText = "New Customer";
-        sub.innerText = "Create your account with a 4-Digit PIN";
-        loginF.classList.add("hidden");
-        regF.classList.remove("hidden");
-        document.getElementById("custTabRegister").className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
-        document.getElementById("custTabLogin").className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+        if (title) title.innerText = "New Customer";
+        if (sub) sub.innerText = "Create your account with a 4-Digit PIN";
+        if (loginF) loginF.classList.add("hidden");
+        if (regF) regF.classList.remove("hidden");
+        var tabR2 = document.getElementById("custTabRegister");
+        var tabL2 = document.getElementById("custTabLogin");
+        if (tabR2) tabR2.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        if (tabL2) tabL2.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       }
     }
 
     function openForgotPinView() {
-      document.getElementById("custLoginForm").classList.add("hidden");
-      document.getElementById("custRegisterForm").classList.add("hidden");
-      document.getElementById("authNavTabs").classList.add("hidden");
-      document.getElementById("custForgotForm").classList.remove("hidden");
+      var loginF = document.getElementById("custLoginForm");
+      var regF = document.getElementById("custRegisterForm");
+      var navTabs = document.getElementById("authNavTabs");
+      var forgF = document.getElementById("custForgotForm");
 
-      document.getElementById("custModalTitle").innerText = "Reset 4-Digit PIN";
-      document.getElementById("custModalSubtitle").innerText = "Verify identity to set a new PIN";
+      if (loginF) loginF.classList.add("hidden");
+      if (regF) regF.classList.add("hidden");
+      if (navTabs) navTabs.classList.add("hidden");
+      if (forgF) forgF.classList.remove("hidden");
 
-      var mob = document.getElementById("custPinLoginMobile").value.trim();
-      if (mob) document.getElementById("resetMobile").value = mob;
+      var mob = document.getElementById("custPinLoginMobile");
+      var rMob = document.getElementById("resetMobile");
+      if (mob && rMob && mob.value) rMob.value = mob.value.trim();
     }
 
-    // Owner Mode Toggle (Always reliable)
     function toggleOwnerMode() {
       if (isOwnerModeActive) {
         isOwnerModeActive = false;
@@ -719,6 +731,7 @@
       });
     }
 
+    // Distance in KM
     function calculateDistanceKm(lat1, lon1, lat2, lon2) {
       var R = 6371;
       var dLat = (lat2 - lat1) * Math.PI / 180;
@@ -741,7 +754,7 @@
           if (showNotification) showQuickToast("✓ GPS Synced to Current Location");
           renderBoutiqueStores();
         }, function() {
-          document.getElementById("radarGpsStatus").innerText = "15KM Default Area";
+          document.getElementById("radarGpsStatus").innerText = "15KM Active";
           renderBoutiqueStores();
         }, { enableHighAccuracy: true });
       }
@@ -760,8 +773,8 @@
       var text = document.getElementById("toastMsg");
       var cartPill = document.getElementById("cartBtnPill");
 
-      text.innerText = message;
-      toast.classList.add("show");
+      if (text) text.innerText = message;
+      if (toast) toast.classList.add("show");
 
       if (cartPill) {
         cartPill.classList.add("scale-bump");
@@ -770,7 +783,7 @@
 
       if (toastTimer) clearTimeout(toastTimer);
       toastTimer = setTimeout(function() {
-        toast.classList.remove("show");
+        if (toast) toast.classList.remove("show");
       }, 1500);
     }
 
@@ -802,8 +815,9 @@
 
     function updateAuthHeaderUI() {
       var container = document.getElementById("authPillContainer");
+      if (!container) return;
       if (currentCustomer) {
-        var firstName = currentCustomer.name.split(" ")[0];
+        var firstName = (currentCustomer.name || "User").split(" ")[0];
         container.innerHTML = 
           '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
             '<span>👤</span>' +
@@ -811,29 +825,34 @@
             '<span class="text-[9px] text-slate-400">▼</span>' +
           '</button>';
 
-        document.getElementById("custName").value = currentCustomer.name || "";
-        document.getElementById("custPhone").value = currentCustomer.phone || "";
-        document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
-        document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
+        var cN = document.getElementById("custName");
+        var cP = document.getElementById("custPhone");
+        var popN = document.getElementById("popoverCustName");
+        var popP = document.getElementById("popoverCustPhone");
+
+        if (cN) cN.value = currentCustomer.name || "";
+        if (cP) cP.value = currentCustomer.phone || "";
+        if (popN) popN.innerText = currentCustomer.name || "Customer";
+        if (popP) popP.innerText = currentCustomer.phone || "";
       } else {
         container.innerHTML = 
-          '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
+          '<button type="button" onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
             '<span>👤</span> <span>Login</span>' +
           '</button>';
       }
     }
 
     function toggleProfileMenu() {
-      document.getElementById("profilePopover").classList.toggle("hidden");
+      var pop = document.getElementById("profilePopover");
+      if (pop) pop.classList.toggle("hidden");
     }
 
     function customerLogout() {
       if (confirm("Do you want to log out of Fitin60?")) {
         currentCustomer = null;
         localStorage.removeItem("fitin60_customer_user");
-        document.getElementById("profilePopover").classList.add("hidden");
-        document.getElementById("custName").value = "";
-        document.getElementById("custPhone").value = "";
+        var pop = document.getElementById("profilePopover");
+        if (pop) pop.classList.add("hidden");
         updateAuthHeaderUI();
       }
     }
@@ -916,19 +935,23 @@
     }
 
     function listenToCloudProducts() {
-      db.ref("boutique_products").on("value", function(snapshot) {
-        var data = snapshot.val();
-        cloudProducts = [];
-        cloudProductsMap = data || {};
-        if (data) {
-          Object.keys(data).forEach(function(k) {
-            var item = data[k];
-            item.cloudKey = k;
-            cloudProducts.push(item);
-          });
-        }
+      try {
+        db.ref("boutique_products").on("value", function(snapshot) {
+          var data = snapshot.val();
+          cloudProducts = [];
+          cloudProductsMap = data || {};
+          if (data) {
+            Object.keys(data).forEach(function(k) {
+              var item = data[k];
+              item.cloudKey = k;
+              cloudProducts.push(item);
+            });
+          }
+          renderBoutiqueStores();
+        });
+      } catch(e) {
         renderBoutiqueStores();
-      });
+      }
     }
 
     function filterByCategory(cat) {
@@ -948,9 +971,9 @@
       renderBoutiqueStores();
     }
 
-    // ROBUST 15-KM RADIUS & STORES GROUPING (Zero Errors)
+    // 15-KM SAFE EVALUATION
     function getGroupedStores() {
-      var all = cloudProducts.concat(baseProducts);
+      var all = [].concat(cloudProducts, baseProducts);
       var searchInput = document.getElementById("storeSearchInput");
       var searchKeyword = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
@@ -1007,7 +1030,7 @@
           "<div class='col-span-full py-12 text-center text-slate-400 text-xs space-y-2'>" +
             "<p class='text-2xl'>📍</p>" +
             "<p class='font-bold text-slate-700'>No Outfits Found Matching Filter</p>" +
-            "<p class='text-[11px] text-slate-400'>Try picking 'All Outfits' or resetting category.</p>" +
+            "<p class='text-[11px] text-slate-400'>Try selecting 'All Outfits'.</p>" +
           "</div>";
         return;
       }
@@ -1025,7 +1048,7 @@
               '<img src="' + p.image + '" alt="" onclick="triggerShowroomProtected(' + storeIdx + ', \'' + p.id + '\')" class="w-full h-full object-cover cursor-pointer">' +
               '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded pointer-events-none">₹' + p.price + '</span>' +
 
-              // DIRECT OWNER CONTROLS
+              // DIRECT OWNER BUTTONS
               (isOwnerModeActive && isCloudItem ? 
                 '<div class="absolute top-1 right-1 flex items-center gap-1 z-10">' +
                   '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer" title="Edit Outfit">✏️</button>' +
@@ -1262,6 +1285,8 @@
         navigator.geolocation.getCurrentPosition(function(pos) {
           document.getElementById("custLat").value = pos.coords.latitude;
           document.getElementById("custLng").value = pos.coords.longitude;
+          currentCustLat = pos.coords.latitude;
+          currentCustLng = pos.coords.longitude;
           btnText.innerText = "✓ GPS Saved";
         }, function() {
           alert("Could not fetch GPS.");
@@ -1287,28 +1312,4 @@
       var finalPayable = itemTotal + deliveryFee + packagingFee;
 
       var orderBtn = document.getElementById("checkoutSubmitBtn");
-      orderBtn.disabled = true;
-      orderBtn.innerText = "Dispatching...";
-
-      var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
-      var deliveryOtp = String(Math.floor(1000 + Math.random() * 9000));
-
-      var orderData = {
-        orderId: orderId,
-        customerName: name,
-        customerPhone: phone,
-        customerAddress: addr,
-        customerLat: lat,
-        customerLng: lng,
-        items: items,
-        itemTotal: itemTotal,
-        deliveryFee: deliveryFee,
-        packagingFee: packagingFee,
-        totalAmount: finalPayable,
-        paymentMethod: selectedPayment,
-        paymentStatus: "Waiting for Boutique Acceptance",
-        deliveryOtp: deliveryOtp,
-        store: items[0].store,
-        boutiqueAccepted: false,
-        riderAssigned: false,
-  
+      orderBtn.disabled = tr
