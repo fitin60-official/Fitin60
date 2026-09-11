@@ -54,7 +54,7 @@
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🏬</div>
         <h2 id="partnerAuthTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Boutique Merchant Studio</h2>
-        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Catalog, orders, radar & daily 10 PM settlements.</p>
+        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Instant settlements, live order dispatch & price manager.</p>
       </div>
 
       <div id="partnerTabsNav" class="flex bg-slate-100 p-1 rounded-2xl">
@@ -146,7 +146,7 @@
         </span>
       </div>
 
-      <!-- Financial Quick Stats (DAILY SETTLEMENT HIGHLIGHT) -->
+      <!-- Financial Quick Stats (INSTANT SETTLEMENT) -->
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-[10px] uppercase font-bold text-slate-400">Total Net Payout (85%)</p>
@@ -156,7 +156,7 @@
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-[10px] uppercase font-bold text-slate-400">Delivered Orders</p>
           <p class="font-mono-num font-black text-2xl text-slate-950 mt-1" id="dashOrderCount">0</p>
-          <p class="text-[9px] text-emerald-600 font-bold mt-0.5">Daily Payout Active</p>
+          <p class="text-[9px] text-emerald-600 font-bold mt-0.5">⚡ Instant Payouts Active</p>
         </div>
       </div>
 
@@ -174,22 +174,22 @@
         </div>
       </div>
 
-      <!-- DAILY PAYMENT & SETTLEMENT HISTORY SECTION -->
+      <!-- INSTANT SETTLEMENT HISTORY SECTION -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b pb-2">
           <div class="flex items-center gap-1.5">
             <span class="text-base">⚡</span>
-            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Daily Settlement History</h3>
+            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Instant Settlement History</h3>
           </div>
           <span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
-            Daily by 10 PM
+            Instant on Delivery
           </span>
         </div>
 
         <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex items-center justify-between">
           <div>
-            <p class="text-[11px] font-bold text-emerald-950">Daily Direct Settlement</p>
-            <p class="text-[10px] text-emerald-700">Earnings from all orders completed today are transferred directly to your account by 10:00 PM tonight.</p>
+            <p class="text-[11px] font-bold text-emerald-950">At-a-time Instant Settlement</p>
+            <p class="text-[10px] text-emerald-700">Earnings for each order are settled immediately upon OTP customer verification without any waiting delay.</p>
           </div>
         </div>
 
@@ -198,9 +198,12 @@
         </div>
       </div>
 
-      <!-- Upload New Outfit Section -->
-      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-        <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider" id="formHeaderTitle">Upload New Collection</h3>
+      <!-- Upload / Edit Outfit Section -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4" id="uploadFormContainer">
+        <div class="flex justify-between items-center">
+          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider" id="formHeaderTitle">Upload New Collection</h3>
+          <span id="editingModeBadge" class="hidden text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Editing Dress</span>
+        </div>
         
         <form onsubmit="handlePublishProduct(event)" class="space-y-3 text-xs" id="productForm">
           <input type="hidden" id="editingProdKey" value="">
@@ -233,7 +236,7 @@
           </div>
 
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Product Images (Up to 4 Photos)</label>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Product Images (Up to 4 Photos - Optional if editing)</label>
             <input type="file" id="prodPhotosInput" accept="image/*" multiple onchange="previewUploadedPhotos(event)" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
             <div id="photosPreviewContainer" class="flex gap-2 mt-2 overflow-x-auto no-scrollbar"></div>
           </div>
@@ -259,11 +262,11 @@
         </form>
       </div>
 
-      <!-- Manage Uploaded Outfits -->
+      <!-- Manage Uploaded Outfits with Edit & Price Controls -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Manage Store Outfits</h3>
-          <span class="text-[10px] text-slate-400 font-medium">Edit details or delete</span>
+          <span class="text-[10px] text-slate-400 font-medium">Edit price or outfit details</span>
         </div>
         <div id="myUploadedProductsList" class="space-y-2">
           <p class="text-slate-400 text-center py-4 text-xs">No custom outfits uploaded yet.</p>
@@ -447,6 +450,7 @@
       });
     }
 
+    // PUBLISH OR UPDATE DRESS
     function handlePublishProduct(e) {
       e.preventDefault();
       if (!currentPartner) return;
@@ -461,7 +465,7 @@
 
       var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
       var mainImg = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64[0] : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].image : "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80");
-      var imgList = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64 : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].images : [mainImg]);
+      var imgList = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64 : (editingKey && currentStoreProducts[editingKey] ? (currentStoreProducts[editingKey].images || [mainImg]) : [mainImg]);
 
       var targetKey = editingKey || db.ref("boutique_products").push().key;
 
@@ -484,9 +488,31 @@
       };
 
       db.ref("boutique_products/" + targetKey).set(productData).then(function() {
-        alert(editingKey ? "✓ Outfit Updated!" : "✓ Product Published Live!");
+        alert(editingKey ? "✓ Outfit & Price Updated Successfully!" : "✓ Product Published Live!");
         cancelProductEdit();
       });
+    }
+
+    // START EDITING EXISTING DRESS
+    function startEditProduct(key) {
+      var prod = currentStoreProducts[key];
+      if (!prod) return;
+
+      document.getElementById("editingProdKey").value = key;
+      document.getElementById("prodName").value = prod.name || "";
+      document.getElementById("prodCategory").value = prod.category || "Saree";
+      document.getElementById("prodPrice").value = prod.price || 0;
+      document.getElementById("prodOriginal").value = prod.originalPrice || "";
+      document.getElementById("prodSizes").value = (prod.sizes || []).join(", ");
+      document.getElementById("prodDesc").value = prod.desc || "";
+
+      document.getElementById("formHeaderTitle").innerText = "Edit Outfit Details & Price";
+      document.getElementById("editingModeBadge").classList.remove("hidden");
+      document.getElementById("publishBtn").innerText = "✓ Save Outfit Changes";
+      document.getElementById("cancelEditBtn").classList.remove("hidden");
+
+      // Scroll smoothly to form
+      document.getElementById("uploadFormContainer").scrollIntoView({ behavior: 'smooth' });
     }
 
     function cancelProductEdit() {
@@ -495,11 +521,12 @@
       document.getElementById("photosPreviewContainer").innerHTML = "";
       uploadedPhotosBase64 = [];
       document.getElementById("formHeaderTitle").innerText = "Upload New Collection";
+      document.getElementById("editingModeBadge").classList.add("hidden");
       document.getElementById("publishBtn").innerText = "+ Publish Live to Fitin60";
       document.getElementById("cancelEditBtn").classList.add("hidden");
     }
 
-    // LIVE ORDER AND DAILY FINANCIAL SETTLEMENT CALCULATOR
+    // LIVE ORDER AND AT-A-TIME INSTANT FINANCIAL SETTLEMENT
     function loadStoreOrdersAndFinancials(storeName) {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
@@ -536,7 +563,7 @@
           var split = o.financialSplit || {
             storeNetPayout: Math.round(itemVal * 0.85),
             platformCommission: Math.round(itemVal * 0.15),
-            storeSettlementStatus: "Pending"
+            storeSettlementStatus: "Settled"
           };
 
           if (o.status === "Delivered") {
@@ -549,16 +576,13 @@
                 '<div>' +
                   '<div class="flex items-center gap-2">' +
                     '<span class="font-mono font-bold text-slate-900">' + o.orderId + '</span>' +
-                    '<span class="text-[9px] px-2 py-0.5 rounded-full font-bold ' + 
-                      (split.storeSettlementStatus === "Settled" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800") + '">' + 
-                      (split.storeSettlementStatus === "Settled" ? "Settled (Paid)" : "Scheduled Tonight (10 PM)") + 
-                    '</span>' +
+                    '<span class="text-[9px] px-2 py-0.5 rounded-full font-black bg-emerald-100 text-emerald-800 border border-emerald-200">Instant Settled (Paid)</span>' +
                   '</div>' +
-                  '<p class="text-[10px] text-slate-500 mt-0.5">Item: ₹' + itemVal + ' - Fee (15%): ₹' + split.platformCommission + '</p>' +
+                  '<p class="text-[10px] text-slate-500 mt-0.5">Item: ₹' + itemVal + ' - Fitin60 Fee (15%): ₹' + split.platformCommission + '</p>' +
                 '</div>' +
                 '<div class="text-right">' +
                   '<span class="font-mono-num font-black text-sm text-emerald-600">₹' + split.storeNetPayout + '</span>' +
-                  '<p class="text-[9px] text-slate-400">Net Daily Payout</p>' +
+                  '<p class="text-[9px] text-slate-400">Net Settled</p>' +
                 '</div>' +
               '</div>';
           }
@@ -582,7 +606,7 @@
               '<div class="pt-1">' +
                 (!o.boutiqueAccepted ? 
                   '<button onclick="acceptStoreOrder(\'' + o.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-sm animate-pulse">⚡ Accept & Dispatch Rider</button>' : 
-                  '<span class="block text-center font-bold text-emerald-700 bg-emerald-100/70 py-1.5 rounded-xl text-[11px]">' + (o.status === "Delivered" ? "Delivered 🎉" : "Accepted • Dispatched to Rider 🛵") + '</span>') +
+                  '<span class="block text-center font-bold text-emerald-700 bg-emerald-100/70 py-1.5 rounded-xl text-[11px]">' + (o.status === "Delivered" ? "Delivered & Instant Settled 🎉" : "Accepted • Dispatched to Rider 🛵") + '</span>') +
               '</div>' +
             '</div>';
         });
@@ -605,6 +629,7 @@
       });
     }
 
+    // LOAD PRODUCTS WITH EDIT & DELETE BUTTONS
     function loadUploadedProducts(storeName) {
       db.ref("boutique_products").orderByChild("store").equalTo(storeName).on("value", function(snapshot) {
         var data = snapshot.val();
@@ -622,13 +647,16 @@
           html += 
             '<div class="p-2.5 bg-slate-50 border rounded-xl flex items-center justify-between text-xs">' +
               '<div class="flex items-center gap-2.5 min-w-0 pr-2">' +
-                '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg border shrink-0">' +
+                '<img src="' + p.image + '" class="w-11 h-11 object-cover rounded-lg border shrink-0">' +
                 '<div class="min-w-0">' +
                   '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
-                  '<p class="font-mono-num text-[11px] text-slate-500">₹' + p.price + ' • <span class="text-orange-600 font-bold">' + (p.category || 'General') + '</span></p>' +
+                  '<p class="font-mono-num text-[11px] text-slate-600 font-bold">₹' + p.price + ' <span class="text-[9px] text-slate-400 font-normal">(' + (p.category || 'General') + ')</span></p>' +
                 '</div>' +
               '</div>' +
-              '<button onclick="deleteProductPermanent(\'' + k + '\')" class="text-rose-600 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg font-bold cursor-pointer transition text-[11px]">🗑️ Delete</button>' +
+              '<div class="flex items-center gap-1.5 shrink-0">' +
+                '<button onclick="startEditProduct(\'' + k + '\')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg font-bold cursor-pointer transition text-[11px]">✏️ Edit</button>' +
+                '<button onclick="deleteProductPermanent(\'' + k + '\')" class="text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1.5 rounded-lg font-bold cursor-pointer transition text-[11px]">🗑️ Delete</button>' +
+              '</div>' +
             '</div>';
         });
         container.innerHTML = html;
