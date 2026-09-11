@@ -71,11 +71,12 @@
     </a>
 
     <div class="flex items-center gap-2 shrink-0">
-      <button onclick="toggleOwnerMode()" id="ownerModeBtn" class="text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700" title="Owner Fast Edit Mode">
+      <!-- Direct Owner Mode Button -->
+      <button onclick="toggleOwnerMode()" id="ownerModeBtn" class="text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700 cursor-pointer" title="Owner Fast Edit Mode">
         <span>🛡️</span> <span id="ownerModeText">Owner</span>
       </button>
 
-      <button id="pwaInstallBtn" onclick="installFitin60PWA()" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-700 text-xs font-bold px-2.5 py-1.5 rounded-xl flex items-center gap-1">
+      <button id="pwaInstallBtn" onclick="installFitin60PWA()" class="hidden bg-emerald-50 border border-emerald-300 text-emerald-700 text-xs font-bold px-2.5 py-1.5 rounded-xl flex items-center gap-1 cursor-pointer">
         <span>📲</span> <span>App</span>
       </button>
 
@@ -119,13 +120,14 @@
       <input type="text" id="storeSearchInput" oninput="handleSearchAndFilter()" placeholder="Search boutique name or outfit style..." class="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-orange-500">
     </div>
 
+    <!-- Category Chips with Kids Wear -->
     <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold" id="categoryChips">
-      <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0">All Outfits</button>
-      <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">🥻 Sarees</button>
-      <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">👗 Kurtis</button>
-      <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">🧸 Kids Wear</button>
-      <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">✨ Lehengas</button>
-      <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0">👔 Men's Wear</button>
+      <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">All Outfits</button>
+      <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">🥻 Sarees</button>
+      <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">👗 Kurtis</button>
+      <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">🧸 Kids Wear</button>
+      <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">✨ Lehengas</button>
+      <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">👔 Men's Wear</button>
     </div>
   </section>
 
@@ -136,7 +138,7 @@
         <div class="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-orange-300">
           <span class="w-2 h-2 rounded-full bg-orange-400 badge-pulse"></span> 15-KM Hyperlocal Zone
         </div>
-        <button onclick="syncCustomerGPS(true)" class="text-[10px] font-bold bg-orange-600/80 hover:bg-orange-500 text-white px-2.5 py-1 rounded-xl transition">
+        <button onclick="syncCustomerGPS(true)" class="text-[10px] font-bold bg-orange-600/80 hover:bg-orange-500 text-white px-2.5 py-1 rounded-xl transition cursor-pointer">
           📍 <span id="radarGpsStatus">Sync GPS</span>
         </button>
       </div>
@@ -154,7 +156,7 @@
   <main class="w-full px-4 mt-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="font-brand font-black text-xl text-slate-950">Boutiques in 15KM</h2>
-      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Syncing...</span>
+      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Loading Boutiques...</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full" id="boutiqueStoreGrid"></div>
   </main>
@@ -330,8 +332,8 @@
       <p class="text-xs text-slate-500 mt-1" id="custModalSubtitle">Login with your Mobile & 4-Digit PIN</p>
 
       <div id="authNavTabs" class="flex bg-slate-100 p-1 rounded-2xl mt-4">
-        <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition">Login</button>
-        <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition">Register</button>
+        <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
+        <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
       </div>
 
       <form id="custLoginForm" onsubmit="handleCustomerPinLogin(event)" class="space-y-3 text-left mt-4">
@@ -388,7 +390,7 @@
         <button type="submit" id="resetPinBtn" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer">
           Update PIN & Login ➔
         </button>
-        <button type="button" onclick="switchCustAuthTab('login')" class="w-full text-center text-xs text-slate-400 hover:text-slate-600">
+        <button type="button" onclick="switchCustAuthTab('login')" class="w-full text-center text-xs text-slate-400 hover:text-slate-600 cursor-pointer">
           ← Back to Login
         </button>
       </form>
@@ -541,8 +543,6 @@
 
     var currentCustLat = 14.6819;
     var currentCustLng = 77.6006;
-    var isGpsSynced = false;
-
     var isOwnerModeActive = (localStorage.getItem("fitin60_owner_mode") === "true");
 
     var baseProducts = [
@@ -579,6 +579,58 @@
     var deferredPrompt = null;
     var toastTimer = null;
 
+    // Direct Login Modal Trigger (Always reliable)
+    function openLoginModal() {
+      switchCustAuthTab('login');
+      document.getElementById("customerLoginModal").classList.remove("hidden");
+    }
+
+    function closeLoginModal() {
+      document.getElementById("customerLoginModal").classList.add("hidden");
+    }
+
+    function switchCustAuthTab(tab) {
+      var loginF = document.getElementById("custLoginForm");
+      var regF = document.getElementById("custRegisterForm");
+      var forgF = document.getElementById("custForgotForm");
+      var navTabs = document.getElementById("authNavTabs");
+      var title = document.getElementById("custModalTitle");
+      var sub = document.getElementById("custModalSubtitle");
+
+      navTabs.classList.remove("hidden");
+      forgF.classList.add("hidden");
+
+      if (tab === 'login') {
+        title.innerText = "Customer Account";
+        sub.innerText = "Login with your Mobile & 4-Digit PIN";
+        loginF.classList.remove("hidden");
+        regF.classList.add("hidden");
+        document.getElementById("custTabLogin").className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("custTabRegister").className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      } else {
+        title.innerText = "New Customer";
+        sub.innerText = "Create your account with a 4-Digit PIN";
+        loginF.classList.add("hidden");
+        regF.classList.remove("hidden");
+        document.getElementById("custTabRegister").className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("custTabLogin").className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      }
+    }
+
+    function openForgotPinView() {
+      document.getElementById("custLoginForm").classList.add("hidden");
+      document.getElementById("custRegisterForm").classList.add("hidden");
+      document.getElementById("authNavTabs").classList.add("hidden");
+      document.getElementById("custForgotForm").classList.remove("hidden");
+
+      document.getElementById("custModalTitle").innerText = "Reset 4-Digit PIN";
+      document.getElementById("custModalSubtitle").innerText = "Verify identity to set a new PIN";
+
+      var mob = document.getElementById("custPinLoginMobile").value.trim();
+      if (mob) document.getElementById("resetMobile").value = mob;
+    }
+
+    // Owner Mode Toggle (Always reliable)
     function toggleOwnerMode() {
       if (isOwnerModeActive) {
         isOwnerModeActive = false;
@@ -587,13 +639,13 @@
         renderBoutiqueStores();
         showQuickToast("Owner Mode Turned OFF");
       } else {
-        var pin = prompt("Enter Master Owner Passcode to activate on-screen edit/delete:");
+        var pin = prompt("Enter Master Owner Passcode:");
         if (pin === "admin4545") {
           isOwnerModeActive = true;
           localStorage.setItem("fitin60_owner_mode", "true");
           updateOwnerBtnUI();
           renderBoutiqueStores();
-          showQuickToast("🛡️ Owner Mode Active: Edit/Delete enabled");
+          showQuickToast("🛡️ Owner Mode Active");
         } else if (pin !== null) {
           alert("❌ Incorrect Passcode!");
         }
@@ -603,11 +655,12 @@
     function updateOwnerBtnUI() {
       var btn = document.getElementById("ownerModeBtn");
       var text = document.getElementById("ownerModeText");
+      if (!btn || !text) return;
       if (isOwnerModeActive) {
-        btn.className = "text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-emerald-500 border-emerald-600 text-white shadow-sm";
+        btn.className = "text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-emerald-500 border-emerald-600 text-white shadow-sm cursor-pointer";
         text.innerText = "Owner: ON";
       } else {
-        btn.className = "text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700";
+        btn.className = "text-[10px] font-bold px-2 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700 cursor-pointer";
         text.innerText = "Owner";
       }
     }
@@ -625,8 +678,8 @@
       if (!prod) return;
 
       document.getElementById("directEditKey").value = key;
-      document.getElementById("directEditName").value = prod.name;
-      document.getElementById("directEditPrice").value = prod.price;
+      document.getElementById("directEditName").value = prod.name || "";
+      document.getElementById("directEditPrice").value = prod.price || 0;
       document.getElementById("directEditCategory").value = prod.category || "Saree";
       document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
 
@@ -684,12 +737,11 @@
         navigator.geolocation.getCurrentPosition(function(pos) {
           currentCustLat = pos.coords.latitude;
           currentCustLng = pos.coords.longitude;
-          isGpsSynced = true;
           document.getElementById("radarGpsStatus").innerText = "✓ 15KM Radar Active";
           if (showNotification) showQuickToast("✓ GPS Synced to Current Location");
           renderBoutiqueStores();
         }, function() {
-          document.getElementById("radarGpsStatus").innerText = "15KM Active";
+          document.getElementById("radarGpsStatus").innerText = "15KM Default Area";
           renderBoutiqueStores();
         }, { enableHighAccuracy: true });
       }
@@ -739,11 +791,13 @@
     }
 
     function initCustomerAuth() {
-      var saved = localStorage.getItem("fitin60_customer_user");
-      if (saved) {
-        currentCustomer = JSON.parse(saved);
-        updateAuthHeaderUI();
-      }
+      try {
+        var saved = localStorage.getItem("fitin60_customer_user");
+        if (saved) {
+          currentCustomer = JSON.parse(saved);
+          updateAuthHeaderUI();
+        }
+      } catch(e){}
     }
 
     function updateAuthHeaderUI() {
@@ -757,10 +811,10 @@
             '<span class="text-[9px] text-slate-400">▼</span>' +
           '</button>';
 
-        document.getElementById("custName").value = currentCustomer.name;
-        document.getElementById("custPhone").value = currentCustomer.phone;
-        document.getElementById("popoverCustName").innerText = currentCustomer.name;
-        document.getElementById("popoverCustPhone").innerText = currentCustomer.phone;
+        document.getElementById("custName").value = currentCustomer.name || "";
+        document.getElementById("custPhone").value = currentCustomer.phone || "";
+        document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
+        document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
       } else {
         container.innerHTML = 
           '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
@@ -770,8 +824,7 @@
     }
 
     function toggleProfileMenu() {
-      var pop = document.getElementById("profilePopover");
-      pop.classList.toggle("hidden");
+      document.getElementById("profilePopover").classList.toggle("hidden");
     }
 
     function customerLogout() {
@@ -783,56 +836,6 @@
         document.getElementById("custPhone").value = "";
         updateAuthHeaderUI();
       }
-    }
-
-    function openLoginModal() {
-      switchCustAuthTab('login');
-      document.getElementById("customerLoginModal").classList.remove("hidden");
-    }
-
-    function closeLoginModal() {
-      document.getElementById("customerLoginModal").classList.add("hidden");
-    }
-
-    function switchCustAuthTab(tab) {
-      var loginF = document.getElementById("custLoginForm");
-      var regF = document.getElementById("custRegisterForm");
-      var forgF = document.getElementById("custForgotForm");
-      var navTabs = document.getElementById("authNavTabs");
-      var title = document.getElementById("custModalTitle");
-      var sub = document.getElementById("custModalSubtitle");
-
-      navTabs.classList.remove("hidden");
-      forgF.classList.add("hidden");
-
-      if (tab === 'login') {
-        title.innerText = "Customer Account";
-        sub.innerText = "Login with your Mobile & 4-Digit PIN";
-        loginF.classList.remove("hidden");
-        regF.classList.add("hidden");
-        document.getElementById("custTabLogin").classList.add("bg-white", "text-slate-950", "shadow-sm");
-        document.getElementById("custTabRegister").classList.remove("bg-white", "text-slate-950", "shadow-sm");
-      } else {
-        title.innerText = "New Customer";
-        sub.innerText = "Create your account with a 4-Digit PIN";
-        loginF.classList.add("hidden");
-        regF.classList.remove("hidden");
-        document.getElementById("custTabRegister").classList.add("bg-white", "text-slate-950", "shadow-sm");
-        document.getElementById("custTabLogin").classList.remove("bg-white", "text-slate-950", "shadow-sm");
-      }
-    }
-
-    function openForgotPinView() {
-      document.getElementById("custLoginForm").classList.add("hidden");
-      document.getElementById("custRegisterForm").classList.add("hidden");
-      document.getElementById("authNavTabs").classList.add("hidden");
-      document.getElementById("custForgotForm").classList.remove("hidden");
-
-      document.getElementById("custModalTitle").innerText = "Reset 4-Digit PIN";
-      document.getElementById("custModalSubtitle").innerText = "Verify identity to set a new PIN";
-
-      var mob = document.getElementById("custPinLoginMobile").value.trim();
-      if (mob) document.getElementById("resetMobile").value = mob;
     }
 
     function handleResetPinSubmit(e) {
@@ -933,9 +936,9 @@
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
         if (btn.innerText.includes(cat) || (cat === "All" && btn.innerText.includes("All"))) {
-          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0";
+          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer";
         } else {
-          btn.className = "cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0";
+          btn.className = "cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer";
         }
       });
       renderBoutiqueStores();
@@ -945,28 +948,28 @@
       renderBoutiqueStores();
     }
 
-    // SAFE 15-KM DISTANCE & RADAR FILTER
+    // ROBUST 15-KM RADIUS & STORES GROUPING (Zero Errors)
     function getGroupedStores() {
       var all = cloudProducts.concat(baseProducts);
-      var searchKeyword = document.getElementById("storeSearchInput").value.trim().toLowerCase();
+      var searchInput = document.getElementById("storeSearchInput");
+      var searchKeyword = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
       var storesMap = {};
       all.forEach(function(p) {
+        if (!p) return;
         var storeName = p.store || "Boutique Studio";
         var outfitName = (p.name || "").toLowerCase();
         var storeArea = (p.area || "").toLowerCase();
         var category = (p.category || "").toLowerCase();
 
-        // Location Check (Fallback safely to current core coordinates)
         var storeLat = parseFloat(p.lat);
         var storeLng = parseFloat(p.lng);
-        var distanceKm = 1.2; // Default local distance
+        var distanceKm = 1.2;
 
         if (!isNaN(storeLat) && !isNaN(storeLng)) {
           distanceKm = calculateDistanceKm(currentCustLat, currentCustLng, storeLat, storeLng);
         }
 
-        // Within 15KM boundary
         var isWithin15Km = (distanceKm <= 15.0);
 
         var matchesSearch = !searchKeyword || outfitName.includes(searchKeyword) || storeName.toLowerCase().includes(searchKeyword) || storeArea.includes(searchKeyword);
@@ -994,15 +997,17 @@
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
+      if (!grid) return;
+
       var stores = getGroupedStores();
-      badge.innerText = stores.length + " Boutiques within 15KM";
+      if (badge) badge.innerText = stores.length + " Boutiques within 15KM";
 
       if (stores.length === 0) {
         grid.innerHTML = 
           "<div class='col-span-full py-12 text-center text-slate-400 text-xs space-y-2'>" +
             "<p class='text-2xl'>📍</p>" +
             "<p class='font-bold text-slate-700'>No Outfits Found Matching Filter</p>" +
-            "<p class='text-[11px] text-slate-400'>Try picking 'All Outfits' or syncing GPS.</p>" +
+            "<p class='text-[11px] text-slate-400'>Try picking 'All Outfits' or resetting category.</p>" +
           "</div>";
         return;
       }
@@ -1257,8 +1262,6 @@
         navigator.geolocation.getCurrentPosition(function(pos) {
           document.getElementById("custLat").value = pos.coords.latitude;
           document.getElementById("custLng").value = pos.coords.longitude;
-          currentCustLat = pos.coords.latitude;
-          currentCustLng = pos.coords.longitude;
           btnText.innerText = "✓ GPS Saved";
         }, function() {
           alert("Could not fetch GPS.");
@@ -1308,17 +1311,4 @@
         store: items[0].store,
         boutiqueAccepted: false,
         riderAssigned: false,
-        timestamp: Date.now()
-      };
-
-      db.ref("orders/" + orderId).set(orderData).then(function() {
-        localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
-        window.location.href = "tracking.html";
-      });
-    }
-
-    document.addEventListener("click", function(e) {
-      var pop = document.getElementById("profilePopover");
-      var pill = document.getElementById("authPillContainer");
-      if (pop && !pop.contains(e.target) && !pill.contains(e.target)) {
-        pop.classList.add
+  
