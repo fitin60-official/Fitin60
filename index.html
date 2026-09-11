@@ -50,7 +50,7 @@
     <span>⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • 60-Min Drops</span>
   </div>
 
-  <!-- Header (Clean Storefront - No Visible Owner Buttons) -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm w-full">
     <a href="index.html" class="flex items-center gap-1 shrink-0">
       <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
@@ -137,7 +137,7 @@
   <main class="w-full px-4 mt-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="font-brand font-black text-xl text-slate-950">Boutiques in 15KM</h2>
-      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">1 Boutique Live</span>
+      <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Syncing...</span>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full" id="boutiqueStoreGrid"></div>
   </main>
@@ -260,7 +260,7 @@
     </div>
   </div>
 
-  <!-- DIRECT OWNER EDIT MODAL -->
+  <!-- DIRECT OWNER EDIT MODAL (NOW INCLUDES AREA / LOCATION FIELD) -->
   <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
@@ -277,6 +277,11 @@
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
           <input type="text" id="directEditName" required class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Area / Location</label>
+          <input type="text" id="directEditArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-slate-900 font-bold">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -364,6 +369,7 @@
 
     var cloudProducts = [];
     var cloudProductsMap = {};
+    var boutiqueLocationsMap = {};
     var items = [];
     var currentCustomer = null;
     var currentCategoryFilter = "All";
@@ -416,6 +422,7 @@
 
       document.getElementById("directEditKey").value = key;
       document.getElementById("directEditName").value = prod.name || "";
+      document.getElementById("directEditArea").value = prod.area || (boutiqueLocationsMap[prod.store] ? boutiqueLocationsMap[prod.store] : "");
       document.getElementById("directEditPrice").value = prod.price || 0;
       document.getElementById("directEditCategory").value = prod.category || "Saree";
       document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
@@ -437,6 +444,7 @@
 
       var updateData = {
         name: document.getElementById("directEditName").value.trim(),
+        area: document.getElementById("directEditArea").value.trim(),
         price: parseInt(document.getElementById("directEditPrice").value),
         category: document.getElementById("directEditCategory").value,
         sizes: sizes
@@ -481,14 +489,17 @@
         var oName = (p.name || "").toLowerCase();
         var cat = (p.category || "").toLowerCase();
 
-        var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search);
+        // Exact Location dynamically pulled from product or boutique registered area
+        var realLocation = p.area || (boutiqueLocationsMap[sName] ? boutiqueLocationsMap[sName] : "Anantapur");
+
+        var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
         var matchC = (currentCategoryFilter === "All") || oName.includes(currentCategoryFilter.toLowerCase()) || cat.includes(currentCategoryFilter.toLowerCase());
 
         if (matchS && matchC) {
           if (!storesMap[sName]) {
             storesMap[sName] = {
               storeName: sName,
-              area: p.area || "City Central",
+              area: realLocation,
               eta: p.eta || "35 MINS",
               rating: p.rating || "5.0",
               products: []
@@ -517,8 +528,8 @@
               '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
               (isOwnerActive && isCloud ? 
                 '<div class="absolute top-1 right-1 flex gap-1 z-10">' +
-                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1 rounded text-[9px] cursor-pointer" title="Edit Outfit">✏️</button>' +
-                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1 rounded text-[9px] cursor-pointer" title="Delete Outfit">🗑️</button>' +
+                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer" title="Edit Outfit">✏️</button>' +
+                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer" title="Delete Outfit">🗑️</button>' +
                 '</div>' : '') +
             '</div>';
         });
@@ -531,7 +542,7 @@
             '</div>' +
             '<div>' +
               '<h3 class="font-brand font-black text-xl text-slate-950">' + store.storeName + '</h3>' +
-              '<p class="text-[11px] text-slate-500">📍 ' + store.area + '</p>' +
+              '<p class="text-[11px] text-slate-500 font-medium">📍 ' + store.area + '</p>' +
             '</div>' +
             '<div class="grid grid-cols-3 gap-2">' + previewImages + '</div>' +
             '<div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">' +
@@ -750,7 +761,19 @@
       showQuickToast("✓ GPS Synced");
     };
 
-    // Firebase Data Listener
+    // 1. Fetch Registered Boutiques Locations
+    db.ref("boutiques").on("value", function(snapshot) {
+      var data = snapshot.val() || {};
+      boutiqueLocationsMap = {};
+      Object.values(data).forEach(function(b) {
+        if (b.storeName && b.area) {
+          boutiqueLocationsMap[b.storeName] = b.area;
+        }
+      });
+      renderBoutiqueStores();
+    });
+
+    // 2. Fetch Products
     db.ref("boutique_products").on("value", function(snapshot) {
       var data = snapshot.val();
       cloudProducts = [];
