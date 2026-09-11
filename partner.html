@@ -15,13 +15,7 @@
   
   <style>
     *, *::before, *::after { box-sizing: border-box; }
-    html, body { 
-      overflow-x: hidden !important; 
-      width: 100% !important; 
-      max-width: 100% !important; 
-      margin: 0; 
-      padding: 0; 
-    }
+    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
@@ -39,6 +33,9 @@
     </div>
 
     <div class="flex items-center gap-2 shrink-0">
+      <button id="soundToggleBtn" onclick="toggleAudioChime()" class="text-[10px] font-bold px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 transition cursor-pointer flex items-center gap-1">
+        <span>🔔</span> <span id="soundStatusText">Sound: ON</span>
+      </button>
       <button id="logoutPartnerBtn" onclick="partnerLogout()" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl transition cursor-pointer">
         🚪 Logout
       </button>
@@ -55,7 +52,7 @@
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🏬</div>
         <h2 id="partnerAuthTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Boutique Merchant Studio</h2>
-        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Manage catalog, 15KM radar boundary, and orders.</p>
+        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Manage catalog, 15KM radar, and instant audio orders.</p>
       </div>
 
       <div id="partnerTabsNav" class="flex bg-slate-100 p-1 rounded-2xl">
@@ -81,26 +78,16 @@
         </button>
       </form>
 
-      <!-- Register Form with 15km Location Setup -->
+      <!-- Register Form -->
       <form id="partnerRegisterForm" onsubmit="handlePartnerRegister(event)" class="space-y-3.5 hidden">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Boutique / Store Name</label>
           <input type="text" id="regStoreName" required placeholder="e.g., Sai Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
         </div>
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Address / Area</label>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Address / Exact Area</label>
           <input type="text" id="regStoreArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
         </div>
-
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">15-KM Radar Location Pin</label>
-          <button type="button" onclick="captureStoreGPS()" id="storeGpsBtn" class="w-full bg-orange-50 border border-orange-300 py-2.5 rounded-xl text-xs font-bold text-orange-800">
-            📍 <span id="storeGpsBtnText">Capture Store GPS for 15KM Radar</span>
-          </button>
-          <input type="hidden" id="regStoreLat" value="14.6819">
-          <input type="hidden" id="regStoreLng" value="77.6006">
-        </div>
-
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Owner Mobile Number</label>
           <input type="tel" id="regPartnerMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
@@ -153,7 +140,7 @@
           </div>
         </div>
         <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2.5 py-1 rounded-full shrink-0">
-          ● 15KM RADAR ACTIVE
+          ● RADAR LIVE
         </span>
       </div>
 
@@ -172,7 +159,10 @@
       <!-- Live Store Incoming Orders -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b pb-2">
-          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Live Store Orders</h3>
+          <div class="flex items-center gap-1.5">
+            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Live Incoming Orders</h3>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          </div>
           <span id="activeOrdersBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded-full">0 Orders</span>
         </div>
         <div id="partnerOrdersList" class="space-y-3">
@@ -180,7 +170,7 @@
         </div>
       </div>
 
-      <!-- Upload New Outfit Section (Includes Category Selection) -->
+      <!-- Upload New Outfit Section -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
         <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider" id="formHeaderTitle">Upload New Collection</h3>
         
@@ -189,17 +179,16 @@
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
-            <input type="text" id="prodName" required placeholder="e.g., Kids Silk Pattu Pavadai" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+            <input type="text" id="prodName" required placeholder="e.g., Pure Kanchi Pattu Saree" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
           </div>
 
-          <!-- Category Selection including KIDS WEAR -->
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Outfit Category</label>
             <select id="prodCategory" required class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800">
               <option value="Saree">🥻 Saree</option>
               <option value="Kurti">👗 Kurti / Anarkali</option>
-              <option value="Lehenga">✨ Lehenga / Ethnic</option>
               <option value="Kids">🧸 Kids Wear (Boys & Girls)</option>
+              <option value="Lehenga">✨ Lehenga / Ethnic</option>
               <option value="Men">👔 Men's Wear</option>
             </select>
           </div>
@@ -223,7 +212,7 @@
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes (comma separated)</label>
-            <input type="text" id="prodSizes" placeholder="Free size, S, M, L, 2-3Y, 4-5Y" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+            <input type="text" id="prodSizes" placeholder="Free size, S, M, L, XL" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
           </div>
 
           <div>
@@ -242,26 +231,15 @@
         </form>
       </div>
 
-      <!-- Manage & Edit Uploaded Outfits (Anti-Fake / Removal Control) -->
+      <!-- Manage Uploaded Outfits -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Manage Store Outfits</h3>
-          <span class="text-[10px] text-slate-400 font-medium">Edit details or remove fake items</span>
+          <span class="text-[10px] text-slate-400 font-medium">Edit details or delete</span>
         </div>
         <div id="myUploadedProductsList" class="space-y-2">
           <p class="text-slate-400 text-center py-4 text-xs">No custom outfits uploaded yet.</p>
         </div>
-      </div>
-
-      <!-- Compact Danger Zone -->
-      <div class="p-3.5 rounded-2xl bg-rose-50/50 border border-rose-100 flex items-center justify-between text-xs">
-        <div>
-          <span class="font-bold text-rose-900 text-[11px] block">Store Management</span>
-          <span class="text-slate-400 text-[10px]">Permanently remove boutique profile</span>
-        </div>
-        <button onclick="deleteStorePermanently()" class="bg-white hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 font-bold px-3 py-1.5 rounded-lg text-[10px] transition cursor-pointer shrink-0 shadow-2xs">
-          🗑️ Delete Store
-        </button>
       </div>
 
     </div>
@@ -285,55 +263,66 @@
     var currentPartner = null;
     var uploadedPhotosBase64 = [];
     var currentStoreProducts = {};
+    var isSoundEnabled = true;
+    var lastKnownOrdersCount = -1;
 
-    function captureStoreGPS() {
-      var btnText = document.getElementById("storeGpsBtnText");
-      if (navigator.geolocation) {
-        btnText.innerText = "Locating Exact GPS Coordinates...";
-        navigator.geolocation.getCurrentPosition(function(pos) {
-          document.getElementById("regStoreLat").value = pos.coords.latitude;
-          document.getElementById("regStoreLng").value = pos.coords.longitude;
-          btnText.innerText = "✓ Store GPS Saved (" + pos.coords.latitude.toFixed(4) + ", " + pos.coords.longitude.toFixed(4) + ")";
-        }, function() {
-          alert("Could not fetch GPS. Setting default location.");
-        });
+    // Web Audio Chime Synthesizer (Instant Loud Swiggy/Zomato style Ding-Dong Chime)
+    function playOrderAlertSound() {
+      if (!isSoundEnabled) return;
+      try {
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, time, duration) {
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + time);
+          gain.gain.setValueAtTime(0.7, audioCtx.currentTime + time);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + time + duration);
+          osc.start(audioCtx.currentTime + time);
+          osc.stop(audioCtx.currentTime + time + duration);
+        }
+
+        // Ding-Dong Chime sequence
+        playTone(587.33, 0.0, 0.35); // D5
+        playTone(880.00, 0.2, 0.45); // A5
+        playTone(659.25, 0.4, 0.55); // E5
+      } catch(e) {
+        console.log("Audio alert playback error: ", e);
       }
+    }
+
+    function toggleAudioChime() {
+      isSoundEnabled = !isSoundEnabled;
+      document.getElementById("soundStatusText").innerText = isSoundEnabled ? "Sound: ON" : "Sound: OFF";
+      if (isSoundEnabled) playOrderAlertSound();
     }
 
     function switchPartnerTab(tab) {
       var logF = document.getElementById("partnerLoginForm");
       var regF = document.getElementById("partnerRegisterForm");
       var forgF = document.getElementById("partnerForgotForm");
-      var nav = document.getElementById("partnerTabsNav");
 
-      nav.classList.remove("hidden");
       forgF.classList.add("hidden");
-
       if (tab === 'login') {
-        document.getElementById("partnerAuthTitle").innerText = "Boutique Merchant Studio";
-        document.getElementById("partnerAuthSubtitle").innerText = "Manage catalog, 15KM radar boundary, and orders.";
         logF.classList.remove("hidden");
         regF.classList.add("hidden");
-        document.getElementById("tabBoutiqueLogin").classList.add("bg-white", "text-slate-950", "shadow-sm");
-        document.getElementById("tabBoutiqueRegister").classList.remove("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("tabBoutiqueLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("tabBoutiqueRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       } else {
-        document.getElementById("partnerAuthTitle").innerText = "Register New Boutique";
-        document.getElementById("partnerAuthSubtitle").innerText = "Join the 15KM express hyperlocal fashion network.";
         logF.classList.add("hidden");
         regF.classList.remove("hidden");
-        document.getElementById("tabBoutiqueRegister").classList.add("bg-white", "text-slate-950", "shadow-sm");
-        document.getElementById("tabBoutiqueLogin").classList.remove("bg-white", "text-slate-950", "shadow-sm");
+        document.getElementById("tabBoutiqueRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("tabBoutiqueLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       }
     }
 
     function openPartnerForgotPin() {
       document.getElementById("partnerLoginForm").classList.add("hidden");
       document.getElementById("partnerRegisterForm").classList.add("hidden");
-      document.getElementById("partnerTabsNav").classList.add("hidden");
       document.getElementById("partnerForgotForm").classList.remove("hidden");
-
-      var m = document.getElementById("partnerLoginMobile").value.trim();
-      if (m) document.getElementById("partnerResetMobile").value = m;
     }
 
     function handlePartnerResetPin(e) {
@@ -342,24 +331,16 @@
       var store = document.getElementById("partnerResetStore").value.trim().toLowerCase();
       var newPin = document.getElementById("partnerResetNewPin").value.trim();
 
-      if (newPin.length !== 4) return alert("PIN must be 4 digits!");
-
-      var btn = document.getElementById("partnerResetBtn");
-      btn.disabled = true;
-      btn.innerText = "Verifying...";
-
       db.ref("boutiques/" + mobile).once("value").then(function(snapshot) {
         var partner = snapshot.val();
         if (partner && partner.storeName.trim().toLowerCase() === store) {
           db.ref("boutiques/" + mobile).update({ pin: newPin }).then(function() {
-            alert("✓ Boutique PIN updated successfully!");
+            alert("✓ Boutique PIN updated!");
             partner.pin = newPin;
             partnerLoginSuccess(partner);
           });
         } else {
-          alert("Verification Failed: Boutique Name or Mobile did not match records!");
-          btn.disabled = false;
-          btn.innerText = "Update PIN & Open Studio ➔";
+          alert("Verification Failed: Boutique Name or Mobile mismatch!");
         }
       });
     }
@@ -370,18 +351,8 @@
       var area = document.getElementById("regStoreArea").value.trim();
       var mobile = document.getElementById("regPartnerMobile").value.trim();
       var pin = document.getElementById("regPartnerPin").value.trim();
-      var lat = parseFloat(document.getElementById("regStoreLat").value) || 14.6819;
-      var lng = parseFloat(document.getElementById("regStoreLng").value) || 77.6006;
 
-      var newPartner = { 
-        storeName: store, 
-        area: area, 
-        mobile: mobile, 
-        pin: pin,
-        lat: lat,
-        lng: lng
-      };
-
+      var newPartner = { storeName: store, area: area, mobile: mobile, pin: pin };
       db.ref("boutiques/" + mobile).set(newPartner).then(function() {
         alert("✓ Boutique Registered Successfully!");
         partnerLoginSuccess(newPartner);
@@ -393,18 +364,12 @@
       var mobile = document.getElementById("partnerLoginMobile").value.trim();
       var pin = document.getElementById("partnerLoginPin").value.trim();
 
-      var btn = document.getElementById("partnerLoginBtn");
-      btn.disabled = true;
-      btn.innerText = "Authenticating...";
-
       db.ref("boutiques/" + mobile).once("value").then(function(snapshot) {
         var partner = snapshot.val();
         if (partner && partner.pin === pin) {
           partnerLoginSuccess(partner);
         } else {
           alert("Invalid Mobile or PIN!");
-          btn.disabled = false;
-          btn.innerText = "Access Store Studio ➔";
         }
       });
     }
@@ -418,7 +383,7 @@
       document.getElementById("logoutPartnerBtn").classList.remove("hidden");
 
       document.getElementById("dashStoreName").innerText = partner.storeName;
-      document.getElementById("dashStoreArea").innerText = "📍 " + partner.area;
+      document.getElementById("dashStoreArea").innerText = "📍 " + (partner.area || "City Central");
 
       loadStoreOrders(partner.storeName);
       loadUploadedProducts(partner.storeName);
@@ -427,13 +392,9 @@
     function partnerLogout() {
       currentPartner = null;
       localStorage.removeItem("fitin60_active_partner");
-
       document.getElementById("partnerAuthSection").classList.remove("hidden");
       document.getElementById("partnerDashboard").classList.add("hidden");
       document.getElementById("logoutPartnerBtn").classList.add("hidden");
-      document.getElementById("partnerLoginForm").reset();
-      document.getElementById("partnerLoginBtn").disabled = false;
-      document.getElementById("partnerLoginBtn").innerText = "Access Store Studio ➔";
     }
 
     function previewUploadedPhotos(event) {
@@ -442,13 +403,7 @@
       container.innerHTML = "";
       uploadedPhotosBase64 = [];
 
-      if (files.length > 4) {
-        alert("Maximum 4 photos allowed!");
-        event.target.value = "";
-        return;
-      }
-
-      Array.from(files).forEach(function(file) {
+      Array.from(files).slice(0, 4).forEach(function(file) {
         var reader = new FileReader();
         reader.onload = function(e) {
           uploadedPhotosBase64.push(e.target.result);
@@ -461,7 +416,6 @@
       });
     }
 
-    // Publish OR Edit/Update Existing Product
     function handlePublishProduct(e) {
       e.preventDefault();
       if (!currentPartner) return;
@@ -478,10 +432,6 @@
       var mainImg = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64[0] : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].image : "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80");
       var imgList = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64 : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].images : [mainImg]);
 
-      var btn = document.getElementById("publishBtn");
-      btn.disabled = true;
-      btn.innerText = editingKey ? "Updating..." : "Publishing...";
-
       var targetKey = editingKey || db.ref("boutique_products").push().key;
 
       var productData = {
@@ -496,39 +446,16 @@
         image: mainImg,
         images: imgList,
         store: currentPartner.storeName,
-        area: currentPartner.area,
-        lat: currentPartner.lat || 14.6819,
-        lng: currentPartner.lng || 77.6006,
+        area: currentPartner.area || "City Central",
         eta: "35 MINS",
         rating: "5.0",
         timestamp: Date.now()
       };
 
       db.ref("boutique_products/" + targetKey).set(productData).then(function() {
-        alert(editingKey ? "✓ Outfit Updated Successfully!" : "✓ Product Published Live to Fitin60 Store!");
+        alert(editingKey ? "✓ Outfit Updated!" : "✓ Product Published Live!");
         cancelProductEdit();
-        btn.disabled = false;
       });
-    }
-
-    // Trigger Outfit Edit (Anti-Fake modification)
-    function startEditProduct(key) {
-      var prod = currentStoreProducts[key];
-      if (!prod) return;
-
-      document.getElementById("editingProdKey").value = key;
-      document.getElementById("prodName").value = prod.name;
-      document.getElementById("prodCategory").value = prod.category || "Saree";
-      document.getElementById("prodPrice").value = prod.price;
-      document.getElementById("prodOriginal").value = prod.originalPrice || "";
-      document.getElementById("prodSizes").value = (prod.sizes || []).join(", ");
-      document.getElementById("prodDesc").value = prod.desc || "";
-
-      document.getElementById("formHeaderTitle").innerText = "Edit Outfit Details";
-      document.getElementById("publishBtn").innerText = "✓ Save Changes";
-      document.getElementById("cancelEditBtn").classList.remove("hidden");
-
-      window.scrollTo({ top: document.getElementById("productForm").offsetTop - 80, behavior: 'smooth' });
     }
 
     function cancelProductEdit() {
@@ -541,6 +468,7 @@
       document.getElementById("cancelEditBtn").classList.add("hidden");
     }
 
+    // Live Order Listener with Sound Notification
     function loadStoreOrders(storeName) {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
@@ -556,6 +484,12 @@
         var storeOrders = Object.values(orders).filter(function(o) {
           return String(o.store).trim().toLowerCase() === String(storeName).trim().toLowerCase();
         }).reverse();
+
+        // Trigger Audio Chime when new incoming order arrives
+        if (lastKnownOrdersCount !== -1 && storeOrders.length > lastKnownOrdersCount) {
+          playOrderAlertSound();
+        }
+        lastKnownOrdersCount = storeOrders.length;
 
         badge.innerText = storeOrders.length + " Orders";
 
@@ -580,11 +514,12 @@
                 '</div>' +
                 '<span class="font-mono-num font-black text-slate-900">₹' + o.totalAmount + '</span>' +
               '</div>' +
-              '<p class="text-slate-600 text-[11px]">📍 Deliver to: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+              '<p class="text-slate-600 text-[11px]">📍 Customer: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+              '<p class="text-slate-500 text-[10px]">🏠 Address: ' + o.customerAddress + '</p>' +
               '<div class="pt-1">' +
                 (!o.boutiqueAccepted ? 
-                  '<button onclick="acceptStoreOrder(\'' + o.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs cursor-pointer shadow-sm">✓ Accept & Dispatch Rider</button>' : 
-                  '<span class="block text-center font-bold text-emerald-700 bg-emerald-100/70 py-1.5 rounded-xl text-[11px]">' + (o.status === "Delivered" ? "Delivered 🎉" : "Dispatched to Rider 🛵") + '</span>') +
+                  '<button onclick="acceptStoreOrder(\'' + o.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-sm animate-pulse">⚡ Accept & Dispatch Rider</button>' : 
+                  '<span class="block text-center font-bold text-emerald-700 bg-emerald-100/70 py-1.5 rounded-xl text-[11px]">' + (o.status === "Delivered" ? "Delivered 🎉" : "Accepted • Dispatched to Rider 🛵") + '</span>') +
               '</div>' +
             '</div>';
         });
@@ -627,10 +562,7 @@
                   '<p class="font-mono-num text-[11px] text-slate-500">₹' + p.price + ' • <span class="text-orange-600 font-bold">' + (p.category || 'General') + '</span></p>' +
                 '</div>' +
               '</div>' +
-              '<div class="flex items-center gap-1.5 shrink-0">' +
-                '<button onclick="startEditProduct(\'' + k + '\')" class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-lg font-bold cursor-pointer transition text-[11px]">✏️ Edit</button>' +
-                '<button onclick="deleteProductPermanent(\'' + k + '\')" class="text-rose-600 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg font-bold cursor-pointer transition text-[11px]">🗑️ Delete</button>' +
-              '</div>' +
+              '<button onclick="deleteProductPermanent(\'' + k + '\')" class="text-rose-600 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg font-bold cursor-pointer transition text-[11px]">🗑️ Delete</button>' +
             '</div>';
         });
         container.innerHTML = html;
@@ -638,33 +570,14 @@
     }
 
     function deleteProductPermanent(key) {
-      if (confirm("Remove this outfit completely from Fitin60 live store?")) {
-        db.ref("boutique_products/" + key).remove().then(function() {
-          alert("✓ Outfit removed from store.");
-        });
+      if (confirm("Remove this outfit completely from store?")) {
+        db.ref("boutique_products/" + key).remove();
       }
-    }
-
-    function deleteStorePermanently() {
-      if (!currentPartner) return;
-      var enteredPin = prompt("Enter your 4-digit PIN to permanently delete your Boutique Account:");
-      if (!enteredPin) return;
-
-      if (enteredPin !== currentPartner.pin) return alert("Incorrect PIN!");
-
-      db.ref("boutiques/" + currentPartner.mobile).remove().then(function() {
-        alert("✓ Store account deleted.");
-        partnerLogout();
-      });
     }
 
     window.addEventListener('DOMContentLoaded', function() {
       var saved = localStorage.getItem("fitin60_active_partner");
-      if (saved) {
-        partnerLoginSuccess(JSON.parse(saved));
-      } else {
-        partnerLogout();
-      }
+      if (saved) partnerLoginSuccess(JSON.parse(saved));
     });
   </script>
 </body>
