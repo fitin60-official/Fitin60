@@ -50,7 +50,7 @@
     <span>⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • 60-Min Drops</span>
   </div>
 
-  <!-- Header -->
+  <!-- Header (Clean Storefront - No Visible Owner Buttons) -->
   <header class="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm w-full">
     <a href="index.html" class="flex items-center gap-1 shrink-0">
       <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
@@ -60,11 +60,6 @@
     </a>
 
     <div class="flex items-center gap-2 shrink-0">
-      <!-- Direct Owner Mode Button -->
-      <button onclick="toggleOwnerMode()" id="ownerModeBtn" class="text-[11px] font-bold px-2.5 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700 cursor-pointer">
-        <span>🛡️</span> <span id="ownerModeText">Owner</span>
-      </button>
-
       <button id="cartBtnPill" onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer">
         <span class="text-sm">🛍️</span>
         <span id="cart-count" class="bg-white text-orange-600 text-[10px] font-mono-num font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
@@ -85,7 +80,10 @@
   <!-- Profile Menu Popover -->
   <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-60 space-y-3">
     <div class="border-b border-slate-100 pb-2">
-      <p class="text-[10px] font-bold text-slate-400 uppercase">Logged in as</p>
+      <div class="flex justify-between items-center">
+        <p class="text-[10px] font-bold text-slate-400 uppercase">Account</p>
+        <span id="ownerBadgeInProfile" class="hidden text-[9px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-2 py-0.5 rounded-md">OWNER ACTIVE</span>
+      </div>
       <p id="popoverCustName" class="font-bold text-sm text-slate-900 truncate">Customer</p>
       <p id="popoverCustPhone" class="font-mono text-xs text-slate-500">9876543210</p>
     </div>
@@ -149,11 +147,6 @@
     <span class="text-emerald-400">✓</span>
     <span id="toastMsg">Added to Bag</span>
   </div>
-
-  <!-- Support Button -->
-  <button onclick="openSupportModal()" class="fixed bottom-20 right-4 z-40 bg-gradient-to-r from-orange-600 to-amber-600 hover:scale-105 active:scale-95 text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center transition cursor-pointer" title="Support Desk">
-    <span class="text-xl">🎧</span>
-  </button>
 
   <!-- Customer Auth Modal -->
   <div id="customerLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
@@ -267,7 +260,7 @@
     </div>
   </div>
 
-  <!-- DIRECT OWNER ON-SCREEN EDIT MODAL -->
+  <!-- DIRECT OWNER EDIT MODAL -->
   <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
@@ -349,7 +342,8 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    var isOwnerModeActive = (localStorage.getItem("fitin60_owner_mode") === "true");
+    // Owner Identification
+    var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
     var baseProducts = [
       {
@@ -374,7 +368,6 @@
     var currentCustomer = null;
     var currentCategoryFilter = "All";
 
-    // Direct Login Modal Functions
     window.openLoginModal = function() {
       switchCustAuthTab('login');
       document.getElementById("customerLoginModal").classList.remove("hidden");
@@ -408,41 +401,6 @@
       document.getElementById("custRegisterForm").classList.add("hidden");
       document.getElementById("custForgotForm").classList.remove("hidden");
     };
-
-    // Owner Mode Toggle
-    window.toggleOwnerMode = function() {
-      if (isOwnerModeActive) {
-        isOwnerModeActive = false;
-        localStorage.removeItem("fitin60_owner_mode");
-        updateOwnerBtnUI();
-        renderBoutiqueStores();
-        showQuickToast("Owner Mode OFF");
-      } else {
-        var pin = prompt("Enter Master Owner Passcode:");
-        if (pin === "admin4545") {
-          isOwnerModeActive = true;
-          localStorage.setItem("fitin60_owner_mode", "true");
-          updateOwnerBtnUI();
-          renderBoutiqueStores();
-          showQuickToast("🛡️ Owner Mode ON");
-        } else if (pin !== null) {
-          alert("❌ Incorrect Passcode!");
-        }
-      }
-    };
-
-    function updateOwnerBtnUI() {
-      var btn = document.getElementById("ownerModeBtn");
-      var text = document.getElementById("ownerModeText");
-      if (!btn || !text) return;
-      if (isOwnerModeActive) {
-        btn.className = "text-[11px] font-bold px-2.5 py-1.5 rounded-xl border transition flex items-center gap-1 bg-emerald-500 border-emerald-600 text-white shadow-sm cursor-pointer";
-        text.innerText = "Owner: ON";
-      } else {
-        btn.className = "text-[11px] font-bold px-2.5 py-1.5 rounded-xl border transition flex items-center gap-1 bg-slate-100 border-slate-300 text-slate-700 cursor-pointer";
-        text.innerText = "Owner";
-      }
-    }
 
     window.directOwnerDelete = function(key) {
       if (confirm("Owner: Delete this outfit immediately?")) {
@@ -557,10 +515,10 @@
             '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">' +
               '<img src="' + p.image + '" alt="" class="w-full h-full object-cover">' +
               '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
-              (isOwnerModeActive && isCloud ? 
+              (isOwnerActive && isCloud ? 
                 '<div class="absolute top-1 right-1 flex gap-1 z-10">' +
-                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1 rounded text-[9px] cursor-pointer">✏️</button>' +
-                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1 rounded text-[9px] cursor-pointer">🗑️</button>' +
+                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1 rounded text-[9px] cursor-pointer" title="Edit Outfit">✏️</button>' +
+                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1 rounded text-[9px] cursor-pointer" title="Delete Outfit">🗑️</button>' +
                 '</div>' : '') +
             '</div>';
         });
@@ -637,24 +595,90 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
-    // Direct Login Listeners
+    // Direct Login Listeners (Auto-Detect Owner Login)
     window.handleCustomerPinLogin = function(e) {
       e.preventDefault();
       var mob = document.getElementById("custPinLoginMobile").value.trim();
       var pin = document.getElementById("custPinLoginPin").value.trim();
 
+      // Master Owner PIN Verification
+      if (pin === "4545") {
+        isOwnerActive = true;
+        localStorage.setItem("fitin60_owner_session", "active");
+        currentCustomer = { name: "Platform Owner", phone: mob };
+        localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+        updateAuthHeaderUI();
+        closeLoginModal();
+        renderBoutiqueStores();
+        showQuickToast("🛡️ Welcome Owner! Direct Edit Enabled");
+        return;
+      }
+
       db.ref("customers/" + mob).once("value").then(function(snap) {
         var user = snap.val();
         if (user && user.pin === pin) {
+          isOwnerActive = false;
+          localStorage.removeItem("fitin60_owner_session");
           currentCustomer = user;
           localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
+          updateAuthHeaderUI();
           closeLoginModal();
+          renderBoutiqueStores();
           showQuickToast("✓ Logged in as " + user.name);
         } else {
           alert("Invalid Mobile or PIN!");
         }
       });
     };
+
+    function updateAuthHeaderUI() {
+      var container = document.getElementById("authPillContainer");
+      var ownerBadge = document.getElementById("ownerBadgeInProfile");
+
+      if (currentCustomer) {
+        var firstName = currentCustomer.name.split(" ")[0];
+        container.innerHTML = 
+          '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
+            '<span>👤</span>' +
+            '<span class="text-slate-900">' + firstName + '</span>' +
+            '<span class="text-[9px] text-slate-400">▼</span>' +
+          '</button>';
+
+        document.getElementById("custName").value = currentCustomer.name || "";
+        document.getElementById("custPhone").value = currentCustomer.phone || "";
+        document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
+        document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
+
+        if (isOwnerActive && ownerBadge) {
+          ownerBadge.classList.remove("hidden");
+        } else if (ownerBadge) {
+          ownerBadge.classList.add("hidden");
+        }
+      } else {
+        container.innerHTML = 
+          '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
+            '<span>👤</span> <span>Login</span>' +
+          '</button>';
+      }
+    }
+
+    function toggleProfileMenu() {
+      document.getElementById("profilePopover").classList.toggle("hidden");
+    }
+
+    function customerLogout() {
+      if (confirm("Log out of Fitin60?")) {
+        currentCustomer = null;
+        isOwnerActive = false;
+        localStorage.removeItem("fitin60_customer_user");
+        localStorage.removeItem("fitin60_owner_session");
+        document.getElementById("profilePopover").classList.add("hidden");
+        document.getElementById("custName").value = "";
+        document.getElementById("custPhone").value = "";
+        updateAuthHeaderUI();
+        renderBoutiqueStores();
+      }
+    }
 
     window.handleCustomerPinRegister = function(e) {
       e.preventDefault();
@@ -667,6 +691,7 @@
         currentCustomer = user;
         localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
         closeLoginModal();
+        updateAuthHeaderUI();
         showQuickToast("✓ Registered Successfully!");
       });
     };
@@ -725,10 +750,6 @@
       showQuickToast("✓ GPS Synced");
     };
 
-    window.openSupportModal = function() {
-      alert("Fitin60 Support Line: 9876543210 (Available 24/7)");
-    };
-
     // Firebase Data Listener
     db.ref("boutique_products").on("value", function(snapshot) {
       var data = snapshot.val();
@@ -745,7 +766,11 @@
     });
 
     // Start
-    updateOwnerBtnUI();
+    try {
+      var saved = localStorage.getItem("fitin60_customer_user");
+      if (saved) currentCustomer = JSON.parse(saved);
+    } catch(e){}
+    updateAuthHeaderUI();
     renderBoutiqueStores();
   </script>
 </body>
