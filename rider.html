@@ -54,7 +54,7 @@
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🛵</div>
         <h2 class="font-brand font-black text-xl text-slate-950 mt-1">Rider Fleet Shift Station</h2>
-        <p class="text-xs text-slate-500">Distance-based dynamic payout enabled.</p>
+        <p class="text-xs text-slate-500">Distance-based dynamic payout with instant settlement.</p>
       </div>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl">
@@ -127,12 +127,12 @@
         </div>
       </div>
 
-      <!-- Financials -->
+      <!-- Financials: Instant Trip Earnings & COD -->
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-[10px] uppercase font-bold text-slate-400">Total Trip Earnings</p>
+          <p class="text-[10px] uppercase font-bold text-slate-400">Total Settled Earnings</p>
           <p class="font-mono-num font-black text-2xl text-emerald-600 mt-1" id="riderTotalEarnings">₹0</p>
-          <p class="text-[9px] text-slate-400 mt-0.5"><span id="riderCompletedTrips">0</span> Trips Completed</p>
+          <p class="text-[9px] text-emerald-600 font-bold mt-0.5">⚡ Instant Settled (<span id="riderCompletedTrips">0</span> Trips)</p>
         </div>
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <p class="text-[10px] uppercase font-bold text-slate-400">Cash in Hand (COD)</p>
@@ -157,14 +157,16 @@
         <div id="riderOrdersPool" class="space-y-3"></div>
       </div>
 
-      <!-- Trip History -->
+      <!-- Trip History with Instant Settlement Badges -->
       <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b pb-2">
           <div class="flex items-center gap-1.5">
-            <span class="text-base">📜</span>
-            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Trip Earnings History</h3>
+            <span class="text-base">⚡</span>
+            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Instant Trip Settlements</h3>
           </div>
-          <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Distance Slabs</span>
+          <span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+            Realtime Settle
+          </span>
         </div>
         <div id="riderEarningsHistoryList" class="space-y-2.5 text-xs">
           <p class="text-slate-400 text-center py-4">No completed trips yet.</p>
@@ -196,7 +198,7 @@
           Cancel
         </button>
         <button onclick="verifyAndCompleteDelivery()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs cursor-pointer shadow-md">
-          Verify & Finish
+          Verify & Settle Instant
         </button>
       </div>
     </div>
@@ -387,7 +389,7 @@
       }
     }
 
-    // LISTENER FOR ORDERS AND DYNAMIC DISTANCE TRIP EARNINGS
+    // LISTENER FOR ORDERS AND INSTANT SETTLEMENT TRIP EARNINGS
     function listenToRiderOrdersAndEarnings() {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
@@ -443,7 +445,7 @@
                     '<button onclick="acceptRiderDelivery(\'' + o.orderId + '\')" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-sm transition">⚡ Accept Delivery Task (Earn ₹' + distFee + ')</button>' : 
                     '<div class="grid grid-cols-2 gap-2">' +
                       '<a href="tel:' + o.customerPhone + '" class="bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs text-center flex items-center justify-center gap-1">📞 Call Customer</a>' +
-                      '<button onclick="openOtpVerificationModal(\'' + o.orderId + '\', \'' + o.deliveryOtp + '\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-md">🔑 Complete via OTP</button>' +
+                      '<button onclick="openOtpVerificationModal(\'' + o.orderId + '\', \'' + o.deliveryOtp + '\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-md">🔑 Complete & Settle</button>' +
                     '</div>'
                   ) +
                 '</div>' +
@@ -452,7 +454,7 @@
           pool.innerHTML = html;
         }
 
-        // Delivered trips & Distance Earnings Total
+        // Instant Settled Delivered Trips by this rider
         var myDeliveredTrips = allOrders.filter(function(o) {
           return o.status === "Delivered" && o.riderPhone === currentRider.mobile;
         }).reverse();
@@ -476,7 +478,7 @@
               '<div>' +
                 '<div class="flex items-center gap-2">' +
                   '<span class="font-mono font-bold text-slate-900">' + o.orderId + '</span>' +
-                  '<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Delivered</span>' +
+                  '<span class="text-[9px] px-2 py-0.5 rounded-full font-black bg-emerald-100 text-emerald-800 border border-emerald-200">⚡ Instant Settled (Paid)</span>' +
                 '</div>' +
                 '<p class="text-[10px] text-slate-500 mt-0.5">Store: ' + o.store + ' • ' + (isCOD ? '<span class="text-amber-600 font-bold">Collected Cash ₹' + o.totalAmount + '</span>' : '<span class="text-emerald-600 font-bold">Online Paid</span>') + '</p>' +
               '</div>' +
@@ -517,6 +519,7 @@
       document.getElementById("otpVerifyModal").classList.add("hidden");
     }
 
+    // OTP VERIFICATION + INSTANT RIDER FINANCIAL SETTLEMENT
     function verifyAndCompleteDelivery() {
       var targetOrderId = document.getElementById("otpTargetOrderId").value;
       var expectedCode = document.getElementById("otpExpectedCode").value.trim();
@@ -528,9 +531,11 @@
         db.ref("orders/" + targetOrderId).update({
           status: "Delivered",
           paymentStatus: "Delivered Successfully 🎉",
+          "financialSplit/riderSettlementStatus": "Settled",
+          "financialSplit/storeSettlementStatus": "Settled",
           deliveredAt: Date.now()
         }).then(function() {
-          alert("🎉 OTP Verified! Order Successfully Delivered!");
+          alert("🎉 OTP Verified! Order Successfully Delivered & Trip Fee Settled Instantly!");
           closeOtpModal();
         });
       } else {
