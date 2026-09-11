@@ -244,6 +244,13 @@
         </div>
       </div>
 
+      <!-- SUBTLE COMPACT STORE DELETION LINK -->
+      <div class="pt-4 pb-2 text-center">
+        <button onclick="handleDeleteStorePermanently()" class="text-[11px] text-rose-500/70 hover:text-rose-600 font-semibold underline decoration-rose-300 transition cursor-pointer">
+          Close & Delete this Boutique Account
+        </button>
+      </div>
+
     </div>
 
   </main>
@@ -268,7 +275,6 @@
     var isSoundEnabled = true;
     var lastKnownOrdersCount = -1;
 
-    // Web Audio Chime Synthesizer (Instant Loud Swiggy/Zomato style Ding-Dong Chime)
     function playOrderAlertSound() {
       if (!isSoundEnabled) return;
       try {
@@ -287,12 +293,11 @@
           osc.stop(audioCtx.currentTime + time + duration);
         }
 
-        // Ding-Dong Chime sequence
-        playTone(587.33, 0.0, 0.35); // D5
-        playTone(880.00, 0.2, 0.45); // A5
-        playTone(659.25, 0.4, 0.55); // E5
+        playTone(587.33, 0.0, 0.35);
+        playTone(880.00, 0.2, 0.45);
+        playTone(659.25, 0.4, 0.55);
       } catch(e) {
-        console.log("Audio alert playback error: ", e);
+        console.log("Audio alert error: ", e);
       }
     }
 
@@ -470,7 +475,6 @@
       document.getElementById("cancelEditBtn").classList.add("hidden");
     }
 
-    // Live Order Listener with Sound Notification
     function loadStoreOrders(storeName) {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
@@ -487,7 +491,6 @@
           return String(o.store).trim().toLowerCase() === String(storeName).trim().toLowerCase();
         }).reverse();
 
-        // Trigger Audio Chime when new incoming order arrives
         if (lastKnownOrdersCount !== -1 && storeOrders.length > lastKnownOrdersCount) {
           playOrderAlertSound();
         }
@@ -575,6 +578,39 @@
       if (confirm("Remove this outfit completely from store?")) {
         db.ref("boutique_products/" + key).remove();
       }
+    }
+
+    // USES SAME LOGIN 4-DIGIT PIN TO DELETE
+    function handleDeleteStorePermanently() {
+      if (!currentPartner) return;
+
+      var enteredPin = prompt("⚠️ DELETE STORE ACCOUNT\n\nEnter your 4-digit Boutique Login PIN to permanently delete '" + currentPartner.storeName + "':");
+
+      if (enteredPin === null) return;
+
+      if (enteredPin !== currentPartner.pin) {
+        return alert("❌ Incorrect Login PIN! Deletion cancelled.");
+      }
+
+      var storeNameToRemove = currentPartner.storeName;
+      var storeMobileToRemove = currentPartner.mobile;
+
+      // Wipe products
+      db.ref("boutique_products").orderByChild("store").equalTo(storeNameToRemove).once("value").then(function(snap) {
+        var products = snap.val();
+        if (products) {
+          Object.keys(products).forEach(function(key) {
+            db.ref("boutique_products/" + key).remove();
+          });
+        }
+        // Wipe boutique account
+        return db.ref("boutiques/" + storeMobileToRemove).remove();
+      }).then(function() {
+        alert("✓ Boutique '" + storeNameToRemove + "' has been permanently deleted.");
+        partnerLogout();
+      }).catch(function(err) {
+        alert("Error deleting store: " + err.message);
+      });
     }
 
     window.addEventListener('DOMContentLoaded', function() {
