@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Fitin60 | Rider Fleet Station</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -20,29 +19,13 @@
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
 
-    /* Custom Swiper Track & Thumb */
-    .swiper-track {
-      position: relative;
-      overflow: hidden;
-      touch-action: none;
-    }
+    .swiper-track { position: relative; overflow: hidden; touch-action: none; }
     .swiper-thumb {
-      position: absolute;
-      top: 4px;
-      left: 4px;
-      bottom: 4px;
-      width: 52px;
-      border-radius: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-      transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      position: absolute; top: 4px; left: 4px; bottom: 4px; width: 52px; border-radius: 1rem;
+      display: flex; align-items: center; justify-content: center; cursor: grab;
+      transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
-    .swiper-thumb:active {
-      cursor: grabbing;
-    }
+    .swiper-thumb:active { cursor: grabbing; }
   </style>
 </head>
 <body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-emerald-500 selection:text-white">
@@ -66,12 +49,12 @@
 
   <main class="w-full max-w-xl mx-auto px-4 mt-5 space-y-5">
 
-    <!-- 1. RIDER AUTHENTICATION -->
+    <!-- Auth Box -->
     <div id="riderAuthBox" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl space-y-4">
       <div class="text-center space-y-1">
         <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🛵</div>
         <h2 class="font-brand font-black text-xl text-slate-950 mt-1">Rider Fleet Shift Station</h2>
-        <p class="text-xs text-slate-500">Log in once. Permanent auto-login active.</p>
+        <p class="text-xs text-slate-500">Distance-based dynamic payout enabled.</p>
       </div>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl">
@@ -79,7 +62,6 @@
         <button onclick="switchRiderTab('register')" id="tabRiderRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Join Fleet</button>
       </div>
 
-      <!-- Login Form -->
       <form id="riderLoginForm" onsubmit="handleRiderLogin(event)" class="space-y-3.5">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Registered Mobile Number</label>
@@ -94,7 +76,6 @@
         </button>
       </form>
 
-      <!-- Register Form -->
       <form id="riderRegisterForm" onsubmit="handleRiderRegister(event)" class="space-y-3.5 hidden">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Rider Full Name</label>
@@ -118,10 +99,9 @@
       </form>
     </div>
 
-    <!-- 2. RIDER DASHBOARD WITH SLIDE-TO-DUTY SWIPER -->
+    <!-- Dashboard -->
     <div id="riderDashboard" class="hidden space-y-5">
       
-      <!-- Shift Status Card -->
       <div class="bg-slate-950 text-white p-5 rounded-3xl shadow-xl space-y-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -136,8 +116,8 @@
           </span>
         </div>
 
-        <!-- SWIPE TO DUTY SLIDER COMPONENT -->
-        <div id="dutySwiperTrack" class="swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-emerald-950/60 border-emerald-500/30">
+        <!-- Slider -->
+        <div id="dutySwiperTrack" class="swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-emerald-950/70 border-emerald-500/40">
           <span id="swiperTrackText" class="text-xs font-black uppercase tracking-wider text-emerald-300 pointer-events-none z-0 pl-8">
             Slide to Go Offline ➔
           </span>
@@ -147,14 +127,28 @@
         </div>
       </div>
 
-      <!-- Offline Resting Message (Visible when Duty is OFF) -->
+      <!-- Financials -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Total Trip Earnings</p>
+          <p class="font-mono-num font-black text-2xl text-emerald-600 mt-1" id="riderTotalEarnings">₹0</p>
+          <p class="text-[9px] text-slate-400 mt-0.5"><span id="riderCompletedTrips">0</span> Trips Completed</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Cash in Hand (COD)</p>
+          <p class="font-mono-num font-black text-2xl text-amber-600 mt-1" id="riderCashInHand">₹0</p>
+          <p class="text-[9px] text-slate-400 mt-0.5">To Settle with Platform</p>
+        </div>
+      </div>
+
+      <!-- Offline Banner -->
       <div id="offDutyBanner" class="hidden bg-amber-50 border border-amber-200 p-6 rounded-3xl text-center space-y-2">
         <span class="text-3xl">☕</span>
         <h3 class="font-brand font-black text-amber-950 text-base">You are currently OFFLINE</h3>
-        <p class="text-xs text-amber-800">Slide the swiper bar above to start receiving deliveries on the radar.</p>
+        <p class="text-xs text-amber-800">Slide the swiper bar above to start receiving deliveries.</p>
       </div>
 
-      <!-- Live Available Deliveries Section -->
+      <!-- Available Deliveries -->
       <div id="dutyActiveSection" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
         <div class="flex justify-between items-center border-b pb-2">
           <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Available Pickups</h3>
@@ -163,11 +157,25 @@
         <div id="riderOrdersPool" class="space-y-3"></div>
       </div>
 
+      <!-- Trip History -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="flex items-center gap-1.5">
+            <span class="text-base">📜</span>
+            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Trip Earnings History</h3>
+          </div>
+          <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Distance Slabs</span>
+        </div>
+        <div id="riderEarningsHistoryList" class="space-y-2.5 text-xs">
+          <p class="text-slate-400 text-center py-4">No completed trips yet.</p>
+        </div>
+      </div>
+
     </div>
 
   </main>
 
-  <!-- SECURE CUSTOMER OTP MODAL -->
+  <!-- OTP Modal -->
   <div id="otpVerifyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl relative border border-slate-200">
       <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">🔑</div>
@@ -280,11 +288,10 @@
       document.getElementById("dashRiderVehicle").innerText = "🏍️ " + rider.vehicle;
 
       updateSwiperVisuals();
-      listenToRiderOrders();
+      listenToRiderOrdersAndEarnings();
       initSwiperTouchLogic();
     }
 
-    // SWIPER DRAG / TOUCH LOGIC
     function initSwiperTouchLogic() {
       var track = document.getElementById("dutySwiperTrack");
       var thumb = document.getElementById("dutySwiperThumb");
@@ -316,7 +323,6 @@
         var maxSlide = track.offsetWidth - thumb.offsetWidth - 8;
         thumb.style.transition = "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)";
 
-        // Swiped over 65% of the bar -> Trigger Action
         if (currentTranslate > (maxSlide * 0.65)) {
           isDutyOn = !isDutyOn;
           localStorage.setItem("fitin60_rider_duty", String(isDutyOn));
@@ -348,7 +354,6 @@
       if (isDutyOn) {
         badge.className = "text-[10px] font-black px-3 py-1 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
         badge.innerText = "● ON DUTY";
-
         track.className = "swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-emerald-950/70 border-emerald-500/40";
         thumb.className = "swiper-thumb bg-emerald-500 text-slate-950 font-black text-xl z-10 shadow-lg";
         text.className = "text-xs font-black uppercase tracking-wider text-emerald-300 pointer-events-none z-0 pl-8";
@@ -360,7 +365,6 @@
       } else {
         badge.className = "text-[10px] font-black px-3 py-1 rounded-full border bg-rose-500/20 text-rose-400 border-rose-500/30";
         badge.innerText = "○ OFFLINE";
-
         track.className = "swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-slate-900 border-slate-700";
         thumb.className = "swiper-thumb bg-slate-700 text-white font-black text-xl z-10 shadow-lg";
         text.className = "text-xs font-black uppercase tracking-wider text-slate-400 pointer-events-none z-0 pl-8";
@@ -383,19 +387,24 @@
       }
     }
 
-    function listenToRiderOrders() {
+    // LISTENER FOR ORDERS AND DYNAMIC DISTANCE TRIP EARNINGS
+    function listenToRiderOrdersAndEarnings() {
       db.ref("orders").on("value", function(snapshot) {
         var orders = snapshot.val();
         var pool = document.getElementById("riderOrdersPool");
         var badge = document.getElementById("poolCountBadge");
+        var historyContainer = document.getElementById("riderEarningsHistoryList");
 
         if (!orders) {
           badge.innerText = "0 Orders";
           pool.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No orders right now.</p>";
+          historyContainer.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No completed trips yet.</p>";
           return;
         }
 
-        var activeList = Object.values(orders).filter(function(o) {
+        var allOrders = Object.values(orders);
+
+        var activeList = allOrders.filter(function(o) {
           return (o.boutiqueAccepted && !o.riderAssigned) || (o.riderAssigned && o.riderPhone === currentRider.mobile && o.status !== "Delivered");
         }).reverse();
 
@@ -403,42 +412,85 @@
 
         if (activeList.length === 0) {
           pool.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No active deliveries right now.</p>";
-          return;
+        } else {
+          var html = "";
+          activeList.forEach(function(o) {
+            var isAssignedToMe = (o.riderAssigned && o.riderPhone === currentRider.mobile);
+            var distFee = o.deliveryFee || (o.financialSplit ? o.financialSplit.riderFee : 49);
+            var distKm = o.distanceKm || "Local";
+
+            html += 
+              '<div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs">' +
+                '<div class="flex justify-between items-start">' +
+                  '<div>' +
+                    '<span class="font-mono font-black text-slate-950 text-sm">' + o.orderId + '</span>' +
+                    '<p class="text-orange-600 font-bold text-[11px]">🏬 Pickup: ' + o.store + '</p>' +
+                  '</div>' +
+                  '<div class="text-right">' +
+                    '<span class="font-mono-num font-black text-emerald-600 text-sm">₹' + o.totalAmount + '</span>' +
+                    '<p class="text-[10px] text-emerald-700 font-black bg-emerald-100 px-2 py-0.5 rounded-md mt-0.5">Your Trip Pay: ₹' + distFee + ' (' + distKm + ' KM)</p>' +
+                  '</div>' +
+                '</div>' +
+
+                '<div class="p-2.5 bg-white rounded-xl border border-slate-200 space-y-1 text-[11px]">' +
+                  '<p class="text-slate-900 font-bold">📍 Deliver to: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                  '<p class="text-slate-500">🏠 Address: ' + o.customerAddress + '</p>' +
+                  '<p class="text-slate-500">💵 Payment: <strong class="text-slate-800">' + (o.paymentMethod || 'Pay on Delivery') + '</strong></p>' +
+                '</div>' +
+
+                '<div class="pt-1">' +
+                  (!isAssignedToMe ? 
+                    '<button onclick="acceptRiderDelivery(\'' + o.orderId + '\')" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-sm transition">⚡ Accept Delivery Task (Earn ₹' + distFee + ')</button>' : 
+                    '<div class="grid grid-cols-2 gap-2">' +
+                      '<a href="tel:' + o.customerPhone + '" class="bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs text-center flex items-center justify-center gap-1">📞 Call Customer</a>' +
+                      '<button onclick="openOtpVerificationModal(\'' + o.orderId + '\', \'' + o.deliveryOtp + '\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-md">🔑 Complete via OTP</button>' +
+                    '</div>'
+                  ) +
+                '</div>' +
+              '</div>';
+          });
+          pool.innerHTML = html;
         }
 
-        var html = "";
-        activeList.forEach(function(o) {
-          var isAssignedToMe = (o.riderAssigned && o.riderPhone === currentRider.mobile);
+        // Delivered trips & Distance Earnings Total
+        var myDeliveredTrips = allOrders.filter(function(o) {
+          return o.status === "Delivered" && o.riderPhone === currentRider.mobile;
+        }).reverse();
 
-          html += 
-            '<div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs">' +
-              '<div class="flex justify-between items-start">' +
-                '<div>' +
-                  '<span class="font-mono font-black text-slate-950 text-sm">' + o.orderId + '</span>' +
-                  '<p class="text-orange-600 font-bold text-[11px]">🏬 Pickup: ' + o.store + '</p>' +
+        var totalEarnings = 0;
+        var cashInHand = 0;
+        var historyHtml = "";
+
+        myDeliveredTrips.forEach(function(o) {
+          var distFee = o.deliveryFee || (o.financialSplit ? o.financialSplit.riderFee : 49);
+          var distKm = o.distanceKm || "Local";
+          totalEarnings += distFee;
+
+          var isCOD = !o.paymentMethod || o.paymentMethod.includes("Delivery") || o.paymentMethod.includes("POD");
+          if (isCOD) {
+            cashInHand += (o.totalAmount || 0);
+          }
+
+          historyHtml += 
+            '<div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">' +
+              '<div>' +
+                '<div class="flex items-center gap-2">' +
+                  '<span class="font-mono font-bold text-slate-900">' + o.orderId + '</span>' +
+                  '<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Delivered</span>' +
                 '</div>' +
-                '<span class="font-mono-num font-black text-emerald-600 text-sm">₹' + o.totalAmount + '</span>' +
+                '<p class="text-[10px] text-slate-500 mt-0.5">Store: ' + o.store + ' • ' + (isCOD ? '<span class="text-amber-600 font-bold">Collected Cash ₹' + o.totalAmount + '</span>' : '<span class="text-emerald-600 font-bold">Online Paid</span>') + '</p>' +
               '</div>' +
-
-              '<div class="p-2.5 bg-white rounded-xl border border-slate-200 space-y-1 text-[11px]">' +
-                '<p class="text-slate-900 font-bold">📍 Deliver to: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
-                '<p class="text-slate-500">🏠 Address: ' + o.customerAddress + '</p>' +
-                '<p class="text-slate-500">💵 Payment: <strong class="text-slate-800">' + (o.paymentMethod || 'Doorstep') + '</strong></p>' +
-              '</div>' +
-
-              '<div class="pt-1">' +
-                (!isAssignedToMe ? 
-                  '<button onclick="acceptRiderDelivery(\'' + o.orderId + '\')" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-sm transition">⚡ Accept Delivery Task</button>' : 
-                  '<div class="grid grid-cols-2 gap-2">' +
-                    '<a href="tel:' + o.customerPhone + '" class="bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs text-center flex items-center justify-center gap-1">📞 Call Customer</a>' +
-                    '<button onclick="openOtpVerificationModal(\'' + o.orderId + '\', \'' + o.deliveryOtp + '\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-md">🔑 Complete via OTP</button>' +
-                  '</div>'
-                ) +
+              '<div class="text-right">' +
+                '<span class="font-mono-num font-black text-sm text-emerald-600">+₹' + distFee + '</span>' +
+                '<p class="text-[9px] text-slate-400 font-bold">(' + distKm + ' KM)</p>' +
               '</div>' +
             '</div>';
         });
 
-        pool.innerHTML = html;
+        document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
+        document.getElementById("riderCompletedTrips").innerText = myDeliveredTrips.length;
+        document.getElementById("riderCashInHand").innerText = "₹" + cashInHand;
+        historyContainer.innerHTML = historyHtml || "<p class='text-slate-400 text-center py-4 text-xs'>No completed trips yet.</p>";
       });
     }
 
@@ -470,9 +522,7 @@
       var expectedCode = document.getElementById("otpExpectedCode").value.trim();
       var enteredCode = document.getElementById("enteredCustomerOtp").value.trim();
 
-      if (enteredCode.length !== 4) {
-        return alert("Please enter the complete 4-digit OTP!");
-      }
+      if (enteredCode.length !== 4) return alert("Please enter the complete 4-digit OTP!");
 
       if (enteredCode === expectedCode) {
         db.ref("orders/" + targetOrderId).update({
@@ -488,16 +538,13 @@
       }
     }
 
-    // AUTO-LOGIN INITIALIZER
     window.addEventListener('DOMContentLoaded', function() {
       var saved = localStorage.getItem("fitin60_persistent_rider");
       if (saved) {
         try {
           var riderObj = JSON.parse(saved);
           riderLoginSuccess(riderObj);
-        } catch(e) {
-          console.error("Session parse error", e);
-        }
+        } catch(e) {}
       }
     });
   </script>
