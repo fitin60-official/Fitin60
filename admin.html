@@ -44,16 +44,21 @@
 
   <main class="w-full max-w-5xl mx-auto px-4 mt-6 space-y-6">
 
-    <!-- 1. ADMIN AUTHENTICATION GATEWAY -->
+    <!-- 1. ADMIN AUTHENTICATION GATEWAY WITH EYE TOGGLE -->
     <div id="adminAuthBox" class="max-w-sm mx-auto bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-2xl space-y-4 text-center">
       <div class="w-12 h-12 bg-orange-500/20 text-orange-400 rounded-2xl flex items-center justify-center text-2xl mx-auto border border-orange-500/30">🛡️</div>
       <h2 class="font-brand font-black text-lg text-white">Master Security Deck</h2>
       <p class="text-xs text-slate-400">Enter master credentials to moderate platforms, dispatches, and catalog.</p>
 
-      <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-left">
+      <form onsubmit="handleAdminLogin(event)" class="space-y-3.5 text-left">
         <div>
           <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Master Access Key / Passcode</label>
-          <input type="password" id="adminKeyInput" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-xs font-mono tracking-widest text-center text-white focus:outline-none focus:border-orange-500">
+          <div class="relative flex items-center">
+            <input type="password" id="adminKeyInput" required placeholder="Enter master key" class="w-full bg-slate-950 border border-slate-700 rounded-xl pl-3.5 pr-10 py-3 text-xs font-mono text-white focus:outline-none focus:border-orange-500">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 text-slate-400 hover:text-white transition cursor-pointer select-none" id="eyeToggleBtn" title="Show/Hide Key">
+              👁️
+            </button>
+          </div>
         </div>
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-orange-600/20 cursor-pointer">
           Unlock Master Control ➔
@@ -229,6 +234,19 @@
     const MASTER_ADMIN_PASSCODE = "admin4545";
     var loadedProductsData = {};
 
+    // Password Show/Hide Toggle
+    function togglePasswordVisibility() {
+      var input = document.getElementById("adminKeyInput");
+      var btn = document.getElementById("eyeToggleBtn");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.innerText = "🙈";
+      } else {
+        input.type = "password";
+        btn.innerText = "👁️";
+      }
+    }
+
     function handleAdminLogin(e) {
       e.preventDefault();
       var key = document.getElementById("adminKeyInput").value.trim();
@@ -253,6 +271,8 @@
       document.getElementById("adminDeck").classList.add("hidden");
       document.getElementById("adminLogoutBtn").classList.add("hidden");
       document.getElementById("adminKeyInput").value = "";
+      document.getElementById("adminKeyInput").type = "password";
+      document.getElementById("eyeToggleBtn").innerText = "👁️";
     }
 
     function switchAdminTab(tab) {
@@ -294,7 +314,6 @@
       });
     }
 
-    // Render Catalog with EDIT + DELETE
     function renderAdminCatalog(data) {
       var grid = document.getElementById("adminCatalogGrid");
       var keys = Object.keys(data);
@@ -335,7 +354,6 @@
       grid.innerHTML = html;
     }
 
-    // Open Edit Modal
     function openAdminEditModal(key) {
       var p = loadedProductsData[key];
       if (!p) return;
@@ -396,7 +414,6 @@
       }
     }
 
-    // Render Live Orders
     function renderAdminOrders(data) {
       var container = document.getElementById("adminOrdersContainer");
       var list = Object.values(data).reverse();
@@ -436,7 +453,6 @@
       }
     }
 
-    // Render Boutiques
     function renderAdminBoutiques(data) {
       var container = document.getElementById("adminBoutiquesContainer");
       var keys = Object.keys(data);
@@ -470,7 +486,6 @@
       }
     }
 
-    // Render Riders
     function renderAdminRiders(data) {
       var container = document.getElementById("adminRidersContainer");
       var keys = Object.keys(data);
