@@ -1,22 +1,586 @@
-<!-- Responsive Header -->
-  <header class="bg-slate-950 text-white border-b border-slate-800 px-3 h-16 flex items-center justify-between sticky top-0 z-40">
+<!DOCTYPE html>
+<html lang="en" class="overflow-x-hidden">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Fitin60 | Boutique Merchant Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white">
+
+  <!-- Responsive Clean Header -->
+  <header class="bg-slate-950 text-white border-b border-slate-800 px-3 h-16 flex items-center justify-between sticky top-0 z-40 w-full">
     <div class="flex items-center gap-1.5 shrink-0">
-      <span class="font-brand text-base sm:text-lg font-black tracking-tight text-white">FITIN<span class="text-orange-500">60</span></span>
+      <span class="font-brand text-lg font-black tracking-tight text-white">FITIN<span class="text-orange-500">60</span></span>
       <span class="hidden sm:inline-block text-[9px] bg-orange-500/20 text-orange-400 border border-orange-500/30 font-bold px-1.5 py-0.5 rounded-full">BOUTIQUE HUB</span>
     </div>
 
-    <div class="flex items-center gap-1.5 shrink-0">
-      <button id="soundToggleBtn" onclick="toggleAudioChime()" class="text-[10px] font-bold px-2 py-1.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 transition cursor-pointer flex items-center gap-1">
-        <span>🔔</span> <span id="soundStatusText" class="hidden xs:inline">Sound</span>
+    <div class="flex items-center gap-2 shrink-0">
+      <button id="soundToggleBtn" onclick="toggleAudioChime()" class="text-[11px] font-bold px-2.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 transition cursor-pointer flex items-center gap-1">
+        <span>🔔</span> <span id="soundStatusText">Sound: ON</span>
       </button>
 
       <button id="logoutPartnerBtn" onclick="partnerLogout()" class="hidden text-[11px] font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-2.5 py-1.5 rounded-xl border border-rose-500/20 transition cursor-pointer">
         🚪 Logout
       </button>
 
-      <a href="index.html" class="text-[11px] font-bold bg-white/10 hover:bg-white/20 text-slate-300 px-2.5 py-1.5 rounded-xl transition">
-
+      <a href="index.html" class="text-[11px] font-bold bg-white/10 hover:bg-white/20 text-slate-300 px-3 py-1.5 rounded-xl transition">
         ← Store
       </a>
     </div>
   </header>
+
+  <main class="w-full max-w-xl mx-auto px-4 mt-5 space-y-5">
+
+    <!-- 1. AUTH GATEWAY -->
+    <div id="partnerAuthSection" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl space-y-4">
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🏬</div>
+        <h2 id="partnerAuthTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Boutique Merchant Studio</h2>
+        <p id="partnerAuthSubtitle" class="text-xs text-slate-500">Manage catalog, 15KM radar, and instant audio orders.</p>
+      </div>
+
+      <div id="partnerTabsNav" class="flex bg-slate-100 p-1 rounded-2xl">
+        <button onclick="switchPartnerTab('login')" id="tabBoutiqueLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Merchant Login</button>
+        <button onclick="switchPartnerTab('register')" id="tabBoutiqueRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register Boutique</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="partnerLoginForm" onsubmit="handlePartnerLogin(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Registered Mobile Number</label>
+          <input type="tel" id="partnerLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-xs font-mono focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-[10px] font-bold uppercase text-slate-400">Secret 4-Digit PIN</label>
+            <button type="button" onclick="openPartnerForgotPin()" class="text-[10px] text-orange-600 font-bold hover:underline cursor-pointer">Forgot PIN?</button>
+          </div>
+          <input type="password" id="partnerLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-xs font-mono tracking-widest text-center focus:outline-none focus:border-orange-500">
+        </div>
+        <button type="submit" id="partnerLoginBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Access Store Studio ➔
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="partnerRegisterForm" onsubmit="handlePartnerRegister(event)" class="space-y-3.5 hidden">
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Boutique / Store Name</label>
+          <input type="text" id="regStoreName" required placeholder="e.g., Sai Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Address / Exact Area</label>
+          <input type="text" id="regStoreArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Owner Mobile Number</label>
+          <input type="tel" id="regPartnerMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Set 4-Digit PIN</label>
+          <input type="password" id="regPartnerPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs tracking-widest font-mono text-center">
+        </div>
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Register Boutique & Enter ➔
+        </button>
+      </form>
+
+      <!-- Forgot PIN Form -->
+      <form id="partnerForgotForm" onsubmit="handlePartnerResetPin(event)" class="space-y-3.5 hidden">
+        <div class="p-2.5 bg-orange-50 border border-orange-200 rounded-xl text-xs text-orange-800">
+          Verify registered Mobile and Boutique Name to set a new PIN.
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Registered Mobile</label>
+          <input type="tel" id="partnerResetMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Boutique Name</label>
+          <input type="text" id="partnerResetStore" required placeholder="e.g., Sai Fashions" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Set New 4-Digit PIN</label>
+          <input type="password" id="partnerResetNewPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs tracking-widest font-mono text-center">
+        </div>
+        <button type="submit" id="partnerResetBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
+          Update PIN & Open Studio ➔
+        </button>
+        <button type="button" onclick="switchPartnerTab('login')" class="w-full text-center text-xs text-slate-400 hover:text-slate-600 cursor-pointer">
+          ← Back to Login
+        </button>
+      </form>
+    </div>
+
+    <!-- 2. PRIVATE BOUTIQUE STUDIO DASHBOARD -->
+    <div id="partnerDashboard" class="hidden space-y-5">
+
+      <!-- Store Header Card -->
+      <div class="bg-slate-950 text-white p-5 rounded-3xl flex items-center justify-between shadow-xl">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="text-3xl shrink-0">🏬</span>
+          <div class="min-w-0">
+            <h2 class="font-brand font-black text-lg truncate" id="dashStoreName">Sai Fashions</h2>
+            <p class="text-[11px] text-slate-400 truncate" id="dashStoreArea">📍 Subhash Road</p>
+          </div>
+        </div>
+        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2.5 py-1 rounded-full shrink-0">
+          ● RADAR LIVE
+        </span>
+      </div>
+
+      <!-- Financial Quick Stats -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Total Store Revenue</p>
+          <p class="font-mono-num font-black text-2xl text-slate-950 mt-1" id="dashTotalRevenue">₹0</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] uppercase font-bold text-slate-400">Completed Orders</p>
+          <p class="font-mono-num font-black text-2xl text-slate-950 mt-1" id="dashOrderCount">0</p>
+        </div>
+      </div>
+
+      <!-- Live Store Incoming Orders -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex justify-between items-center border-b pb-2">
+          <div class="flex items-center gap-1.5">
+            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Live Incoming Orders</h3>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          </div>
+          <span id="activeOrdersBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded-full">0 Orders</span>
+        </div>
+        <div id="partnerOrdersList" class="space-y-3">
+          <p class="text-slate-400 text-center py-4 text-xs">No pending orders currently.</p>
+        </div>
+      </div>
+
+      <!-- Upload New Outfit Section -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider" id="formHeaderTitle">Upload New Collection</h3>
+        
+        <form onsubmit="handlePublishProduct(event)" class="space-y-3 text-xs" id="productForm">
+          <input type="hidden" id="editingProdKey" value="">
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Outfit Name</label>
+            <input type="text" id="prodName" required placeholder="e.g., Pure Kanchi Pattu Saree" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Outfit Category</label>
+            <select id="prodCategory" required class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800">
+              <option value="Saree">🥻 Saree</option>
+              <option value="Kurti">👗 Kurti / Anarkali</option>
+              <option value="Kids">🧸 Kids Wear (Boys & Girls)</option>
+              <option value="Lehenga">✨ Lehenga / Ethnic</option>
+              <option value="Men">👔 Men's Wear</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
+              <input type="number" id="prodPrice" required placeholder="1499" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Original Price (₹)</label>
+              <input type="number" id="prodOriginal" placeholder="2499" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Product Images (Up to 4 Photos)</label>
+            <input type="file" id="prodPhotosInput" accept="image/*" multiple onchange="previewUploadedPhotos(event)" class="w-full bg-slate-50 border rounded-xl p-2 text-xs">
+            <div id="photosPreviewContainer" class="flex gap-2 mt-2 overflow-x-auto no-scrollbar"></div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes (comma separated)</label>
+            <input type="text" id="prodSizes" placeholder="Free size, S, M, L, XL" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Description</label>
+            <textarea id="prodDesc" rows="2" placeholder="Pure fabric details, premium stitching, border work..." class="w-full bg-slate-50 border rounded-xl px-3.5 py-2"></textarea>
+          </div>
+
+          <div class="flex gap-2">
+            <button type="submit" id="publishBtn" class="flex-1 bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow cursor-pointer">
+              + Publish Live to Fitin60
+            </button>
+            <button type="button" id="cancelEditBtn" onclick="cancelProductEdit()" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-4 py-3.5 rounded-2xl text-xs uppercase cursor-pointer">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Manage Uploaded Outfits -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Manage Store Outfits</h3>
+          <span class="text-[10px] text-slate-400 font-medium">Edit details or delete</span>
+        </div>
+        <div id="myUploadedProductsList" class="space-y-2">
+          <p class="text-slate-400 text-center py-4 text-xs">No custom outfits uploaded yet.</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
+      authDomain: "fitin60.firebaseapp.com",
+      databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
+      projectId: "fitin60",
+      storageBucket: "fitin60.firebasestorage.app",
+      messagingSenderId: "349862141371",
+      appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    var currentPartner = null;
+    var uploadedPhotosBase64 = [];
+    var currentStoreProducts = {};
+    var isSoundEnabled = true;
+    var lastKnownOrdersCount = -1;
+
+    // Web Audio Chime Synthesizer (Instant Loud Swiggy/Zomato style Ding-Dong Chime)
+    function playOrderAlertSound() {
+      if (!isSoundEnabled) return;
+      try {
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(freq, time, duration) {
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + time);
+          gain.gain.setValueAtTime(0.7, audioCtx.currentTime + time);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + time + duration);
+          osc.start(audioCtx.currentTime + time);
+          osc.stop(audioCtx.currentTime + time + duration);
+        }
+
+        // Ding-Dong Chime sequence
+        playTone(587.33, 0.0, 0.35); // D5
+        playTone(880.00, 0.2, 0.45); // A5
+        playTone(659.25, 0.4, 0.55); // E5
+      } catch(e) {
+        console.log("Audio alert playback error: ", e);
+      }
+    }
+
+    function toggleAudioChime() {
+      isSoundEnabled = !isSoundEnabled;
+      document.getElementById("soundStatusText").innerText = isSoundEnabled ? "Sound: ON" : "Sound: OFF";
+      if (isSoundEnabled) playOrderAlertSound();
+    }
+
+    function switchPartnerTab(tab) {
+      var logF = document.getElementById("partnerLoginForm");
+      var regF = document.getElementById("partnerRegisterForm");
+      var forgF = document.getElementById("partnerForgotForm");
+
+      forgF.classList.add("hidden");
+      if (tab === 'login') {
+        logF.classList.remove("hidden");
+        regF.classList.add("hidden");
+        document.getElementById("tabBoutiqueLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("tabBoutiqueRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      } else {
+        logF.classList.add("hidden");
+        regF.classList.remove("hidden");
+        document.getElementById("tabBoutiqueRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        document.getElementById("tabBoutiqueLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      }
+    }
+
+    function openPartnerForgotPin() {
+      document.getElementById("partnerLoginForm").classList.add("hidden");
+      document.getElementById("partnerRegisterForm").classList.add("hidden");
+      document.getElementById("partnerForgotForm").classList.remove("hidden");
+    }
+
+    function handlePartnerResetPin(e) {
+      e.preventDefault();
+      var mobile = document.getElementById("partnerResetMobile").value.trim();
+      var store = document.getElementById("partnerResetStore").value.trim().toLowerCase();
+      var newPin = document.getElementById("partnerResetNewPin").value.trim();
+
+      db.ref("boutiques/" + mobile).once("value").then(function(snapshot) {
+        var partner = snapshot.val();
+        if (partner && partner.storeName.trim().toLowerCase() === store) {
+          db.ref("boutiques/" + mobile).update({ pin: newPin }).then(function() {
+            alert("✓ Boutique PIN updated!");
+            partner.pin = newPin;
+            partnerLoginSuccess(partner);
+          });
+        } else {
+          alert("Verification Failed: Boutique Name or Mobile mismatch!");
+        }
+      });
+    }
+
+    function handlePartnerRegister(e) {
+      e.preventDefault();
+      var store = document.getElementById("regStoreName").value.trim();
+      var area = document.getElementById("regStoreArea").value.trim();
+      var mobile = document.getElementById("regPartnerMobile").value.trim();
+      var pin = document.getElementById("regPartnerPin").value.trim();
+
+      var newPartner = { storeName: store, area: area, mobile: mobile, pin: pin };
+      db.ref("boutiques/" + mobile).set(newPartner).then(function() {
+        alert("✓ Boutique Registered Successfully!");
+        partnerLoginSuccess(newPartner);
+      });
+    }
+
+    function handlePartnerLogin(e) {
+      e.preventDefault();
+      var mobile = document.getElementById("partnerLoginMobile").value.trim();
+      var pin = document.getElementById("partnerLoginPin").value.trim();
+
+      db.ref("boutiques/" + mobile).once("value").then(function(snapshot) {
+        var partner = snapshot.val();
+        if (partner && partner.pin === pin) {
+          partnerLoginSuccess(partner);
+        } else {
+          alert("Invalid Mobile or PIN!");
+        }
+      });
+    }
+
+    function partnerLoginSuccess(partner) {
+      currentPartner = partner;
+      localStorage.setItem("fitin60_active_partner", JSON.stringify(partner));
+
+      document.getElementById("partnerAuthSection").classList.add("hidden");
+      document.getElementById("partnerDashboard").classList.remove("hidden");
+      document.getElementById("logoutPartnerBtn").classList.remove("hidden");
+
+      document.getElementById("dashStoreName").innerText = partner.storeName;
+      document.getElementById("dashStoreArea").innerText = "📍 " + (partner.area || "City Central");
+
+      loadStoreOrders(partner.storeName);
+      loadUploadedProducts(partner.storeName);
+    }
+
+    function partnerLogout() {
+      currentPartner = null;
+      localStorage.removeItem("fitin60_active_partner");
+      document.getElementById("partnerAuthSection").classList.remove("hidden");
+      document.getElementById("partnerDashboard").classList.add("hidden");
+      document.getElementById("logoutPartnerBtn").classList.add("hidden");
+    }
+
+    function previewUploadedPhotos(event) {
+      var files = event.target.files;
+      var container = document.getElementById("photosPreviewContainer");
+      container.innerHTML = "";
+      uploadedPhotosBase64 = [];
+
+      Array.from(files).slice(0, 4).forEach(function(file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedPhotosBase64.push(e.target.result);
+          var img = document.createElement("img");
+          img.src = e.target.result;
+          img.className = "w-14 h-14 object-cover rounded-xl border border-slate-200 shrink-0";
+          container.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function handlePublishProduct(e) {
+      e.preventDefault();
+      if (!currentPartner) return;
+
+      var editingKey = document.getElementById("editingProdKey").value;
+      var name = document.getElementById("prodName").value.trim();
+      var category = document.getElementById("prodCategory").value;
+      var price = parseInt(document.getElementById("prodPrice").value);
+      var orig = parseInt(document.getElementById("prodOriginal").value) || Math.round(price * 1.4);
+      var sizesStr = document.getElementById("prodSizes").value.trim();
+      var desc = document.getElementById("prodDesc").value.trim();
+
+      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
+      var mainImg = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64[0] : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].image : "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80");
+      var imgList = uploadedPhotosBase64.length > 0 ? uploadedPhotosBase64 : (editingKey && currentStoreProducts[editingKey] ? currentStoreProducts[editingKey].images : [mainImg]);
+
+      var targetKey = editingKey || db.ref("boutique_products").push().key;
+
+      var productData = {
+        id: targetKey,
+        name: name,
+        category: category,
+        price: price,
+        originalPrice: orig,
+        discount: "SPECIAL OFFER",
+        sizes: sizes,
+        desc: desc,
+        image: mainImg,
+        images: imgList,
+        store: currentPartner.storeName,
+        area: currentPartner.area || "City Central",
+        eta: "35 MINS",
+        rating: "5.0",
+        timestamp: Date.now()
+      };
+
+      db.ref("boutique_products/" + targetKey).set(productData).then(function() {
+        alert(editingKey ? "✓ Outfit Updated!" : "✓ Product Published Live!");
+        cancelProductEdit();
+      });
+    }
+
+    function cancelProductEdit() {
+      document.getElementById("editingProdKey").value = "";
+      document.getElementById("productForm").reset();
+      document.getElementById("photosPreviewContainer").innerHTML = "";
+      uploadedPhotosBase64 = [];
+      document.getElementById("formHeaderTitle").innerText = "Upload New Collection";
+      document.getElementById("publishBtn").innerText = "+ Publish Live to Fitin60";
+      document.getElementById("cancelEditBtn").classList.add("hidden");
+    }
+
+    // Live Order Listener with Sound Notification
+    function loadStoreOrders(storeName) {
+      db.ref("orders").on("value", function(snapshot) {
+        var orders = snapshot.val();
+        var container = document.getElementById("partnerOrdersList");
+        var badge = document.getElementById("activeOrdersBadge");
+
+        if (!orders) {
+          badge.innerText = "0 Orders";
+          container.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No orders yet.</p>";
+          return;
+        }
+
+        var storeOrders = Object.values(orders).filter(function(o) {
+          return String(o.store).trim().toLowerCase() === String(storeName).trim().toLowerCase();
+        }).reverse();
+
+        // Trigger Audio Chime when new incoming order arrives
+        if (lastKnownOrdersCount !== -1 && storeOrders.length > lastKnownOrdersCount) {
+          playOrderAlertSound();
+        }
+        lastKnownOrdersCount = storeOrders.length;
+
+        badge.innerText = storeOrders.length + " Orders";
+
+        var rev = 0;
+        var comp = 0;
+        var html = "";
+
+        storeOrders.forEach(function(o) {
+          if (o.status === "Delivered") {
+            rev += (o.itemTotal || o.totalAmount || 0);
+            comp++;
+          }
+
+          var firstItem = o.items && o.items[0] ? o.items[0] : { name: "Designer Dress" };
+
+          html += 
+            '<div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2 text-xs">' +
+              '<div class="flex justify-between items-start">' +
+                '<div>' +
+                  '<span class="font-mono font-bold text-slate-950">' + o.orderId + '</span>' +
+                  '<p class="text-[10px] text-slate-500 font-bold">' + firstItem.name + ' • ' + (o.paymentMethod || 'Doorstep') + '</p>' +
+                '</div>' +
+                '<span class="font-mono-num font-black text-slate-900">₹' + o.totalAmount + '</span>' +
+              '</div>' +
+              '<p class="text-slate-600 text-[11px]">📍 Customer: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+              '<p class="text-slate-500 text-[10px]">🏠 Address: ' + o.customerAddress + '</p>' +
+              '<div class="pt-1">' +
+                (!o.boutiqueAccepted ? 
+                  '<button onclick="acceptStoreOrder(\'' + o.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-sm animate-pulse">⚡ Accept & Dispatch Rider</button>' : 
+                  '<span class="block text-center font-bold text-emerald-700 bg-emerald-100/70 py-1.5 rounded-xl text-[11px]">' + (o.status === "Delivered" ? "Delivered 🎉" : "Accepted • Dispatched to Rider 🛵") + '</span>') +
+              '</div>' +
+            '</div>';
+        });
+
+        document.getElementById("dashTotalRevenue").innerText = "₹" + rev;
+        document.getElementById("dashOrderCount").innerText = comp;
+        container.innerHTML = html;
+      });
+    }
+
+    function acceptStoreOrder(orderId) {
+      db.ref("orders/" + orderId).update({
+        boutiqueAccepted: true,
+        paymentStatus: "Boutique Accepted • Assigning Express Rider"
+      }).then(function() {
+        alert("✓ Order accepted! Rider fleet has been alerted.");
+      });
+    }
+
+    function loadUploadedProducts(storeName) {
+      db.ref("boutique_products").orderByChild("store").equalTo(storeName).on("value", function(snapshot) {
+        var data = snapshot.val();
+        var container = document.getElementById("myUploadedProductsList");
+        currentStoreProducts = data || {};
+
+        if (!data) {
+          container.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No custom outfits uploaded yet.</p>";
+          return;
+        }
+
+        var html = "";
+        Object.keys(data).forEach(function(k) {
+          var p = data[k];
+          html += 
+            '<div class="p-2.5 bg-slate-50 border rounded-xl flex items-center justify-between text-xs">' +
+              '<div class="flex items-center gap-2.5 min-w-0 pr-2">' +
+                '<img src="' + p.image + '" class="w-10 h-10 object-cover rounded-lg border shrink-0">' +
+                '<div class="min-w-0">' +
+                  '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
+                  '<p class="font-mono-num text-[11px] text-slate-500">₹' + p.price + ' • <span class="text-orange-600 font-bold">' + (p.category || 'General') + '</span></p>' +
+                '</div>' +
+              '</div>' +
+              '<button onclick="deleteProductPermanent(\'' + k + '\')" class="text-rose-600 bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg font-bold cursor-pointer transition text-[11px]">🗑️ Delete</button>' +
+            '</div>';
+        });
+        container.innerHTML = html;
+      });
+    }
+
+    function deleteProductPermanent(key) {
+      if (confirm("Remove this outfit completely from store?")) {
+        db.ref("boutique_products/" + key).remove();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      var saved = localStorage.getItem("fitin60_active_partner");
+      if (saved) partnerLoginSuccess(JSON.parse(saved));
+    });
+  </script>
+</body>
+</html>
