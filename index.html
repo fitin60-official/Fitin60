@@ -6,11 +6,11 @@
   <title>Fitin60 | 60-Minute Hyperlocal Fashion Radar</title>
   
   <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="icon.svg">
-<link rel="apple-touch-icon" href="icon.svg">
-<meta name="theme-color" content="#ea580c">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -220,7 +220,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer -->
+  <!-- Shopping Bag Drawer (WITH PAYMENT MODE SELECTOR) -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -233,11 +233,35 @@
         <div id="cartItems" class="space-y-2"></div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
-          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Delivery Details</h4>
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Details</h4>
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <textarea id="custAddress" rows="2" required placeholder="Full Delivery Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
 
+          <!-- PAYMENT METHOD SELECTOR -->
+          <div class="pt-2 border-t border-slate-200 space-y-2">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Method</h4>
+            
+            <div class="grid grid-cols-1 gap-2">
+              <label class="flex items-center gap-3 p-3 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer transition has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50" id="labelPayPOD">
+                <input type="radio" name="payOption" value="POD" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
+                <div class="text-xs">
+                  <p class="font-black text-slate-900">Pay on Delivery (Doorstep UPI QR / Cash)</p>
+                  <p class="text-[10px] text-slate-500">Scan QR via PhonePe/GPay or pay cash to rider</p>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer transition has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50" id="labelPayUPI">
+                <input type="radio" name="payOption" value="ONLINE_UPI" onchange="handlePaymentModeChange()" class="accent-orange-600">
+                <div class="text-xs">
+                  <p class="font-black text-slate-900">Instant Online UPI (PhonePe / GPay / Paytm)</p>
+                  <p class="text-[10px] text-emerald-600 font-bold">100% Secure Instant Drop</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Bill Summary -->
           <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
             <h5 class="font-bold text-slate-900 uppercase tracking-wider text-[10px]">Bill Summary</h5>
             <div class="flex justify-between text-slate-600">
@@ -264,7 +288,7 @@
     </div>
   </div>
 
-  <!-- DIRECT OWNER EDIT MODAL (NOW INCLUDES AREA / LOCATION FIELD) -->
+  <!-- DIRECT OWNER EDIT MODAL -->
   <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
@@ -351,7 +375,6 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Owner Identification
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
     var baseProducts = [
@@ -492,8 +515,6 @@
         var sName = p.store || "Boutique Studio";
         var oName = (p.name || "").toLowerCase();
         var cat = (p.category || "").toLowerCase();
-
-        // Exact Location dynamically pulled from product or boutique registered area
         var realLocation = p.area || (boutiqueLocationsMap[sName] ? boutiqueLocationsMap[sName] : "Anantapur");
 
         var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
@@ -575,6 +596,16 @@
       document.getElementById("cartDrawer").classList.toggle("hidden");
     };
 
+    function handlePaymentModeChange() {
+      var selected = document.querySelector('input[name="payOption"]:checked').value;
+      var btn = document.getElementById("checkoutSubmitBtn");
+      if (selected === "ONLINE_UPI") {
+        btn.innerText = "⚡ Pay via UPI & Order";
+      } else {
+        btn.innerText = "⚡ Place Express Order (Pay on Delivery)";
+      }
+    }
+
     function renderCart() {
       document.getElementById("cart-count").innerText = items.length;
       var list = document.getElementById("cartItems");
@@ -596,7 +627,7 @@
         html += 
           '<div class="flex justify-between items-center p-2.5 bg-slate-50 border rounded-xl text-xs font-bold">' +
             '<span>' + item.name + '</span>' +
-            '<button onclick="items.splice(' + idx + ', 1); renderCart();" class="text-rose-600">🗑️</button>' +
+            '<button onclick="items.splice(' + idx + ', 1); renderCart();" class="text-rose-600 cursor-pointer">🗑️</button>' +
           '</div>';
       });
       list.innerHTML = html;
@@ -610,13 +641,11 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
-    // Direct Login Listeners (Auto-Detect Owner Login)
     window.handleCustomerPinLogin = function(e) {
       e.preventDefault();
       var mob = document.getElementById("custPinLoginMobile").value.trim();
       var pin = document.getElementById("custPinLoginPin").value.trim();
 
-      // Master Owner PIN Verification
       if (pin === "4545") {
         isOwnerActive = true;
         localStorage.setItem("fitin60_owner_session", "active");
@@ -730,6 +759,7 @@
       });
     };
 
+    // CHECKOUT HANDLER WITH AUTOMATIC FINANCIAL SPLIT & PAYMENT RECORDING
     window.handleCheckout = function() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -737,8 +767,19 @@
 
       if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
 
+      var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
+      var payMethod = payMethodRadio ? payMethodRadio.value : "POD";
+
       var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
-      var total = items.reduce(function(a, b) { return a + b.price; }, 0) + 49;
+      var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
+      var deliveryFee = 49;
+      var totalPayable = itemSubtotal + deliveryFee;
+
+      // Automated Financial Split:
+      // 15% Platform Commission from item value
+      var platformFee = Math.round(itemSubtotal * 0.15);
+      var storeNetPayout = itemSubtotal - platformFee;
+      var riderPayout = deliveryFee;
 
       var orderData = {
         orderId: orderId,
@@ -746,12 +787,22 @@
         customerPhone: phone,
         customerAddress: addr,
         items: items,
-        totalAmount: total,
-        paymentStatus: "Waiting for Boutique Acceptance",
+        itemTotal: itemSubtotal,
+        deliveryFee: deliveryFee,
+        totalAmount: totalPayable,
+        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
+        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (To be collected at doorstep)",
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
         boutiqueAccepted: false,
         riderAssigned: false,
+        financialSplit: {
+          storeNetPayout: storeNetPayout,
+          platformCommission: platformFee,
+          riderFee: riderPayout,
+          storeSettlementStatus: "Pending",
+          riderSettlementStatus: "Pending"
+        },
         timestamp: Date.now()
       };
 
@@ -765,7 +816,6 @@
       showQuickToast("✓ GPS Synced");
     };
 
-    // 1. Fetch Registered Boutiques Locations
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
@@ -777,7 +827,6 @@
       renderBoutiqueStores();
     });
 
-    // 2. Fetch Products
     db.ref("boutique_products").on("value", function(snapshot) {
       var data = snapshot.val();
       cloudProducts = [];
@@ -792,7 +841,6 @@
       renderBoutiqueStores();
     });
 
-    // Start
     try {
       var saved = localStorage.getItem("fitin60_customer_user");
       if (saved) currentCustomer = JSON.parse(saved);
