@@ -389,7 +389,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer (WITH MULTI-ADDRESS SELECTOR: SAVED / NEW) -->
+  <!-- Shopping Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -406,7 +406,6 @@
           <div class="space-y-1">
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address Choice</h4>
             
-            <!-- Address Switcher Chips -->
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button type="button" onclick="switchDeliveryAddressMode('saved')" id="addrModeSavedBtn" class="p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950">
                 🏠 Saved Address
@@ -430,7 +429,6 @@
             <textarea id="custAddress" rows="2" required placeholder="Door No, Building, Street Address..." class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
           </div>
 
-          <!-- Option to save as new permanent address -->
           <div id="saveAsNewPermanentWrapper" class="hidden items-center gap-2 pt-1">
             <input type="checkbox" id="saveAsPermanentCheckbox" class="accent-orange-600 rounded">
             <label for="saveAsPermanentCheckbox" class="text-[11px] text-slate-600 font-medium cursor-pointer">
@@ -531,7 +529,7 @@
     const db = firebase.database();
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
-    var currentAddressSelectionMode = "saved"; // "saved" or "new"
+    var currentAddressSelectionMode = "saved";
 
     var baseProducts = [
       {
@@ -649,7 +647,6 @@
       document.getElementById("custForgotForm").classList.remove("hidden");
     };
 
-    // CLICK OUTSIDE TO CLOSE PROFILE POPOVER LOGIC
     window.addEventListener("click", function(event) {
       var popover = document.getElementById("profilePopover");
       var container = document.getElementById("authPillContainer");
@@ -661,7 +658,6 @@
       }
     });
 
-    // SAVED ADDRESS CONTROLS (AREA + PERMANENT ADDRESS)
     window.openSavedAddressModal = function() {
       if (!currentCustomer) {
         openLoginModal();
@@ -700,7 +696,6 @@
       showQuickToast("✓ Location & Permanent Address Saved!");
     };
 
-    // SWITCH ADDRESS MODE IN CHECKOUT (SAVED vs NEW ADDRESS)
     window.switchDeliveryAddressMode = function(mode) {
       currentAddressSelectionMode = mode;
       var savedBtn = document.getElementById("addrModeSavedBtn");
@@ -710,27 +705,34 @@
       var permSaveWrapper = document.getElementById("saveAsNewPermanentWrapper");
 
       if (mode === "saved") {
-        savedBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950";
-        newBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-slate-50 border-slate-200 text-slate-600";
-        permSaveWrapper.classList.add("hidden");
-        permSaveWrapper.classList.remove("flex");
+        if (savedBtn) savedBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950";
+        if (newBtn) newBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-slate-50 border-slate-200 text-slate-600";
+        if (permSaveWrapper) {
+          permSaveWrapper.classList.add("hidden");
+          permSaveWrapper.classList.remove("flex");
+        }
 
         if (currentCustomer) {
-          areaInput.value = currentCustomer.areaLocation || "";
-          addrInput.value = currentCustomer.address || "";
+          if (areaInput) areaInput.value = currentCustomer.areaLocation || "";
+          if (addrInput) addrInput.value = currentCustomer.address || "";
         }
       } else {
-        newBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950";
-        savedBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-slate-50 border-slate-200 text-slate-600";
-        permSaveWrapper.classList.remove("hidden");
-        permSaveWrapper.classList.add("flex");
+        if (newBtn) newBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950";
+        if (savedBtn) savedBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-slate-50 border-slate-200 text-slate-600";
+        if (permSaveWrapper) {
+          permSaveWrapper.classList.remove("hidden");
+          permSaveWrapper.classList.add("flex");
+        }
 
-        // Clear fields for typing a temporary or different address
-        areaInput.value = "";
-        addrInput.value = "";
-        areaInput.placeholder = "Enter Delivery Area / Colony (for this order)";
-        addrInput.placeholder = "Enter Full Address (for this order)";
-        areaInput.focus();
+        if (areaInput) {
+          areaInput.value = "";
+          areaInput.placeholder = "Enter Delivery Area / Colony (for this order)";
+        }
+        if (addrInput) {
+          addrInput.value = "";
+          addrInput.placeholder = "Enter Full Address (for this order)";
+        }
+        if (areaInput) areaInput.focus();
       }
     };
 
@@ -741,15 +743,14 @@
       var areaField = document.getElementById("custAreaLocation");
       var addrField = document.getElementById("custAddress");
 
-      if (currentCustomer.areaLocation) {
+      if (areaField && currentCustomer.areaLocation) {
         areaField.value = currentCustomer.areaLocation;
       }
-      if (currentCustomer.address) {
+      if (addrField && currentCustomer.address) {
         addrField.value = currentCustomer.address;
       }
     }
 
-    // PERMANENT CUSTOMER ACCOUNT DELETION
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
 
@@ -772,7 +773,6 @@
       });
     };
 
-    // STORE EXPLORE (ALL CLOTHES OF THIS STORE)
     window.openStoreExploreModal = function(storeName) {
       var all = cloudProducts.concat(baseProducts);
       var storeProds = all.filter(function(p) {
@@ -789,8 +789,9 @@
       var html = "";
 
       storeProds.forEach(function(p) {
+        var targetId = p.id || p.cloudKey;
         html += 
-          '<div onclick="openProductDetailModal(\'' + p.id + '\')" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 cursor-pointer hover:border-orange-500 transition space-y-1.5 text-xs">' +
+          '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 cursor-pointer hover:border-orange-500 transition space-y-1.5 text-xs">' +
             '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-white border border-slate-200">' +
               '<img src="' + p.image + '" class="w-full h-full object-cover">' +
               '<span class="absolute bottom-1 right-1 bg-slate-950/80 text-white font-mono-num font-black text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
@@ -808,7 +809,6 @@
       document.getElementById("storeExploreModal").classList.add("hidden");
     };
 
-    // EXPANSIVE PRODUCT MULTI-IMAGE FULL SLIDER MODAL
     window.openProductDetailModal = function(prodId) {
       var all = cloudProducts.concat(baseProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -893,6 +893,7 @@
 
     function initSwipeGuestures() {
       var area = document.getElementById("swipeArea");
+      if (!area) return;
       var startX = 0;
       var endX = 0;
 
@@ -1192,12 +1193,13 @@
             '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
           '</button>';
 
-        document.getElementById("custName").value = currentCustomer.name || "";
-        document.getElementById("custPhone").value = currentCustomer.phone || "";
+        var nameField = document.getElementById("custName");
+        var phoneField = document.getElementById("custPhone");
+        if (nameField) nameField.value = currentCustomer.name || "";
+        if (phoneField) phoneField.value = currentCustomer.phone || "";
+
         document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
         document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
-        
-        applySavedAddressToForm();
 
         if (isOwnerActive && ownerBadge) {
           ownerBadge.classList.remove("hidden");
@@ -1224,10 +1226,16 @@
         localStorage.removeItem("fitin60_customer_user");
         localStorage.removeItem("fitin60_owner_session");
         document.getElementById("profilePopover").classList.add("hidden");
-        document.getElementById("custName").value = "";
-        document.getElementById("custPhone").value = "";
-        document.getElementById("custAreaLocation").value = "";
-        document.getElementById("custAddress").value = "";
+        
+        var nameF = document.getElementById("custName");
+        var phoneF = document.getElementById("custPhone");
+        var areaF = document.getElementById("custAreaLocation");
+        var addrF = document.getElementById("custAddress");
+        if (nameF) nameF.value = "";
+        if (phoneF) phoneF.value = "";
+        if (areaF) areaF.value = "";
+        if (addrF) addrF.value = "";
+
         updateAuthHeaderUI();
         renderBoutiqueStores();
       }
@@ -1276,6 +1284,6 @@
 
       if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
 
-      // If user selected "Save as new permanent address", save it to their profile & database
       var savePermCheckbox = document.getElementById("saveAsPermanentCheckbox");
-      if (savePermCheck
+      if (savePermCheckbox && savePermCheckbox.checked && currentCustomer) {
+     
