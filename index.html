@@ -441,7 +441,7 @@
                 </div>
               </label>
 
-              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
+              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
                   <p class="font-black text-slate-900">Instant Online UPI (PhonePe / GPay / Paytm)</p>
@@ -1230,7 +1230,7 @@
         deliveryAddress = document.getElementById("custPermanentAddress").value.trim();
         if (currentCustomer && deliveryAddress) {
           currentCustomer.permanentAddress = deliveryAddress;
-          localStorage.setItem("fitin60_customer_user", JSON.stringify(deliveryAddress));
+          localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
           if (currentCustomer.phone) {
             db.ref("customers/" + currentCustomer.phone).update({ permanentAddress: deliveryAddress, address: deliveryAddress });
           }
@@ -1271,6 +1271,6 @@
         paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
-        boutiqueAccepted: false,
-        riderAssigned: false,
-        financi
+        boutiqueAccepted: {
+          storeNetPayout: storeNetPayout,
+         
