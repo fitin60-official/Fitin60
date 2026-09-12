@@ -75,7 +75,7 @@
     </div>
   </header>
 
-  <!-- Profile Menu Popover (Auto-Closes on Outside Click) -->
+  <!-- Profile Menu Popover -->
   <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-64 space-y-2.5">
     <div class="border-b border-slate-100 pb-2">
       <div class="flex justify-between items-center">
@@ -151,7 +151,7 @@
     <div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-brand font-black text-lg text-slate-950">Stores Near You</h2>
-        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Syncing...</span>
+        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Loading...</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="boutiqueStoreGrid"></div>
     </div>
@@ -321,7 +321,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-2">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
@@ -1204,8 +1204,10 @@
 
     window.handleCustomerPinLogin = function(e) {
       e.preventDefault();
-      var mob = (document.getElementById("custPinLoginMobile")?.value || "").trim();
-      var pin = (document.getElementById("custPinLoginPin")?.value || "").trim();
+      var mobElem = document.getElementById("custPinLoginMobile");
+      var pinElem = document.getElementById("custPinLoginPin");
+      var mob = mobElem ? mobElem.value.trim() : "";
+      var pin = pinElem ? pinElem.value.trim() : "";
 
       if (pin === "4545") {
         isOwnerActive = true;
@@ -1290,5 +1292,4 @@
         if (pop) pop.classList.add("hidden");
         
         var nameF = document.getElementById("custName");
-        var phoneF = document.getElementById("custPhone");
-       
+        var phoneF = document.getElementById("c
