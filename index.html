@@ -63,6 +63,7 @@
         <span id="cart-count" class="bg-white text-orange-600 text-[10px] font-mono-num font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
       </button>
 
+      <!-- Auth Container with Outside-Click-Safe Wrapper -->
       <div id="authPillContainer" class="relative">
         <button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">
           <span>👤</span> <span>Login</span>
@@ -75,7 +76,7 @@
     </div>
   </header>
 
-  <!-- Complete Customer Profile Menu Popover -->
+  <!-- Profile Menu Popover (Auto-Closes on Outside Click) -->
   <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-64 space-y-2.5">
     <div class="border-b border-slate-100 pb-2">
       <div class="flex justify-between items-center">
@@ -162,25 +163,30 @@
     </div>
   </main>
 
-  <!-- SAVED ADDRESSES MODAL -->
+  <!-- SAVED ADDRESSES MODAL (LOCATION & PERMANENT ADDRESS) -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
         <div class="flex items-center gap-2">
           <span class="text-xl">📍</span>
-          <h3 class="font-brand font-bold text-sm text-slate-900">Saved Address</h3>
+          <h3 class="font-brand font-bold text-sm text-slate-900">Saved Address & Location</h3>
         </div>
         <button onclick="closeSavedAddressModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Your Full Delivery Address</label>
-          <textarea id="savedAddressInput" rows="3" placeholder="House/Flat No, Landmark, Street, Area..." class="w-full bg-slate-50 border rounded-xl p-3 text-slate-900 focus:outline-none focus:border-orange-500"></textarea>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Current Area / Colony / Town</label>
+          <input type="text" id="savedAreaInput" placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:border-orange-500 font-medium">
         </div>
 
-        <button onclick="saveCustomerAddressPermanently()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          ✓ Save Address for Express Checkout
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Permanent Full Delivery Address</label>
+          <textarea id="savedAddressInput" rows="3" placeholder="House/Door No, Street Name, Floor, Landmark..." class="w-full bg-slate-50 border rounded-xl p-3 text-slate-900 focus:outline-none focus:border-orange-500"></textarea>
+        </div>
+
+        <button onclick="saveCustomerAddressPermanently()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          ✓ Save Address for Instant Shopping
         </button>
       </div>
     </div>
@@ -322,7 +328,7 @@
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
       <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
-      <p class="text-xs text-slate-500 mt-1" id="custModalSubtitle">Login with your Mobile & 4-Digit PIN</p>
+      <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
         <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
@@ -384,7 +390,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer -->
+  <!-- Shopping Bag Drawer (Auto-Fills Saved Location & Address) -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -397,10 +403,16 @@
         <div id="cartItems" class="space-y-2"></div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
-          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address & Distance</h4>
+          <div class="flex justify-between items-center">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address & Distance</h4>
+            <span id="savedAddressBadge" class="hidden text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">✓ Auto-Filled</span>
+          </div>
+
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
-          <textarea id="custAddress" rows="2" required placeholder="Full Delivery Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
+          
+          <input type="text" id="custAreaLocation" placeholder="Area / Colony / Town" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
+          <textarea id="custAddress" rows="2" required placeholder="Permanent Door/Street Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Delivery Distance from Store</label>
@@ -612,12 +624,25 @@
       document.getElementById("custForgotForm").classList.remove("hidden");
     };
 
-    // SAVED ADDRESS CONTROLS
+    // CLICK OUTSIDE TO CLOSE PROFILE POPOVER LOGIC
+    window.addEventListener("click", function(event) {
+      var popover = document.getElementById("profilePopover");
+      var container = document.getElementById("authPillContainer");
+
+      if (popover && !popover.classList.contains("hidden")) {
+        if (!popover.contains(event.target) && !container.contains(event.target)) {
+          popover.classList.add("hidden");
+        }
+      }
+    });
+
+    // SAVED ADDRESS CONTROLS (AREA + PERMANENT ADDRESS)
     window.openSavedAddressModal = function() {
       if (!currentCustomer) {
         openLoginModal();
         return;
       }
+      document.getElementById("savedAreaInput").value = currentCustomer.areaLocation || "";
       document.getElementById("savedAddressInput").value = currentCustomer.address || "";
       document.getElementById("profilePopover").classList.add("hidden");
       document.getElementById("savedAddressModal").classList.remove("hidden");
@@ -629,20 +654,43 @@
 
     window.saveCustomerAddressPermanently = function() {
       if (!currentCustomer) return;
+      var newArea = document.getElementById("savedAreaInput").value.trim();
       var newAddr = document.getElementById("savedAddressInput").value.trim();
-      if (!newAddr) return alert("Please enter your address!");
 
+      if (!newArea || !newAddr) return alert("Please enter both Area Location & Permanent Address!");
+
+      currentCustomer.areaLocation = newArea;
       currentCustomer.address = newAddr;
       localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
 
       if (currentCustomer.phone) {
-        db.ref("customers/" + currentCustomer.phone).update({ address: newAddr });
+        db.ref("customers/" + currentCustomer.phone).update({
+          areaLocation: newArea,
+          address: newAddr
+        });
       }
 
-      document.getElementById("custAddress").value = newAddr;
+      applySavedAddressToForm();
       closeSavedAddressModal();
-      showQuickToast("✓ Address Saved Permanently!");
+      showQuickToast("✓ Location & Permanent Address Saved!");
     };
+
+    function applySavedAddressToForm() {
+      if (!currentCustomer) return;
+      var areaField = document.getElementById("custAreaLocation");
+      var addrField = document.getElementById("custAddress");
+      var badge = document.getElementById("savedAddressBadge");
+
+      if (currentCustomer.areaLocation) {
+        areaField.value = currentCustomer.areaLocation;
+      }
+      if (currentCustomer.address) {
+        addrField.value = currentCustomer.address;
+      }
+      if (currentCustomer.areaLocation && currentCustomer.address && badge) {
+        badge.classList.remove("hidden");
+      }
+    }
 
     // PERMANENT CUSTOMER ACCOUNT DELETION
     window.handleDeleteCustomerAccountPermanently = function() {
@@ -652,7 +700,7 @@
 
       if (enteredPin === null) return;
 
-      if (enteredPin !== currentCustomer.pin && enteredPin !== "4545") {
+      if (enteredPin !== currentCustomer.pin) {
         return alert("❌ Incorrect PIN! Deletion cancelled.");
       }
 
@@ -989,6 +1037,7 @@
     }
 
     window.toggleCart = function() {
+      applySavedAddressToForm();
       document.getElementById("cartDrawer").classList.toggle("hidden");
     };
 
@@ -1020,6 +1069,8 @@
       }
 
       addr.classList.remove("hidden");
+      applySavedAddressToForm();
+
       var html = "";
       items.forEach(function(item, idx) {
         html += 
@@ -1080,7 +1131,7 @@
       if (currentCustomer) {
         var firstName = currentCustomer.name.split(" ")[0];
         container.innerHTML = 
-          '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
+          '<button onclick="toggleProfileMenu(event)" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
             '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
           '</button>';
 
@@ -1089,9 +1140,7 @@
         document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
         document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
         
-        if (currentCustomer.address) {
-          document.getElementById("custAddress").value = currentCustomer.address;
-        }
+        applySavedAddressToForm();
 
         if (isOwnerActive && ownerBadge) {
           ownerBadge.classList.remove("hidden");
@@ -1106,7 +1155,8 @@
       }
     }
 
-    function toggleProfileMenu() {
+    function toggleProfileMenu(e) {
+      if (e) e.stopPropagation();
       document.getElementById("profilePopover").classList.toggle("hidden");
     }
 
@@ -1119,6 +1169,7 @@
         document.getElementById("profilePopover").classList.add("hidden");
         document.getElementById("custName").value = "";
         document.getElementById("custPhone").value = "";
+        document.getElementById("custAreaLocation").value = "";
         document.getElementById("custAddress").value = "";
         updateAuthHeaderUI();
         renderBoutiqueStores();
@@ -1163,9 +1214,12 @@
     window.handleCheckout = function() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
+      var area = document.getElementById("custAreaLocation").value.trim();
       var addr = document.getElementById("custAddress").value.trim();
 
       if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
+
+      var combinedAddress = (area ? (area + " - ") : "") + addr;
 
       var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
       var payMethod = payMethodRadio ? payMethodRadio.value : "POD";
@@ -1185,7 +1239,7 @@
         orderId: orderId,
         customerName: name,
         customerPhone: phone,
-        customerAddress: addr,
+        customerAddress: combinedAddress,
         items: items,
         itemTotal: itemSubtotal,
         distanceKm: distVal,
