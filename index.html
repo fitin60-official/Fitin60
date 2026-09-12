@@ -127,7 +127,7 @@
         Boutiques & Uniforms in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
       </h1>
       <p class="text-slate-400 text-xs mt-1">
-        Click any store to explore all collections. Tap an outfit for full slide view.
+        Tap any outfit for expansive full image & multi-slide viewing.
       </p>
     </div>
 
@@ -141,10 +141,9 @@
     </div>
   </main>
 
-  <!-- STORE EXPLORE MODAL (FULL COLLECTION VIEW) -->
+  <!-- STORE EXPLORE MODAL -->
   <div id="storeExploreModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-      <!-- Store Modal Header -->
       <div class="p-4 bg-slate-950 text-white flex items-center justify-between">
         <div>
           <h3 class="font-brand font-black text-lg text-white" id="exploreStoreName">Store Name</h3>
@@ -153,7 +152,6 @@
         <button onclick="closeStoreExploreModal()" class="text-slate-400 hover:text-white text-3xl font-bold p-1 cursor-pointer">&times;</button>
       </div>
 
-      <!-- Store Products Grid -->
       <div class="p-4 overflow-y-auto flex-1 space-y-4">
         <div class="flex justify-between items-center text-xs font-bold text-slate-500">
           <span id="exploreItemCount">Available Collections</span>
@@ -164,49 +162,58 @@
     </div>
   </div>
 
-  <!-- PRODUCT MULTI-IMAGE SLIDER & DETAILS MODAL -->
-  <div id="productDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-md w-full p-4 sm:p-5 space-y-3.5 shadow-2xl relative border border-slate-200 overflow-hidden">
-      <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 z-20 bg-black/50 hover:bg-black text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg cursor-pointer">&times;</button>
+  <!-- EXPANSIVE FULL-IMAGE & MULTI-SLIDE DETAILS MODAL -->
+  <div id="productDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-2 sm:p-6 bg-black/85 backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl relative border border-slate-200 overflow-hidden">
+      <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 z-30 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-xl cursor-pointer transition">&times;</button>
       
-      <!-- Main Swiper Image Box -->
-      <div class="relative w-full h-72 sm:h-80 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 group">
-        <img id="modalMainImage" src="" alt="Outfit" class="w-full h-full object-cover transition duration-300">
+      <!-- LEFT / TOP: EXPANSIVE FULL IMAGE SLIDER -->
+      <div class="relative w-full md:w-3/5 h-80 md:h-auto md:min-h-[460px] bg-slate-100 overflow-hidden flex items-center justify-center select-none" id="swipeArea">
+        <img id="modalMainImage" src="" alt="Full Outfit" class="w-full h-full object-contain md:object-cover transition duration-300">
 
-        <!-- Left / Right Slide Arrow Buttons -->
-        <button onclick="slideImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-black text-sm shadow cursor-pointer">❮</button>
-        <button onclick="slideImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-black text-sm shadow cursor-pointer">❯</button>
+        <!-- Nav Arrows -->
+        <button onclick="slideImage(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-lg cursor-pointer transition z-10">❮</button>
+        <button onclick="slideImage(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-lg cursor-pointer transition z-10">❯</button>
 
-        <span id="imageCounterBadge" class="absolute bottom-2 right-2 bg-slate-950/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">1 / 1</span>
+        <span id="imageCounterBadge" class="absolute bottom-3 right-3 bg-slate-950/80 text-white text-xs font-mono font-bold px-2.5 py-1 rounded-lg backdrop-blur-sm z-10">1 / 1</span>
       </div>
 
-      <!-- Thumbnail Strip -->
-      <div id="modalThumbnailsStrip" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
-
-      <!-- Details -->
-      <div class="space-y-1">
-        <div class="flex justify-between items-start">
+      <!-- RIGHT / BOTTOM: DETAILS & ACTIONS -->
+      <div class="w-full md:w-2/5 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto space-y-4 bg-white">
+        <div class="space-y-3">
+          <!-- Thumbnail Strip -->
           <div>
-            <h3 id="modalProdName" class="font-brand font-black text-base text-slate-950">Outfit Name</h3>
-            <p id="modalProdStore" class="text-xs font-bold text-orange-600">Store Name</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Slide Angles</p>
+            <div id="modalThumbnailsStrip" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
           </div>
-          <div class="text-right">
-            <span id="modalProdPrice" class="font-mono-num font-black text-xl text-slate-950">₹0</span>
-            <p id="modalProdOrig" class="text-[10px] text-slate-400 line-through">₹0</p>
+
+          <!-- Title & Price -->
+          <div class="border-t border-slate-100 pt-3">
+            <span id="modalProdCategory" class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">Uniform</span>
+            <h3 id="modalProdName" class="font-brand font-black text-lg sm:text-xl text-slate-950 mt-1 leading-snug">Outfit Name</h3>
+            <p id="modalProdStore" class="text-xs font-bold text-slate-500 mt-0.5">Store Name</p>
+            
+            <div class="flex items-baseline gap-2 mt-2">
+              <span id="modalProdPrice" class="font-mono-num font-black text-2xl text-slate-950">₹0</span>
+              <span id="modalProdOrig" class="text-xs text-slate-400 line-through">₹0</span>
+              <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">60-Min Drop</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p id="modalProdDesc" class="text-slate-600 text-xs leading-relaxed">Description and details.</p>
+
+          <!-- Sizes -->
+          <div>
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Select Size</label>
+            <div id="modalSizesContainer" class="flex flex-wrap gap-1.5"></div>
           </div>
         </div>
-        <p id="modalProdDesc" class="text-slate-600 text-xs line-clamp-2">Fabric description and details.</p>
-      </div>
 
-      <!-- Available Sizes Selector -->
-      <div>
-        <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Size</label>
-        <div id="modalSizesContainer" class="flex flex-wrap gap-1.5"></div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
-        <button id="modalAddBagBtn" onclick="modalAddToBag()" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3 rounded-xl text-xs cursor-pointer">🛍️ Add to Bag</button>
-        <button id="modalBuyNowBtn" onclick="modalBuyNow()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs cursor-pointer shadow">⚡ Instant Buy</button>
+        <div class="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100">
+          <button onclick="modalAddToBag()" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs cursor-pointer transition">🛍️ Add Bag</button>
+          <button onclick="modalBuyNow()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 rounded-2xl text-xs cursor-pointer shadow-md transition">⚡ Instant Buy</button>
+        </div>
       </div>
     </div>
   </div>
@@ -518,7 +525,7 @@
     var currentCustomer = null;
     var currentCategoryFilter = "All";
 
-    // Multi-Image Modal Global State
+    // Multi-Image Modal State
     var activeModalProduct = null;
     var currentModalImageIndex = 0;
     var selectedModalSize = "";
@@ -604,7 +611,7 @@
       document.getElementById("storeExploreModal").classList.add("hidden");
     };
 
-    // 2. PRODUCT MULTI-IMAGE FULL SLIDER MODAL
+    // 2. EXPANSIVE PRODUCT MULTI-IMAGE FULL SLIDER MODAL
     window.openProductDetailModal = function(prodId) {
       var all = cloudProducts.concat(baseProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -613,23 +620,22 @@
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
-      // Prepare images list (fallback to main image if array missing)
       var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
       activeModalProduct._resolvedImages = imagesList;
 
       document.getElementById("modalProdName").innerText = p.name;
       document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
+      document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
       document.getElementById("modalProdPrice").innerText = "₹" + p.price;
       document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
       document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
 
-      // Render sizes chips
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
       selectedModalSize = sizes[0];
       var sizesHtml = "";
       sizes.forEach(function(s, idx) {
         sizesHtml += 
-          '<button onclick="selectModalSize(\'' + s + '\')" id="sizeBtn_' + idx + '" class="size-chip px-3 py-1.5 rounded-xl border text-xs font-bold transition ' + 
+          '<button onclick="selectModalSize(\'' + s + '\')" class="size-chip px-3 py-1.5 rounded-xl border text-xs font-bold transition ' + 
             (idx === 0 ? "bg-slate-950 text-white border-slate-950" : "bg-slate-50 text-slate-800 border-slate-200") + '">' + 
             s + 
           '</button>';
@@ -637,6 +643,7 @@
       document.getElementById("modalSizesContainer").innerHTML = sizesHtml;
 
       updateModalSwiperUI();
+      initSwipeGuestures();
       document.getElementById("productDetailModal").classList.remove("hidden");
     };
 
@@ -685,6 +692,26 @@
             (idx === currentModalImageIndex ? "border-orange-600 scale-105" : "border-slate-200 opacity-70") + '">';
       });
       thumbStrip.innerHTML = thumbsHtml;
+    }
+
+    // TOUCH SWIPE DETECTION ON IMAGE
+    function initSwipeGuestures() {
+      var area = document.getElementById("swipeArea");
+      var startX = 0;
+      var endX = 0;
+
+      area.ontouchstart = function(e) {
+        startX = e.touches[0].clientX;
+      };
+
+      area.ontouchend = function(e) {
+        endX = e.changedTouches[0].clientX;
+        var diff = startX - endX;
+        if (Math.abs(diff) > 40) {
+          if (diff > 0) slideImage(1); // Swipe left -> Next
+          else slideImage(-1);         // Swipe right -> Prev
+        }
+      };
     }
 
     window.closeProductDetailModal = function() {
@@ -850,7 +877,6 @@
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div>' +
             
-            <!-- CLICKABLE STORE NAME FOR EXPLORE -->
             '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\')">' +
               '<div class="flex items-center justify-between">' +
                 '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
