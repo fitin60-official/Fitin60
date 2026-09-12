@@ -156,7 +156,7 @@
     <div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-brand font-black text-lg text-slate-950">Stores Near You</h2>
-        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Loading...</span>
+        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Checking Stores...</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="boutiqueStoreGrid"></div>
     </div>
@@ -526,6 +526,7 @@
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
+    // Base Products List (Guaranteed to show instantly)
     var baseProducts = [
       {
         id: "base_1",
@@ -709,7 +710,7 @@
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
 
-      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
+      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + (currentCustomer.name || "User") + "):");
       if (enteredPin === null) return;
 
       if (enteredPin !== currentCustomer.pin) {
@@ -765,20 +766,20 @@
 
     window.openProductDetailModal = function(prodId) {
       var all = cloudProducts.concat(baseProducts);
-      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+      var p = all.find(function(item) { return item && (item.id === prodId || item.cloudKey === prodId); });
       if (!p) return;
 
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
-      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
+      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image || ""];
       activeModalProduct._resolvedImages = imagesList;
 
-      document.getElementById("modalProdName").innerText = p.name;
-      document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
+      document.getElementById("modalProdName").innerText = p.name || "Outfit";
+      document.getElementById("modalProdStore").innerText = "🏬 " + (p.store || "Boutique");
       document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
-      document.getElementById("modalProdPrice").innerText = "₹" + p.price;
-      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
+      document.getElementById("modalProdPrice").innerText = "₹" + (p.price || 0);
+      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round((p.price || 500) * 1.4));
       document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
 
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
@@ -833,7 +834,7 @@
       var counter = document.getElementById("imageCounterBadge");
       var thumbStrip = document.getElementById("modalThumbnailsStrip");
 
-      mainImg.src = list[currentModalImageIndex];
+      mainImg.src = list[currentModalImageIndex] || "";
       counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
 
       var thumbsHtml = "";
@@ -847,6 +848,7 @@
 
     function initSwipeGuestures() {
       var area = document.getElementById("swipeArea");
+      if (!area) return;
       var startX = 0;
       var endX = 0;
 
@@ -964,7 +966,7 @@
       var badge = document.getElementById("boutiqueCountBadge");
       if (!grid) return;
 
-      var all = cloudProducts.concat(baseProducts);
+      var all = [].concat(cloudProducts, baseProducts);
       var searchInput = document.getElementById("storeSearchInput");
       var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
@@ -1048,7 +1050,6 @@
     }
 
     window.toggleCart = function() {
-      // Sync permanent address into checkout input
       if (currentCustomer) {
         var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
         document.getElementById("custPermanentAddress").value = pAddr;
@@ -1147,8 +1148,8 @@
       var container = document.getElementById("authPillContainer");
       var ownerBadge = document.getElementById("ownerBadgeInProfile");
 
-      if (currentCustomer) {
-        var firstName = currentCustomer.name.split(" ")[0];
+      if (currentCustomer && currentCustomer.name) {
+        var firstName = String(currentCustomer.name).split(" ")[0];
         container.innerHTML = 
           '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
             '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
@@ -1219,7 +1220,7 @@
 
       db.ref("customers/" + mob).once("value").then(function(snap) {
         var u = snap.val();
-        if (u && u.name.toLowerCase() === name) {
+        if (u && (u.name || "").toLowerCase() === name) {
           db.ref("customers/" + mob).update({ pin: pin }).then(function() {
             alert("✓ PIN Updated!");
             switchCustAuthTab('login');
@@ -1234,13 +1235,11 @@
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
 
-      // Check which address was selected
       var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
       var deliveryAddress = "";
 
       if (selectedAddressType === "permanent") {
         deliveryAddress = document.getElementById("custPermanentAddress").value.trim();
-        // Update customer permanent address if edited
         if (currentCustomer && deliveryAddress) {
           currentCustomer.permanentAddress = deliveryAddress;
           localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
@@ -1280,5 +1279,4 @@
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
-        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
-        paymentStatus: payMethod === "ONLINE_UPI" ? "Pai
+        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doors
