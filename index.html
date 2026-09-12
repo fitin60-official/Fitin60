@@ -75,43 +75,22 @@
     </div>
   </header>
 
-  <!-- Complete Customer Profile Menu Popover (Auto-Closes on Outside Click) -->
-  <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-64 space-y-2.5">
+  <!-- Profile Menu Popover -->
+  <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-60 space-y-3">
     <div class="border-b border-slate-100 pb-2">
       <div class="flex justify-between items-center">
-        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Account</p>
+        <p class="text-[10px] font-bold text-slate-400 uppercase">Account</p>
         <span id="ownerBadgeInProfile" class="hidden text-[9px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-black px-2 py-0.5 rounded-md">🛡️ OWNER ACTIVE</span>
       </div>
       <p id="popoverCustName" class="font-bold text-sm text-slate-900 truncate">Customer</p>
       <p id="popoverCustPhone" class="font-mono text-xs text-slate-500">9876543210</p>
     </div>
-
-    <!-- 1. Orders -->
-    <a href="tracking.html" class="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-2.5 rounded-xl text-xs font-bold text-slate-700 transition">
-      <span>📦</span> <span>My Orders & Tracking</span>
+    <a href="tracking.html" class="block bg-slate-50 hover:bg-slate-100 p-2 rounded-xl text-xs font-bold text-slate-700">
+      📦 My Orders & Tracking
     </a>
-
-    <!-- 2. Saved Addresses -->
-    <button onclick="openSavedAddressModal()" class="w-full flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-2.5 rounded-xl text-xs font-bold text-slate-700 transition text-left cursor-pointer">
-      <span>📍</span> <span>Manage Saved Address</span>
+    <button onclick="customerLogout()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2 rounded-xl text-xs transition cursor-pointer">
+      🚪 Logout Securely
     </button>
-
-    <!-- 3. WhatsApp Support -->
-    <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20I%20need%20help%20with%20my%20order" target="_blank" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 p-2.5 rounded-xl text-xs font-bold text-emerald-800 transition">
-      <span>💬</span> <span>WhatsApp Support</span>
-    </a>
-
-    <!-- 4. Logout -->
-    <button onclick="customerLogout()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold p-2.5 rounded-xl text-xs transition cursor-pointer">
-      <span>🚪</span> <span>Logout Securely</span>
-    </button>
-
-    <!-- 5. Delete Account -->
-    <div class="pt-2 border-t border-slate-100 text-center">
-      <button onclick="handleDeleteCustomerAccountPermanently()" class="text-[11px] text-rose-500/70 hover:text-rose-600 font-semibold underline decoration-rose-200 transition cursor-pointer">
-        Delete Customer Account
-      </button>
-    </div>
   </div>
 
   <main class="max-w-4xl mx-auto px-4 mt-4 space-y-4">
@@ -156,35 +135,11 @@
     <div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-brand font-black text-lg text-slate-950">Stores Near You</h2>
-        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Live</span>
+        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Syncing...</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="boutiqueStoreGrid"></div>
     </div>
   </main>
-
-  <!-- SAVED PERMANENT ADDRESS MODAL -->
-  <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative border border-slate-200">
-      <div class="flex items-center justify-between border-b pb-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">📍</span>
-          <h3 class="font-brand font-bold text-sm text-slate-900">Manage Saved Address</h3>
-        </div>
-        <button onclick="closeSavedAddressModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Permanent Full Delivery Address</label>
-          <textarea id="savedPermanentAddressInput" rows="3" placeholder="House/Flat No, Landmark, Street Name, Town..." class="w-full bg-slate-50 border rounded-xl p-3 text-slate-900 focus:outline-none focus:border-orange-500"></textarea>
-        </div>
-
-        <button onclick="saveCustomerAddressPermanently()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          ✓ Save as Permanent Address
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- STORE EXPLORE MODAL -->
   <div id="storeExploreModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm">
@@ -212,7 +167,6 @@
     <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl relative border border-slate-200 overflow-hidden">
       <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 z-30 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-xl cursor-pointer transition">&times;</button>
       
-      <!-- Left: Expansive Image Box -->
       <div class="relative w-full md:w-3/5 h-80 md:h-auto md:min-h-[460px] bg-slate-100 overflow-hidden flex items-center justify-center select-none" id="swipeArea">
         <img id="modalMainImage" src="" alt="Full Outfit" class="w-full h-full object-contain md:object-cover transition duration-300">
 
@@ -222,7 +176,6 @@
         <span id="imageCounterBadge" class="absolute bottom-3 right-3 bg-slate-950/80 text-white text-xs font-mono font-bold px-2.5 py-1 rounded-lg backdrop-blur-sm z-10">1 / 1</span>
       </div>
 
-      <!-- Right: Details & Buying -->
       <div class="w-full md:w-2/5 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto space-y-4 bg-white">
         <div class="space-y-3">
           <div>
@@ -323,7 +276,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-2">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
@@ -386,7 +339,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer (WITH 2-ADDRESS SELECTOR: PERMANENT OR NEW) -->
+  <!-- Shopping Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -399,38 +352,11 @@
         <div id="cartItems" class="space-y-2"></div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
+          <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address & Distance</h4>
           
-          <div>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Choose Delivery Address</h4>
-            
-            <!-- Address Choice Selector -->
-            <div class="grid grid-cols-2 gap-2 mb-3">
-              <label class="flex items-center gap-2 p-2.5 bg-orange-50 border border-orange-300 rounded-xl cursor-pointer text-xs font-bold text-slate-900">
-                <input type="radio" name="checkoutAddressType" value="permanent" checked onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
-                <span>🏠 Saved Address</span>
-              </label>
-
-              <label class="flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer text-xs font-bold text-slate-700">
-                <input type="radio" name="checkoutAddressType" value="new" onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
-                <span>📍 New / Other</span>
-              </label>
-            </div>
-          </div>
-
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
-          
-          <!-- Box 1: Permanent Address Display & Edit -->
-          <div id="permanentAddressBoxContainer">
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Permanent Address</label>
-            <textarea id="custPermanentAddress" rows="2" placeholder="Your saved permanent address..." class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
-          </div>
-
-          <!-- Box 2: New / Different Delivery Address Box -->
-          <div id="newAddressBoxContainer" class="hidden">
-            <label class="block text-[10px] font-bold uppercase text-orange-600 mb-1">Deliver to Different Address (Temporary)</label>
-            <textarea id="custNewAddress" rows="2" placeholder="Enter other house/office delivery address for this order..." class="w-full bg-orange-50/50 border border-orange-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-orange-500"></textarea>
-          </div>
+          <textarea id="custAddress" rows="2" required placeholder="Full Delivery Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Delivery Distance from Store</label>
@@ -526,7 +452,6 @@
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
-    // All Preloaded Outfits & Stores (Sai Fashions, Mummy Daddy, AdhyaSai)
     var baseProducts = [
       {
         id: "base_1",
@@ -643,7 +568,7 @@
       document.getElementById("custForgotForm").classList.remove("hidden");
     };
 
-    // 1. OUTSIDE CLICK TO CLOSE PROFILE POPOVER
+    // Outside Click to Close Profile Popover
     window.addEventListener("click", function(event) {
       var popover = document.getElementById("profilePopover");
       var container = document.getElementById("authPillContainer");
@@ -655,7 +580,6 @@
       }
     });
 
-    // 2. SAVED PERMANENT ADDRESS MODAL
     window.openSavedAddressModal = function() {
       if (!currentCustomer) {
         openLoginModal();
@@ -686,31 +610,15 @@
         });
       }
 
-      document.getElementById("custPermanentAddress").value = newAddr;
+      document.getElementById("custAddress").value = newAddr;
       closeSavedAddressModal();
       showQuickToast("✓ Permanent Address Saved!");
     };
 
-    // 3. SWITCH BETWEEN PERMANENT ADDRESS & NEW TEMPORARY ADDRESS
-    window.toggleAddressInputMode = function(mode) {
-      var permBox = document.getElementById("permanentAddressBoxContainer");
-      var newBox = document.getElementById("newAddressBoxContainer");
-
-      if (mode === "permanent") {
-        permBox.classList.remove("hidden");
-        newBox.classList.add("hidden");
-      } else {
-        permBox.classList.add("hidden");
-        newBox.classList.remove("hidden");
-        document.getElementById("custNewAddress").focus();
-      }
-    };
-
-    // PERMANENT CUSTOMER ACCOUNT DELETION
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
 
-      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + (currentCustomer.name || "User") + "):");
+      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
       if (enteredPin === null) return;
 
       if (enteredPin !== currentCustomer.pin) {
@@ -729,9 +637,9 @@
     };
 
     window.openStoreExploreModal = function(storeName) {
-      var all = [].concat(cloudProducts, baseProducts);
+      var all = cloudProducts.concat(baseProducts);
       var storeProds = all.filter(function(p) {
-        return p && p.store && String(p.store).trim().toLowerCase() === String(storeName).trim().toLowerCase();
+        return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
       });
 
       var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
@@ -748,10 +656,10 @@
         html += 
           '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 cursor-pointer hover:border-orange-500 transition space-y-1.5 text-xs">' +
             '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-white border border-slate-200">' +
-              '<img src="' + (p.image || '') + '" class="w-full h-full object-cover">' +
-              '<span class="absolute bottom-1 right-1 bg-slate-950/80 text-white font-mono-num font-black text-[9px] px-1 py-0.5 rounded">₹' + (p.price || 0) + '</span>' +
+              '<img src="' + p.image + '" class="w-full h-full object-cover">' +
+              '<span class="absolute bottom-1 right-1 bg-slate-950/80 text-white font-mono-num font-black text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
             '</div>' +
-            '<p class="font-bold text-slate-900 truncate">' + (p.name || 'Outfit') + '</p>' +
+            '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
             '<p class="text-[10px] text-orange-600 font-bold">' + (p.category || 'Outfit') + '</p>' +
           '</div>';
       });
@@ -765,21 +673,21 @@
     };
 
     window.openProductDetailModal = function(prodId) {
-      var all = [].concat(cloudProducts, baseProducts);
-      var p = all.find(function(item) { return item && (item.id === prodId || item.cloudKey === prodId); });
+      var all = cloudProducts.concat(baseProducts);
+      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
-      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image || ""];
+      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
       activeModalProduct._resolvedImages = imagesList;
 
-      document.getElementById("modalProdName").innerText = p.name || "Outfit";
-      document.getElementById("modalProdStore").innerText = "🏬 " + (p.store || "Boutique");
+      document.getElementById("modalProdName").innerText = p.name;
+      document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
       document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
-      document.getElementById("modalProdPrice").innerText = "₹" + (p.price || 0);
-      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round((p.price || 500) * 1.4));
+      document.getElementById("modalProdPrice").innerText = "₹" + p.price;
+      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
       document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
 
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
@@ -834,7 +742,7 @@
       var counter = document.getElementById("imageCounterBadge");
       var thumbStrip = document.getElementById("modalThumbnailsStrip");
 
-      mainImg.src = list[currentModalImageIndex] || "";
+      mainImg.src = list[currentModalImageIndex];
       counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
 
       var thumbsHtml = "";
@@ -848,7 +756,6 @@
 
     function initSwipeGuestures() {
       var area = document.getElementById("swipeArea");
-      if (!area) return;
       var startX = 0;
       var endX = 0;
 
@@ -961,13 +868,12 @@
       renderBoutiqueStores();
     };
 
-    // ZERO-DEPENDENCY SAFE STORE RENDER
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
       if (!grid) return;
 
-      var all = [].concat(cloudProducts, baseProducts);
+      var all = cloudProducts.concat(baseProducts);
       var searchInput = document.getElementById("storeSearchInput");
       var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
@@ -1013,8 +919,8 @@
 
           previewImages += 
             '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-              '<img src="' + (p.image || '') + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
-              '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + (p.price || 0) + '</span>' +
+              '<img src="' + p.image + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
+              '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
               (isOwnerActive && isCloud ? 
                 '<div class="absolute top-1 right-1 flex gap-1 z-10" onclick="event.stopPropagation();">' +
                   '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">✏️</button>' +
@@ -1023,8 +929,6 @@
             '</div>';
         });
 
-        var firstId = store.products[0].id || store.products[0].cloudKey;
-
         html += 
           '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3">' +
             '<div class="flex justify-between items-center">' +
@@ -1032,7 +936,7 @@
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div>' +
             
-            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName.replace(/'/g, "\\'") + '\')">' +
+            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\')">' +
               '<div class="flex items-center justify-between">' +
                 '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
                 '<span class="text-xs text-orange-600 font-bold group-hover:underline">Explore Store ➔</span>' +
@@ -1043,8 +947,8 @@
             '<div class="grid grid-cols-3 gap-2">' + previewImages + '</div>' +
             
             '<div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">' +
-              '<button onclick="openStoreExploreModal(\'' + store.storeName.replace(/'/g, "\\'") + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🏬 View All (' + store.products.length + ')</button>' +
-              '<button onclick="openProductDetailModal(\'' + firstId + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ View Outfit</button>' +
+              '<button onclick="openStoreExploreModal(\'' + store.storeName + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🏬 View All (' + store.products.length + ')</button>' +
+              '<button onclick="openProductDetailModal(\'' + (store.products[0].id || store.products[0].cloudKey) + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ View Outfit</button>' +
             '</div>' +
           '</div>';
       });
@@ -1055,7 +959,7 @@
     window.toggleCart = function() {
       if (currentCustomer) {
         var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
-        document.getElementById("custPermanentAddress").value = pAddr;
+        document.getElementById("custAddress").value = pAddr;
       }
       document.getElementById("cartDrawer").classList.toggle("hidden");
     };
@@ -1091,7 +995,7 @@
 
       if (currentCustomer) {
         var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
-        document.getElementById("custPermanentAddress").value = pAddr;
+        document.getElementById("custAddress").value = pAddr;
       }
 
       var html = "";
@@ -1151,8 +1055,8 @@
       var container = document.getElementById("authPillContainer");
       var ownerBadge = document.getElementById("ownerBadgeInProfile");
 
-      if (currentCustomer && currentCustomer.name) {
-        var firstName = String(currentCustomer.name).split(" ")[0];
+      if (currentCustomer) {
+        var firstName = currentCustomer.name.split(" ")[0];
         container.innerHTML = 
           '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
             '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
@@ -1164,7 +1068,7 @@
         document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
 
         var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
-        document.getElementById("custPermanentAddress").value = pAddr;
+        document.getElementById("custAddress").value = pAddr;
 
         if (isOwnerActive && ownerBadge) {
           ownerBadge.classList.remove("hidden");
@@ -1192,8 +1096,7 @@
         document.getElementById("profilePopover").classList.add("hidden");
         document.getElementById("custName").value = "";
         document.getElementById("custPhone").value = "";
-        document.getElementById("custPermanentAddress").value = "";
-        document.getElementById("custNewAddress").value = "";
+        document.getElementById("custAddress").value = "";
         updateAuthHeaderUI();
         renderBoutiqueStores();
       }
@@ -1223,7 +1126,7 @@
 
       db.ref("customers/" + mob).once("value").then(function(snap) {
         var u = snap.val();
-        if (u && (u.name || "").toLowerCase() === name) {
+        if (u && u.name.toLowerCase() === name) {
           db.ref("customers/" + mob).update({ pin: pin }).then(function() {
             alert("✓ PIN Updated!");
             switchCustAuthTab('login');
@@ -1237,25 +1140,18 @@
     window.handleCheckout = function() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
+      var addr = document.getElementById("custAddress").value.trim();
 
-      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
-      var deliveryAddress = "";
+      if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
 
-      if (selectedAddressType === "permanent") {
-        deliveryAddress = document.getElementById("custPermanentAddress").value.trim();
-        if (currentCustomer && deliveryAddress) {
-          currentCustomer.permanentAddress = deliveryAddress;
-          localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
-          if (currentCustomer.phone) {
-            db.ref("customers/" + currentCustomer.phone).update({ permanentAddress: deliveryAddress, address: deliveryAddress });
-          }
+      // Update permanent address if modified in checkout
+      if (currentCustomer && addr) {
+        currentCustomer.permanentAddress = addr;
+        currentCustomer.address = addr;
+        localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+        if (currentCustomer.phone) {
+          db.ref("customers/" + currentCustomer.phone).update({ permanentAddress: addr, address: addr });
         }
-      } else {
-        deliveryAddress = document.getElementById("custNewAddress").value.trim();
-      }
-
-      if (!name || !phone || !deliveryAddress) {
-        return alert("Please fill Name, Mobile & Delivery Address!");
       }
 
       var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
@@ -1276,8 +1172,70 @@
         orderId: orderId,
         customerName: name,
         customerPhone: phone,
-        customerAddress: deliveryAddress,
+        customerAddress: addr,
         items: items,
         itemTotal: itemSubtotal,
         distanceKm: distVal,
-        deliveryFee: delivery
+        deliveryFee: deliveryFee,
+        totalAmount: totalPayable,
+        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
+        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
+        deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
+        store: items[0].store,
+        boutiqueAccepted: false,
+        riderAssigned: false,
+        financialSplit: {
+          storeNetPayout: storeNetPayout,
+          platformCommission: platformFee,
+          riderFee: deliveryFee,
+          storeSettlementStatus: "Settled",
+          riderSettlementStatus: "Pending"
+        },
+        timestamp: Date.now()
+      };
+
+      db.ref("orders/" + orderId).set(orderData).then(function() {
+        localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
+        window.location.href = "tracking.html";
+      });
+    };
+
+    window.syncCustomerGPS = function() {
+      showQuickToast("✓ GPS Synced");
+    };
+
+    db.ref("boutiques").on("value", function(snapshot) {
+      var data = snapshot.val() || {};
+      boutiqueLocationsMap = {};
+      Object.values(data).forEach(function(b) {
+        if (b.storeName && b.area) {
+          boutiqueLocationsMap[b.storeName] = b.area;
+        }
+      });
+      renderBoutiqueStores();
+    });
+
+    db.ref("boutique_products").on("value", function(snapshot) {
+      var data = snapshot.val();
+      cloudProducts = [];
+      cloudProductsMap = data || {};
+      if (data) {
+        Object.keys(data).forEach(function(k) {
+          var p = data[k];
+          p.cloudKey = k;
+          cloudProducts.push(p);
+        });
+      }
+      renderBoutiqueStores();
+    });
+
+    try {
+      var saved = localStorage.getItem("fitin60_customer_user");
+      if (saved) currentCustomer = JSON.parse(saved);
+    } catch(e){}
+
+    updateAuthHeaderUI();
+    renderBoutiqueStores();
+  </script>
+</body>
+</html>
