@@ -75,7 +75,7 @@
     </div>
   </header>
 
-  <!-- Profile Menu Popover -->
+  <!-- Profile Menu Popover (Auto-Closes on Outside Click) -->
   <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-64 space-y-2.5">
     <div class="border-b border-slate-100 pb-2">
       <div class="flex justify-between items-center">
@@ -608,11 +608,13 @@
 
     window.openLoginModal = function() {
       switchCustAuthTab('login');
-      document.getElementById("customerLoginModal").classList.remove("hidden");
+      var m = document.getElementById("customerLoginModal");
+      if (m) m.classList.remove("hidden");
     };
 
     window.closeLoginModal = function() {
-      document.getElementById("customerLoginModal").classList.add("hidden");
+      var m = document.getElementById("customerLoginModal");
+      if (m) m.classList.add("hidden");
     };
 
     window.switchCustAuthTab = function(tab) {
@@ -620,24 +622,31 @@
       var regF = document.getElementById("custRegisterForm");
       var forgF = document.getElementById("custForgotForm");
 
-      forgF.classList.add("hidden");
+      if (forgF) forgF.classList.add("hidden");
       if (tab === 'login') {
-        loginF.classList.remove("hidden");
-        regF.classList.add("hidden");
-        document.getElementById("custTabLogin").className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
-        document.getElementById("custTabRegister").className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+        if (loginF) loginF.classList.remove("hidden");
+        if (regF) regF.classList.add("hidden");
+        var tabL = document.getElementById("custTabLogin");
+        var tabR = document.getElementById("custTabRegister");
+        if (tabL) tabL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        if (tabR) tabR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       } else {
-        loginF.classList.add("hidden");
-        regF.classList.remove("hidden");
-        document.getElementById("custTabRegister").className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
-        document.getElementById("custTabLogin").className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+        if (loginF) loginF.classList.add("hidden");
+        if (regF) regF.classList.remove("hidden");
+        var tabR2 = document.getElementById("custTabRegister");
+        var tabL2 = document.getElementById("custTabLogin");
+        if (tabR2) tabR2.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        if (tabL2) tabL2.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       }
     };
 
     window.openForgotPinView = function() {
-      document.getElementById("custLoginForm").classList.add("hidden");
-      document.getElementById("custRegisterForm").classList.add("hidden");
-      document.getElementById("custForgotForm").classList.remove("hidden");
+      var loginF = document.getElementById("custLoginForm");
+      var regF = document.getElementById("custRegisterForm");
+      var forgF = document.getElementById("custForgotForm");
+      if (loginF) loginF.classList.add("hidden");
+      if (regF) regF.classList.add("hidden");
+      if (forgF) forgF.classList.remove("hidden");
     };
 
     window.addEventListener("click", function(event) {
@@ -660,12 +669,15 @@
       var addrInp = document.getElementById("savedAddressInput");
       if (areaInp) areaInp.value = currentCustomer.areaLocation || "";
       if (addrInp) addrInp.value = currentCustomer.address || "";
-      document.getElementById("profilePopover").classList.add("hidden");
-      document.getElementById("savedAddressModal").classList.remove("hidden");
+      var pop = document.getElementById("profilePopover");
+      if (pop) pop.classList.add("hidden");
+      var m = document.getElementById("savedAddressModal");
+      if (m) m.classList.remove("hidden");
     };
 
     window.closeSavedAddressModal = function() {
-      document.getElementById("savedAddressModal").classList.add("hidden");
+      var m = document.getElementById("savedAddressModal");
+      if (m) m.classList.add("hidden");
     };
 
     window.saveCustomerAddressPermanently = function() {
@@ -778,9 +790,13 @@
 
       var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
 
-      document.getElementById("exploreStoreName").innerText = storeName;
-      document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
-      document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
+      var nameElem = document.getElementById("exploreStoreName");
+      var areaElem = document.getElementById("exploreStoreArea");
+      var countElem = document.getElementById("exploreItemCount");
+
+      if (nameElem) nameElem.innerText = storeName;
+      if (areaElem) areaElem.innerText = "📍 " + storeArea;
+      if (countElem) countElem.innerText = storeProds.length + " Outfits in this store";
 
       var grid = document.getElementById("storeExploreGrid");
       var html = "";
@@ -798,12 +814,14 @@
           '</div>';
       });
 
-      grid.innerHTML = html;
-      document.getElementById("storeExploreModal").classList.remove("hidden");
+      if (grid) grid.innerHTML = html;
+      var m = document.getElementById("storeExploreModal");
+      if (m) m.classList.remove("hidden");
     };
 
     window.closeStoreExploreModal = function() {
-      document.getElementById("storeExploreModal").classList.add("hidden");
+      var m = document.getElementById("storeExploreModal");
+      if (m) m.classList.add("hidden");
     };
 
     window.openProductDetailModal = function(prodId) {
@@ -817,12 +835,19 @@
       var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
       activeModalProduct._resolvedImages = imagesList;
 
-      document.getElementById("modalProdName").innerText = p.name;
-      document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
-      document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
-      document.getElementById("modalProdPrice").innerText = "₹" + p.price;
-      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
-      document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
+      var nameElem = document.getElementById("modalProdName");
+      var storeElem = document.getElementById("modalProdStore");
+      var catElem = document.getElementById("modalProdCategory");
+      var priceElem = document.getElementById("modalProdPrice");
+      var origElem = document.getElementById("modalProdOrig");
+      var descElem = document.getElementById("modalProdDesc");
+
+      if (nameElem) nameElem.innerText = p.name;
+      if (storeElem) storeElem.innerText = "🏬 " + p.store;
+      if (catElem) catElem.innerText = p.category || "Fashion";
+      if (priceElem) priceElem.innerText = "₹" + p.price;
+      if (origElem) origElem.innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
+      if (descElem) descElem.innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
 
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
       selectedModalSize = sizes[0];
@@ -834,11 +859,13 @@
             s + 
           '</button>';
       });
-      document.getElementById("modalSizesContainer").innerHTML = sizesHtml;
+      var sizesBox = document.getElementById("modalSizesContainer");
+      if (sizesBox) sizesBox.innerHTML = sizesHtml;
 
       updateModalSwiperUI();
       initSwipeGuestures();
-      document.getElementById("productDetailModal").classList.remove("hidden");
+      var m = document.getElementById("productDetailModal");
+      if (m) m.classList.remove("hidden");
     };
 
     window.selectModalSize = function(size) {
@@ -876,8 +903,8 @@
       var counter = document.getElementById("imageCounterBadge");
       var thumbStrip = document.getElementById("modalThumbnailsStrip");
 
-      mainImg.src = list[currentModalImageIndex];
-      counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
+      if (mainImg) mainImg.src = list[currentModalImageIndex];
+      if (counter) counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
 
       var thumbsHtml = "";
       list.forEach(function(imgUrl, idx) {
@@ -885,7 +912,7 @@
           '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" class="w-12 h-12 rounded-xl object-cover border-2 cursor-pointer shrink-0 transition ' + 
             (idx === currentModalImageIndex ? "border-orange-600 scale-105" : "border-slate-200 opacity-70") + '">';
       });
-      thumbStrip.innerHTML = thumbsHtml;
+      if (thumbStrip) thumbStrip.innerHTML = thumbsHtml;
     }
 
     function initSwipeGuestures() {
@@ -909,7 +936,8 @@
     }
 
     window.closeProductDetailModal = function() {
-      document.getElementById("productDetailModal").classList.add("hidden");
+      var m = document.getElementById("productDetailModal");
+      if (m) m.classList.add("hidden");
     };
 
     window.modalAddToBag = function() {
@@ -950,33 +978,49 @@
       var prod = cloudProductsMap[key];
       if (!prod) return;
 
-      document.getElementById("directEditKey").value = key;
-      document.getElementById("directEditName").value = prod.name || "";
-      document.getElementById("directEditArea").value = prod.area || (boutiqueLocationsMap[prod.store] ? boutiqueLocationsMap[prod.store] : "");
-      document.getElementById("directEditPrice").value = prod.price || 0;
-      document.getElementById("directEditCategory").value = prod.category || "Uniform";
-      document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
+      var kF = document.getElementById("directEditKey");
+      var nF = document.getElementById("directEditName");
+      var aF = document.getElementById("directEditArea");
+      var pF = document.getElementById("directEditPrice");
+      var cF = document.getElementById("directEditCategory");
+      var sF = document.getElementById("directEditSizes");
 
-      document.getElementById("directOwnerEditModal").classList.remove("hidden");
+      if (kF) kF.value = key;
+      if (nF) nF.value = prod.name || "";
+      if (aF) aF.value = prod.area || (boutiqueLocationsMap[prod.store] ? boutiqueLocationsMap[prod.store] : "");
+      if (pF) pF.value = prod.price || 0;
+      if (cF) cF.value = prod.category || "Uniform";
+      if (sF) sF.value = (prod.sizes || []).join(", ");
+
+      var m = document.getElementById("directOwnerEditModal");
+      if (m) m.classList.remove("hidden");
     };
 
     window.closeDirectOwnerEditModal = function() {
-      document.getElementById("directOwnerEditModal").classList.add("hidden");
+      var m = document.getElementById("directOwnerEditModal");
+      if (m) m.classList.add("hidden");
     };
 
     window.handleDirectOwnerSave = function(e) {
       e.preventDefault();
-      var key = document.getElementById("directEditKey").value;
+      var keyElem = document.getElementById("directEditKey");
+      var key = keyElem ? keyElem.value : "";
       if (!key) return;
 
-      var sizesStr = document.getElementById("directEditSizes").value.trim();
+      var nameF = document.getElementById("directEditName");
+      var areaF = document.getElementById("directEditArea");
+      var priceF = document.getElementById("directEditPrice");
+      var catF = document.getElementById("directEditCategory");
+      var sizesF = document.getElementById("directEditSizes");
+
+      var sizesStr = sizesF ? sizesF.value.trim() : "";
       var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
 
       var updateData = {
-        name: document.getElementById("directEditName").value.trim(),
-        area: document.getElementById("directEditArea").value.trim(),
-        price: parseInt(document.getElementById("directEditPrice").value),
-        category: document.getElementById("directEditCategory").value,
+        name: nameF ? nameF.value.trim() : "",
+        area: areaF ? areaF.value.trim() : "",
+        price: priceF ? parseInt(priceF.value) : 0,
+        category: catF ? catF.value : "Uniform",
         sizes: sizes
       };
 
@@ -1093,7 +1137,8 @@
 
     window.toggleCart = function() {
       switchDeliveryAddressMode("saved");
-      document.getElementById("cartDrawer").classList.toggle("hidden");
+      var d = document.getElementById("cartDrawer");
+      if (d) d.classList.toggle("hidden");
     };
 
     function handlePaymentModeChange() {
@@ -1159,8 +1204,8 @@
 
     window.handleCustomerPinLogin = function(e) {
       e.preventDefault();
-      var mob = document.getElementById("custPinLoginMobile").value.trim();
-      var pin = document.getElementById("custPinLoginPin").value.trim();
+      var mob = (document.getElementById("custPinLoginMobile")?.value || "").trim();
+      var pin = (document.getElementById("custPinLoginPin")?.value || "").trim();
 
       if (pin === "4545") {
         isOwnerActive = true;
@@ -1197,10 +1242,12 @@
 
       if (currentCustomer) {
         var firstName = currentCustomer.name.split(" ")[0];
-        container.innerHTML = 
-          '<button onclick="toggleProfileMenu(event)" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
-            '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
-          '</button>';
+        if (container) {
+          container.innerHTML = 
+            '<button onclick="toggleProfileMenu(event)" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
+              '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
+            '</button>';
+        }
 
         var nameField = document.getElementById("custName");
         var phoneField = document.getElementById("custPhone");
@@ -1218,10 +1265,12 @@
           ownerBadge.classList.add("hidden");
         }
       } else {
-        container.innerHTML = 
-          '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
-            '<span>👤</span> <span>Login</span>' +
-          '</button>';
+        if (container) {
+          container.innerHTML = 
+            '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
+              '<span>👤</span> <span>Login</span>' +
+            '</button>';
+        }
       }
     }
 
@@ -1242,46 +1291,4 @@
         
         var nameF = document.getElementById("custName");
         var phoneF = document.getElementById("custPhone");
-        var areaF = document.getElementById("custAreaLocation");
-        var addrF = document.getElementById("custAddress");
-        if (nameF) nameF.value = "";
-        if (phoneF) phoneF.value = "";
-        if (areaF) areaF.value = "";
-        if (addrF) addrF.value = "";
-
-        updateAuthHeaderUI();
-        renderBoutiqueStores();
-      }
-    }
-
-    window.handleCustomerPinRegister = function(e) {
-      e.preventDefault();
-      var name = document.getElementById("custRegName").value.trim();
-      var mob = document.getElementById("custRegMobile").value.trim();
-      var pin = document.getElementById("custRegPin").value.trim();
-
-      var user = { name: name, phone: mob, pin: pin };
-      db.ref("customers/" + mob).set(user).then(function() {
-        currentCustomer = user;
-        localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
-        closeLoginModal();
-        updateAuthHeaderUI();
-        showQuickToast("✓ Registered Successfully!");
-      });
-    };
-
-    window.handleResetPinSubmit = function(e) {
-      e.preventDefault();
-      var mob = document.getElementById("resetMobile").value.trim();
-      var name = document.getElementById("resetName").value.trim().toLowerCase();
-      var pin = document.getElementById("resetNewPin").value.trim();
-
-      db.ref("customers/" + mob).once("value").then(function(snap) {
-        var u = snap.val();
-        if (u && u.name.toLowerCase() === name) {
-          db.ref("customers/" + mob).update({ pin: pin }).then(function() {
-            alert("✓ PIN Updated!");
-            switchCustAuthTab('login');
-          });
-        } else {
-          alert("Verification Failed!");
+       
