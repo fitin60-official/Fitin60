@@ -75,7 +75,7 @@
     </div>
   </header>
 
-  <!-- Profile Menu Popover (Auto-Closes on Outside Click) -->
+  <!-- Profile Menu Popover -->
   <div id="profilePopover" class="hidden absolute top-16 right-4 z-50 bg-white border border-slate-200 shadow-2xl rounded-2xl p-4 w-64 space-y-2.5">
     <div class="border-b border-slate-100 pb-2">
       <div class="flex justify-between items-center">
@@ -508,7 +508,7 @@
   </nav>
 
   <script>
-    const firebaseConfig = {
+    var firebaseConfig = {
       apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
       authDomain: "fitin60.firebaseapp.com",
       databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
@@ -519,7 +519,7 @@
     };
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    var db = firebase.database();
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
     var currentAddressSelectionMode = "saved";
@@ -670,8 +670,10 @@
 
     window.saveCustomerAddressPermanently = function() {
       if (!currentCustomer) return;
-      var newArea = (document.getElementById("savedAreaInput")?.value || "").trim();
-      var newAddr = (document.getElementById("savedAddressInput")?.value || "").trim();
+      var areaElem = document.getElementById("savedAreaInput");
+      var addrElem = document.getElementById("savedAddressInput");
+      var newArea = areaElem ? areaElem.value.trim() : "";
+      var newAddr = addrElem ? addrElem.value.trim() : "";
 
       if (!newArea || !newAddr) return alert("Please enter both Area Location & Permanent Address!");
 
@@ -1095,7 +1097,8 @@
     };
 
     function handlePaymentModeChange() {
-      var selected = document.querySelector('input[name="payOption"]:checked')?.value || "POD";
+      var radio = document.querySelector('input[name="payOption"]:checked');
+      var selected = radio ? radio.value : "POD";
       var btn = document.getElementById("checkoutSubmitBtn");
       if (btn) {
         btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via UPI & Order" : "⚡ Place Express Order (Pay on Delivery)";
@@ -1282,8 +1285,3 @@
           });
         } else {
           alert("Verification Failed!");
-        }
-      });
-    };
-
-    window.handleCheckout = function() {
