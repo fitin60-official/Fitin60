@@ -181,7 +181,7 @@
     </div>
   </div>
 
-  <!-- STORE EXPLORE MODAL (BIG & WIDE - EXPOSING ALL STORE CLOTHES WITH SIDE PRICE TAG) -->
+  <!-- STORE EXPLORE MODAL -->
   <div id="storeExploreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
       <div class="p-5 bg-slate-950 text-white flex items-center justify-between">
@@ -441,7 +441,7 @@
                 </div>
               </label>
 
-              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer">
+              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
                   <p class="font-black text-slate-900">Instant Online UPI (PhonePe / GPay / Paytm)</p>
@@ -949,12 +949,13 @@
       renderBoutiqueStores();
     };
 
+    // GUARANTEED INSTANT RENDER FUNCTION
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
       if (!grid) return;
 
-      var all = cloudProducts.concat(baseProducts);
+      var all = (cloudProducts && cloudProducts.length > 0) ? cloudProducts.concat(baseProducts) : baseProducts;
       var searchInput = document.getElementById("storeSearchInput");
       var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
@@ -1272,5 +1273,4 @@
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
         boutiqueAccepted: false,
-        riderAssigned: false,
-        financia
+    
