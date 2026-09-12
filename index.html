@@ -212,6 +212,7 @@
     <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl relative border border-slate-200 overflow-hidden">
       <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 z-30 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-xl cursor-pointer transition">&times;</button>
       
+      <!-- Left: Expansive Image Box -->
       <div class="relative w-full md:w-3/5 h-80 md:h-auto md:min-h-[460px] bg-slate-100 overflow-hidden flex items-center justify-center select-none" id="swipeArea">
         <img id="modalMainImage" src="" alt="Full Outfit" class="w-full h-full object-contain md:object-cover transition duration-300">
 
@@ -221,6 +222,7 @@
         <span id="imageCounterBadge" class="absolute bottom-3 right-3 bg-slate-950/80 text-white text-xs font-mono font-bold px-2.5 py-1 rounded-lg backdrop-blur-sm z-10">1 / 1</span>
       </div>
 
+      <!-- Right: Details & Buying -->
       <div class="w-full md:w-2/5 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto space-y-4 bg-white">
         <div class="space-y-3">
           <div>
@@ -321,7 +323,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-2">Customer Account</h3>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
@@ -524,7 +526,7 @@
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
-    // All Preloaded Outfits & Stores
+    // All Preloaded Outfits & Stores (Sai Fashions, Mummy Daddy, AdhyaSai)
     var baseProducts = [
       {
         id: "base_1",
@@ -708,7 +710,7 @@
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
 
-      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
+      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + (currentCustomer.name || "User") + "):");
       if (enteredPin === null) return;
 
       if (enteredPin !== currentCustomer.pin) {
@@ -727,9 +729,9 @@
     };
 
     window.openStoreExploreModal = function(storeName) {
-      var all = cloudProducts.concat(baseProducts);
+      var all = [].concat(cloudProducts, baseProducts);
       var storeProds = all.filter(function(p) {
-        return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
+        return p && p.store && String(p.store).trim().toLowerCase() === String(storeName).trim().toLowerCase();
       });
 
       var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
@@ -746,10 +748,10 @@
         html += 
           '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 cursor-pointer hover:border-orange-500 transition space-y-1.5 text-xs">' +
             '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-white border border-slate-200">' +
-              '<img src="' + p.image + '" class="w-full h-full object-cover">' +
-              '<span class="absolute bottom-1 right-1 bg-slate-950/80 text-white font-mono-num font-black text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
+              '<img src="' + (p.image || '') + '" class="w-full h-full object-cover">' +
+              '<span class="absolute bottom-1 right-1 bg-slate-950/80 text-white font-mono-num font-black text-[9px] px-1 py-0.5 rounded">₹' + (p.price || 0) + '</span>' +
             '</div>' +
-            '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
+            '<p class="font-bold text-slate-900 truncate">' + (p.name || 'Outfit') + '</p>' +
             '<p class="text-[10px] text-orange-600 font-bold">' + (p.category || 'Outfit') + '</p>' +
           '</div>';
       });
@@ -763,21 +765,21 @@
     };
 
     window.openProductDetailModal = function(prodId) {
-      var all = cloudProducts.concat(baseProducts);
-      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+      var all = [].concat(cloudProducts, baseProducts);
+      var p = all.find(function(item) { return item && (item.id === prodId || item.cloudKey === prodId); });
       if (!p) return;
 
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
-      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
+      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image || ""];
       activeModalProduct._resolvedImages = imagesList;
 
-      document.getElementById("modalProdName").innerText = p.name;
-      document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
+      document.getElementById("modalProdName").innerText = p.name || "Outfit";
+      document.getElementById("modalProdStore").innerText = "🏬 " + (p.store || "Boutique");
       document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
-      document.getElementById("modalProdPrice").innerText = "₹" + p.price;
-      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
+      document.getElementById("modalProdPrice").innerText = "₹" + (p.price || 0);
+      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round((p.price || 500) * 1.4));
       document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
 
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
@@ -832,7 +834,7 @@
       var counter = document.getElementById("imageCounterBadge");
       var thumbStrip = document.getElementById("modalThumbnailsStrip");
 
-      mainImg.src = list[currentModalImageIndex];
+      mainImg.src = list[currentModalImageIndex] || "";
       counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
 
       var thumbsHtml = "";
@@ -846,6 +848,7 @@
 
     function initSwipeGuestures() {
       var area = document.getElementById("swipeArea");
+      if (!area) return;
       var startX = 0;
       var endX = 0;
 
@@ -958,6 +961,7 @@
       renderBoutiqueStores();
     };
 
+    // ZERO-DEPENDENCY SAFE STORE RENDER
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1009,8 +1013,8 @@
 
           previewImages += 
             '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-              '<img src="' + p.image + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
-              '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
+              '<img src="' + (p.image || '') + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
+              '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + (p.price || 0) + '</span>' +
               (isOwnerActive && isCloud ? 
                 '<div class="absolute top-1 right-1 flex gap-1 z-10" onclick="event.stopPropagation();">' +
                   '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">✏️</button>' +
@@ -1019,6 +1023,8 @@
             '</div>';
         });
 
+        var firstId = store.products[0].id || store.products[0].cloudKey;
+
         html += 
           '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3">' +
             '<div class="flex justify-between items-center">' +
@@ -1026,7 +1032,7 @@
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div>' +
             
-            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\')">' +
+            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName.replace(/'/g, "\\'") + '\')">' +
               '<div class="flex items-center justify-between">' +
                 '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
                 '<span class="text-xs text-orange-600 font-bold group-hover:underline">Explore Store ➔</span>' +
@@ -1037,8 +1043,8 @@
             '<div class="grid grid-cols-3 gap-2">' + previewImages + '</div>' +
             
             '<div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">' +
-              '<button onclick="openStoreExploreModal(\'' + store.storeName + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🏬 View All (' + store.products.length + ')</button>' +
-              '<button onclick="openProductDetailModal(\'' + (store.products[0].id || store.products[0].cloudKey) + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ View Outfit</button>' +
+              '<button onclick="openStoreExploreModal(\'' + store.storeName.replace(/'/g, "\\'") + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🏬 View All (' + store.products.length + ')</button>' +
+              '<button onclick="openProductDetailModal(\'' + firstId + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ View Outfit</button>' +
             '</div>' +
           '</div>';
       });
@@ -1274,11 +1280,4 @@
         items: items,
         itemTotal: itemSubtotal,
         distanceKm: distVal,
-        deliveryFee: deliveryFee,
-        totalAmount: totalPayable,
-        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
-        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
-        deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
-        store: items[0].store,
-        boutiqueAccepted: false,
-        riderAssigned: false,
+        deliveryFee: delivery
