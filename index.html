@@ -151,7 +151,7 @@
     <div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-brand font-black text-lg text-slate-950">Stores Near You</h2>
-        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Loading...</span>
+        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Syncing...</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="boutiqueStoreGrid"></div>
     </div>
@@ -321,7 +321,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-2">Customer Account</h3>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
@@ -587,6 +587,7 @@
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
+    var renderedStoresCache = [];
     var items = [];
     var currentCustomer = null;
     var currentCategoryFilter = "All";
@@ -763,7 +764,7 @@
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
 
-      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
+      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + (currentCustomer.name || "User") + "):");
 
       if (enteredPin === null) return;
 
@@ -772,7 +773,7 @@
       }
 
       var phoneToDelete = currentCustomer.phone;
-      var nameToDelete = currentCustomer.name;
+      var nameToDelete = currentCustomer.name || "Customer";
 
       db.ref("customers/" + phoneToDelete).remove().then(function() {
         alert("✓ Account for '" + nameToDelete + "' has been permanently deleted.");
@@ -782,34 +783,30 @@
       });
     };
 
-    window.openStoreExploreModal = function(storeName) {
-      var all = cloudProducts.concat(baseProducts);
-      var storeProds = all.filter(function(p) {
-        return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
-      });
-
-      var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
+    window.openStoreExploreModalByIndex = function(storeIdx) {
+      var store = renderedStoresCache[storeIdx];
+      if (!store) return;
 
       var nameElem = document.getElementById("exploreStoreName");
       var areaElem = document.getElementById("exploreStoreArea");
       var countElem = document.getElementById("exploreItemCount");
 
-      if (nameElem) nameElem.innerText = storeName;
-      if (areaElem) areaElem.innerText = "📍 " + storeArea;
-      if (countElem) countElem.innerText = storeProds.length + " Outfits in this store";
+      if (nameElem) nameElem.innerText = store.storeName;
+      if (areaElem) areaElem.innerText = "📍 " + store.area;
+      if (countElem) countElem.innerText = store.products.length + " Outfits in this store";
 
       var grid = document.getElementById("storeExploreGrid");
       var html = "";
 
-      storeProds.forEach(function(p) {
+      store.products.forEach(function(p) {
         var targetId = p.id || p.cloudKey;
         html += 
           '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 cursor-pointer hover:border-orange-500 transition space-y-1.5 text-xs">' +
             '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-white border border-slate-200">' +
-              '<img src="' + p.image + '" class="w-full h-full object-cover">' +
+              '<img src="' + (p.image || (p.images && p.images[0]) || '') + '" class="w-full h-full object-cover">' +
               '<span class="absolute bottom-1 right-1 bg-slate-950/80 text-white font-mono-num font-black text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
             '</div>' +
-            '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
+            '<p class="font-bold text-slate-900 truncate">' + (p.name || 'Outfit') + '</p>' +
             '<p class="text-[10px] text-orange-600 font-bold">' + (p.category || 'Outfit') + '</p>' +
           '</div>';
       });
@@ -826,13 +823,13 @@
 
     window.openProductDetailModal = function(prodId) {
       var all = cloudProducts.concat(baseProducts);
-      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+      var p = all.find(function(item) { return item && (item.id === prodId || item.cloudKey === prodId); });
       if (!p) return;
 
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
-      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
+      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image || ""];
       activeModalProduct._resolvedImages = imagesList;
 
       var nameElem = document.getElementById("modalProdName");
@@ -842,11 +839,11 @@
       var origElem = document.getElementById("modalProdOrig");
       var descElem = document.getElementById("modalProdDesc");
 
-      if (nameElem) nameElem.innerText = p.name;
-      if (storeElem) storeElem.innerText = "🏬 " + p.store;
+      if (nameElem) nameElem.innerText = p.name || "Outfit";
+      if (storeElem) storeElem.innerText = "🏬 " + (p.store || "Boutique");
       if (catElem) catElem.innerText = p.category || "Fashion";
-      if (priceElem) priceElem.innerText = "₹" + p.price;
-      if (origElem) origElem.innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
+      if (priceElem) priceElem.innerText = "₹" + (p.price || 0);
+      if (origElem) origElem.innerText = "₹" + (p.originalPrice || Math.round((p.price || 500) * 1.4));
       if (descElem) descElem.innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
 
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
@@ -903,7 +900,7 @@
       var counter = document.getElementById("imageCounterBadge");
       var thumbStrip = document.getElementById("modalThumbnailsStrip");
 
-      if (mainImg) mainImg.src = list[currentModalImageIndex];
+      if (mainImg) mainImg.src = list[currentModalImageIndex] || "";
       if (counter) counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
 
       var thumbsHtml = "";
@@ -1048,91 +1045,100 @@
     };
 
     function renderBoutiqueStores() {
-      var grid = document.getElementById("boutiqueStoreGrid");
-      var badge = document.getElementById("boutiqueCountBadge");
-      if (!grid) return;
+      try {
+        var grid = document.getElementById("boutiqueStoreGrid");
+        var badge = document.getElementById("boutiqueCountBadge");
+        if (!grid) return;
 
-      var all = cloudProducts.concat(baseProducts);
-      var searchInput = document.getElementById("storeSearchInput");
-      var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
+        var all = [].concat(cloudProducts, baseProducts);
+        var searchInput = document.getElementById("storeSearchInput");
+        var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
-      var storesMap = {};
-      all.forEach(function(p) {
-        if (!p) return;
-        var sName = p.store || "Boutique Studio";
-        var oName = (p.name || "").toLowerCase();
-        var cat = (p.category || "").toLowerCase();
-        var realLocation = p.area || (boutiqueLocationsMap[sName] ? boutiqueLocationsMap[sName] : "Anantapur");
+        var storesMap = {};
+        all.forEach(function(p) {
+          if (!p) return;
+          var sName = p.store || "Boutique Studio";
+          var oName = (p.name || "").toLowerCase();
+          var cat = (p.category || "").toLowerCase();
+          var realLocation = p.area || (boutiqueLocationsMap[sName] ? boutiqueLocationsMap[sName] : "Anantapur");
 
-        var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
-        var matchC = (currentCategoryFilter === "All") || oName.includes(currentCategoryFilter.toLowerCase()) || cat.includes(currentCategoryFilter.toLowerCase());
+          var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
+          var matchC = (currentCategoryFilter === "All") || oName.includes(currentCategoryFilter.toLowerCase()) || cat.includes(currentCategoryFilter.toLowerCase());
 
-        if (matchS && matchC) {
-          if (!storesMap[sName]) {
-            storesMap[sName] = {
-              storeName: sName,
-              area: realLocation,
-              eta: p.eta || "35 MINS",
-              rating: p.rating || "5.0",
-              products: []
-            };
+          if (matchS && matchC) {
+            if (!storesMap[sName]) {
+              storesMap[sName] = {
+                storeName: sName,
+                area: realLocation,
+                eta: p.eta || "35 MINS",
+                rating: p.rating || "5.0",
+                products: []
+              };
+            }
+            storesMap[sName].products.push(p);
           }
-          storesMap[sName].products.push(p);
+        });
+
+        var stores = Object.values(storesMap);
+        renderedStoresCache = stores;
+
+        if (badge) badge.innerText = stores.length + " Stores Live";
+
+        if (stores.length === 0) {
+          grid.innerHTML = "<div class='col-span-full py-10 text-center text-slate-400 text-xs'>No matching outfits found.</div>";
+          return;
         }
-      });
 
-      var stores = Object.values(storesMap);
-      if (badge) badge.innerText = stores.length + " Stores Live";
+        var html = "";
+        stores.forEach(function(store, storeIdx) {
+          var previewImages = "";
+          store.products.slice(0, 3).forEach(function(p) {
+            var isCloud = !!p.cloudKey;
+            var targetId = p.id || p.cloudKey;
+            var imgUrl = p.image || (p.images && p.images[0]) || "";
 
-      if (stores.length === 0) {
-        grid.innerHTML = "<div class='col-span-full py-10 text-center text-slate-400 text-xs'>No matching outfits found.</div>";
-        return;
-      }
+            previewImages += 
+              '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
+                '<img src="' + imgUrl + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
+                '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + (p.price || 0) + '</span>' +
+                (isOwnerActive && isCloud ? 
+                  '<div class="absolute top-1 right-1 flex gap-1 z-10" onclick="event.stopPropagation();">' +
+                    '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">✏️</button>' +
+                    '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">🗑️</button>' +
+                  '</div>' : '') +
+              '</div>';
+          });
 
-      var html = "";
-      stores.forEach(function(store) {
-        var previewImages = "";
-        store.products.slice(0, 3).forEach(function(p) {
-          var isCloud = !!p.cloudKey;
-          var targetId = p.id || p.cloudKey;
+          var firstTargetId = store.products[0].id || store.products[0].cloudKey;
 
-          previewImages += 
-            '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-              '<img src="' + p.image + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
-              '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
-              (isOwnerActive && isCloud ? 
-                '<div class="absolute top-1 right-1 flex gap-1 z-10" onclick="event.stopPropagation();">' +
-                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">✏️</button>' +
-                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">🗑️</button>' +
-                '</div>' : '') +
+          html += 
+            '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3">' +
+              '<div class="flex justify-between items-center">' +
+                '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
+                '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
+              '</div>' +
+              
+              '<div class="cursor-pointer group" onclick="openStoreExploreModalByIndex(' + storeIdx + ')">' +
+                '<div class="flex items-center justify-between">' +
+                  '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
+                  '<span class="text-xs text-orange-600 font-bold group-hover:underline">Explore Store ➔</span>' +
+                '</div>' +
+                '<p class="text-[11px] text-slate-500 font-medium">📍 ' + store.area + '</p>' +
+              '</div>' +
+
+              '<div class="grid grid-cols-3 gap-2">' + previewImages + '</div>' +
+              
+              '<div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">' +
+                '<button onclick="openStoreExploreModalByIndex(' + storeIdx + ')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🏬 View All (' + store.products.length + ')</button>' +
+                '<button onclick="openProductDetailModal(\'' + firstTargetId + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ View Outfit</button>' +
+              '</div>' +
             '</div>';
         });
 
-        html += 
-          '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3">' +
-            '<div class="flex justify-between items-center">' +
-              '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
-              '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
-            '</div>' +
-            
-            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\')">' +
-              '<div class="flex items-center justify-between">' +
-                '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
-                '<span class="text-xs text-orange-600 font-bold group-hover:underline">Explore Store ➔</span>' +
-              '</div>' +
-              '<p class="text-[11px] text-slate-500 font-medium">📍 ' + store.area + '</p>' +
-            '</div>' +
-
-            '<div class="grid grid-cols-3 gap-2">' + previewImages + '</div>' +
-            
-            '<div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">' +
-              '<button onclick="openStoreExploreModal(\'' + store.storeName + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🏬 View All (' + store.products.length + ')</button>' +
-              '<button onclick="openProductDetailModal(\'' + (store.products[0].id || store.products[0].cloudKey) + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ View Outfit</button>' +
-            '</div>' +
-          '</div>';
-      });
-
-      grid.innerHTML = html;
+        grid.innerHTML = html;
+      } catch(err) {
+        console.error("Store render error:", err);
+      }
     }
 
     window.toggleCart = function() {
@@ -1156,7 +1162,7 @@
       
       var list = document.getElementById("cartItems");
       var addr = document.getElementById("addressSection");
-      var total = items.reduce(function(a, b) { return a + b.price; }, 0);
+      var total = items.reduce(function(a, b) { return a + (b.price || 0); }, 0);
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
@@ -1231,7 +1237,7 @@
           updateAuthHeaderUI();
           closeLoginModal();
           renderBoutiqueStores();
-          showQuickToast("✓ Logged in as " + user.name);
+          showQuickToast("✓ Logged in as " + (user.name || "Customer"));
         } else {
           alert("Invalid Mobile or PIN!");
         }
@@ -1239,57 +1245,47 @@
     };
 
     function updateAuthHeaderUI() {
-      var container = document.getElementById("authPillContainer");
-      var ownerBadge = document.getElementById("ownerBadgeInProfile");
+      try {
+        var container = document.getElementById("authPillContainer");
+        var ownerBadge = document.getElementById("ownerBadgeInProfile");
 
-      if (currentCustomer) {
-        var firstName = currentCustomer.name.split(" ")[0];
-        if (container) {
-          container.innerHTML = 
-            '<button onclick="toggleProfileMenu(event)" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
-              '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
-            '</button>';
+        if (currentCustomer && currentCustomer.name) {
+          var firstName = String(currentCustomer.name).split(" ")[0];
+          if (container) {
+            container.innerHTML = 
+              '<button onclick="toggleProfileMenu(event)" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
+                '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
+              '</button>';
+          }
+
+          var nameField = document.getElementById("custName");
+          var phoneField = document.getElementById("custPhone");
+          if (nameField) nameField.value = currentCustomer.name || "";
+          if (phoneField) phoneField.value = currentCustomer.phone || "";
+
+          var popName = document.getElementById("popoverCustName");
+          var popPhone = document.getElementById("popoverCustPhone");
+          if (popName) popName.innerText = currentCustomer.name || "Customer";
+          if (popPhone) popPhone.innerText = currentCustomer.phone || "";
+
+          if (isOwnerActive && ownerBadge) {
+            ownerBadge.classList.remove("hidden");
+          } else if (ownerBadge) {
+            ownerBadge.classList.add("hidden");
+          }
+        } else {
+          if (container) {
+            container.innerHTML = 
+              '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
+                '<span>👤</span> <span>Login</span>' +
+              '</button>';
+          }
         }
-
-        var nameField = document.getElementById("custName");
-        var phoneField = document.getElementById("custPhone");
-        if (nameField) nameField.value = currentCustomer.name || "";
-        if (phoneField) phoneField.value = currentCustomer.phone || "";
-
-        var popName = document.getElementById("popoverCustName");
-        var popPhone = document.getElementById("popoverCustPhone");
-        if (popName) popName.innerText = currentCustomer.name || "Customer";
-        if (popPhone) popPhone.innerText = currentCustomer.phone || "";
-
-        if (isOwnerActive && ownerBadge) {
-          ownerBadge.classList.remove("hidden");
-        } else if (ownerBadge) {
-          ownerBadge.classList.add("hidden");
-        }
-      } else {
-        if (container) {
-          container.innerHTML = 
-            '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
-              '<span>👤</span> <span>Login</span>' +
-            '</button>';
-        }
+      } catch(e) {
+        console.error("Auth UI error:", e);
       }
     }
 
     function toggleProfileMenu(e) {
       if (e) e.stopPropagation();
-      var pop = document.getElementById("profilePopover");
-      if (pop) pop.classList.toggle("hidden");
-    }
-
-    function customerLogout() {
-      if (confirm("Log out of Fitin60?")) {
-        currentCustomer = null;
-        isOwnerActive = false;
-        localStorage.removeItem("fitin60_customer_user");
-        localStorage.removeItem("fitin60_owner_session");
-        var pop = document.getElementById("profilePopover");
-        if (pop) pop.classList.add("hidden");
-        
-        var nameF = document.getElementById("custName");
-        var phoneF = document.getElementById("c
+      var po
