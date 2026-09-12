@@ -156,7 +156,7 @@
     <div>
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-brand font-black text-lg text-slate-950">Stores Near You</h2>
-        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Checking Stores...</span>
+        <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Live</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="boutiqueStoreGrid"></div>
     </div>
@@ -212,7 +212,6 @@
     <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl relative border border-slate-200 overflow-hidden">
       <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 z-30 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-xl cursor-pointer transition">&times;</button>
       
-      <!-- Left: Expansive Image Box -->
       <div class="relative w-full md:w-3/5 h-80 md:h-auto md:min-h-[460px] bg-slate-100 overflow-hidden flex items-center justify-center select-none" id="swipeArea">
         <img id="modalMainImage" src="" alt="Full Outfit" class="w-full h-full object-contain md:object-cover transition duration-300">
 
@@ -222,7 +221,6 @@
         <span id="imageCounterBadge" class="absolute bottom-3 right-3 bg-slate-950/80 text-white text-xs font-mono font-bold px-2.5 py-1 rounded-lg backdrop-blur-sm z-10">1 / 1</span>
       </div>
 
-      <!-- Right: Details & Buying -->
       <div class="w-full md:w-2/5 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto space-y-4 bg-white">
         <div class="space-y-3">
           <div>
@@ -323,7 +321,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-2">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
@@ -526,25 +524,44 @@
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
-    // Base Products List (Guaranteed to show instantly)
+    // All Preloaded Outfits & Stores
     var baseProducts = [
       {
         id: "base_1",
         name: "Floral Designer Anarkali Kurta Set",
-        store: "Anu Ram Fashions",
+        store: "Sai Fashions",
         category: "Kurti",
-        area: "Subhash Road, Anantapur",
+        area: "Near Upparapalli Road",
         price: 899,
         originalPrice: 1499,
         discount: "40% OFF",
         sizes: ["M", "L", "XL"],
         desc: "Premium pure rayon fabric with intricate neckline embroidery and matching dupatta.",
         eta: "35 MINS",
-        rating: "4.9",
+        rating: "5.0",
         image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
         images: [
           "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
           "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: "base_2",
+        name: "Casual Grey Winter Jacket",
+        store: "Mummy Daddy",
+        category: "Men",
+        area: "Bala Nagar, Hyderabad",
+        price: 1000,
+        originalPrice: 1600,
+        discount: "38% OFF",
+        sizes: ["M", "L", "XL", "XXL"],
+        desc: "Warm high-neck winter jacket with secure zip pockets and premium fleece lining.",
+        eta: "35 MINS",
+        rating: "5.0",
+        image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=80"
         ]
       },
       {
@@ -564,25 +581,6 @@
         images: [
           "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80",
           "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80"
-        ]
-      },
-      {
-        id: "base_uniform_2",
-        name: "Premium Kids School Uniform Dress",
-        store: "AdhyaSai Uniforms & Fashions",
-        category: "Uniform",
-        area: "Kamalanagar, Anantapur",
-        price: 799,
-        originalPrice: 1199,
-        discount: "35% OFF",
-        sizes: ["24", "26", "28", "30", "32"],
-        desc: "Breathable cotton blend uniform pinafore with reinforced stitching.",
-        eta: "30 MINS",
-        rating: "5.0",
-        image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80",
-        images: [
-          "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80"
         ]
       }
     ];
@@ -710,7 +708,7 @@
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
 
-      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + (currentCustomer.name || "User") + "):");
+      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
       if (enteredPin === null) return;
 
       if (enteredPin !== currentCustomer.pin) {
@@ -766,20 +764,20 @@
 
     window.openProductDetailModal = function(prodId) {
       var all = cloudProducts.concat(baseProducts);
-      var p = all.find(function(item) { return item && (item.id === prodId || item.cloudKey === prodId); });
+      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
-      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image || ""];
+      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
       activeModalProduct._resolvedImages = imagesList;
 
-      document.getElementById("modalProdName").innerText = p.name || "Outfit";
-      document.getElementById("modalProdStore").innerText = "🏬 " + (p.store || "Boutique");
+      document.getElementById("modalProdName").innerText = p.name;
+      document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
       document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
-      document.getElementById("modalProdPrice").innerText = "₹" + (p.price || 0);
-      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round((p.price || 500) * 1.4));
+      document.getElementById("modalProdPrice").innerText = "₹" + p.price;
+      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
       document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
 
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
@@ -834,7 +832,7 @@
       var counter = document.getElementById("imageCounterBadge");
       var thumbStrip = document.getElementById("modalThumbnailsStrip");
 
-      mainImg.src = list[currentModalImageIndex] || "";
+      mainImg.src = list[currentModalImageIndex];
       counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
 
       var thumbsHtml = "";
@@ -848,7 +846,6 @@
 
     function initSwipeGuestures() {
       var area = document.getElementById("swipeArea");
-      if (!area) return;
       var startX = 0;
       var endX = 0;
 
@@ -1279,4 +1276,9 @@
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
-        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doors
+        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
+        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
+        deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
+        store: items[0].store,
+        boutiqueAccepted: false,
+        riderAssigned: false,
