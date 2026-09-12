@@ -948,6 +948,7 @@
       renderBoutiqueStores();
     };
 
+    // Safe and Guaranteed Render Function
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1271,6 +1272,4 @@
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
         boutiqueAccepted: false,
-        riderAssigned: false,
-        financialSplit: {
-          stor
+        riderAssigned: fals
