@@ -836,6 +836,7 @@
 
     function initSwipeGuestures() {
       var area = document.getElementById("swipeArea");
+      if (!area) return;
       var startX = 0;
       var endX = 0;
 
@@ -948,7 +949,6 @@
       renderBoutiqueStores();
     };
 
-    // Safe and Guaranteed Render Function
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1230,7 +1230,7 @@
         deliveryAddress = document.getElementById("custPermanentAddress").value.trim();
         if (currentCustomer && deliveryAddress) {
           currentCustomer.permanentAddress = deliveryAddress;
-          localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+          localStorage.setItem("fitin60_customer_user", JSON.stringify(deliveryAddress));
           if (currentCustomer.phone) {
             db.ref("customers/" + currentCustomer.phone).update({ permanentAddress: deliveryAddress, address: deliveryAddress });
           }
@@ -1272,4 +1272,5 @@
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
         boutiqueAccepted: false,
-        riderAssigned: fals
+        riderAssigned: false,
+        financi
