@@ -86,27 +86,22 @@
       <p id="popoverCustPhone" class="font-mono text-xs text-slate-500">9876543210</p>
     </div>
 
-    <!-- 1. Orders -->
     <a href="tracking.html" class="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-2.5 rounded-xl text-xs font-bold text-slate-700 transition">
       <span>📦</span> <span>My Orders & Tracking</span>
     </a>
 
-    <!-- 2. Saved Addresses -->
     <button onclick="openSavedAddressModal()" class="w-full flex items-center gap-2 bg-slate-50 hover:bg-slate-100 p-2.5 rounded-xl text-xs font-bold text-slate-700 transition text-left cursor-pointer">
       <span>📍</span> <span>Saved Addresses</span>
     </button>
 
-    <!-- 3. WhatsApp Support -->
     <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20I%20need%20help%20with%20my%20order" target="_blank" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 p-2.5 rounded-xl text-xs font-bold text-emerald-800 transition">
       <span>💬</span> <span>WhatsApp Support</span>
     </a>
 
-    <!-- 4. Logout -->
     <button onclick="customerLogout()" class="w-full flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold p-2.5 rounded-xl text-xs transition cursor-pointer">
       <span>🚪</span> <span>Logout Securely</span>
     </button>
 
-    <!-- 5. Delete Account -->
     <div class="pt-2 border-t border-slate-100 text-center">
       <button onclick="handleDeleteCustomerAccountPermanently()" class="text-[11px] text-rose-500/70 hover:text-rose-600 font-semibold underline decoration-rose-200 transition cursor-pointer">
         Delete Customer Account
@@ -402,10 +397,8 @@
         <div id="cartItems" class="space-y-2"></div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
-          
           <div class="space-y-1">
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address Choice</h4>
-            
             <div class="grid grid-cols-2 gap-2 pt-1">
               <button type="button" onclick="switchDeliveryAddressMode('saved')" id="addrModeSavedBtn" class="p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950">
                 🏠 Saved Address
@@ -663,8 +656,10 @@
         openLoginModal();
         return;
       }
-      document.getElementById("savedAreaInput").value = currentCustomer.areaLocation || "";
-      document.getElementById("savedAddressInput").value = currentCustomer.address || "";
+      var areaInp = document.getElementById("savedAreaInput");
+      var addrInp = document.getElementById("savedAddressInput");
+      if (areaInp) areaInp.value = currentCustomer.areaLocation || "";
+      if (addrInp) addrInp.value = currentCustomer.address || "";
       document.getElementById("profilePopover").classList.add("hidden");
       document.getElementById("savedAddressModal").classList.remove("hidden");
     };
@@ -675,8 +670,8 @@
 
     window.saveCustomerAddressPermanently = function() {
       if (!currentCustomer) return;
-      var newArea = document.getElementById("savedAreaInput").value.trim();
-      var newAddr = document.getElementById("savedAddressInput").value.trim();
+      var newArea = (document.getElementById("savedAreaInput")?.value || "").trim();
+      var newAddr = (document.getElementById("savedAddressInput")?.value || "").trim();
 
       if (!newArea || !newAddr) return alert("Please enter both Area Location & Permanent Address!");
 
@@ -1100,13 +1095,17 @@
     };
 
     function handlePaymentModeChange() {
-      var selected = document.querySelector('input[name="payOption"]:checked').value;
+      var selected = document.querySelector('input[name="payOption"]:checked')?.value || "POD";
       var btn = document.getElementById("checkoutSubmitBtn");
-      btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via UPI & Order" : "⚡ Place Express Order (Pay on Delivery)";
+      if (btn) {
+        btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via UPI & Order" : "⚡ Place Express Order (Pay on Delivery)";
+      }
     }
 
     function renderCart() {
-      document.getElementById("cart-count").innerText = items.length;
+      var countBadge = document.getElementById("cart-count");
+      if (countBadge) countBadge.innerText = items.length;
+      
       var list = document.getElementById("cartItems");
       var addr = document.getElementById("addressSection");
       var total = items.reduce(function(a, b) { return a + b.price; }, 0);
@@ -1115,18 +1114,23 @@
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
       var deliveryFee = getDistanceFee(distVal);
 
-      document.getElementById("billItemTotal").innerText = "₹" + total;
-      document.getElementById("billDistanceLabel").innerText = "~" + distVal + " KM";
-      document.getElementById("billDeliveryFee").innerText = "₹" + deliveryFee;
-      document.getElementById("billFinalPayable").innerText = "₹" + (total > 0 ? (total + deliveryFee) : 0);
+      var billItemTotal = document.getElementById("billItemTotal");
+      var billDistanceLabel = document.getElementById("billDistanceLabel");
+      var billDeliveryFee = document.getElementById("billDeliveryFee");
+      var billFinalPayable = document.getElementById("billFinalPayable");
+
+      if (billItemTotal) billItemTotal.innerText = "₹" + total;
+      if (billDistanceLabel) billDistanceLabel.innerText = "~" + distVal + " KM";
+      if (billDeliveryFee) billDeliveryFee.innerText = "₹" + deliveryFee;
+      if (billFinalPayable) billFinalPayable.innerText = "₹" + (total > 0 ? (total + deliveryFee) : 0);
 
       if (items.length === 0) {
-        list.innerHTML = "<p class='text-xs text-slate-400 text-center py-4'>Bag is empty.</p>";
-        addr.classList.add("hidden");
+        if (list) list.innerHTML = "<p class='text-xs text-slate-400 text-center py-4'>Bag is empty.</p>";
+        if (addr) addr.classList.add("hidden");
         return;
       }
 
-      addr.classList.remove("hidden");
+      if (addr) addr.classList.remove("hidden");
       applySavedAddressToForm();
 
       var html = "";
@@ -1137,15 +1141,17 @@
             '<button onclick="items.splice(' + idx + ', 1); renderCart();" class="text-rose-600 cursor-pointer">🗑️</button>' +
           '</div>';
       });
-      list.innerHTML = html;
+      if (list) list.innerHTML = html;
     }
 
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
       var text = document.getElementById("toastMsg");
-      text.innerText = msg;
-      toast.classList.add("show");
-      setTimeout(function() { toast.classList.remove("show"); }, 1500);
+      if (text) text.innerText = msg;
+      if (toast) {
+        toast.classList.add("show");
+        setTimeout(function() { toast.classList.remove("show"); }, 1500);
+      }
     }
 
     window.handleCustomerPinLogin = function(e) {
@@ -1198,8 +1204,10 @@
         if (nameField) nameField.value = currentCustomer.name || "";
         if (phoneField) phoneField.value = currentCustomer.phone || "";
 
-        document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
-        document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
+        var popName = document.getElementById("popoverCustName");
+        var popPhone = document.getElementById("popoverCustPhone");
+        if (popName) popName.innerText = currentCustomer.name || "Customer";
+        if (popPhone) popPhone.innerText = currentCustomer.phone || "";
 
         if (isOwnerActive && ownerBadge) {
           ownerBadge.classList.remove("hidden");
@@ -1216,7 +1224,8 @@
 
     function toggleProfileMenu(e) {
       if (e) e.stopPropagation();
-      document.getElementById("profilePopover").classList.toggle("hidden");
+      var pop = document.getElementById("profilePopover");
+      if (pop) pop.classList.toggle("hidden");
     }
 
     function customerLogout() {
@@ -1225,7 +1234,8 @@
         isOwnerActive = false;
         localStorage.removeItem("fitin60_customer_user");
         localStorage.removeItem("fitin60_owner_session");
-        document.getElementById("profilePopover").classList.add("hidden");
+        var pop = document.getElementById("profilePopover");
+        if (pop) pop.classList.add("hidden");
         
         var nameF = document.getElementById("custName");
         var phoneF = document.getElementById("custPhone");
@@ -1277,13 +1287,3 @@
     };
 
     window.handleCheckout = function() {
-      var name = document.getElementById("custName").value.trim();
-      var phone = document.getElementById("custPhone").value.trim();
-      var area = document.getElementById("custAreaLocation").value.trim();
-      var addr = document.getElementById("custAddress").value.trim();
-
-      if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
-
-      var savePermCheckbox = document.getElementById("saveAsPermanentCheckbox");
-      if (savePermCheckbox && savePermCheckbox.checked && currentCustomer) {
-     
