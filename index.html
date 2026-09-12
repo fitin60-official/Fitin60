@@ -127,7 +127,7 @@
         Boutiques & Uniforms in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
       </h1>
       <p class="text-slate-400 text-xs mt-1">
-        Boutiques, designer wear, and school uniforms delivered express to your doorstep.
+        Click any store to explore all collections. Tap an outfit for full slide view.
       </p>
     </div>
 
@@ -140,6 +140,76 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="boutiqueStoreGrid"></div>
     </div>
   </main>
+
+  <!-- STORE EXPLORE MODAL (FULL COLLECTION VIEW) -->
+  <div id="storeExploreModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <!-- Store Modal Header -->
+      <div class="p-4 bg-slate-950 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-brand font-black text-lg text-white" id="exploreStoreName">Store Name</h3>
+          <p class="text-xs text-orange-400" id="exploreStoreArea">📍 Location</p>
+        </div>
+        <button onclick="closeStoreExploreModal()" class="text-slate-400 hover:text-white text-3xl font-bold p-1 cursor-pointer">&times;</button>
+      </div>
+
+      <!-- Store Products Grid -->
+      <div class="p-4 overflow-y-auto flex-1 space-y-4">
+        <div class="flex justify-between items-center text-xs font-bold text-slate-500">
+          <span id="exploreItemCount">Available Collections</span>
+          <span class="text-emerald-600">⚡ 60-Min Express</span>
+        </div>
+        <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT MULTI-IMAGE SLIDER & DETAILS MODAL -->
+  <div id="productDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-md w-full p-4 sm:p-5 space-y-3.5 shadow-2xl relative border border-slate-200 overflow-hidden">
+      <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 z-20 bg-black/50 hover:bg-black text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg cursor-pointer">&times;</button>
+      
+      <!-- Main Swiper Image Box -->
+      <div class="relative w-full h-72 sm:h-80 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 group">
+        <img id="modalMainImage" src="" alt="Outfit" class="w-full h-full object-cover transition duration-300">
+
+        <!-- Left / Right Slide Arrow Buttons -->
+        <button onclick="slideImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-black text-sm shadow cursor-pointer">❮</button>
+        <button onclick="slideImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-black text-sm shadow cursor-pointer">❯</button>
+
+        <span id="imageCounterBadge" class="absolute bottom-2 right-2 bg-slate-950/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">1 / 1</span>
+      </div>
+
+      <!-- Thumbnail Strip -->
+      <div id="modalThumbnailsStrip" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+
+      <!-- Details -->
+      <div class="space-y-1">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 id="modalProdName" class="font-brand font-black text-base text-slate-950">Outfit Name</h3>
+            <p id="modalProdStore" class="text-xs font-bold text-orange-600">Store Name</p>
+          </div>
+          <div class="text-right">
+            <span id="modalProdPrice" class="font-mono-num font-black text-xl text-slate-950">₹0</span>
+            <p id="modalProdOrig" class="text-[10px] text-slate-400 line-through">₹0</p>
+          </div>
+        </div>
+        <p id="modalProdDesc" class="text-slate-600 text-xs line-clamp-2">Fabric description and details.</p>
+      </div>
+
+      <!-- Available Sizes Selector -->
+      <div>
+        <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Size</label>
+        <div id="modalSizesContainer" class="flex flex-wrap gap-1.5"></div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+        <button id="modalAddBagBtn" onclick="modalAddToBag()" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3 rounded-xl text-xs cursor-pointer">🛍️ Add to Bag</button>
+        <button id="modalBuyNowBtn" onclick="modalBuyNow()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs cursor-pointer shadow">⚡ Instant Buy</button>
+      </div>
+    </div>
+  </div>
 
   <!-- DIRECT OWNER FAST EDIT MODAL -->
   <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
@@ -206,7 +276,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🔐</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-2">Customer Account</h3>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-2" id="custModalTitle">Customer Account</h3>
       <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
 
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
@@ -392,9 +462,14 @@
         originalPrice: 1499,
         discount: "40% OFF",
         sizes: ["M", "L", "XL"],
+        desc: "Premium pure rayon fabric with intricate neckline embroidery and matching dupatta.",
         eta: "35 MINS",
         rating: "4.9",
-        image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
+        image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+        ]
       },
       {
         id: "base_uniform_1",
@@ -406,9 +481,14 @@
         originalPrice: 999,
         discount: "30% OFF",
         sizes: ["26", "28", "30", "32", "34"],
+        desc: "High quality anti-fade school uniform shirt with durable pleated shorts/skirt.",
         eta: "30 MINS",
         rating: "5.0",
-        image: "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80"
+        image: "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80"
+        ]
       },
       {
         id: "base_uniform_2",
@@ -420,9 +500,14 @@
         originalPrice: 1199,
         discount: "35% OFF",
         sizes: ["24", "26", "28", "30", "32"],
+        desc: "Breathable cotton blend uniform pinafore with reinforced stitching.",
         eta: "30 MINS",
         rating: "5.0",
-        image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80"
+        image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80"
+        ]
       }
     ];
 
@@ -432,6 +517,11 @@
     var items = [];
     var currentCustomer = null;
     var currentCategoryFilter = "All";
+
+    // Multi-Image Modal Global State
+    var activeModalProduct = null;
+    var currentModalImageIndex = 0;
+    var selectedModalSize = "";
 
     function getDistanceFee(distKm) {
       if (distKm <= 3) return 49;
@@ -476,6 +566,155 @@
       document.getElementById("custLoginForm").classList.add("hidden");
       document.getElementById("custRegisterForm").classList.add("hidden");
       document.getElementById("custForgotForm").classList.remove("hidden");
+    };
+
+    // 1. STORE EXPLORE (ALL CLOTHES OF THIS STORE)
+    window.openStoreExploreModal = function(storeName) {
+      var all = cloudProducts.concat(baseProducts);
+      var storeProds = all.filter(function(p) {
+        return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
+      });
+
+      var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
+
+      document.getElementById("exploreStoreName").innerText = storeName;
+      document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
+      document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
+
+      var grid = document.getElementById("storeExploreGrid");
+      var html = "";
+
+      storeProds.forEach(function(p) {
+        html += 
+          '<div onclick="openProductDetailModal(\'' + p.id + '\')" class="bg-slate-50 border border-slate-200 rounded-2xl p-2 cursor-pointer hover:border-orange-500 transition space-y-1.5 text-xs">' +
+            '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-white border border-slate-200">' +
+              '<img src="' + p.image + '" class="w-full h-full object-cover">' +
+              '<span class="absolute bottom-1 right-1 bg-slate-950/80 text-white font-mono-num font-black text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
+            '</div>' +
+            '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
+            '<p class="text-[10px] text-orange-600 font-bold">' + (p.category || 'Outfit') + '</p>' +
+          '</div>';
+      });
+
+      grid.innerHTML = html;
+      document.getElementById("storeExploreModal").classList.remove("hidden");
+    };
+
+    window.closeStoreExploreModal = function() {
+      document.getElementById("storeExploreModal").classList.add("hidden");
+    };
+
+    // 2. PRODUCT MULTI-IMAGE FULL SLIDER MODAL
+    window.openProductDetailModal = function(prodId) {
+      var all = cloudProducts.concat(baseProducts);
+      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+      if (!p) return;
+
+      activeModalProduct = p;
+      currentModalImageIndex = 0;
+
+      // Prepare images list (fallback to main image if array missing)
+      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
+      activeModalProduct._resolvedImages = imagesList;
+
+      document.getElementById("modalProdName").innerText = p.name;
+      document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
+      document.getElementById("modalProdPrice").innerText = "₹" + p.price;
+      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
+      document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
+
+      // Render sizes chips
+      var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
+      selectedModalSize = sizes[0];
+      var sizesHtml = "";
+      sizes.forEach(function(s, idx) {
+        sizesHtml += 
+          '<button onclick="selectModalSize(\'' + s + '\')" id="sizeBtn_' + idx + '" class="size-chip px-3 py-1.5 rounded-xl border text-xs font-bold transition ' + 
+            (idx === 0 ? "bg-slate-950 text-white border-slate-950" : "bg-slate-50 text-slate-800 border-slate-200") + '">' + 
+            s + 
+          '</button>';
+      });
+      document.getElementById("modalSizesContainer").innerHTML = sizesHtml;
+
+      updateModalSwiperUI();
+      document.getElementById("productDetailModal").classList.remove("hidden");
+    };
+
+    window.selectModalSize = function(size) {
+      selectedModalSize = size;
+      var buttons = document.querySelectorAll(".size-chip");
+      buttons.forEach(function(b) {
+        if (b.innerText === size) {
+          b.className = "size-chip px-3 py-1.5 rounded-xl border text-xs font-bold transition bg-slate-950 text-white border-slate-950";
+        } else {
+          b.className = "size-chip px-3 py-1.5 rounded-xl border text-xs font-bold transition bg-slate-50 text-slate-800 border-slate-200";
+        }
+      });
+    };
+
+    window.slideImage = function(direction) {
+      if (!activeModalProduct || !activeModalProduct._resolvedImages) return;
+      var list = activeModalProduct._resolvedImages;
+      currentModalImageIndex += direction;
+
+      if (currentModalImageIndex < 0) currentModalImageIndex = list.length - 1;
+      if (currentModalImageIndex >= list.length) currentModalImageIndex = 0;
+
+      updateModalSwiperUI();
+    };
+
+    window.jumpToImageIndex = function(idx) {
+      currentModalImageIndex = idx;
+      updateModalSwiperUI();
+    };
+
+    function updateModalSwiperUI() {
+      if (!activeModalProduct || !activeModalProduct._resolvedImages) return;
+      var list = activeModalProduct._resolvedImages;
+      var mainImg = document.getElementById("modalMainImage");
+      var counter = document.getElementById("imageCounterBadge");
+      var thumbStrip = document.getElementById("modalThumbnailsStrip");
+
+      mainImg.src = list[currentModalImageIndex];
+      counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
+
+      var thumbsHtml = "";
+      list.forEach(function(imgUrl, idx) {
+        thumbsHtml += 
+          '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" class="w-12 h-12 rounded-xl object-cover border-2 cursor-pointer shrink-0 transition ' + 
+            (idx === currentModalImageIndex ? "border-orange-600 scale-105" : "border-slate-200 opacity-70") + '">';
+      });
+      thumbStrip.innerHTML = thumbsHtml;
+    }
+
+    window.closeProductDetailModal = function() {
+      document.getElementById("productDetailModal").classList.add("hidden");
+    };
+
+    window.modalAddToBag = function() {
+      if (!activeModalProduct) return;
+      var itemObj = {
+        name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
+        price: activeModalProduct.price,
+        store: activeModalProduct.store
+      };
+      items.push(itemObj);
+      renderCart();
+      closeProductDetailModal();
+      showQuickToast("✓ Added to Bag");
+    };
+
+    window.modalBuyNow = function() {
+      if (!activeModalProduct) return;
+      var itemObj = {
+        name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
+        price: activeModalProduct.price,
+        store: activeModalProduct.store
+      };
+      items.push(itemObj);
+      renderCart();
+      closeProductDetailModal();
+      toggleCart();
     };
 
     window.directOwnerDelete = function(key) {
@@ -590,12 +829,14 @@
         var previewImages = "";
         store.products.slice(0, 3).forEach(function(p) {
           var isCloud = !!p.cloudKey;
+          var targetId = p.id || p.cloudKey;
+
           previewImages += 
-            '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">' +
-              '<img src="' + p.image + '" alt="" class="w-full h-full object-cover">' +
+            '<div class="relative h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
+              '<img src="' + p.image + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
               '<span class="absolute bottom-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1 py-0.5 rounded">₹' + p.price + '</span>' +
               (isOwnerActive && isCloud ? 
-                '<div class="absolute top-1 right-1 flex gap-1 z-10">' +
+                '<div class="absolute top-1 right-1 flex gap-1 z-10" onclick="event.stopPropagation();">' +
                   '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">✏️</button>' +
                   '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">🗑️</button>' +
                 '</div>' : '') +
@@ -608,32 +849,27 @@
               '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div>' +
-            '<div>' +
-              '<h3 class="font-brand font-black text-lg text-slate-950">' + store.storeName + '</h3>' +
+            
+            <!-- CLICKABLE STORE NAME FOR EXPLORE -->
+            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\')">' +
+              '<div class="flex items-center justify-between">' +
+                '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
+                '<span class="text-xs text-orange-600 font-bold group-hover:underline">Explore Store ➔</span>' +
+              '</div>' +
               '<p class="text-[11px] text-slate-500 font-medium">📍 ' + store.area + '</p>' +
             '</div>' +
+
             '<div class="grid grid-cols-3 gap-2">' + previewImages + '</div>' +
+            
             '<div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">' +
-              '<button onclick="quickAddBag(\'' + store.products[0].name + '\', ' + store.products[0].price + ', \'' + store.storeName + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🛍️ Add Bag</button>' +
-              '<button onclick="quickBuy(\'' + store.products[0].name + '\', ' + store.products[0].price + ', \'' + store.storeName + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ Buy Now</button>' +
+              '<button onclick="openStoreExploreModal(\'' + store.storeName + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-xl text-xs cursor-pointer">🏬 View All (' + store.products.length + ')</button>' +
+              '<button onclick="openProductDetailModal(\'' + (store.products[0].id || store.products[0].cloudKey) + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer">⚡ View Outfit</button>' +
             '</div>' +
           '</div>';
       });
 
       grid.innerHTML = html;
     }
-
-    window.quickAddBag = function(name, price, store) {
-      items.push({ name: name, price: price, store: store });
-      renderCart();
-      showQuickToast("✓ Added to Bag");
-    };
-
-    window.quickBuy = function(name, price, store) {
-      items.push({ name: name, price: price, store: store });
-      renderCart();
-      toggleCart();
-    };
 
     window.toggleCart = function() {
       document.getElementById("cartDrawer").classList.toggle("hidden");
