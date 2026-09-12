@@ -711,9 +711,8 @@
       });
     };
 
-    // Store Explore Modal with Big View & Clean Side Price Tag
     window.openStoreExploreModal = function(storeName) {
-      var all = [].concat(cloudProducts, baseProducts);
+      var all = cloudProducts.concat(baseProducts);
       var storeProds = all.filter(function(p) {
         return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
       });
@@ -754,7 +753,7 @@
     };
 
     window.openProductDetailModal = function(prodId) {
-      var all = [].concat(cloudProducts, baseProducts);
+      var all = cloudProducts.concat(baseProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
@@ -954,7 +953,7 @@
       var badge = document.getElementById("boutiqueCountBadge");
       if (!grid) return;
 
-      var all = [].concat(cloudProducts, baseProducts);
+      var all = cloudProducts.concat(baseProducts);
       var searchInput = document.getElementById("storeSearchInput");
       var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
@@ -1271,4 +1270,7 @@
         paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
-        boutiqueAccepted: f
+        boutiqueAccepted: false,
+        riderAssigned: false,
+        financialSplit: {
+          stor
