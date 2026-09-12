@@ -63,7 +63,6 @@
         <span id="cart-count" class="bg-white text-orange-600 text-[10px] font-mono-num font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
       </button>
 
-      <!-- Auth Container with Outside-Click-Safe Wrapper -->
       <div id="authPillContainer" class="relative">
         <button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">
           <span>👤</span> <span>Login</span>
@@ -163,7 +162,7 @@
     </div>
   </main>
 
-  <!-- SAVED ADDRESSES MODAL (LOCATION & PERMANENT ADDRESS) -->
+  <!-- SAVED ADDRESSES MODAL -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
@@ -390,7 +389,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer (Auto-Fills Saved Location & Address) -->
+  <!-- Shopping Bag Drawer (WITH MULTI-ADDRESS SELECTOR: SAVED / NEW) -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -403,16 +402,41 @@
         <div id="cartItems" class="space-y-2"></div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
-          <div class="flex justify-between items-center">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address & Distance</h4>
-            <span id="savedAddressBadge" class="hidden text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">✓ Auto-Filled</span>
+          
+          <div class="space-y-1">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">1. Delivery Address Choice</h4>
+            
+            <!-- Address Switcher Chips -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button type="button" onclick="switchDeliveryAddressMode('saved')" id="addrModeSavedBtn" class="p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950">
+                🏠 Saved Address
+              </button>
+              <button type="button" onclick="switchDeliveryAddressMode('new')" id="addrModeNewBtn" class="p-2 border rounded-xl text-xs font-bold text-left transition bg-slate-50 border-slate-200 text-slate-600">
+                📍 Other / New Address
+              </button>
+            </div>
           </div>
 
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           
-          <input type="text" id="custAreaLocation" placeholder="Area / Colony / Town" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
-          <textarea id="custAddress" rows="2" required placeholder="Permanent Door/Street Address" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Area / Colony / Landmark</label>
+            <input type="text" id="custAreaLocation" placeholder="Area / Colony / Town" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs font-bold text-slate-800">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Detailed Delivery Address</label>
+            <textarea id="custAddress" rows="2" required placeholder="Door No, Building, Street Address..." class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
+          </div>
+
+          <!-- Option to save as new permanent address -->
+          <div id="saveAsNewPermanentWrapper" class="hidden items-center gap-2 pt-1">
+            <input type="checkbox" id="saveAsPermanentCheckbox" class="accent-orange-600 rounded">
+            <label for="saveAsPermanentCheckbox" class="text-[11px] text-slate-600 font-medium cursor-pointer">
+              Save this as my new permanent address
+            </label>
+          </div>
 
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Delivery Distance from Store</label>
@@ -507,6 +531,7 @@
     const db = firebase.database();
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
+    var currentAddressSelectionMode = "saved"; // "saved" or "new"
 
     var baseProducts = [
       {
@@ -675,20 +700,52 @@
       showQuickToast("✓ Location & Permanent Address Saved!");
     };
 
+    // SWITCH ADDRESS MODE IN CHECKOUT (SAVED vs NEW ADDRESS)
+    window.switchDeliveryAddressMode = function(mode) {
+      currentAddressSelectionMode = mode;
+      var savedBtn = document.getElementById("addrModeSavedBtn");
+      var newBtn = document.getElementById("addrModeNewBtn");
+      var areaInput = document.getElementById("custAreaLocation");
+      var addrInput = document.getElementById("custAddress");
+      var permSaveWrapper = document.getElementById("saveAsNewPermanentWrapper");
+
+      if (mode === "saved") {
+        savedBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950";
+        newBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-slate-50 border-slate-200 text-slate-600";
+        permSaveWrapper.classList.add("hidden");
+        permSaveWrapper.classList.remove("flex");
+
+        if (currentCustomer) {
+          areaInput.value = currentCustomer.areaLocation || "";
+          addrInput.value = currentCustomer.address || "";
+        }
+      } else {
+        newBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-orange-50 border-orange-500 text-orange-950";
+        savedBtn.className = "p-2 border rounded-xl text-xs font-bold text-left transition bg-slate-50 border-slate-200 text-slate-600";
+        permSaveWrapper.classList.remove("hidden");
+        permSaveWrapper.classList.add("flex");
+
+        // Clear fields for typing a temporary or different address
+        areaInput.value = "";
+        addrInput.value = "";
+        areaInput.placeholder = "Enter Delivery Area / Colony (for this order)";
+        addrInput.placeholder = "Enter Full Address (for this order)";
+        areaInput.focus();
+      }
+    };
+
     function applySavedAddressToForm() {
+      if (currentAddressSelectionMode === "new") return;
       if (!currentCustomer) return;
+
       var areaField = document.getElementById("custAreaLocation");
       var addrField = document.getElementById("custAddress");
-      var badge = document.getElementById("savedAddressBadge");
 
       if (currentCustomer.areaLocation) {
         areaField.value = currentCustomer.areaLocation;
       }
       if (currentCustomer.address) {
         addrField.value = currentCustomer.address;
-      }
-      if (currentCustomer.areaLocation && currentCustomer.address && badge) {
-        badge.classList.remove("hidden");
       }
     }
 
@@ -1037,7 +1094,7 @@
     }
 
     window.toggleCart = function() {
-      applySavedAddressToForm();
+      switchDeliveryAddressMode("saved");
       document.getElementById("cartDrawer").classList.toggle("hidden");
     };
 
@@ -1219,89 +1276,6 @@
 
       if (!name || !phone || !addr) return alert("Please fill Name, Mobile & Address!");
 
-      var combinedAddress = (area ? (area + " - ") : "") + addr;
-
-      var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
-      var payMethod = payMethodRadio ? payMethodRadio.value : "POD";
-
-      var distSelect = document.getElementById("deliveryDistanceSelect");
-      var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
-      var deliveryFee = getDistanceFee(distVal);
-
-      var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
-      var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
-      var totalPayable = itemSubtotal + deliveryFee;
-
-      var platformFee = Math.round(itemSubtotal * 0.15);
-      var storeNetPayout = itemSubtotal - platformFee;
-
-      var orderData = {
-        orderId: orderId,
-        customerName: name,
-        customerPhone: phone,
-        customerAddress: combinedAddress,
-        items: items,
-        itemTotal: itemSubtotal,
-        distanceKm: distVal,
-        deliveryFee: deliveryFee,
-        totalAmount: totalPayable,
-        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
-        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
-        deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
-        store: items[0].store,
-        boutiqueAccepted: false,
-        riderAssigned: false,
-        financialSplit: {
-          storeNetPayout: storeNetPayout,
-          platformCommission: platformFee,
-          riderFee: deliveryFee,
-          storeSettlementStatus: "Settled",
-          riderSettlementStatus: "Pending"
-        },
-        timestamp: Date.now()
-      };
-
-      db.ref("orders/" + orderId).set(orderData).then(function() {
-        localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
-        window.location.href = "tracking.html";
-      });
-    };
-
-    window.syncCustomerGPS = function() {
-      showQuickToast("✓ GPS Synced");
-    };
-
-    db.ref("boutiques").on("value", function(snapshot) {
-      var data = snapshot.val() || {};
-      boutiqueLocationsMap = {};
-      Object.values(data).forEach(function(b) {
-        if (b.storeName && b.area) {
-          boutiqueLocationsMap[b.storeName] = b.area;
-        }
-      });
-      renderBoutiqueStores();
-    });
-
-    db.ref("boutique_products").on("value", function(snapshot) {
-      var data = snapshot.val();
-      cloudProducts = [];
-      cloudProductsMap = data || {};
-      if (data) {
-        Object.keys(data).forEach(function(k) {
-          var p = data[k];
-          p.cloudKey = k;
-          cloudProducts.push(p);
-        });
-      }
-      renderBoutiqueStores();
-    });
-
-    try {
-      var saved = localStorage.getItem("fitin60_customer_user");
-      if (saved) currentCustomer = JSON.parse(saved);
-    } catch(e){}
-    updateAuthHeaderUI();
-    renderBoutiqueStores();
-  </script>
-</body>
-</html>
+      // If user selected "Save as new permanent address", save it to their profile & database
+      var savePermCheckbox = document.getElementById("saveAsPermanentCheckbox");
+      if (savePermCheck
