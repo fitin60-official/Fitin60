@@ -181,7 +181,7 @@
     </div>
   </div>
 
-  <!-- STORE EXPLORE MODAL (BIG & WIDE - EXPOSING ALL STORE CLOTHES WITH SIDE PRICE TAGS) -->
+  <!-- STORE EXPLORE MODAL (BIG & WIDE - EXPOSING ALL STORE CLOTHES WITH SIDE PRICE TAG) -->
   <div id="storeExploreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
       <div class="p-5 bg-slate-950 text-white flex items-center justify-between">
@@ -197,7 +197,6 @@
           <span id="exploreItemCount" class="bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">Available Collections</span>
           <span class="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
         </div>
-        <!-- Spacious 2, 3, 4 Column Grid -->
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
     </div>
@@ -380,7 +379,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer (WITH 2-ADDRESS SELECTOR: PERMANENT OR NEW) -->
+  <!-- Shopping Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -393,11 +392,8 @@
         <div id="cartItems" class="space-y-2"></div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
-          
           <div>
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Choose Delivery Address</h4>
-            
-            <!-- Address Choice Selector -->
             <div class="grid grid-cols-2 gap-2 mb-3">
               <label class="flex items-center gap-2 p-2.5 bg-orange-50 border border-orange-300 rounded-xl cursor-pointer text-xs font-bold text-slate-900">
                 <input type="radio" name="checkoutAddressType" value="permanent" checked onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
@@ -414,13 +410,11 @@
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs">
           
-          <!-- Box 1: Permanent Address Display & Edit -->
           <div id="permanentAddressBoxContainer">
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Permanent Address</label>
             <textarea id="custPermanentAddress" rows="2" placeholder="Your saved permanent address..." class="w-full bg-slate-50 border rounded-xl px-3 py-2 text-xs"></textarea>
           </div>
 
-          <!-- Box 2: New / Different Delivery Address Box -->
           <div id="newAddressBoxContainer" class="hidden">
             <label class="block text-[10px] font-bold uppercase text-orange-600 mb-1">Deliver to Different Address (Temporary)</label>
             <textarea id="custNewAddress" rows="2" placeholder="Enter other house/office delivery address for this order..." class="w-full bg-orange-50/50 border border-orange-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-orange-500"></textarea>
@@ -636,7 +630,6 @@
       document.getElementById("custForgotForm").classList.remove("hidden");
     };
 
-    // Outside Click to Close Profile Popover
     window.addEventListener("click", function(event) {
       var popover = document.getElementById("profilePopover");
       var container = document.getElementById("authPillContainer");
@@ -718,9 +711,9 @@
       });
     };
 
-    // --- FEATURE 1: BIG SIZE EXPLORE STORE WITH SIDE PRICE TAG ---
+    // Store Explore Modal with Big View & Clean Side Price Tag
     window.openStoreExploreModal = function(storeName) {
-      var all = cloudProducts.concat(baseProducts);
+      var all = [].concat(cloudProducts, baseProducts);
       var storeProds = all.filter(function(p) {
         return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
       });
@@ -736,7 +729,6 @@
 
       storeProds.forEach(function(p) {
         var targetId = p.id || p.cloudKey;
-        // Feature 2: Price is outside/beside the cloth image, cleaner look
         html += 
           '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="bg-white border border-slate-200 rounded-2xl p-3 cursor-pointer hover:border-orange-500 shadow-sm transition space-y-2 flex flex-col justify-between">' +
             '<div class="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-100">' +
@@ -762,7 +754,7 @@
     };
 
     window.openProductDetailModal = function(prodId) {
-      var all = cloudProducts.concat(baseProducts);
+      var all = [].concat(cloudProducts, baseProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
@@ -962,7 +954,7 @@
       var badge = document.getElementById("boutiqueCountBadge");
       if (!grid) return;
 
-      var all = cloudProducts.concat(baseProducts);
+      var all = [].concat(cloudProducts, baseProducts);
       var searchInput = document.getElementById("storeSearchInput");
       var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
@@ -1273,4 +1265,10 @@
         items: items,
         itemTotal: itemSubtotal,
         distanceKm: distVal,
-        deliv
+        deliveryFee: deliveryFee,
+        totalAmount: totalPayable,
+        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
+        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
+        deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
+        store: items[0].store,
+        boutiqueAccepted: f
