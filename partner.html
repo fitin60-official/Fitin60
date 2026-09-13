@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Fitin60 | Partner Hub</title>
+  <title>Fitin60 | Merchant Studio & Partner Hub</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -11,11 +11,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; color: #0f172a; }
     .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
     #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
     #quickToast.show { transform: translateY(0); opacity: 1; }
   </style>
@@ -26,82 +27,108 @@
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <a href="index.html" class="flex items-center gap-1">
       <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-1.5 py-0.5 rounded-full">Partner Hub</span>
+      <span class="text-[9px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded-full">MERCHANT STUDIO</span>
     </a>
-    <div id="ownerStatusBadge" class="hidden text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-black px-2.5 py-1 rounded-xl">
-      🛡️ Master Owner Active
+    <div class="flex items-center gap-2">
+      <button onclick="partnerLogout()" class="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 cursor-pointer">Logout</button>
+      <a href="index.html" class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">← Customer Radar</a>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto px-4 mt-6 space-y-6">
-    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-      <div class="flex items-center justify-between border-b pb-3">
+  <main class="max-w-xl mx-auto px-4 mt-6 space-y-5">
+    
+    <!-- Store Status Banner -->
+    <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-lg space-y-3">
+      <div class="flex justify-between items-start">
         <div>
-          <h1 class="font-brand font-black text-lg text-slate-950">Add New Outfit / Uniform</h1>
-          <p class="text-xs text-slate-500">Publish stock instantly for 60-min express delivery.</p>
+          <h2 id="bannerStoreName" class="font-brand font-black text-xl text-white">Sai Fashions</h2>
+          <p id="bannerStoreArea" class="text-xs text-orange-400 mt-0.5">📍 Near TV tower • Mobile: 9515552511</p>
         </div>
-        <span class="text-xl">💼</span>
+        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Authenticated</span>
+      </div>
+    </div>
+
+    <!-- Live Store Orders -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-brand font-black text-sm text-slate-900">Live Store Orders</h3>
+        <span id="liveOrdersCount" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
+      </div>
+      <div id="partnerLiveOrdersList" class="text-xs text-slate-400 text-center py-3">
+        No orders pending right now.
+      </div>
+    </div>
+
+    <!-- Upload New Dress Form -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
+      <div class="border-b pb-2">
+        <h3 class="font-brand font-black text-sm text-slate-900">+ Upload New Dress to Radar</h3>
+        <p class="text-[11px] text-slate-500">Publish stock instantly for 60-min express delivery.</p>
       </div>
 
-      <form onsubmit="handlePartnerSubmit(event)" class="space-y-3 text-xs">
+      <form onsubmit="handlePartnerUpload(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Store / Boutique Name</label>
-          <input type="text" id="partStore" required placeholder="e.g. Sai Fashions" class="w-full bg-slate-50 border rounded-xl p-3 font-bold focus:outline-none focus:border-orange-500">
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Store Area / Location</label>
-          <input type="text" id="partArea" required placeholder="e.g. Subhash Road, Anantapur" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Outfit / Uniform Title</label>
-          <input type="text" id="partName" required placeholder="e.g. School Uniform Set / Designer Kurti" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
+          <label class="block font-bold text-slate-700 mb-1">Dress / Outfit Name</label>
+          <input type="text" id="upName" required placeholder="e.g. Designer Anarkali Kurta" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500 font-bold">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-slate-700 mb-1">Price (₹)</label>
-            <input type="number" id="partPrice" required placeholder="699" class="w-full bg-slate-50 border rounded-xl p-3 font-mono focus:outline-none focus:border-orange-500">
+            <input type="number" id="upPrice" required placeholder="899" class="w-full bg-slate-50 border rounded-xl p-3 font-mono focus:outline-none focus:border-orange-500">
           </div>
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Category</label>
-            <select id="partCategory" class="w-full bg-slate-50 border rounded-xl p-3 font-bold focus:outline-none focus:border-orange-500">
-              <option value="Uniform">🎒 School Uniform</option>
-              <option value="Kids">🧸 Kids Wear</option>
-              <option value="Saree">🥻 Saree</option>
-              <option value="Kurti">👗 Kurti</option>
-              <option value="Lehenga">✨ Lehenga</option>
-              <option value="Men">👔 Men's Wear</option>
-            </select>
+            <label class="block font-bold text-slate-700 mb-1">Original Price (₹)</label>
+            <input type="number" id="upOrigPrice" required placeholder="1499" class="w-full bg-slate-50 border rounded-xl p-3 font-mono focus:outline-none focus:border-orange-500">
           </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Image Upload (Select from device)</label>
+          <input type="file" id="upImageFile" accept="image/*" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer">
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Available Sizes</label>
-          <input type="text" id="partSizes" placeholder="28, 30, 32 or M, L, XL" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
+          <input type="text" id="upSizes" required placeholder="S, M, L, XL" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Image Upload</label>
-          <input type="file" id="partImageFile" accept="image/*" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer">
+          <label class="block font-bold text-slate-700 mb-1">Description</label>
+          <textarea id="upDesc" rows="2" placeholder="Pure cotton fabric..." class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500"></textarea>
         </div>
 
-        <button type="submit" id="publishBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          🚀 Publish to 15KM Radar
+        <button type="submit" id="pubBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          + Publish Live to Fitin60
         </button>
       </form>
     </div>
 
-    <!-- Master Owner Store Management -->
-    <div id="masterStoreControlSection" class="hidden bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-      <div class="flex items-center justify-between border-b pb-3">
-        <h2 class="font-brand font-black text-base text-slate-950">🛡️ Master Store Control</h2>
-        <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded">Owner Only</span>
+    <!-- Manage Uploaded Outfits -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+      <div class="border-b pb-2">
+        <h3 class="font-brand font-black text-sm text-slate-900">Manage Uploaded Outfits</h3>
       </div>
-      <p class="text-xs text-slate-500">Remove any partner store and its items completely from the platform:</p>
-      <div id="masterStoresList" class="space-y-2"></div>
+      <div id="partnerUploadedList" class="space-y-2">
+        <p class="text-xs text-slate-400 text-center py-2">No custom outfits uploaded yet.</p>
+      </div>
     </div>
+
+    <!-- Danger Zone: Delete Store -->
+    <div class="bg-rose-50/60 border border-rose-200 rounded-3xl p-5 space-y-3">
+      <div>
+        <h4 class="font-brand font-black text-xs text-rose-800 flex items-center gap-1.5">
+          <span>⚠️</span> Danger Zone: Delete Store
+        </h4>
+        <p class="text-[11px] text-rose-600/80 mt-1">
+          Permanently delete this boutique profile and all uploaded clothing from the Fitin60 radar. This action cannot be undone.
+        </p>
+      </div>
+      <button onclick="deletePartnerStorePermanently()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow">
+        🗑️ Delete My Store & Account Permanently
+      </button>
+    </div>
+
   </main>
 
   <!-- Bottom Navigation -->
@@ -144,11 +171,12 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
-    if (isOwnerActive) {
-      document.getElementById("ownerStatusBadge").classList.remove("hidden");
-      document.getElementById("masterStoreControlSection").classList.remove("hidden");
-    }
+    // Default partner session or active store
+    var activeStoreName = localStorage.getItem("fitin60_partner_store") || "Sai Fashions";
+    var activeStoreArea = localStorage.getItem("fitin60_partner_area") || "Near TV tower • Mobile: 9515552511";
+
+    document.getElementById("bannerStoreName").innerText = activeStoreName;
+    document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
 
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
@@ -158,58 +186,53 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
-    window.handlePartnerSubmit = function(e) {
+    window.handlePartnerUpload = function(e) {
       e.preventDefault();
-      var store = document.getElementById("partStore").value.trim();
-      var area = document.getElementById("partArea").value.trim();
-      var name = document.getElementById("partName").value.trim();
-      var price = parseInt(document.getElementById("partPrice").value);
-      var category = document.getElementById("partCategory").value;
-      var sizesStr = document.getElementById("partSizes").value.trim();
-      var fileInput = document.getElementById("partImageFile");
-      var btn = document.getElementById("publishBtn");
+      var name = document.getElementById("upName").value.trim();
+      var price = parseInt(document.getElementById("upPrice").value);
+      var origPrice = parseInt(document.getElementById("upOrigPrice").value);
+      var sizesStr = document.getElementById("upSizes").value.trim();
+      var desc = document.getElementById("upDesc").value.trim();
+      var fileInput = document.getElementById("upImageFile");
+      var btn = document.getElementById("pubBtn");
 
       if (!fileInput.files || fileInput.files.length === 0) {
         return alert("Please select an image file!");
       }
 
       var file = fileInput.files[0];
-      btn.innerText = "⏳ Converting Image...";
+      btn.innerText = "⏳ Processing Image...";
       btn.disabled = true;
 
       var reader = new FileReader();
       reader.onload = function(uploadEvent) {
-        var base64Image = uploadEvent.target.result;
-
+        var base64Img = uploadEvent.target.result;
         var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
 
         var prodKey = db.ref("boutique_products").push().key;
         var prodData = {
-          store: store,
-          area: area,
+          store: activeStoreName,
+          area: activeStoreArea,
           name: name,
           price: price,
-          originalPrice: Math.round(price * 1.4),
-          category: category,
+          originalPrice: origPrice,
           sizes: sizes,
-          image: base64Image,
-          images: [base64Image],
+          desc: desc,
+          image: base64Img,
+          images: [base64Img],
+          category: "Uniform",
           eta: "30 MINS",
           rating: "5.0",
           timestamp: Date.now()
         };
 
         db.ref("boutique_products/" + prodKey).set(prodData).then(function() {
-          db.ref("boutiques/" + store.replace(/[^a-zA-Z0-9]/g, "_")).set({
-            storeName: store,
-            area: area
-          });
-          btn.innerText = "🚀 Publish to 15KM Radar";
+          btn.innerText = "+ Publish Live to Fitin60";
           btn.disabled = false;
-          showQuickToast("✓ Published Live!");
+          showQuickToast("✓ Outfit published live!");
           e.target.reset();
         }).catch(function(err) {
-          btn.innerText = "🚀 Publish to 15KM Radar";
+          btn.innerText = "+ Publish Live to Fitin60";
           btn.disabled = false;
           alert("Error: " + err.message);
         });
@@ -217,59 +240,68 @@
       reader.readAsDataURL(file);
     };
 
-    if (isOwnerActive) {
-      db.ref("boutique_products").on("value", function(snapshot) {
-        var data = snapshot.val() || {};
-        var storesMap = {};
-        Object.keys(data).forEach(function(k) {
-          var p = data[k];
-          if (p && p.store) {
-            if (!storesMap[p.store]) storesMap[p.store] = 0;
-            storesMap[p.store]++;
-          }
-        });
+    // Load Uploaded Outfits for this store
+    db.ref("boutique_products").on("value", function(snap) {
+      var data = snap.val() || {};
+      var container = document.getElementById("partnerUploadedList");
+      var html = "";
+      var count = 0;
 
-        var container = document.getElementById("masterStoresList");
-        var html = "";
-        var storeNames = Object.keys(storesMap);
-
-        if (storeNames.length === 0) {
-          container.innerHTML = "<p class='text-xs text-slate-400'>No active stores.</p>";
-          return;
-        }
-
-        storeNames.forEach(function(s) {
+      Object.keys(data).forEach(function(k) {
+        var p = data[k];
+        if (p && p.store && p.store.toLowerCase() === activeStoreName.toLowerCase()) {
+          count++;
           html += 
-            '<div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl text-xs">' +
-              '<div>' +
-                '<p class="font-bold text-slate-950">' + s + '</p>' +
-                '<p class="text-[10px] text-slate-500">' + storesMap[s] + ' outfits listed</p>' +
+            '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs">' +
+              '<div class="flex items-center gap-2.5 truncate">' +
+                '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
+                '<div class="truncate">' +
+                  '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
+                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + '</p>' +
+                '</div>' +
               '</div>' +
-              '<button onclick="removeStore(\'' + s + '\')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer">' +
-                '🗑️ Remove' +
-              '</button>' +
+              '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer shrink-0">🗑️</button>' +
             '</div>';
         });
-        container.innerHTML = html;
       });
-    }
 
-    window.removeStore = function(storeName) {
-      if (confirm("Remove store '" + storeName + "' and all its items?")) {
+      if (count === 0) {
+        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No custom outfits uploaded yet.</p>";
+      } else {
+        container.innerHTML = html;
+      }
+    });
+
+    window.deletePartnerOutfit = function(key) {
+      if (confirm("Delete this outfit?")) {
+        db.ref("boutique_products/" + key).remove().then(function() {
+          showQuickToast("✓ Outfit deleted");
+        });
+      }
+    };
+
+    window.deletePartnerStorePermanently = function() {
+      if (confirm("⚠️ DANGER: Permanently delete your store and all items from Fitin60?")) {
         db.ref("boutique_products").once("value").then(function(snap) {
           var prods = snap.val() || {};
           var updates = {};
           Object.keys(prods).forEach(function(k) {
-            if (prods[k].store && prods[k].store.toLowerCase() === storeName.toLowerCase()) {
+            if (prods[k].store && prods[k].store.toLowerCase() === activeStoreName.toLowerCase()) {
               updates[k] = null;
             }
           });
           db.ref("boutique_products").update(updates).then(function() {
-            db.ref("boutiques/" + storeName.replace(/[^a-zA-Z0-9]/g, "_")).remove();
-            showQuickToast("✓ Store removed");
+            db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).remove();
+            alert("✓ Store deleted permanently.");
+            window.location.href = "index.html";
           });
         });
       }
+    };
+
+    window.partnerLogout = function() {
+      localStorage.removeItem("fitin60_owner_session");
+      window.location.href = "index.html";
     };
   </script>
 </body>
