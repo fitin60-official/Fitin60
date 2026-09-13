@@ -83,11 +83,11 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Image Link (URL)</label>
-          <input type="url" id="partImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border rounded-xl p-3 font-mono text-xs focus:outline-none focus:border-orange-500">
+          <label class="block font-bold text-slate-700 mb-1">Image Upload</label>
+          <input type="file" id="partImageFile" accept="image/*" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer">
         </div>
 
-        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+        <button type="submit" id="publishBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
           🚀 Publish to 15KM Radar
         </button>
       </form>
@@ -166,34 +166,55 @@
       var price = parseInt(document.getElementById("partPrice").value);
       var category = document.getElementById("partCategory").value;
       var sizesStr = document.getElementById("partSizes").value.trim();
-      var image = document.getElementById("partImage").value.trim();
+      var fileInput = document.getElementById("partImageFile");
+      var btn = document.getElementById("publishBtn");
 
-      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
+      if (!fileInput.files || fileInput.files.length === 0) {
+        return alert("Please select an image file!");
+      }
 
-      var prodKey = db.ref("boutique_products").push().key;
-      var prodData = {
-        store: store,
-        area: area,
-        name: name,
-        price: price,
-        originalPrice: Math.round(price * 1.4),
-        category: category,
-        sizes: sizes,
-        image: image,
-        images: [image],
-        eta: "30 MINS",
-        rating: "5.0",
-        timestamp: Date.now()
-      };
+      var file = fileInput.files[0];
+      btn.innerText = "⏳ Converting Image...";
+      btn.disabled = true;
 
-      db.ref("boutique_products/" + prodKey).set(prodData).then(function() {
-        db.ref("boutiques/" + store.replace(/[^a-zA-Z0-9]/g, "_")).set({
-          storeName: store,
-          area: area
+      var reader = new FileReader();
+      reader.onload = function(uploadEvent) {
+        var base64Image = uploadEvent.target.result;
+
+        var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
+
+        var prodKey = db.ref("boutique_products").push().key;
+        var prodData = {
+          store: store,
+          area: area,
+          name: name,
+          price: price,
+          originalPrice: Math.round(price * 1.4),
+          category: category,
+          sizes: sizes,
+          image: base64Image,
+          images: [base64Image],
+          eta: "30 MINS",
+          rating: "5.0",
+          timestamp: Date.now()
+        };
+
+        db.ref("boutique_products/" + prodKey).set(prodData).then(function() {
+          db.ref("boutiques/" + store.replace(/[^a-zA-Z0-9]/g, "_")).set({
+            storeName: store,
+            area: area
+          });
+          btn.innerText = "🚀 Publish to 15KM Radar";
+          btn.disabled = false;
+          showQuickToast("✓ Published Live!");
+          e.target.reset();
+        }).catch(function(err) {
+          btn.innerText = "🚀 Publish to 15KM Radar";
+          btn.disabled = false;
+          alert("Error: " + err.message);
         });
-        showQuickToast("✓ Published Live!");
-        e.target.reset();
-      });
+      };
+      reader.readAsDataURL(file);
     };
 
     if (isOwnerActive) {
