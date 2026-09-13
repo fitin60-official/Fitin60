@@ -23,11 +23,66 @@
 </head>
 <body class="min-h-screen pb-32 antialiased">
 
+  <!-- Customer Login Modal -->
+  <div id="loginModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+      <div class="text-center space-y-1">
+        <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
+        <h3 class="font-bold text-sm text-slate-800">Customer Express Login</h3>
+        <p class="text-xs text-slate-500">Please login to view outfit details & buy</p>
+      </div>
+      <form onsubmit="handleCustomerLogin(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Your Name</label>
+          <input type="text" id="custNameInput" required placeholder="e.g. Rahul Sharma" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500 font-bold">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Mobile Number</label>
+          <input type="tel" id="custPhoneInput" required placeholder="9876543210" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500 font-mono">
+        </div>
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl uppercase tracking-wider shadow transition">
+          Login & Explore ⚡
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Product Details / Slide Images Modal -->
+  <div id="productModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      <div class="p-4 border-b flex justify-between items-center bg-slate-50">
+        <h3 id="modalProdName" class="font-brand font-black text-sm text-slate-900 truncate">Outfit Details</h3>
+        <button onclick="closeProductModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 font-bold text-slate-700 flex items-center justify-center">✕</button>
+      </div>
+      <div class="p-4 overflow-y-auto space-y-4">
+        <!-- Main Image Preview -->
+        <div class="relative">
+          <img id="modalMainImg" src="" class="w-full h-64 object-cover rounded-2xl border shadow-sm">
+          <span class="absolute top-3 left-3 bg-slate-950/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur">60-Min Express</span>
+        </div>
+        <!-- Slide / Thumbnail selector if multiple images exist -->
+        <div id="modalThumbnails" class="flex gap-2 overflow-x-auto pb-1">
+          <!-- Thumbnails injected dynamically -->
+        </div>
+        <div class="space-y-1 pt-2 border-t">
+          <p id="modalStoreName" class="text-xs font-bold text-slate-500">Store: Sai Fashions</p>
+          <p id="modalPrice" class="font-mono-num font-black text-lg text-orange-600">₹899</p>
+          <p class="text-[11px] text-slate-500">⚡ Delivered to your doorstep within 60 minutes from local store.</p>
+        </div>
+      </div>
+      <div class="p-4 border-t bg-slate-50">
+        <button id="modalBuyBtn" onclick="" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider shadow transition">
+          Buy Now (60 Mins Delivery) ⚡
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-1">
       <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[9px] bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full">EXPRESS 60 MINS</span>
+      <span id="userGreeting" class="text-[10px] bg-slate-100 text-slate-800 font-bold px-2.5 py-1 rounded-xl border">Hello, User</span>
     </div>
     <a href="tracking.html" class="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-200 transition">
       ⚡ Live Orders
@@ -45,18 +100,18 @@
       </div>
     </div>
 
-    <!-- Store Selection & Catalog Grid -->
+    <!-- Store Selection Grid -->
     <div class="space-y-3">
       <div class="flex justify-between items-center px-1">
-        <h2 class="font-brand font-black text-sm text-slate-900 uppercase tracking-wide">Select Store / Boutique</h2>
+        <h2 class="font-brand font-black text-sm text-slate-900 uppercase tracking-wide">Active Boutiques</h2>
         <span id="storeCountBadge" class="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded-full">Loading...</span>
       </div>
       <div id="storesGrid" class="grid grid-cols-2 gap-3">
-        <!-- Dynamic Store Cards -->
+        <!-- Dynamic Stores -->
       </div>
     </div>
 
-    <!-- Products Catalog -->
+    <!-- Products Catalog (Clothes with Click to View Modal) -->
     <div class="space-y-3 pt-2">
       <div class="flex justify-between items-center px-1">
         <h2 class="font-brand font-black text-sm text-slate-900 uppercase tracking-wide">Trending Outfits</h2>
@@ -67,7 +122,7 @@
       </div>
     </div>
 
-    <!-- Partner & Rider Onboarding Section (Clean & Separated) -->
+    <!-- Partner & Rider Onboarding Section -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3 mt-8">
       <h3 class="font-brand font-black text-xs text-slate-900 uppercase tracking-wide">Join the Fitin60 Ecosystem</h3>
       <div class="grid grid-cols-2 gap-3">
@@ -94,7 +149,7 @@
     </a>
     <a href="tracking.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
       <span class="text-lg leading-none">⚡</span>
-      <span class="text-[10px] mt-1">Orders</span>
+      <span class="text-[10px] mt-1">Orders & Maps</span>
     </a>
   </nav>
 
@@ -126,7 +181,84 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
-    // Load Stores & Products
+    window.onload = function() {
+      checkLoginStatus();
+      seedDemoProductsIfNeeded();
+    };
+
+    function checkLoginStatus() {
+      var custName = localStorage.getItem("fitin60_cust_name");
+      if (custName) {
+        document.getElementById("userGreeting").innerText = "Hi, " + custName;
+      }
+    }
+
+    window.handleCustomerLogin = function(e) {
+      e.preventDefault();
+      var name = document.getElementById("custNameInput").value.trim();
+      var phone = document.getElementById("custPhoneInput").value.trim();
+      if (!name || !phone) return;
+
+      localStorage.setItem("fitin60_cust_name", name);
+      localStorage.setItem("fitin60_cust_phone", phone);
+      document.getElementById("userGreeting").innerText = "Hi, " + name;
+      document.getElementById("loginModal").classList.add("hidden");
+      showQuickToast("✓ Welcome, " + name + "!");
+    };
+
+    function requireLoginBeforeAction(callback) {
+      var custName = localStorage.getItem("fitin60_cust_name");
+      if (!custName) {
+        document.getElementById("loginModal").classList.remove("hidden");
+        return;
+      }
+      callback();
+    }
+
+    function seedDemoProductsIfNeeded() {
+      db.ref("products").once("value", function(snap) {
+        if (!snap.val()) {
+          var demoProducts = {
+            "prod_1": { 
+              name: "Oversized Streetwear Hoodie", 
+              price: "899", 
+              store: "Sai Fashions", 
+              image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400", 
+              images: [
+                "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400",
+                "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400",
+                "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400"
+              ],
+              stockStatus: "IN_STOCK" 
+            },
+            "prod_2": { 
+              name: "Classic Casual Denim Jacket", 
+              price: "1299", 
+              store: "Trendz Boutique", 
+              image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400", 
+              images: [
+                "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400",
+                "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400"
+              ],
+              stockStatus: "IN_STOCK" 
+            }
+          };
+          db.ref("products").set(demoProducts);
+        }
+      });
+
+      db.ref("boutiques").once("value", function(snap) {
+        if (!snap.val()) {
+          var demoStores = {
+            "Sai_Fashions": { storeName: "Sai Fashions", area: "Main Road • 1.2 KM", status: "OPEN" },
+            "Trendz_Boutique": { storeName: "Trendz Boutique", area: "Station Road • 2.5 KM", status: "OPEN" }
+          };
+          db.ref("boutiques").set(demoStores);
+        }
+      });
+    }
+
+    // Load Stores
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       var grid = document.getElementById("storesGrid");
@@ -138,61 +270,92 @@
         if (!s) return;
         count++;
         html += 
-          '<div class="p-3 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-1">' +
-            '<p class="font-brand font-black text-xs text-slate-900 truncate">' + s.storeName + '</p>' +
-            '<p class="text-[10px] text-slate-500 truncate">📍 ' + s.area + '</p>' +
+          '<div onclick="openStoreDetails(\'' + s.storeName + '\')" class="p-3 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-1 cursor-pointer hover:border-orange-500 transition">' +
+            '<p class="font-brand font-black text-xs text-slate-950 truncate">' + s.storeName + '</p>' +
+            '<p class="text-[10px] text-slate-500 truncate">📍 ' + (s.area || 'Nearby') + '</p>' +
             '<span class="inline-block text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">● Live Store</span>' +
           '</div>';
       });
 
-      if (count === 0) {
-        grid.innerHTML = '<p class="text-xs text-slate-400 col-span-2 text-center py-4">No active stores found.</p>';
-      } else {
-        grid.innerHTML = html;
-      }
+      grid.innerHTML = html || '<p class="text-xs text-slate-400 col-span-2 text-center py-2">No active stores.</p>';
       document.getElementById("storeCountBadge").innerText = count + " Active";
     });
 
+    // Load Products with Click Trigger
     db.ref("products").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       var grid = document.getElementById("productsGrid");
       var html = "";
-      var count = 0;
 
       Object.keys(data).forEach(function(key) {
         var p = data[key];
         if (!p || p.stockStatus === "OUT_OF_STOCK") return;
-        count++;
+        
+        var imgListJson = JSON.stringify(p.images || [p.image]).replace(/"/g, '&quot;');
+
         html += 
-          '<div class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm space-y-2 flex flex-col justify-between">' +
+          '<div onclick="handleProductClick(\'' + p.name + '\', \'' + p.price + '\', \'' + p.store + '\', \'' + (p.image || '') + '\', \'' + imgListJson + '\')" class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm space-y-2 flex flex-col justify-between cursor-pointer hover:border-orange-500 transition">' +
             '<div class="space-y-1">' +
-              '<img src="' + (p.image || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400') + '" class="w-full h-32 object-cover rounded-xl">' +
+              '<img src="' + (p.image || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400') + '" class="w-full h-32 object-cover rounded-xl border">' +
               '<p class="font-brand font-black text-xs text-slate-900 truncate mt-1">' + p.name + '</p>' +
               '<p class="text-[10px] text-slate-500">Store: ' + p.store + '</p>' +
             '</div>' +
             '<div class="flex items-center justify-between pt-2 border-t">' +
               '<span class="font-mono-num font-black text-xs text-orange-600">₹' + p.price + '</span>' +
-              '<button onclick="placeOrder(\'' + p.name + '\', \'' + p.price + '\', \'' + p.store + '\')" class="bg-slate-950 hover:bg-orange-600 text-white text-[10px] font-black px-3 py-2 rounded-xl transition cursor-pointer">' +
-                '⚡ Buy 60M' +
-              '</button>' +
+              '<span class="bg-slate-950 text-white text-[10px] font-black px-3 py-1.5 rounded-xl">View ⚡</span>' +
             '</div>' +
           '</div>';
       });
 
-      if (count === 0) {
-        grid.innerHTML = '<p class="text-xs text-slate-400 col-span-2 text-center py-4">No products available.</p>';
-      } else {
-        grid.innerHTML = html;
-      }
+      grid.innerHTML = html || '<p class="text-xs text-slate-400 col-span-2 text-center py-4">No products available.</p>';
     });
 
+    // Handle Product Click -> Requires Login -> Opens Slide Image Modal
+    window.handleProductClick = function(name, price, store, defaultImg, imagesJson) {
+      requireLoginBeforeAction(function() {
+        document.getElementById("modalProdName").innerText = name;
+        document.getElementById("modalStoreName").innerText = "Store: " + store;
+        document.getElementById("modalPrice").innerText = "₹" + price;
+        document.getElementById("modalMainImg").src = defaultImg;
+
+        // Parse slide images
+        var images = [];
+        try {
+          images = JSON.parse(imagesJson.replace(/&quot;/g, '"'));
+        } catch(e) {
+          images = [defaultImg];
+        }
+
+        var thumbContainer = document.getElementById("modalThumbnails");
+        var thumbHtml = "";
+        images.forEach(function(imgUrl) {
+          thumbHtml += '<img src="' + imgUrl + '" onclick="document.getElementById(\'modalMainImg\').src=\'' + imgUrl + '\'" class="w-16 h-16 object-cover rounded-xl border cursor-pointer hover:border-orange-500 shadow-sm flex-shrink-0">';
+        });
+        thumbContainer.innerHTML = thumbHtml;
+
+        // Set buy button action
+        document.getElementById("modalBuyBtn").setAttribute("onclick", "placeOrder('" + name + "', '" + price + "', '" + store + "')");
+
+        document.getElementById("productModal").classList.remove("hidden");
+      });
+    };
+
+    window.closeProductModal = function() {
+      document.getElementById("productModal").classList.add("hidden");
+    };
+
+    window.openStoreDetails = function(storeName) {
+      requireLoginBeforeAction(function() {
+        showQuickToast("🏬 Exploring " + storeName + " catalog...");
+      });
+    };
+
     window.placeOrder = function(itemName, itemPrice, storeName) {
-      var customerName = prompt("Enter your name for delivery:");
-      if (!customerName) return;
-      var customerPhone = prompt("Enter your 10-digit mobile number:");
-      if (!customerPhone) return;
-      var customerAddress = prompt("Enter your delivery address / landmark (within 15KM):");
-      if (!customerAddress) return;
+      closeProductModal();
+      var custName = localStorage.getItem("fitin60_cust_name");
+      var custPhone = localStorage.getItem("fitin60_cust_phone");
+      var address = prompt("Enter your delivery address / landmark (within 15KM):");
+      if (!address) return;
 
       var orderId = "ORD-" + Math.floor(1000 + Math.random() * 9000);
       var deliveryOtp = Math.floor(1000 + Math.random() * 9000).toString();
@@ -202,9 +365,9 @@
         item: itemName,
         totalAmount: itemPrice,
         store: storeName,
-        customerName: customerName,
-        customerPhone: customerPhone,
-        customerAddress: customerAddress,
+        customerName: custName,
+        customerPhone: custPhone,
+        customerAddress: address,
         deliveryOtp: deliveryOtp,
         status: "Order Placed",
         delivered: false,
@@ -212,10 +375,10 @@
       };
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
-        showQuickToast("✓ Order Placed! Delivery in 60 Mins (OTP: " + deliveryOtp + ")");
+        showQuickToast("✓ Order Placed! Delivery OTP: " + deliveryOtp);
         setTimeout(function() {
           window.location.href = "tracking.html";
-        }, 1500);
+        }, 1200);
       }).catch(function(err) {
         alert("Error: " + err.message);
       });
