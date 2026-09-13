@@ -34,12 +34,12 @@
   </header>
 
   <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6">
-    <!-- Add Outfit / Store Form -->
+    <!-- Add Outfit / Store Form with Image Upload & Multi-Angles -->
     <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
       <div class="flex items-center justify-between border-b pb-3">
         <div>
           <h1 class="font-brand font-black text-xl text-slate-950">Boutique Partner Portal</h1>
-          <p class="text-xs text-slate-500 mt-0.5">Add new outfits for 60-min express delivery in your 15KM radar.</p>
+          <p class="text-xs text-slate-500 mt-0.5">Add new outfits with multi-angle photos for 60-min express drops.</p>
         </div>
         <span class="text-2xl">🏬</span>
       </div>
@@ -86,8 +86,18 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-600 mb-1">Main Image Direct URL</label>
+          <label class="block font-bold text-slate-600 mb-1">Main Outfit Image URL (Unsplash / ImgBB)</label>
           <input type="url" id="pImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border rounded-xl p-3 font-mono text-xs text-slate-900 focus:border-orange-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Additional Slide Images (Comma separated URLs for multi-angle view)</label>
+          <input type="text" id="pExtraImages" placeholder="https://images.unsplash.com/... , https://images.unsplash.com/..." class="w-full bg-slate-50 border rounded-xl p-3 font-mono text-xs text-slate-900 focus:border-orange-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-600 mb-1">Outfit Description & Details</label>
+          <textarea id="pDesc" rows="2" placeholder="Pure fabric details, premium stitching..." class="w-full bg-slate-50 border rounded-xl p-3 text-xs text-slate-900 focus:border-orange-500 focus:outline-none"></textarea>
         </div>
 
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-4 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
@@ -170,8 +180,15 @@
       var price = parseInt(document.getElementById("pPrice").value);
       var sizesStr = document.getElementById("pSizes").value.trim();
       var image = document.getElementById("pImage").value.trim();
+      var extraImgStr = document.getElementById("pExtraImages").value.trim();
+      var desc = document.getElementById("pDesc").value.trim();
 
       var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
+      var imagesList = [image];
+      if (extraImgStr) {
+        var extras = extraImgStr.split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+        imagesList = imagesList.concat(extras);
+      }
 
       var newProdKey = db.ref("boutique_products").push().key;
       var prodData = {
@@ -183,7 +200,8 @@
         originalPrice: Math.round(price * 1.4),
         sizes: sizes,
         image: image,
-        images: [image],
+        images: imagesList,
+        desc: desc || "Pure fabric details, premium stitching, ready for instant express delivery.",
         eta: "30 MINS",
         rating: "5.0",
         timestamp: Date.now()
@@ -194,12 +212,11 @@
           storeName: storeName,
           area: storeArea
         });
-        showQuickToast("✓ Outfit published live successfully!");
+        showQuickToast("✓ Outfit published live with multi-images!");
         e.target.reset();
       });
     };
 
-    // Load Master Store Controls for Owner
     if (isOwnerActive) {
       db.ref("boutique_products").on("value", function(snapshot) {
         var data = snapshot.val() || {};
@@ -239,7 +256,7 @@
     }
 
     window.masterRemoveStore = function(storeName) {
-      if (confirm("⚠️ MASTER CONTROL: Permanently delete store '" + storeName + "' and all its products from the platform?")) {
+      if (confirm("⚠️ MASTER CONTROL: Permanently delete store '" + storeName + "' and all its products?")) {
         db.ref("boutique_products").once("value").then(function(snap) {
           var prods = snap.val() || {};
           var updates = {};
