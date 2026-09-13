@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Fitin60 | Rider Fleet & Delivery Management</title>
+  <title>Fitin60 | Rider Fleet & Delivery Partner App</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -11,11 +11,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; color: #0f172a; }
     .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
     #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
     #quickToast.show { transform: translateY(0); opacity: 1; }
   </style>
@@ -26,38 +27,78 @@
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <a href="index.html" class="flex items-center gap-1">
       <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full">Rider Fleet</span>
+      <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">RIDER FLEET</span>
     </a>
     <div id="ownerStatusBadge" class="hidden text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-black px-2.5 py-1 rounded-xl">
-      🛡️ Master Owner Control Active
+      🛡️ Master Owner Active
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6">
-    <!-- Rider Delivery Hub -->
-    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-      <div class="flex items-center justify-between border-b pb-3">
+  <main class="max-w-xl mx-auto px-4 mt-6 space-y-5">
+    
+    <!-- Rider Profile & Online Status Banner -->
+    <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-lg space-y-3">
+      <div class="flex justify-between items-start">
         <div>
-          <h1 class="font-brand font-black text-xl text-slate-950">Active Delivery Radar</h1>
-          <p class="text-xs text-slate-500 mt-0.5">Express 60-minute drops assigned within 15KM zone.</p>
+          <h2 id="riderNameDisplay" class="font-brand font-black text-xl text-white">Rider Fleet Partner</h2>
+          <p class="text-xs text-emerald-400 mt-0.5">🛵 15KM Express Delivery Radar (60 Mins)</p>
         </div>
-        <span class="text-2xl">🛵</span>
+        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Online</span>
       </div>
 
+      <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+        <span class="text-slate-400">Fleet Duty Status:</span>
+        <select id="riderDutyToggle" onchange="updateRiderDuty(this.value)" class="bg-slate-900 border border-slate-700 text-emerald-400 font-bold px-3 py-1.5 rounded-xl focus:outline-none">
+          <option value="ONLINE">🟢 Online (Ready for Orders)</option>
+          <option value="OFFLINE">🔴 Offline (Off Duty)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Rider Earnings Summary -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+        <p class="text-[10px] font-bold text-slate-400 uppercase">Today Deliveries</p>
+        <p id="riderCompletedCount" class="font-mono-num font-black text-lg text-slate-900 mt-0.5">0</p>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+        <p class="text-[10px] font-bold text-slate-400 uppercase">Delivery Earnings</p>
+        <p id="riderTotalEarnings" class="font-mono-num font-black text-lg text-emerald-600 mt-0.5">₹0</p>
+      </div>
+    </div>
+
+    <!-- Active Delivery Radar (Orders to Accept / Deliver) -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-brand font-black text-sm text-slate-900">⚡ Active Delivery Radar</h3>
+        <span class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">15KM Zone</span>
+      </div>
       <div id="riderOrdersContainer" class="space-y-3">
         <p class="text-xs text-slate-400 text-center py-6">Loading active express orders...</p>
       </div>
     </div>
 
-    <!-- Master Owner Rider Management Section -->
-    <div id="masterRiderControlSection" class="hidden bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-      <div class="flex items-center justify-between border-b pb-3">
-        <h2 class="font-brand font-black text-lg text-slate-950">🛡️ Master Rider Fleet Control</h2>
-        <span class="text-xs bg-rose-100 text-rose-700 font-bold px-2.5 py-1 rounded-lg">Owner Exclusive</span>
+    <!-- Completed Deliveries History -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-brand font-black text-sm text-slate-900">📦 Completed Deliveries History</h3>
+        <span id="riderHistCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Done</span>
       </div>
-      <p class="text-xs text-slate-500">As platform owner, you can manage and remove registered delivery partners:</p>
+      <div id="riderHistoryList" class="space-y-2">
+        <p class="text-xs text-slate-400 text-center py-2">No completed deliveries yet.</p>
+      </div>
+    </div>
+
+    <!-- Master Owner Rider Management (Visible only if Owner) -->
+    <div id="masterRiderControlSection" class="hidden bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 class="font-brand font-black text-sm text-slate-950">🛡️ Master Rider Fleet Control</h3>
+        <span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded">Owner Only</span>
+      </div>
+      <p class="text-xs text-slate-500">Manage registered delivery fleet partners below:</p>
       <div id="masterRidersList" class="space-y-2"></div>
     </div>
+
   </main>
 
   <!-- Bottom Navigation -->
@@ -106,6 +147,9 @@
       document.getElementById("masterRiderControlSection").classList.remove("hidden");
     }
 
+    var riderName = localStorage.getItem("fitin60_rider_name") || "Express Rider #1";
+    document.getElementById("riderNameDisplay").innerText = riderName;
+
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
       var text = document.getElementById("toastMsg");
@@ -114,33 +158,121 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
+    function formatDateTime(timestamp) {
+      if (!timestamp) return "Recently";
+      var d = new Date(timestamp);
+      var day = d.getDate();
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var month = months[d.getMonth()];
+      var hours = d.getHours();
+      var minutes = d.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      var strMinutes = minutes < 10 ? '0' + minutes : minutes;
+      return day + " " + month + ", " + hours + ":" + strMinutes + " " + ampm;
+    }
+
+    window.updateRiderDuty = function(status) {
+      showQuickToast("✓ Fleet Duty Status: " + status);
+    };
+
     // Load Live Orders for Rider Fleet
     db.ref("orders").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       var container = document.getElementById("riderOrdersContainer");
-      var orders = Object.values(data).reverse();
+      var historyContainer = document.getElementById("riderHistoryList");
+      
+      var liveHtml = "";
+      var histHtml = "";
+      var liveCount = 0;
+      var histCount = 0;
+      var totalEarnings = 0;
 
-      if (orders.length === 0) {
-        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-6'>No active delivery orders available right now.</p>";
-        return;
-      }
+      Object.keys(data).forEach(function(key) {
+        var o = data[key];
+        if (!o) return;
+        var isDelivered = (o.status === "Delivered" || o.delivered === true);
+        var timeStr = formatDateTime(o.timestamp);
 
-      var html = "";
-      orders.forEach(function(o) {
-        html += 
-          '<div class="p-4 bg-slate-50 border rounded-2xl space-y-2 text-xs">' +
-            '<div class="flex justify-between items-center font-bold">' +
-              '<span class="text-orange-600">' + o.orderId + '</span>' +
-              '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">₹' + o.totalAmount + '</span>' +
-            '</div>' +
-            '<p class="text-slate-900 font-bold">Store: ' + o.store + '</p>' +
-            '<p class="text-slate-600">Deliver to: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
-            '<p class="text-slate-500 text-[11px]">Address: ' + o.customerAddress + '</p>' +
-          '</div>';
+        if (!isDelivered) {
+          liveCount++;
+          liveHtml += 
+            '<div class="p-4 bg-slate-50 border rounded-2xl space-y-2 text-xs">' +
+              '<div class="flex justify-between items-center font-bold">' +
+                '<span class="text-orange-600 text-sm font-black">' + o.orderId + '</span>' +
+                '<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg">₹' + o.totalAmount + '</span>' +
+              '</div>' +
+              '<div class="space-y-1 text-slate-700 border-t pt-2">' +
+                '<p><strong>Store:</strong> ' + o.store + '</p>' +
+                '<p><strong>Customer:</strong> ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                '<p><strong>Delivery Address:</strong> ' + o.customerAddress + '</p>' +
+                '<p class="text-orange-700 font-bold">Expected Delivery OTP: ' + (o.deliveryOtp || '4545') + '</p>' +
+              '</div>' +
+              '<div class="pt-2">' +
+                '<button onclick="markOrderDelivered(\'' + key + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">' +
+                  '✓ Complete Delivery & Verify OTP' +
+                '</button>' +
+              '</div>' +
+            '</div>';
+        } else {
+          histCount++;
+          var deliveryFee = 49; // Standard rider drop fee
+          totalEarnings += deliveryFee;
+          var dropTime = o.deliveredTimestamp ? formatDateTime(o.deliveredTimestamp) : timeStr;
+
+          histHtml += 
+            '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+              '<div class="flex justify-between font-bold text-slate-900">' +
+                '<span>' + o.orderId + ' • Earned: ₹' + deliveryFee + '</span>' +
+                '<span class="text-emerald-600 font-bold">✓ Delivered</span>' +
+              '</div>' +
+              '<p class="text-[11px] text-slate-600">Store: ' + o.store + ' | To: ' + o.customerName + '</p>' +
+              '<p class="text-[10px] text-slate-400 font-mono">🕒 ' + dropTime + '</p>' +
+            '</div>';
+        }
       });
 
-      container.innerHTML = html;
+      if (liveCount === 0) {
+        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-6'>No active express orders available right now.</p>";
+      } else {
+        container.innerHTML = liveHtml;
+      }
+
+      if (histCount === 0) {
+        historyContainer.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No completed deliveries yet.</p>";
+      } else {
+        historyContainer.innerHTML = histHtml;
+      }
+
+      document.getElementById("riderCompletedCount").innerText = histCount;
+      document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
     });
+
+    window.markOrderDelivered = function(orderKey) {
+      var enteredOtp = prompt("Enter 4-digit Delivery OTP provided by customer:");
+      if (!enteredOtp) return;
+
+      db.ref("orders/" + orderKey).once("value").then(function(snap) {
+        var o = snap.val();
+        if (!o) return;
+
+        var expectedOtp = String(o.deliveryOtp || "4545");
+        if (enteredOtp.trim() !== expectedOtp) {
+          alert("❌ Invalid Delivery OTP! Please check with customer.");
+          return;
+        }
+
+        db.ref("orders/" + orderKey).update({
+          status: "Delivered",
+          delivered: true,
+          riderName: riderName,
+          deliveredTimestamp: Date.now()
+        }).then(function() {
+          showQuickToast("✓ Order Delivered Successfully!");
+        });
+      });
+    };
 
     // Load Master Riders list for Owner
     if (isOwnerActive) {
@@ -164,7 +296,7 @@
                 '<p class="text-[10px] text-slate-500">Phone: ' + (r.phone || k) + '</p>' +
               '</div>' +
               '<button onclick="masterRemoveRider(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer transition">' +
-                '🗑️ Remove Rider' +
+                '🗑️ Remove' +
               '</button>' +
             '</div>';
         });
