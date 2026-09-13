@@ -19,8 +19,8 @@
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
     #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
     #quickToast.show { transform: translateY(0); opacity: 1; }
-    @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-    .animate-pulse-slow { animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulseAlert { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .live-alert-pulse { animation: pulseAlert 1.5s infinite; }
   </style>
 </head>
 <body class="min-h-screen pb-28 antialiased">
@@ -59,24 +59,34 @@
       </div>
     </div>
 
-    <!-- Daily Earnings & Analytics Summary Card -->
-    <div class="grid grid-cols-2 gap-3">
-      <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm">
-        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Today's Total Orders</p>
-        <p id="statTotalOrders" class="font-mono-num font-black text-xl text-slate-950 mt-1">0</p>
+    <!-- Daily Earnings & Sales Analytics Card with Date/Time -->
+    <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <span class="text-xs font-bold text-slate-800">📊 Store Business Summary</span>
+        <span id="statLastUpdatedTime" class="text-[10px] text-slate-400 font-mono">Live Sync</span>
       </div>
-      <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm">
-        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Today's Revenue</p>
-        <p id="statTotalRevenue" class="font-mono-num font-black text-xl text-orange-600 mt-1">₹0</p>
+      <div class="grid grid-cols-3 gap-2">
+        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
+          <p class="text-[10px] font-bold text-slate-400 uppercase">Total Orders</p>
+          <p id="statTotalOrders" class="font-mono-num font-black text-lg text-slate-900 mt-0.5">0</p>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
+          <p class="text-[10px] font-bold text-slate-400 uppercase">Total Revenue</p>
+          <p id="statTotalRevenue" class="font-mono-num font-black text-lg text-orange-600 mt-0.5">₹0</p>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
+          <p class="text-[10px] font-bold text-slate-400 uppercase">Settled</p>
+          <p id="statSettledAmount" class="font-mono-num font-black text-lg text-emerald-600 mt-0.5">₹0</p>
+        </div>
       </div>
     </div>
 
-    <!-- Live Store Orders with Visual Alert -->
+    <!-- Live Store Orders with Pulse Alert & Time -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
         <div class="flex items-center gap-2">
           <h3 class="font-brand font-black text-sm text-slate-900">Live Store Orders</h3>
-          <span id="livePulseIndicator" class="hidden w-2.5 h-2.5 rounded-full bg-orange-600 animate-ping"></span>
+          <span id="livePulseIndicator" class="hidden w-2.5 h-2.5 rounded-full bg-orange-500 live-alert-pulse" title="New Order Received!"></span>
         </div>
         <span id="liveOrdersCount" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
       </div>
@@ -85,7 +95,7 @@
       </div>
     </div>
 
-    <!-- Upload New Dress Form -->
+    <!-- Upload New Dress Form with Modern Image Browser -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
       <div class="border-b pb-2">
         <h3 class="font-brand font-black text-sm text-slate-900">+ Upload New Dress to Radar</h3>
@@ -109,9 +119,23 @@
           </div>
         </div>
 
+        <!-- Modern Image Browser Dropzone & Preview -->
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Image Upload (Select from device)</label>
-          <input type="file" id="upImageFile" accept="image/*" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer">
+          <label class="block font-bold text-slate-700 mb-1">Outfit Photo</label>
+          <div class="relative border-2 border-dashed border-slate-300 hover:border-orange-500 bg-slate-50 rounded-2xl p-4 text-center cursor-pointer transition" id="dropzoneBox">
+            <input type="file" id="upImageFile" accept="image/*" required onchange="handleImagePreview(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+            
+            <div id="uploadPrompt" class="space-y-1">
+              <span class="text-3xl block">📷</span>
+              <p class="font-bold text-slate-800 text-xs">Tap to choose or capture outfit photo</p>
+              <p class="text-[10px] text-slate-400">JPG, PNG or WEBP (Direct high resolution)</p>
+            </div>
+
+            <div id="imagePreviewContainer" class="hidden flex-col items-center gap-2">
+              <img id="imagePreview" src="" alt="Preview" class="w-32 h-36 object-cover rounded-xl border border-slate-200 shadow-sm">
+              <span class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full">✓ Photo Selected (Tap to Change)</span>
+            </div>
+          </div>
         </div>
 
         <div>
@@ -133,15 +157,15 @@
     <!-- Manage Uploaded Outfits with Stock Toggle & Edit/Delete -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">Manage Uploaded Outfits</h3>
-        <span class="text-[10px] text-slate-400 font-bold">Stock / Edit / Delete</span>
+        <h3 class="font-brand font-black text-sm text-slate-900">Manage Uploaded Outfits & Stock</h3>
+        <span class="text-[10px] text-slate-400 font-bold">In/Out Stock • Edit</span>
       </div>
       <div id="partnerUploadedList" class="space-y-2">
         <p class="text-xs text-slate-400 text-center py-2">Loading your inventory...</p>
       </div>
     </div>
 
-    <!-- Instant Payment & Delivery History -->
+    <!-- Instant Payment & Delivery History with Exact Date & Time -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
         <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payment & Delivery History</h3>
@@ -292,6 +316,36 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
+    // Format Date & Time Helper
+    function formatDateTime(timestamp) {
+      if (!timestamp) return "Recently";
+      var d = new Date(timestamp);
+      var day = d.getDate();
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var month = months[d.getMonth()];
+      var hours = d.getHours();
+      var minutes = d.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      var strMinutes = minutes < 10 ? '0' + minutes : minutes;
+      return day + " " + month + ", " + hours + ":" + strMinutes + " " + ampm;
+    }
+
+    // Modern Image Browser Live Preview
+    window.handleImagePreview = function(event) {
+      var input = event.target;
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById("imagePreview").src = e.target.result;
+          document.getElementById("uploadPrompt").classList.add("hidden");
+          document.getElementById("imagePreviewContainer").classList.remove("hidden");
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
     window.openEditStoreModal = function() {
       document.getElementById("storeModalName").value = activeStoreName;
       document.getElementById("storeModalArea").value = activeStoreArea;
@@ -338,11 +392,11 @@
       var btn = document.getElementById("pubBtn");
 
       if (!fileInput.files || fileInput.files.length === 0) {
-        return alert("Please select an image file!");
+        return alert("Please select an outfit photo!");
       }
 
       var file = fileInput.files[0];
-      btn.innerText = "⏳ Processing Image...";
+      btn.innerText = "⏳ Processing Photo...";
       btn.disabled = true;
 
       var reader = new FileReader();
@@ -373,6 +427,8 @@
           btn.disabled = false;
           showQuickToast("✓ Outfit published live!");
           e.target.reset();
+          document.getElementById("imagePreviewContainer").classList.add("hidden");
+          document.getElementById("uploadPrompt").classList.remove("hidden");
         }).catch(function(err) {
           btn.innerText = "+ Publish Live to Fitin60";
           btn.disabled = false;
@@ -382,14 +438,14 @@
       reader.readAsDataURL(file);
     };
 
-    window.toggleOutfitStock = function(key, currentStockStatus) {
-      var newStatus = (currentStockStatus === false) ? true : false;
+    window.toggleStockStatus = function(key, currentStatus) {
+      var newStatus = (currentStatus === false) ? true : false;
       db.ref("boutique_products/" + key).update({ inStock: newStatus }).then(function() {
         showQuickToast(newStatus ? "✓ Marked as In-Stock" : "✓ Marked as Out of Stock");
       });
     };
 
-    // Load Uploaded Outfits with Stock Toggle, Edit & Delete
+    // Load Uploaded Outfits with Stock Toggle & Edit/Delete
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
       loadedProductsMap = data;
@@ -408,13 +464,13 @@
                 '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
                 '<div class="truncate">' +
                   '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
-                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • <span class="' + (inStock ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold') + '">' + (inStock ? 'In-Stock' : 'Out of Stock') + '</span></p>' +
+                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • <span class="' + (inStock ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold') + '">' + (inStock ? 'In Stock' : 'Out of Stock') + '</span></p>' +
                 '</div>' +
               '</div>' +
               '<div class="flex gap-1 shrink-0">' +
-                '<button onclick="toggleOutfitStock(\'' + k + '\', ' + inStock + ')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer" title="Toggle Stock">📦</button>' +
-                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer">✏️</button>' +
-                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer">🗑️</button>' +
+                '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '" title="Toggle Stock">' + (inStock ? 'Pause' : 'Stock On') + '</button>' +
+                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
+                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
               '</div>' +
             '</div>';
         }
@@ -427,7 +483,7 @@
       }
     });
 
-    // Load Live Store Orders, Analytics & History
+    // Load Live Store Orders, Analytics & Delivery History with Exact Date/Time
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
@@ -435,32 +491,45 @@
       var liveCount = 0;
       var histCount = 0;
       var totalRevenue = 0;
+      var settledAmount = 0;
 
       Object.values(data).forEach(function(o) {
         if (o.store && o.store.toLowerCase() === activeStoreName.toLowerCase()) {
           var isDelivered = (o.status === "Delivered" || o.delivered === true);
+          var orderDateTime = formatDateTime(o.timestamp);
           
           if (!isDelivered) {
             liveCount++;
             liveListHtml += 
-              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
-                '<div class="flex justify-between font-bold text-slate-900">' +
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
+                '<div class="flex justify-between items-center font-bold text-slate-900">' +
                   '<span>' + o.orderId + ' (' + o.customerName + ')</span>' +
-                  '<span class="text-orange-600">₹' + o.totalAmount + '</span>' +
+                  '<span class="text-orange-600 font-mono-num">₹' + o.totalAmount + '</span>' +
                 '</div>' +
-                '<p class="text-[11px] text-slate-600">Addr: ' + o.customerAddress + '</p>' +
+                '<div class="flex justify-between text-[10px] text-slate-500 font-medium">' +
+                  '<span>📍 ' + o.customerAddress + '</span>' +
+                  '<span class="text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded font-bold">🕒 ' + orderDateTime + '</span>' +
+                '</div>' +
                 '<p class="text-[10px] text-emerald-600 font-bold">Payment Mode: ' + o.paymentMethod + '</p>' +
               '</div>';
           } else {
             histCount++;
             totalRevenue += o.totalAmount;
+            var netPayout = (o.financialSplit && o.financialSplit.storeNetPayout) ? o.financialSplit.storeNetPayout : Math.round(o.totalAmount * 0.85);
+            settledAmount += netPayout;
+
+            var deliveryTime = o.deliveredTimestamp ? formatDateTime(o.deliveredTimestamp) : orderDateTime;
+
             historyListHtml += 
-              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
                 '<div class="flex justify-between font-bold text-slate-900">' +
                   '<span>' + o.orderId + ' • ₹' + o.totalAmount + '</span>' +
-                  '<span class="text-emerald-600 font-bold">✓ Settled & Delivered</span>' +
+                  '<span class="text-emerald-600 font-bold">✓ Net Payout: ₹' + netPayout + '</span>' +
                 '</div>' +
-                '<p class="text-[11px] text-slate-600">Customer: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                '<div class="flex justify-between text-[11px] text-slate-600">' +
+                  '<span>Customer: ' + o.customerName + ' (' + o.customerPhone + ')</span>' +
+                  '<span class="text-[10px] text-slate-500 font-mono">🕒 ' + deliveryTime + '</span>' +
+                '</div>' +
                 '<p class="text-[10px] text-blue-600 font-bold">🛵 Delivered by: ' + (o.riderName || 'Express Fleet Partner') + '</p>' +
               '</div>';
           }
@@ -469,8 +538,10 @@
 
       document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
       document.getElementById("completedCount").innerText = histCount + " Completed";
-      document.getElementById("statTotalOrders").innerText = liveCount + histCount;
+      document.getElementById("statTotalOrders").innerText = (liveCount + histCount);
       document.getElementById("statTotalRevenue").innerText = "₹" + totalRevenue;
+      document.getElementById("statSettledAmount").innerText = "₹" + settledAmount;
+      document.getElementById("statLastUpdatedTime").innerText = "Synced: " + formatDateTime(Date.now());
 
       var pulse = document.getElementById("livePulseIndicator");
       if (liveCount > 0) {
