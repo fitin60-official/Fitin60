@@ -733,8 +733,8 @@
           '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="relative bg-white border border-slate-200 rounded-2xl p-3 cursor-pointer hover:border-orange-500 shadow-sm transition space-y-2 flex flex-col justify-between">' +
             (isOwnerActive && isCloud ? 
               '<div class="absolute top-2 right-2 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">✏️</button>' +
-                '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">🗑️</button>' +
+                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-lg text-xs shadow-md cursor-pointer" title="Edit Outfit">✏️</button>' +
+                '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1.5 rounded-lg text-xs shadow-md cursor-pointer" title="Delete Outfit">🗑️</button>' +
               '</div>' : '') +
             '<div class="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-100">' +
               '<img src="' + p.image + '" class="w-full h-full object-cover hover:scale-105 transition duration-300">' +
@@ -952,7 +952,7 @@
       renderBoutiqueStores();
     };
 
-    // RENDER WITH ALL CARDS SUPPORTING OWNER EDIT BUTTONS
+    // RENDER STORES WITH UNIVERSAL OWNER EDIT OVERLAYS
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1267,8 +1267,8 @@
         customerPhone: phone,
         customerAddress: deliveryAddress,
         items: items,
-        itemTotal: itemSubtotal,
-	distanceKm: distVal,
+	itemTotal: itemSubtotal,
+        distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
         paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
