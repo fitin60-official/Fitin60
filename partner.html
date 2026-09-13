@@ -30,8 +30,9 @@
       <span class="text-[9px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded-full">MERCHANT STUDIO</span>
     </a>
     <div class="flex items-center gap-2">
+      <button onclick="openEditStoreModal()" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200 cursor-pointer">✏️ Edit Store</button>
       <button onclick="partnerLogout()" class="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 cursor-pointer">Logout</button>
-      <a href="index.html" class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">← Customer Radar</a>
+      <a href="index.html" class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">← Radar</a>
     </div>
   </header>
 
@@ -50,8 +51,8 @@
       <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
         <span class="text-slate-400">Store Status for 60-min Express:</span>
         <select id="storeStatusToggle" onchange="updateStoreStatus(this.value)" class="bg-slate-900 border border-slate-700 text-emerald-400 font-bold px-3 py-1.5 rounded-xl focus:outline-none">
-          <option value="OPEN">🟢 Accepting Orders (Open)</option>
-          <option value="CLOSED">🔴 Temporarily Closed</option>
+          <option value="OPEN">🟢 Open for 60-Min Orders</option>
+          <option value="CLOSED">🔴 Closed / Not Accepting Orders</option>
         </select>
       </div>
     </div>
@@ -97,8 +98,8 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Available Sizes (Free size, M, L, XL, 28, 30...)</label>
-          <input type="text" id="upSizes" required placeholder="e.g. Free size, M, L, XL" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
+          <label class="block font-bold text-slate-700 mb-1">Available Sizes</label>
+          <input type="text" id="upSizes" required placeholder="Free size, M, L, XL, 28, 30..." class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
         </div>
 
         <div>
@@ -123,21 +124,21 @@
       </div>
     </div>
 
-    <!-- Completed Deliveries & Rider History -->
+    <!-- Instant Payment & Delivery History -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">🛵 Completed Deliveries & Rider History</h3>
-        <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Delivered</span>
+        <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payment & Delivery History</h3>
+        <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Completed</span>
       </div>
       <div id="partnerHistoryList" class="space-y-2">
-        <p class="text-xs text-slate-400 text-center py-2">No delivery history yet.</p>
+        <p class="text-xs text-slate-400 text-center py-2">No payment or delivery history yet.</p>
       </div>
     </div>
 
     <!-- Simple Store Deletion -->
     <div class="bg-slate-50 border border-slate-200 rounded-3xl p-4 flex items-center justify-between text-xs">
       <div>
-        <p class="font-bold text-slate-800">Close Store Account</p>
+        <p class="font-bold text-slate-800">Delete Store Account</p>
         <p class="text-[10px] text-slate-500">Permanently remove this store from Fitin60 radar.</p>
       </div>
       <button onclick="deletePartnerStorePermanently()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-3 py-2 rounded-xl transition cursor-pointer">
@@ -147,7 +148,7 @@
 
   </main>
 
-  <!-- EDIT MODAL FOR PARTNER -->
+  <!-- EDIT OUTFIT MODAL -->
   <div id="partnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
@@ -178,12 +179,41 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Sizes (e.g., Free size, M, L)</label>
+          <label class="block font-bold text-slate-700 mb-1">Available Sizes</label>
           <input type="text" id="editSizes" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
         </div>
 
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
           ✓ Save Updates
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT STORE MODAL (Name & Location Change) -->
+  <div id="editStoreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
+      <div class="flex items-center justify-between border-b pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🏬</span>
+          <h3 class="font-brand font-bold text-sm text-slate-900">Edit Store Profile</h3>
+        </div>
+        <button onclick="closeEditStoreModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <form onsubmit="handleStoreProfileSave(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Store Name</label>
+          <input type="text" id="storeModalName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Store Location / Area</label>
+          <input type="text" id="storeModalArea" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
+        </div>
+
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          ✓ Update Store Details
         </button>
       </form>
     </div>
@@ -245,8 +275,38 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
+    window.openEditStoreModal = function() {
+      document.getElementById("storeModalName").value = activeStoreName;
+      document.getElementById("storeModalArea").value = activeStoreArea;
+      document.getElementById("editStoreModal").classList.remove("hidden");
+    };
+
+    window.closeEditStoreModal = function() {
+      document.getElementById("editStoreModal").classList.add("hidden");
+    };
+
+    window.handleStoreProfileSave = function(e) {
+      e.preventDefault();
+      var newName = document.getElementById("storeModalName").value.trim();
+      var newArea = document.getElementById("storeModalArea").value.trim();
+
+      if (!newName || !newArea) return;
+
+      activeStoreName = newName;
+      activeStoreArea = newArea;
+      localStorage.setItem("fitin60_partner_store", newName);
+      localStorage.setItem("fitin60_partner_area", newArea);
+
+      document.getElementById("bannerStoreName").innerText = newName;
+      document.getElementById("bannerStoreArea").innerText = "📍 " + newArea;
+
+      closeEditStoreModal();
+      showQuickToast("✓ Store details updated successfully!");
+    };
+
     window.updateStoreStatus = function(status) {
-      showQuickToast("✓ Store status updated to " + status);
+      var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed / Not Accepting Orders";
+      showQuickToast("✓ Store status: " + label);
       db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).update({ status: status });
     };
 
@@ -340,7 +400,7 @@
       }
     });
 
-    // Load Live Store Orders & Delivery History
+    // Load Live Store Orders & Instant Payment & Delivery History
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
@@ -361,7 +421,7 @@
                   '<span class="text-orange-600">₹' + o.totalAmount + '</span>' +
                 '</div>' +
                 '<p class="text-[11px] text-slate-600">Addr: ' + o.customerAddress + '</p>' +
-                '<p class="text-[10px] text-emerald-600 font-bold">Payment: ' + o.paymentMethod + '</p>' +
+                '<p class="text-[10px] text-emerald-600 font-bold">Payment Mode: ' + o.paymentMethod + '</p>' +
               '</div>';
           } else {
             histCount++;
@@ -369,17 +429,17 @@
               '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
                 '<div class="flex justify-between font-bold text-slate-900">' +
                   '<span>' + o.orderId + ' • ₹' + o.totalAmount + '</span>' +
-                  '<span class="text-emerald-600">✓ Delivered</span>' +
+                  '<span class="text-emerald-600 font-bold">✓ Settled & Delivered</span>' +
                 '</div>' +
                 '<p class="text-[11px] text-slate-600">Customer: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
-                '<p class="text-[10px] text-blue-600 font-bold">🛵 Delivered by Rider: ' + (o.riderName || 'Express Fleet Partner') + '</p>' +
+                '<p class="text-[10px] text-blue-600 font-bold">🛵 Delivered by: ' + (o.riderName || 'Express Fleet Partner') + '</p>' +
               '</div>';
           }
         }
       });
 
       document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
-      document.getElementById("completedCount").innerText = histCount + " Delivered";
+      document.getElementById("completedCount").innerText = histCount + " Completed";
 
       if (liveCount > 0) {
         document.getElementById("partnerLiveOrdersList").innerHTML = liveListHtml;
@@ -390,7 +450,7 @@
       if (histCount > 0) {
         document.getElementById("partnerHistoryList").innerHTML = historyListHtml;
       } else {
-        document.getElementById("partnerHistoryList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No delivery history yet.</p>";
+        document.getElementById("partnerHistoryList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No payment or delivery history yet.</p>";
       }
     });
 
