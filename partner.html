@@ -37,14 +37,22 @@
 
   <main class="max-w-xl mx-auto px-4 mt-6 space-y-5">
     
-    <!-- Store Status Banner -->
+    <!-- Store Status Banner & Toggle -->
     <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-lg space-y-3">
       <div class="flex justify-between items-start">
         <div>
           <h2 id="bannerStoreName" class="font-brand font-black text-xl text-white">Sai Fashions</h2>
           <p id="bannerStoreArea" class="text-xs text-orange-400 mt-0.5">📍 Near TV tower • Mobile: 9515552511</p>
         </div>
-        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Authenticated</span>
+        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Live & Active</span>
+      </div>
+
+      <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+        <span class="text-slate-400">Store Status for 60-min Express:</span>
+        <select id="storeStatusToggle" onchange="updateStoreStatus(this.value)" class="bg-slate-900 border border-slate-700 text-emerald-400 font-bold px-3 py-1.5 rounded-xl focus:outline-none">
+          <option value="OPEN">🟢 Accepting Orders (Open)</option>
+          <option value="CLOSED">🔴 Temporarily Closed</option>
+        </select>
       </div>
     </div>
 
@@ -89,8 +97,8 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Available Sizes</label>
-          <input type="text" id="upSizes" required placeholder="S, M, L, XL" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
+          <label class="block font-bold text-slate-700 mb-1">Available Sizes (Free size, M, L, XL, 28, 30...)</label>
+          <input type="text" id="upSizes" required placeholder="e.g. Free size, M, L, XL" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
         </div>
 
         <div>
@@ -104,32 +112,82 @@
       </form>
     </div>
 
-    <!-- Manage Uploaded Outfits -->
+    <!-- Manage Uploaded Outfits with Edit & Delete -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
-      <div class="border-b pb-2">
+      <div class="border-b pb-2 flex justify-between items-center">
         <h3 class="font-brand font-black text-sm text-slate-900">Manage Uploaded Outfits</h3>
+        <span class="text-[10px] text-slate-400 font-bold">Edit / Delete</span>
       </div>
       <div id="partnerUploadedList" class="space-y-2">
-        <p class="text-xs text-slate-400 text-center py-2">No custom outfits uploaded yet.</p>
+        <p class="text-xs text-slate-400 text-center py-2">Loading your inventory...</p>
       </div>
     </div>
 
-    <!-- Danger Zone: Delete Store -->
-    <div class="bg-rose-50/60 border border-rose-200 rounded-3xl p-5 space-y-3">
-      <div>
-        <h4 class="font-brand font-black text-xs text-rose-800 flex items-center gap-1.5">
-          <span>⚠️</span> Danger Zone: Delete Store
-        </h4>
-        <p class="text-[11px] text-rose-600/80 mt-1">
-          Permanently delete this boutique profile and all uploaded clothing from the Fitin60 radar. This action cannot be undone.
-        </p>
+    <!-- Completed Deliveries & Rider History -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+      <div class="border-b pb-2 flex justify-between items-center">
+        <h3 class="font-brand font-black text-sm text-slate-900">🛵 Completed Deliveries & Rider History</h3>
+        <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Delivered</span>
       </div>
-      <button onclick="deletePartnerStorePermanently()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow">
-        🗑️ Delete My Store & Account Permanently
+      <div id="partnerHistoryList" class="space-y-2">
+        <p class="text-xs text-slate-400 text-center py-2">No delivery history yet.</p>
+      </div>
+    </div>
+
+    <!-- Simple Store Deletion -->
+    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-4 flex items-center justify-between text-xs">
+      <div>
+        <p class="font-bold text-slate-800">Close Store Account</p>
+        <p class="text-[10px] text-slate-500">Permanently remove this store from Fitin60 radar.</p>
+      </div>
+      <button onclick="deletePartnerStorePermanently()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-3 py-2 rounded-xl transition cursor-pointer">
+        Delete Store
       </button>
     </div>
 
   </main>
+
+  <!-- EDIT MODAL FOR PARTNER -->
+  <div id="partnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
+      <div class="flex items-center justify-between border-b pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">✏️</span>
+          <h3 class="font-brand font-bold text-sm text-slate-900">Edit Outfit Details</h3>
+        </div>
+        <button onclick="closePartnerEditModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <form onsubmit="handlePartnerEditSave(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="editProdKey">
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Outfit Name</label>
+          <input type="text" id="editName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Price (₹)</label>
+            <input type="number" id="editPrice" required class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono text-slate-900">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Original Price (₹)</label>
+            <input type="number" id="editOrigPrice" required class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono text-slate-900">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Sizes (e.g., Free size, M, L)</label>
+          <input type="text" id="editSizes" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
+        </div>
+
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          ✓ Save Updates
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- Bottom Navigation -->
   <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-6 flex items-center justify-around z-40 shadow-lg">
@@ -171,12 +229,13 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    // Default partner session or active store
     var activeStoreName = localStorage.getItem("fitin60_partner_store") || "Sai Fashions";
     var activeStoreArea = localStorage.getItem("fitin60_partner_area") || "Near TV tower • Mobile: 9515552511";
 
     document.getElementById("bannerStoreName").innerText = activeStoreName;
     document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
+
+    var loadedProductsMap = {};
 
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
@@ -185,6 +244,11 @@
       toast.classList.add("show");
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
+
+    window.updateStoreStatus = function(status) {
+      showQuickToast("✓ Store status updated to " + status);
+      db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).update({ status: status });
+    };
 
     window.handlePartnerUpload = function(e) {
       e.preventDefault();
@@ -240,9 +304,10 @@
       reader.readAsDataURL(file);
     };
 
-    // Load Uploaded Outfits for this store
+    // Load Uploaded Outfits with Edit/Delete
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
+      loadedProductsMap = data;
       var container = document.getElementById("partnerUploadedList");
       var html = "";
       var count = 0;
@@ -257,12 +322,15 @@
                 '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
                 '<div class="truncate">' +
                   '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
-                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + '</p>' +
+                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • Sizes: ' + (p.sizes ? p.sizes.join(", ") : 'Free size') + '</p>' +
                 '</div>' +
               '</div>' +
-              '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer shrink-0">🗑️</button>' +
+              '<div class="flex gap-1 shrink-0">' +
+                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
+                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
+              '</div>' +
             '</div>';
-        });
+        }
       });
 
       if (count === 0) {
@@ -271,6 +339,98 @@
         container.innerHTML = html;
       }
     });
+
+    // Load Live Store Orders & Delivery History
+    db.ref("orders").on("value", function(snap) {
+      var data = snap.val() || {};
+      var liveListHtml = "";
+      var historyListHtml = "";
+      var liveCount = 0;
+      var histCount = 0;
+
+      Object.values(data).forEach(function(o) {
+        if (o.store && o.store.toLowerCase() === activeStoreName.toLowerCase()) {
+          var isDelivered = (o.status === "Delivered" || o.delivered === true);
+          
+          if (!isDelivered) {
+            liveCount++;
+            liveListHtml += 
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+                '<div class="flex justify-between font-bold text-slate-900">' +
+                  '<span>' + o.orderId + ' (' + o.customerName + ')</span>' +
+                  '<span class="text-orange-600">₹' + o.totalAmount + '</span>' +
+                '</div>' +
+                '<p class="text-[11px] text-slate-600">Addr: ' + o.customerAddress + '</p>' +
+                '<p class="text-[10px] text-emerald-600 font-bold">Payment: ' + o.paymentMethod + '</p>' +
+              '</div>';
+          } else {
+            histCount++;
+            historyListHtml += 
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+                '<div class="flex justify-between font-bold text-slate-900">' +
+                  '<span>' + o.orderId + ' • ₹' + o.totalAmount + '</span>' +
+                  '<span class="text-emerald-600">✓ Delivered</span>' +
+                '</div>' +
+                '<p class="text-[11px] text-slate-600">Customer: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                '<p class="text-[10px] text-blue-600 font-bold">🛵 Delivered by Rider: ' + (o.riderName || 'Express Fleet Partner') + '</p>' +
+              '</div>';
+          }
+        }
+      });
+
+      document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
+      document.getElementById("completedCount").innerText = histCount + " Delivered";
+
+      if (liveCount > 0) {
+        document.getElementById("partnerLiveOrdersList").innerHTML = liveListHtml;
+      } else {
+        document.getElementById("partnerLiveOrdersList").innerHTML = "<p class='text-xs text-slate-400 text-center py-3'>No orders pending right now.</p>";
+      }
+
+      if (histCount > 0) {
+        document.getElementById("partnerHistoryList").innerHTML = historyListHtml;
+      } else {
+        document.getElementById("partnerHistoryList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No delivery history yet.</p>";
+      }
+    });
+
+    window.openPartnerEditModal = function(key) {
+      var p = loadedProductsMap[key];
+      if (!p) return;
+
+      document.getElementById("editProdKey").value = key;
+      document.getElementById("editName").value = p.name || "";
+      document.getElementById("editPrice").value = p.price || 0;
+      document.getElementById("editOrigPrice").value = p.originalPrice || 0;
+      document.getElementById("editSizes").value = (p.sizes || ["Free size"]).join(", ");
+
+      document.getElementById("partnerEditModal").classList.remove("hidden");
+    };
+
+    window.closePartnerEditModal = function() {
+      document.getElementById("partnerEditModal").classList.add("hidden");
+    };
+
+    window.handlePartnerEditSave = function(e) {
+      e.preventDefault();
+      var key = document.getElementById("editProdKey").value;
+      if (!key) return;
+
+      var sizesStr = document.getElementById("editSizes").value.trim();
+      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
+
+      var updateData = {
+        name: document.getElementById("editName").value.trim(),
+        price: parseInt(document.getElementById("editPrice").value),
+        originalPrice: parseInt(document.getElementById("editOrigPrice").value),
+        sizes: sizes
+      };
+
+      db.ref("boutique_products/" + key).update(updateData).then(function() {
+        closePartnerEditModal();
+        showQuickToast("✓ Outfit updated successfully!");
+      });
+    };
 
     window.deletePartnerOutfit = function(key) {
       if (confirm("Delete this outfit?")) {
@@ -281,7 +441,7 @@
     };
 
     window.deletePartnerStorePermanently = function() {
-      if (confirm("⚠️ DANGER: Permanently delete your store and all items from Fitin60?")) {
+      if (confirm("Permanently delete your store and all items from Fitin60?")) {
         db.ref("boutique_products").once("value").then(function(snap) {
           var prods = snap.val() || {};
           var updates = {};
