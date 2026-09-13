@@ -441,7 +441,7 @@
                 </div>
               </label>
 
-              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer">
+              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
                   <p class="font-black text-slate-900">Instant Online UPI (PhonePe / GPay / Paytm)</p>
@@ -727,9 +727,15 @@
       var html = "";
 
       storeProds.forEach(function(p) {
+        var isCloud = !!p.cloudKey;
         var targetId = p.id || p.cloudKey;
         html += 
-          '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="bg-white border border-slate-200 rounded-2xl p-3 cursor-pointer hover:border-orange-500 shadow-sm transition space-y-2 flex flex-col justify-between">' +
+          '<div onclick="openProductDetailModal(\'' + targetId + '\')" class="relative bg-white border border-slate-200 rounded-2xl p-3 cursor-pointer hover:border-orange-500 shadow-sm transition space-y-2 flex flex-col justify-between">' +
+            (isOwnerActive && isCloud ? 
+              '<div class="absolute top-2 right-2 flex gap-1 z-20" onclick="event.stopPropagation();">' +
+                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">✏️</button>' +
+                '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1 rounded-md text-[10px] shadow cursor-pointer">🗑️</button>' +
+              '</div>' : '') +
             '<div class="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-100">' +
               '<img src="' + p.image + '" class="w-full h-full object-cover hover:scale-105 transition duration-300">' +
               '<span class="absolute top-2 left-2 bg-slate-950/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">⚡ 60-Min</span>' +
@@ -888,6 +894,7 @@
       if (confirm("Owner: Delete this outfit permanently from Fitin60?")) {
         db.ref("boutique_products/" + key).remove().then(function() {
           showQuickToast("✓ Deleted");
+          closeStoreExploreModal();
         });
       }
     };
@@ -945,7 +952,7 @@
       renderBoutiqueStores();
     };
 
-    // CLEAN RENDER FUNCTION WITHOUT NUMBERS IN BUTTONS
+    // RENDER WITH ALL CARDS SUPPORTING OWNER EDIT BUTTONS
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1261,7 +1268,7 @@
         customerAddress: deliveryAddress,
         items: items,
         itemTotal: itemSubtotal,
-        distanceKm: distVal,
+	distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
         paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
@@ -1275,7 +1282,7 @@
           platformCommission: platformFee,
           riderFee: deliveryFee,
           storeSettlementStatus: "Settled",
-	riderSettlementStatus: "Pending"
+          riderSettlementStatus: "Pending"
         },
         timestamp: Date.now()
       };
@@ -1286,7 +1293,7 @@
       });
     };
 
-    // IMMEDIATE EXECUTION & CLEAN UI LOCK
+    // IMMEDIATE EXECUTION & OWNER EDIT ENFORCEMENT
     renderBoutiqueStores();
 
     db.ref("boutiques").on("value", function(snapshot) {
