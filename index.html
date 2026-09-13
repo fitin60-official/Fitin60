@@ -23,9 +23,9 @@
 </head>
 <body class="min-h-screen pb-32 antialiased">
 
-  <!-- Customer Login Modal -->
-  <div id="loginModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+  <!-- Customer Login Modal (Closes on outside click) -->
+  <div id="loginModal" onclick="checkOutsideClose(event, 'loginModal')" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl" onclick="event.stopPropagation()">
       <div class="text-center space-y-1">
         <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
         <h3 class="font-bold text-sm text-slate-800">Customer Express Login</h3>
@@ -47,9 +47,9 @@
     </div>
   </div>
 
-  <!-- Product Details / Slide Images Modal -->
-  <div id="productModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+  <!-- Product Details / Slide Images Modal (Closes on outside click) -->
+  <div id="productModal" onclick="checkOutsideClose(event, 'productModal')" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
       <div class="p-4 border-b flex justify-between items-center bg-slate-50">
         <h3 id="modalProdName" class="font-brand font-black text-sm text-slate-900 truncate">Outfit Details</h3>
         <button onclick="closeProductModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 font-bold text-slate-700 flex items-center justify-center">✕</button>
@@ -60,13 +60,13 @@
           <img id="modalMainImg" src="" class="w-full h-64 object-cover rounded-2xl border shadow-sm">
           <span class="absolute top-3 left-3 bg-slate-950/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur">60-Min Express</span>
         </div>
-        <!-- Slide / Thumbnail selector if multiple images exist -->
+        <!-- Slide Thumbnails -->
         <div id="modalThumbnails" class="flex gap-2 overflow-x-auto pb-1">
-          <!-- Thumbnails injected dynamically -->
+          <!-- Injected dynamically -->
         </div>
         <div class="space-y-1 pt-2 border-t">
-          <p id="modalStoreName" class="text-xs font-bold text-slate-500">Store: Sai Fashions</p>
-          <p id="modalPrice" class="font-mono-num font-black text-lg text-orange-600">₹899</p>
+          <p id="modalStoreName" class="text-xs font-bold text-slate-500">Store: -</p>
+          <p id="modalPrice" class="font-mono-num font-black text-lg text-orange-600">₹0</p>
           <p class="text-[11px] text-slate-500">⚡ Delivered to your doorstep within 60 minutes from local store.</p>
         </div>
       </div>
@@ -82,7 +82,7 @@
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-1">
       <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span id="userGreeting" class="text-[10px] bg-slate-100 text-slate-800 font-bold px-2.5 py-1 rounded-xl border">Hello, User</span>
+      <span id="userGreeting" class="text-[10px] bg-slate-100 text-slate-800 font-bold px-2.5 py-1 rounded-xl border cursor-pointer" onclick="openLoginModal()">Hello, User</span>
     </div>
     <a href="tracking.html" class="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-200 transition">
       ⚡ Live Orders
@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <!-- Store Selection Grid -->
+    <!-- Active Boutiques -->
     <div class="space-y-3">
       <div class="flex justify-between items-center px-1">
         <h2 class="font-brand font-black text-sm text-slate-900 uppercase tracking-wide">Active Boutiques</h2>
@@ -111,11 +111,11 @@
       </div>
     </div>
 
-    <!-- Products Catalog (Clothes with Click to View Modal) -->
+    <!-- Trending Outfits (Connected with Partner Uploads) -->
     <div class="space-y-3 pt-2">
       <div class="flex justify-between items-center px-1">
         <h2 class="font-brand font-black text-sm text-slate-900 uppercase tracking-wide">Trending Outfits</h2>
-        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full">In Stock</span>
+        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full">Live Catalog</span>
       </div>
       <div id="productsGrid" class="grid grid-cols-2 gap-3">
         <!-- Dynamic Products -->
@@ -183,7 +183,6 @@
 
     window.onload = function() {
       checkLoginStatus();
-      seedDemoProductsIfNeeded();
     };
 
     function checkLoginStatus() {
@@ -192,6 +191,10 @@
         document.getElementById("userGreeting").innerText = "Hi, " + custName;
       }
     }
+
+    window.openLoginModal = function() {
+      document.getElementById("loginModal").classList.remove("hidden");
+    };
 
     window.handleCustomerLogin = function(e) {
       e.preventDefault();
@@ -215,50 +218,16 @@
       callback();
     }
 
-    function seedDemoProductsIfNeeded() {
-      db.ref("products").once("value", function(snap) {
-        if (!snap.val()) {
-          var demoProducts = {
-            "prod_1": { 
-              name: "Oversized Streetwear Hoodie", 
-              price: "899", 
-              store: "Sai Fashions", 
-              image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400", 
-              images: [
-                "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400",
-                "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400",
-                "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400"
-              ],
-              stockStatus: "IN_STOCK" 
-            },
-            "prod_2": { 
-              name: "Classic Casual Denim Jacket", 
-              price: "1299", 
-              store: "Trendz Boutique", 
-              image: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400", 
-              images: [
-                "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400",
-                "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400"
-              ],
-              stockStatus: "IN_STOCK" 
-            }
-          };
-          db.ref("products").set(demoProducts);
-        }
-      });
+    // Outside click to close modals
+    window.checkOutsideClose = function(event, modalId) {
+      document.getElementById(modalId).classList.add("hidden");
+    };
 
-      db.ref("boutiques").once("value", function(snap) {
-        if (!snap.val()) {
-          var demoStores = {
-            "Sai_Fashions": { storeName: "Sai Fashions", area: "Main Road • 1.2 KM", status: "OPEN" },
-            "Trendz_Boutique": { storeName: "Trendz Boutique", area: "Station Road • 2.5 KM", status: "OPEN" }
-          };
-          db.ref("boutiques").set(demoStores);
-        }
-      });
-    }
+    window.closeProductModal = function() {
+      document.getElementById("productModal").classList.add("hidden");
+    };
 
-    // Load Stores
+    // Load Boutiques / Stores from Firebase (including Sai Fashions)
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       var grid = document.getElementById("storesGrid");
@@ -269,10 +238,11 @@
         var s = data[key];
         if (!s) return;
         count++;
+        var storeName = s.storeName || key;
         html += 
-          '<div onclick="openStoreDetails(\'' + s.storeName + '\')" class="p-3 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-1 cursor-pointer hover:border-orange-500 transition">' +
-            '<p class="font-brand font-black text-xs text-slate-950 truncate">' + s.storeName + '</p>' +
-            '<p class="text-[10px] text-slate-500 truncate">📍 ' + (s.area || 'Nearby') + '</p>' +
+          '<div onclick="openStoreDetails(\'' + storeName + '\')" class="p-3 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-1 cursor-pointer hover:border-orange-500 transition">' +
+            '<p class="font-brand font-black text-xs text-slate-950 truncate">' + storeName + '</p>' +
+            '<p class="text-[10px] text-slate-500 truncate">📍 ' + (s.area || 'Local Area') + '</p>' +
             '<span class="inline-block text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">● Live Store</span>' +
           '</div>';
       });
@@ -281,36 +251,39 @@
       document.getElementById("storeCountBadge").innerText = count + " Active";
     });
 
-    // Load Products with Click Trigger
+    // Load Products / Clothes uploaded by partners in Firebase
     db.ref("products").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       var grid = document.getElementById("productsGrid");
       var html = "";
+      var count = 0;
 
       Object.keys(data).forEach(function(key) {
         var p = data[key];
         if (!p || p.stockStatus === "OUT_OF_STOCK") return;
+        count++;
         
-        var imgListJson = JSON.stringify(p.images || [p.image]).replace(/"/g, '&quot;');
+        var imgUrl = p.image || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400';
+        var imgListJson = JSON.stringify(p.images || [imgUrl]).replace(/"/g, '&quot;');
 
         html += 
-          '<div onclick="handleProductClick(\'' + p.name + '\', \'' + p.price + '\', \'' + p.store + '\', \'' + (p.image || '') + '\', \'' + imgListJson + '\')" class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm space-y-2 flex flex-col justify-between cursor-pointer hover:border-orange-500 transition">' +
+          '<div onclick="handleProductClick(\'' + (p.name || 'Outfit') + '\', \'' + (p.price || '0') + '\', \'' + (p.store || 'Store') + '\', \'' + imgUrl + '\', \'' + imgListJson + '\')" class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm space-y-2 flex flex-col justify-between cursor-pointer hover:border-orange-500 transition">' +
             '<div class="space-y-1">' +
-              '<img src="' + (p.image || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400') + '" class="w-full h-32 object-cover rounded-xl border">' +
-              '<p class="font-brand font-black text-xs text-slate-900 truncate mt-1">' + p.name + '</p>' +
-              '<p class="text-[10px] text-slate-500">Store: ' + p.store + '</p>' +
+              '<img src="' + imgUrl + '" class="w-full h-32 object-cover rounded-xl border">' +
+              '<p class="font-brand font-black text-xs text-slate-900 truncate mt-1">' + (p.name || 'Outfit') + '</p>' +
+              '<p class="text-[10px] text-slate-500 truncate">Store: ' + (p.store || 'Sai Fashions') + '</p>' +
             '</div>' +
             '<div class="flex items-center justify-between pt-2 border-t">' +
-              '<span class="font-mono-num font-black text-xs text-orange-600">₹' + p.price + '</span>' +
+              '<span class="font-mono-num font-black text-xs text-orange-600">₹' + (p.price || '0') + '</span>' +
               '<span class="bg-slate-950 text-white text-[10px] font-black px-3 py-1.5 rounded-xl">View ⚡</span>' +
             '</div>' +
           '</div>';
       });
 
-      grid.innerHTML = html || '<p class="text-xs text-slate-400 col-span-2 text-center py-4">No products available.</p>';
+      grid.innerHTML = html || '<p class="text-xs text-slate-400 col-span-2 text-center py-4">No outfits uploaded yet by stores.</p>';
     });
 
-    // Handle Product Click -> Requires Login -> Opens Slide Image Modal
+    // Product Click Handler -> Checks Login -> Opens Slide Modal
     window.handleProductClick = function(name, price, store, defaultImg, imagesJson) {
       requireLoginBeforeAction(function() {
         document.getElementById("modalProdName").innerText = name;
@@ -318,7 +291,6 @@
         document.getElementById("modalPrice").innerText = "₹" + price;
         document.getElementById("modalMainImg").src = defaultImg;
 
-        // Parse slide images
         var images = [];
         try {
           images = JSON.parse(imagesJson.replace(/&quot;/g, '"'));
@@ -333,20 +305,14 @@
         });
         thumbContainer.innerHTML = thumbHtml;
 
-        // Set buy button action
         document.getElementById("modalBuyBtn").setAttribute("onclick", "placeOrder('" + name + "', '" + price + "', '" + store + "')");
-
         document.getElementById("productModal").classList.remove("hidden");
       });
     };
 
-    window.closeProductModal = function() {
-      document.getElementById("productModal").classList.add("hidden");
-    };
-
     window.openStoreDetails = function(storeName) {
       requireLoginBeforeAction(function() {
-        showQuickToast("🏬 Exploring " + storeName + " catalog...");
+        showQuickToast("🏬 Opening catalog for " + storeName);
       });
     };
 
