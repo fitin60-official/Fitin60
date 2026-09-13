@@ -1,218 +1,93 @@
 <!DOCTYPE html>
-<html lang="en" class="overflow-x-hidden">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Fitin60 | Rider Fleet Station</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fitin60 | Rider Fleet & Delivery Management</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { overflow-x: hidden !important; width: 100% !important; margin: 0; padding: 0; user-select: none; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; color: #0f172a; }
     .font-brand { font-family: 'Syne', sans-serif; }
-    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-
-    .swiper-track { position: relative; overflow: hidden; touch-action: none; }
-    .swiper-thumb {
-      position: absolute; top: 4px; left: 4px; bottom: 4px; width: 52px; border-radius: 1rem;
-      display: flex; align-items: center; justify-content: center; cursor: grab;
-      transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    }
-    .swiper-thumb:active { cursor: grabbing; }
+    #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
+    #quickToast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
-<body class="bg-[#fafaf9] text-slate-900 min-h-screen pb-24 antialiased selection:bg-emerald-500 selection:text-white">
+<body class="min-h-screen pb-28 antialiased">
 
   <!-- Header -->
-  <header class="bg-slate-950 text-white border-b border-slate-800 px-4 h-16 flex items-center justify-between shadow-md sticky top-0 z-40">
-    <div class="flex items-center gap-2">
-      <span class="font-brand text-lg font-black tracking-tight">FITIN<span class="text-emerald-400">60</span></span>
-      <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-2 py-0.5 rounded-full">RIDER FLEET</span>
-    </div>
-
-    <div class="flex items-center gap-2">
-      <button id="logoutRiderBtn" onclick="riderLogout()" class="hidden text-xs font-bold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl transition cursor-pointer">
-        🚪 Logout
-      </button>
-      <a href="index.html" class="text-xs font-bold bg-white/10 hover:bg-white/20 text-slate-300 px-3 py-1.5 rounded-xl transition">
-        ← Store
-      </a>
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
+    <a href="index.html" class="flex items-center gap-1">
+      <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
+      <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full">Rider Fleet</span>
+    </a>
+    <div id="ownerStatusBadge" class="hidden text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-black px-2.5 py-1 rounded-xl">
+      🛡️ Master Owner Control Active
     </div>
   </header>
 
-  <main class="w-full max-w-xl mx-auto px-4 mt-5 space-y-5">
-
-    <!-- Auth Box -->
-    <div id="riderAuthBox" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl space-y-4">
-      <div class="text-center space-y-1">
-        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">🛵</div>
-        <h2 class="font-brand font-black text-xl text-slate-950 mt-1">Rider Fleet Shift Station</h2>
-        <p class="text-xs text-slate-500">Distance-based dynamic payout with instant settlement.</p>
+  <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6">
+    <!-- Rider Delivery Hub -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b pb-3">
+        <div>
+          <h1 class="font-brand font-black text-xl text-slate-950">Active Delivery Radar</h1>
+          <p class="text-xs text-slate-500 mt-0.5">Express 60-minute drops assigned within 15KM zone.</p>
+        </div>
+        <span class="text-2xl">🛵</span>
       </div>
 
-      <div class="flex bg-slate-100 p-1 rounded-2xl">
-        <button onclick="switchRiderTab('login')" id="tabRiderLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Rider Login</button>
-        <button onclick="switchRiderTab('register')" id="tabRiderRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Join Fleet</button>
+      <div id="riderOrdersContainer" class="space-y-3">
+        <p class="text-xs text-slate-400 text-center py-6">Loading active express orders...</p>
       </div>
-
-      <form id="riderLoginForm" onsubmit="handleRiderLogin(event)" class="space-y-3.5">
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Registered Mobile Number</label>
-          <input type="tel" id="riderLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-xs font-mono focus:outline-none focus:border-emerald-500">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Rider 4-Digit PIN</label>
-          <input type="password" id="riderLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-xs font-mono tracking-widest text-center focus:outline-none focus:border-emerald-500">
-        </div>
-        <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
-          Start Active Shift ➔
-        </button>
-      </form>
-
-      <form id="riderRegisterForm" onsubmit="handleRiderRegister(event)" class="space-y-3.5 hidden">
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Rider Full Name</label>
-          <input type="text" id="regRiderName" required placeholder="e.g., Rajesh Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Vehicle Details</label>
-          <input type="text" id="regRiderVehicle" required placeholder="e.g., Hero Splendor (AP 02 XX 1234)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Mobile Number</label>
-          <input type="tel" id="regRiderMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Create 4-Digit PIN</label>
-          <input type="password" id="regRiderPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs tracking-widest font-mono text-center">
-        </div>
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md cursor-pointer">
-          Register & Activate Fleet Pass ➔
-        </button>
-      </form>
     </div>
 
-    <!-- Dashboard -->
-    <div id="riderDashboard" class="hidden space-y-5">
-      
-      <div class="bg-slate-950 text-white p-5 rounded-3xl shadow-xl space-y-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-3xl">🛵</span>
-            <div>
-              <h2 class="font-brand font-black text-lg" id="dashRiderName">Rajesh</h2>
-              <p class="text-[11px] text-slate-400" id="dashRiderVehicle">🏍️ Bike Active</p>
-            </div>
-          </div>
-          <span id="dutyStatusBadge" class="text-[10px] font-black px-3 py-1 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
-            ● ON DUTY
-          </span>
-        </div>
-
-        <!-- Slider -->
-        <div id="dutySwiperTrack" class="swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-emerald-950/70 border-emerald-500/40">
-          <span id="swiperTrackText" class="text-xs font-black uppercase tracking-wider text-emerald-300 pointer-events-none z-0 pl-8">
-            Slide to Go Offline ➔
-          </span>
-          <div id="dutySwiperThumb" class="swiper-thumb bg-emerald-500 text-slate-950 font-black text-xl z-10 shadow-lg">
-            <span id="swiperIcon">🛵</span>
-          </div>
-        </div>
+    <!-- Master Owner Rider Management Section -->
+    <div id="masterRiderControlSection" class="hidden bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h2 class="font-brand font-black text-lg text-slate-950">🛡️ Master Rider Fleet Control</h2>
+        <span class="text-xs bg-rose-100 text-rose-700 font-bold px-2.5 py-1 rounded-lg">Owner Exclusive</span>
       </div>
-
-      <!-- Financials: Instant Trip Earnings & COD -->
-      <div class="grid grid-cols-2 gap-3">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-[10px] uppercase font-bold text-slate-400">Total Settled Earnings</p>
-          <p class="font-mono-num font-black text-2xl text-emerald-600 mt-1" id="riderTotalEarnings">₹0</p>
-          <p class="text-[9px] text-emerald-600 font-bold mt-0.5">⚡ Instant Settled (<span id="riderCompletedTrips">0</span> Trips)</p>
-        </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-[10px] uppercase font-bold text-slate-400">Cash in Hand (COD)</p>
-          <p class="font-mono-num font-black text-2xl text-amber-600 mt-1" id="riderCashInHand">₹0</p>
-          <p class="text-[9px] text-slate-400 mt-0.5">To Settle with Platform</p>
-        </div>
-      </div>
-
-      <!-- Offline Banner -->
-      <div id="offDutyBanner" class="hidden bg-amber-50 border border-amber-200 p-6 rounded-3xl text-center space-y-2">
-        <span class="text-3xl">☕</span>
-        <h3 class="font-brand font-black text-amber-950 text-base">You are currently OFFLINE</h3>
-        <p class="text-xs text-amber-800">Slide the swiper bar above to start receiving deliveries.</p>
-      </div>
-
-      <!-- Available Deliveries -->
-      <div id="dutyActiveSection" class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-        <div class="flex justify-between items-center border-b pb-2">
-          <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Available Pickups</h3>
-          <span id="poolCountBadge" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Orders</span>
-        </div>
-        <div id="riderOrdersPool" class="space-y-3"></div>
-      </div>
-
-      <!-- Trip History with Instant Settlement Badges -->
-      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
-        <div class="flex justify-between items-center border-b pb-2">
-          <div class="flex items-center gap-1.5">
-            <span class="text-base">⚡</span>
-            <h3 class="font-brand font-bold text-sm text-slate-950 uppercase tracking-wider">Instant Trip Settlements</h3>
-          </div>
-          <span class="text-[10px] font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
-            Realtime Settle
-          </span>
-        </div>
-        <div id="riderEarningsHistoryList" class="space-y-2.5 text-xs">
-          <p class="text-slate-400 text-center py-4">No completed trips yet.</p>
-        </div>
-      </div>
-
-      <!-- STRICT RIDER-ONLY ACCOUNT DELETION LINK -->
-      <div class="pt-4 pb-2 text-center">
-        <button onclick="handleDeleteRiderPermanently()" class="text-[11px] text-rose-500/70 hover:text-rose-600 font-semibold underline decoration-rose-300 transition cursor-pointer">
-          Leave Fleet & Delete Rider Account
-        </button>
-      </div>
-
+      <p class="text-xs text-slate-500">As platform owner, you can manage and remove registered delivery partners:</p>
+      <div id="masterRidersList" class="space-y-2"></div>
     </div>
-
   </main>
 
-  <!-- OTP Modal -->
-  <div id="otpVerifyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-xs w-full p-6 text-center space-y-4 shadow-2xl relative border border-slate-200">
-      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">🔑</div>
-      <div>
-        <h3 class="font-brand font-black text-base text-slate-950">Customer Delivery OTP</h3>
-        <p class="text-xs text-slate-500 mt-1">Enter 4-digit code shown on customer tracking screen.</p>
-      </div>
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-6 flex items-center justify-around z-40 shadow-lg">
+    <a href="index.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
+      <span class="text-lg leading-none">🏬</span>
+      <span class="text-[10px] mt-1">Explore</span>
+    </a>
+    <a href="partner.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
+      <span class="text-lg leading-none">💼</span>
+      <span class="text-[10px] mt-1">Partner Hub</span>
+    </a>
+    <a href="rider.html" class="flex flex-col items-center text-emerald-600 font-bold">
+      <span class="text-lg leading-none">🛵</span>
+      <span class="text-[10px] mt-1">Rider Fleet</span>
+    </a>
+    <a href="tracking.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
+      <span class="text-lg leading-none">⚡</span>
+      <span class="text-[10px] mt-1">Orders</span>
+    </a>
+  </nav>
 
-      <input type="hidden" id="otpTargetOrderId" value="">
-      <input type="hidden" id="otpExpectedCode" value="">
-
-      <div>
-        <input type="tel" id="enteredCustomerOtp" maxlength="4" placeholder="••••" class="w-full bg-slate-50 border-2 border-slate-300 rounded-2xl py-3 text-center font-mono-num text-2xl font-black tracking-widest text-slate-950 focus:outline-none focus:border-emerald-500">
-      </div>
-
-      <div class="grid grid-cols-2 gap-2">
-        <button onclick="closeOtpModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl text-xs cursor-pointer">
-          Cancel
-        </button>
-        <button onclick="verifyAndCompleteDelivery()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs cursor-pointer shadow-md">
-          Verify & Settle Instant
-        </button>
-      </div>
-    </div>
+  <!-- Toast Notification -->
+  <div id="quickToast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-950/90 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 border border-slate-800 pointer-events-none">
+    <span class="text-emerald-400">✓</span>
+    <span id="toastMsg">Success</span>
   </div>
 
   <script>
-    const firebaseConfig = {
+    var firebaseConfig = {
       apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
       authDomain: "fitin60.firebaseapp.com",
       databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
@@ -223,363 +98,88 @@
     };
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    var db = firebase.database();
 
-    var currentRider = null;
-    var isDutyOn = true;
-
-    function switchRiderTab(tab) {
-      var logF = document.getElementById("riderLoginForm");
-      var regF = document.getElementById("riderRegisterForm");
-
-      if (tab === 'login') {
-        logF.classList.remove("hidden");
-        regF.classList.add("hidden");
-        document.getElementById("tabRiderLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
-        document.getElementById("tabRiderRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
-      } else {
-        logF.classList.add("hidden");
-        regF.classList.remove("hidden");
-        document.getElementById("tabRiderRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
-        document.getElementById("tabRiderLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
-      }
+    var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
+    if (isOwnerActive) {
+      document.getElementById("ownerStatusBadge").classList.remove("hidden");
+      document.getElementById("masterRiderControlSection").classList.remove("hidden");
     }
 
-    function handleRiderRegister(e) {
-      e.preventDefault();
-      var name = document.getElementById("regRiderName").value.trim();
-      var vehicle = document.getElementById("regRiderVehicle").value.trim();
-      var mobile = document.getElementById("regRiderMobile").value.trim();
-      var pin = document.getElementById("regRiderPin").value.trim();
+    function showQuickToast(msg) {
+      var toast = document.getElementById("quickToast");
+      var text = document.getElementById("toastMsg");
+      text.innerText = msg;
+      toast.classList.add("show");
+      setTimeout(function() { toast.classList.remove("show"); }, 1500);
+    }
 
-      var riderId = "R-" + Math.floor(100 + Math.random() * 900);
-      var newRider = { riderId: riderId, name: name, vehicle: vehicle, mobile: mobile, pin: pin };
+    // Load Live Orders for Rider Fleet
+    db.ref("orders").on("value", function(snapshot) {
+      var data = snapshot.val() || {};
+      var container = document.getElementById("riderOrdersContainer");
+      var orders = Object.values(data).reverse();
 
-      db.ref("riders/" + mobile).set(newRider).then(function() {
-        alert("✓ Rider Registered! Shift Starting...");
-        riderLoginSuccess(newRider);
+      if (orders.length === 0) {
+        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-6'>No active delivery orders available right now.</p>";
+        return;
+      }
+
+      var html = "";
+      orders.forEach(function(o) {
+        html += 
+          '<div class="p-4 bg-slate-50 border rounded-2xl space-y-2 text-xs">' +
+            '<div class="flex justify-between items-center font-bold">' +
+              '<span class="text-orange-600">' + o.orderId + '</span>' +
+              '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">₹' + o.totalAmount + '</span>' +
+            '</div>' +
+            '<p class="text-slate-900 font-bold">Store: ' + o.store + '</p>' +
+            '<p class="text-slate-600">Deliver to: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+            '<p class="text-slate-500 text-[11px]">Address: ' + o.customerAddress + '</p>' +
+          '</div>';
       });
-    }
 
-    // STRICT: ONLY REGISTERED RIDER PIN ALLOWED
-    function handleRiderLogin(e) {
-      e.preventDefault();
-      var mobile = document.getElementById("riderLoginMobile").value.trim();
-      var pin = document.getElementById("riderLoginPin").value.trim();
+      container.innerHTML = html;
+    });
 
-      db.ref("riders/" + mobile).once("value").then(function(snapshot) {
-        var rider = snapshot.val();
-        if (rider && rider.pin === pin) {
-          riderLoginSuccess(rider);
-        } else {
-          alert("Invalid Mobile or PIN!");
-        }
-      });
-    }
+    // Load Master Riders list for Owner
+    if (isOwnerActive) {
+      db.ref("riders").on("value", function(snapshot) {
+        var data = snapshot.val() || {};
+        var container = document.getElementById("masterRidersList");
+        var html = "";
+        var keys = Object.keys(data);
 
-    function riderLoginSuccess(rider) {
-      currentRider = rider;
-      localStorage.setItem("fitin60_persistent_rider", JSON.stringify(rider));
-
-      var savedDuty = localStorage.getItem("fitin60_rider_duty");
-      isDutyOn = (savedDuty === null || savedDuty === "true");
-
-      document.getElementById("riderAuthBox").classList.add("hidden");
-      document.getElementById("riderDashboard").classList.remove("hidden");
-      document.getElementById("logoutRiderBtn").classList.remove("hidden");
-
-      document.getElementById("dashRiderName").innerText = rider.name;
-      document.getElementById("dashRiderVehicle").innerText = "🏍️ " + rider.vehicle;
-
-      updateSwiperVisuals();
-      listenToRiderOrdersAndEarnings();
-      initSwiperTouchLogic();
-    }
-
-    function initSwiperTouchLogic() {
-      var track = document.getElementById("dutySwiperTrack");
-      var thumb = document.getElementById("dutySwiperThumb");
-      var isDragging = false;
-      var startX = 0;
-      var currentTranslate = 0;
-
-      function onStart(e) {
-        isDragging = true;
-        startX = (e.touches ? e.touches[0].clientX : e.clientX);
-        thumb.style.transition = "none";
-      }
-
-      function onMove(e) {
-        if (!isDragging) return;
-        var clientX = (e.touches ? e.touches[0].clientX : e.clientX);
-        var maxSlide = track.offsetWidth - thumb.offsetWidth - 8;
-        var diff = clientX - startX;
-
-        if (diff < 0) diff = 0;
-        if (diff > maxSlide) diff = maxSlide;
-        currentTranslate = diff;
-        thumb.style.transform = "translateX(" + diff + "px)";
-      }
-
-      function onEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        var maxSlide = track.offsetWidth - thumb.offsetWidth - 8;
-        thumb.style.transition = "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)";
-
-        if (currentTranslate > (maxSlide * 0.65)) {
-          isDutyOn = !isDutyOn;
-          localStorage.setItem("fitin60_rider_duty", String(isDutyOn));
-          updateSwiperVisuals();
-        }
-
-        thumb.style.transform = "translateX(0px)";
-        currentTranslate = 0;
-      }
-
-      thumb.addEventListener("mousedown", onStart);
-      window.addEventListener("mousemove", onMove);
-      window.addEventListener("mouseup", onEnd);
-
-      thumb.addEventListener("touchstart", onStart, { passive: true });
-      window.addEventListener("touchmove", onMove, { passive: true });
-      window.addEventListener("touchend", onEnd);
-    }
-
-    function updateSwiperVisuals() {
-      var track = document.getElementById("dutySwiperTrack");
-      var thumb = document.getElementById("dutySwiperThumb");
-      var badge = document.getElementById("dutyStatusBadge");
-      var text = document.getElementById("swiperTrackText");
-      var icon = document.getElementById("swiperIcon");
-      var offBanner = document.getElementById("offDutyBanner");
-      var activeSec = document.getElementById("dutyActiveSection");
-
-      if (isDutyOn) {
-        badge.className = "text-[10px] font-black px-3 py-1 rounded-full border bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
-        badge.innerText = "● ON DUTY";
-        track.className = "swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-emerald-950/70 border-emerald-500/40";
-        thumb.className = "swiper-thumb bg-emerald-500 text-slate-950 font-black text-xl z-10 shadow-lg";
-        text.className = "text-xs font-black uppercase tracking-wider text-emerald-300 pointer-events-none z-0 pl-8";
-        text.innerText = "Slide to Go Offline ➔";
-        icon.innerText = "🛵";
-
-        offBanner.classList.add("hidden");
-        activeSec.classList.remove("hidden");
-      } else {
-        badge.className = "text-[10px] font-black px-3 py-1 rounded-full border bg-rose-500/20 text-rose-400 border-rose-500/30";
-        badge.innerText = "○ OFFLINE";
-        track.className = "swiper-track w-full h-16 rounded-2xl p-1 relative border transition-colors flex items-center justify-center bg-slate-900 border-slate-700";
-        thumb.className = "swiper-thumb bg-slate-700 text-white font-black text-xl z-10 shadow-lg";
-        text.className = "text-xs font-black uppercase tracking-wider text-slate-400 pointer-events-none z-0 pl-8";
-        text.innerText = "Slide to Go Online ➔";
-        icon.innerText = "⏸️";
-
-        offBanner.classList.remove("hidden");
-        activeSec.classList.add("hidden");
-      }
-    }
-
-    function riderLogout() {
-      if (confirm("Log out of rider station?")) {
-        currentRider = null;
-        localStorage.removeItem("fitin60_persistent_rider");
-        localStorage.removeItem("fitin60_rider_duty");
-        document.getElementById("riderAuthBox").classList.remove("hidden");
-        document.getElementById("riderDashboard").classList.add("hidden");
-        document.getElementById("logoutRiderBtn").classList.add("hidden");
-      }
-    }
-
-    // STRICT: ONLY REGISTERED RIDER PIN CAN DELETE ACCOUNT
-    function handleDeleteRiderPermanently() {
-      if (!currentRider) return;
-
-      var enteredPin = prompt("⚠️ DELETE RIDER ACCOUNT\n\nEnter your registered 4-digit Rider PIN to permanently delete your account (" + currentRider.name + "):");
-
-      if (enteredPin === null) return;
-
-      if (enteredPin !== currentRider.pin) {
-        return alert("❌ Incorrect Rider PIN! Deletion cancelled.");
-      }
-
-      var riderMobileToRemove = currentRider.mobile;
-      var riderNameToRemove = currentRider.name;
-
-      db.ref("riders/" + riderMobileToRemove).remove().then(function() {
-        alert("✓ Rider account for '" + riderNameToRemove + "' has been permanently deleted.");
-        currentRider = null;
-        localStorage.removeItem("fitin60_persistent_rider");
-        localStorage.removeItem("fitin60_rider_duty");
-        document.getElementById("riderAuthBox").classList.remove("hidden");
-        document.getElementById("riderDashboard").classList.add("hidden");
-        document.getElementById("logoutRiderBtn").classList.add("hidden");
-      }).catch(function(err) {
-        alert("Error deleting rider account: " + err.message);
-      });
-    }
-
-    // LISTENER FOR ORDERS AND INSTANT SETTLEMENT TRIP EARNINGS
-    function listenToRiderOrdersAndEarnings() {
-      db.ref("orders").on("value", function(snapshot) {
-        var orders = snapshot.val();
-        var pool = document.getElementById("riderOrdersPool");
-        var badge = document.getElementById("poolCountBadge");
-        var historyContainer = document.getElementById("riderEarningsHistoryList");
-
-        if (!orders) {
-          badge.innerText = "0 Orders";
-          pool.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No orders right now.</p>";
-          historyContainer.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No completed trips yet.</p>";
+        if (keys.length === 0) {
+          container.innerHTML = "<p class='text-xs text-slate-400'>No registered riders found.</p>";
           return;
         }
 
-        var allOrders = Object.values(orders);
-
-        var activeList = allOrders.filter(function(o) {
-          return (o.boutiqueAccepted && !o.riderAssigned) || (o.riderAssigned && o.riderPhone === currentRider.mobile && o.status !== "Delivered");
-        }).reverse();
-
-        badge.innerText = activeList.length + " Active";
-
-        if (activeList.length === 0) {
-          pool.innerHTML = "<p class='text-slate-400 text-center py-4 text-xs'>No active deliveries right now.</p>";
-        } else {
-          var html = "";
-          activeList.forEach(function(o) {
-            var isAssignedToMe = (o.riderAssigned && o.riderPhone === currentRider.mobile);
-            var distFee = o.deliveryFee || (o.financialSplit ? o.financialSplit.riderFee : 49);
-            var distKm = o.distanceKm || "Local";
-
-            html += 
-              '<div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs">' +
-                '<div class="flex justify-between items-start">' +
-                  '<div>' +
-                    '<span class="font-mono font-black text-slate-950 text-sm">' + o.orderId + '</span>' +
-                    '<p class="text-orange-600 font-bold text-[11px]">🏬 Pickup: ' + o.store + '</p>' +
-                  '</div>' +
-                  '<div class="text-right">' +
-                    '<span class="font-mono-num font-black text-emerald-600 text-sm">₹' + o.totalAmount + '</span>' +
-                    '<p class="text-[10px] text-emerald-700 font-black bg-emerald-100 px-2 py-0.5 rounded-md mt-0.5">Your Trip Pay: ₹' + distFee + ' (' + distKm + ' KM)</p>' +
-                  '</div>' +
-                '</div>' +
-
-                '<div class="p-2.5 bg-white rounded-xl border border-slate-200 space-y-1 text-[11px]">' +
-                  '<p class="text-slate-900 font-bold">📍 Deliver to: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
-                  '<p class="text-slate-500">🏠 Address: ' + o.customerAddress + '</p>' +
-                  '<p class="text-slate-500">💵 Payment: <strong class="text-slate-800">' + (o.paymentMethod || 'Pay on Delivery') + '</strong></p>' +
-                '</div>' +
-
-                '<div class="pt-1">' +
-                  (!isAssignedToMe ? 
-                    '<button onclick="acceptRiderDelivery(\'' + o.orderId + '\')" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer shadow-sm transition">⚡ Accept Delivery Task (Earn ₹' + distFee + ')</button>' : 
-                    '<div class="grid grid-cols-2 gap-2">' +
-                      '<a href="tel:' + o.customerPhone + '" class="bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs text-center flex items-center justify-center gap-1">📞 Call Customer</a>' +
-                      '<button onclick="openOtpVerificationModal(\'' + o.orderId + '\', \'' + o.deliveryOtp + '\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs cursor-pointer shadow-md">🔑 Complete & Settle</button>' +
-                    '</div>'
-                  ) +
-                '</div>' +
-              '</div>';
-          });
-          pool.innerHTML = html;
-        }
-
-        var myDeliveredTrips = allOrders.filter(function(o) {
-          return o.status === "Delivered" && o.riderPhone === currentRider.mobile;
-        }).reverse();
-
-        var totalEarnings = 0;
-        var cashInHand = 0;
-        var historyHtml = "";
-
-        myDeliveredTrips.forEach(function(o) {
-          var distFee = o.deliveryFee || (o.financialSplit ? o.financialSplit.riderFee : 49);
-          var distKm = o.distanceKm || "Local";
-          totalEarnings += distFee;
-
-          var isCOD = !o.paymentMethod || o.paymentMethod.includes("Delivery") || o.paymentMethod.includes("POD");
-          if (isCOD) {
-            cashInHand += (o.totalAmount || 0);
-          }
-
-          historyHtml += 
-            '<div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">' +
+        keys.forEach(function(k) {
+          var r = data[k];
+          html += 
+            '<div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl text-xs">' +
               '<div>' +
-                '<div class="flex items-center gap-2">' +
-                  '<span class="font-mono font-bold text-slate-900">' + o.orderId + '</span>' +
-                  '<span class="text-[9px] px-2 py-0.5 rounded-full font-black bg-emerald-100 text-emerald-800 border border-emerald-200">⚡ Instant Settled (Paid)</span>' +
-                '</div>' +
-                '<p class="text-[10px] text-slate-500 mt-0.5">Store: ' + o.store + ' • ' + (isCOD ? '<span class="text-amber-600 font-bold">Collected Cash ₹' + o.totalAmount + '</span>' : '<span class="text-emerald-600 font-bold">Online Paid</span>') + '</p>' +
+                '<p class="font-bold text-slate-900">' + (r.name || 'Rider') + '</p>' +
+                '<p class="text-[10px] text-slate-500">Phone: ' + (r.phone || k) + '</p>' +
               '</div>' +
-              '<div class="text-right">' +
-                '<span class="font-mono-num font-black text-sm text-emerald-600">+₹' + distFee + '</span>' +
-                '<p class="text-[9px] text-slate-400 font-bold">(' + distKm + ' KM)</p>' +
-              '</div>' +
+              '<button onclick="masterRemoveRider(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer transition">' +
+                '🗑️ Remove Rider' +
+              '</button>' +
             '</div>';
         });
 
-        document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
-        document.getElementById("riderCompletedTrips").innerText = myDeliveredTrips.length;
-        document.getElementById("riderCashInHand").innerText = "₹" + cashInHand;
-        historyContainer.innerHTML = historyHtml || "<p class='text-slate-400 text-center py-4 text-xs'>No completed trips yet.</p>";
+        container.innerHTML = html;
       });
     }
 
-    function acceptRiderDelivery(orderId) {
-      db.ref("orders/" + orderId).update({
-        riderAssigned: true,
-        riderName: currentRider.name,
-        riderPhone: currentRider.mobile,
-        riderVehicle: currentRider.vehicle,
-        paymentStatus: "Rider Out for Delivery"
-      }).then(function() {
-        alert("✓ Delivery Accepted! Pick up package from boutique.");
-      });
-    }
-
-    function openOtpVerificationModal(orderId, expectedOtp) {
-      document.getElementById("otpTargetOrderId").value = orderId;
-      document.getElementById("otpExpectedCode").value = expectedOtp;
-      document.getElementById("enteredCustomerOtp").value = "";
-      document.getElementById("otpVerifyModal").classList.remove("hidden");
-    }
-
-    function closeOtpModal() {
-      document.getElementById("otpVerifyModal").classList.add("hidden");
-    }
-
-    function verifyAndCompleteDelivery() {
-      var targetOrderId = document.getElementById("otpTargetOrderId").value;
-      var expectedCode = document.getElementById("otpExpectedCode").value.trim();
-      var enteredCode = document.getElementById("enteredCustomerOtp").value.trim();
-
-      if (enteredCode.length !== 4) return alert("Please enter the complete 4-digit OTP!");
-
-      if (enteredCode === expectedCode) {
-        db.ref("orders/" + targetOrderId).update({
-          status: "Delivered",
-          paymentStatus: "Delivered Successfully 🎉",
-          "financialSplit/riderSettlementStatus": "Settled",
-          "financialSplit/storeSettlementStatus": "Settled",
-          deliveredAt: Date.now()
-        }).then(function() {
-          alert("🎉 OTP Verified! Order Successfully Delivered & Trip Fee Settled Instantly!");
-          closeOtpModal();
+    window.masterRemoveRider = function(riderKey) {
+      if (confirm("⚠️ MASTER CONTROL: Remove this rider permanently?")) {
+        db.ref("riders/" + riderKey).remove().then(function() {
+          showQuickToast("✓ Rider removed successfully!");
         });
-      } else {
-        alert("❌ Incorrect OTP! Please ask customer to check tracking screen.");
       }
-    }
-
-    window.addEventListener('DOMContentLoaded', function() {
-      var saved = localStorage.getItem("fitin60_persistent_rider");
-      if (saved) {
-        try {
-          var riderObj = JSON.parse(saved);
-          riderLoginSuccess(riderObj);
-        } catch(e) {}
-      }
-    });
+    };
   </script>
 </body>
 </html>
