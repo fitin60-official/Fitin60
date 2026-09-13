@@ -19,6 +19,8 @@
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
     #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
     #quickToast.show { transform: translateY(0); opacity: 1; }
+    @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .animate-pulse-slow { animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
   </style>
 </head>
 <body class="min-h-screen pb-28 antialiased">
@@ -57,10 +59,25 @@
       </div>
     </div>
 
-    <!-- Live Store Orders -->
+    <!-- Daily Earnings & Analytics Summary Card -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Today's Total Orders</p>
+        <p id="statTotalOrders" class="font-mono-num font-black text-xl text-slate-950 mt-1">0</p>
+      </div>
+      <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Today's Revenue</p>
+        <p id="statTotalRevenue" class="font-mono-num font-black text-xl text-orange-600 mt-1">₹0</p>
+      </div>
+    </div>
+
+    <!-- Live Store Orders with Visual Alert -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-brand font-black text-sm text-slate-900">Live Store Orders</h3>
+        <div class="flex items-center gap-2">
+          <h3 class="font-brand font-black text-sm text-slate-900">Live Store Orders</h3>
+          <span id="livePulseIndicator" class="hidden w-2.5 h-2.5 rounded-full bg-orange-600 animate-ping"></span>
+        </div>
         <span id="liveOrdersCount" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
       </div>
       <div id="partnerLiveOrdersList" class="text-xs text-slate-400 text-center py-3">
@@ -113,11 +130,11 @@
       </form>
     </div>
 
-    <!-- Manage Uploaded Outfits with Edit & Delete -->
+    <!-- Manage Uploaded Outfits with Stock Toggle & Edit/Delete -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
         <h3 class="font-brand font-black text-sm text-slate-900">Manage Uploaded Outfits</h3>
-        <span class="text-[10px] text-slate-400 font-bold">Edit / Delete</span>
+        <span class="text-[10px] text-slate-400 font-bold">Stock / Edit / Delete</span>
       </div>
       <div id="partnerUploadedList" class="space-y-2">
         <p class="text-xs text-slate-400 text-center py-2">Loading your inventory...</p>
@@ -344,6 +361,7 @@
           desc: desc,
           image: base64Img,
           images: [base64Img],
+          inStock: true,
           category: "Uniform",
           eta: "30 MINS",
           rating: "5.0",
@@ -364,7 +382,14 @@
       reader.readAsDataURL(file);
     };
 
-    // Load Uploaded Outfits with Edit/Delete
+    window.toggleOutfitStock = function(key, currentStockStatus) {
+      var newStatus = (currentStockStatus === false) ? true : false;
+      db.ref("boutique_products/" + key).update({ inStock: newStatus }).then(function() {
+        showQuickToast(newStatus ? "✓ Marked as In-Stock" : "✓ Marked as Out of Stock");
+      });
+    };
+
+    // Load Uploaded Outfits with Stock Toggle, Edit & Delete
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
       loadedProductsMap = data;
@@ -376,18 +401,20 @@
         var p = data[k];
         if (p && p.store && p.store.toLowerCase() === activeStoreName.toLowerCase()) {
           count++;
+          var inStock = (p.inStock !== false);
           html += 
             '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs">' +
               '<div class="flex items-center gap-2.5 truncate">' +
                 '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
                 '<div class="truncate">' +
                   '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
-                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • Sizes: ' + (p.sizes ? p.sizes.join(", ") : 'Free size') + '</p>' +
+                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • <span class="' + (inStock ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold') + '">' + (inStock ? 'In-Stock' : 'Out of Stock') + '</span></p>' +
                 '</div>' +
               '</div>' +
               '<div class="flex gap-1 shrink-0">' +
-                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
-                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
+                '<button onclick="toggleOutfitStock(\'' + k + '\', ' + inStock + ')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer" title="Toggle Stock">📦</button>' +
+                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer">✏️</button>' +
+                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer">🗑️</button>' +
               '</div>' +
             '</div>';
         }
@@ -400,13 +427,14 @@
       }
     });
 
-    // Load Live Store Orders & Instant Payment & Delivery History
+    // Load Live Store Orders, Analytics & History
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
       var historyListHtml = "";
       var liveCount = 0;
       var histCount = 0;
+      var totalRevenue = 0;
 
       Object.values(data).forEach(function(o) {
         if (o.store && o.store.toLowerCase() === activeStoreName.toLowerCase()) {
@@ -425,6 +453,7 @@
               '</div>';
           } else {
             histCount++;
+            totalRevenue += o.totalAmount;
             historyListHtml += 
               '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
                 '<div class="flex justify-between font-bold text-slate-900">' +
@@ -440,10 +469,15 @@
 
       document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
       document.getElementById("completedCount").innerText = histCount + " Completed";
+      document.getElementById("statTotalOrders").innerText = liveCount + histCount;
+      document.getElementById("statTotalRevenue").innerText = "₹" + totalRevenue;
 
+      var pulse = document.getElementById("livePulseIndicator");
       if (liveCount > 0) {
+        pulse.classList.remove("hidden");
         document.getElementById("partnerLiveOrdersList").innerHTML = liveListHtml;
       } else {
+        pulse.classList.add("hidden");
         document.getElementById("partnerLiveOrdersList").innerHTML = "<p class='text-xs text-slate-400 text-center py-3'>No orders pending right now.</p>";
       }
 
