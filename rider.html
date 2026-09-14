@@ -30,8 +30,11 @@
       <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">RIDER FLEET</span>
     </div>
     <div class="flex items-center gap-2">
+      <button onclick="openEditRiderModal()" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200 cursor-pointer">
+        ✏️ Edit Name
+      </button>
       <button onclick="selfRemoveRiderAccount()" class="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 cursor-pointer">
-        Delete Account
+        Logout
       </button>
     </div>
   </header>
@@ -96,6 +99,29 @@
 
   </main>
 
+  <!-- EDIT RIDER NAME MODAL -->
+  <div id="editRiderModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
+      <div class="flex items-center justify-between border-b pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🛵</span>
+          <h3 class="font-brand font-bold text-sm text-slate-900">Edit Rider Profile</h3>
+        </div>
+        <button onclick="closeEditRiderModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <form onsubmit="handleRiderNameSave(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Rider Full Name</label>
+          <input type="text" id="riderModalName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
+        </div>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          ✓ Save Rider Name
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Pure Rider Fleet Bottom Bar -->
   <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-3 px-6 flex items-center justify-center z-40 shadow-lg">
     <div class="flex items-center gap-2 text-emerald-600 font-black text-xs uppercase tracking-wider">
@@ -132,22 +158,40 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
-    var riderId = localStorage.getItem("fitin60_rider_id");
-    var riderName = localStorage.getItem("fitin60_rider_name");
+    var riderId = localStorage.getItem("fitin60_rider_id") || "rider_" + Date.now();
+    var riderName = localStorage.getItem("fitin60_rider_name") || "Express Fleet Partner";
 
-    if (!riderId) {
-      window.location.href = "rider-register.html";
-    } else {
+    localStorage.setItem("fitin60_rider_id", riderId);
+    localStorage.setItem("fitin60_rider_name", riderName);
+
+    document.getElementById("riderNameDisplay").innerText = riderName + " (Rider)";
+
+    window.openEditRiderModal = function() {
+      document.getElementById("riderModalName").value = riderName;
+      document.getElementById("editRiderModal").classList.remove("hidden");
+    };
+
+    window.closeEditRiderModal = function() {
+      document.getElementById("editRiderModal").classList.add("hidden");
+    };
+
+    window.handleRiderNameSave = function(e) {
+      e.preventDefault();
+      var newName = document.getElementById("riderModalName").value.trim();
+      if (!newName) return;
+
+      riderName = newName;
+      localStorage.setItem("fitin60_rider_name", riderName);
       document.getElementById("riderNameDisplay").innerText = riderName + " (Rider)";
-    }
+      closeEditRiderModal();
+      showQuickToast("✓ Rider name updated!");
+    };
 
     window.selfRemoveRiderAccount = function() {
-      if (confirm("Are you sure you want to remove your rider profile?")) {
-        db.ref("riders/" + riderId).remove().then(function() {
-          localStorage.removeItem("fitin60_rider_id");
-          localStorage.removeItem("fitin60_rider_name");
-          window.location.href = "rider-register.html";
-        });
+      if (confirm("Are you sure you want to log out / remove rider session?")) {
+        localStorage.removeItem("fitin60_rider_id");
+        localStorage.removeItem("fitin60_rider_name");
+        window.location.href = "index.html";
       }
     };
 
@@ -157,7 +201,6 @@
       showQuickToast("Status updated to " + status);
     };
 
-    // Format Date & Time Helper
     function formatDateTime(timestamp) {
       if (!timestamp) return "Recently";
       var d = new Date(timestamp);
@@ -173,7 +216,6 @@
       return day + " " + month + ", " + hours + ":" + strMinutes + " " + ampm;
     }
 
-    // Listen to orders for delivery radar and history
     db.ref("orders").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       var radarList = document.getElementById("riderRadarList");
@@ -205,7 +247,10 @@
                   '<span class="font-mono-num font-black text-sm text-orange-600">₹' + o.totalAmount + '</span>' +
                 '</div>' +
                 '<div class="text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100 space-y-1">' +
-                  '<p class="text-slate-700 font-bold">👤 ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                  '<div class="flex justify-between items-center">' +
+                    '<p class="text-slate-700 font-bold">👤 ' + o.customerName + '</p>' +
+                    '<a href="tel:' + o.customerPhone + '" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-1 rounded-lg border border-emerald-200">📞 Call</a>' +
+                  '</div>' +
                   '<p class="text-slate-500">📍 ' + o.customerAddress + '</p>' +
                 '</div>' +
                 '<div class="flex gap-2 pt-1">' +
@@ -217,25 +262,22 @@
               '</div>';
           }
         } else {
-          // If delivered by this rider (or general completed)
-          if (!riderId || o.riderId === riderId || o.riderName === riderName) {
-            completedCount++;
-            var fee = o.deliveryFee || 49;
-            totalEarnings += fee;
-            var deliveryTime = o.deliveredTimestamp ? formatDateTime(o.deliveredTimestamp) : orderDateTime;
+          completedCount++;
+          var fee = o.deliveryFee || 49;
+          totalEarnings += fee;
+          var deliveryTime = o.deliveredTimestamp ? formatDateTime(o.deliveredTimestamp) : orderDateTime;
 
-            historyHtml += 
-              '<div class="bg-white border border-slate-200 rounded-2xl p-3 text-xs space-y-1 shadow-sm">' +
-                '<div class="flex justify-between font-bold text-slate-900">' +
-                  '<span>' + o.orderId + ' • ' + (o.store || 'Boutique') + '</span>' +
-                  '<span class="text-emerald-600 font-bold">+₹' + fee + ' Earning</span>' +
-                '</div>' +
-                '<div class="flex justify-between text-[11px] text-slate-600">' +
-                  '<span>Customer: ' + o.customerName + '</span>' +
-                  '<span class="text-[10px] text-slate-500 font-mono">🕒 ' + deliveryTime + '</span>' +
-                '</div>' +
-              '</div>';
-          }
+          historyHtml += 
+            '<div class="bg-white border border-slate-200 rounded-2xl p-3 text-xs space-y-1 shadow-sm">' +
+              '<div class="flex justify-between font-bold text-slate-900">' +
+                '<span>' + o.orderId + ' • ' + (o.store || 'Boutique') + '</span>' +
+                '<span class="text-emerald-600 font-bold">+₹' + fee + ' Earning</span>' +
+              '</div>' +
+              '<div class="flex justify-between text-[11px] text-slate-600">' +
+                '<span>Customer: ' + o.customerName + '</span>' +
+                '<span class="text-[10px] text-slate-500 font-mono">🕒 ' + deliveryTime + '</span>' +
+              '</div>' +
+            '</div>';
         }
       });
 
