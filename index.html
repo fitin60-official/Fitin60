@@ -478,19 +478,11 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation (Customer Only - Partner & Rider removed) -->
   <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-6 flex items-center justify-around z-40 shadow-lg">
     <a href="index.html" class="flex flex-col items-center text-orange-600 font-bold">
       <span class="text-lg leading-none">🏬</span>
       <span class="text-[10px] mt-1">Explore</span>
-    </a>
-    <a href="partner.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
-      <span class="text-lg leading-none">💼</span>
-      <span class="text-[10px] mt-1">Partner Hub</span>
-    </a>
-    <a href="rider.html" class="flex flex-col items-center text-slate-600 hover:text-emerald-600 font-bold">
-      <span class="text-lg leading-none">🛵</span>
-      <span class="text-[10px] mt-1">Rider Fleet</span>
     </a>
     <a href="tracking.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
       <span class="text-lg leading-none">⚡</span>
@@ -952,7 +944,6 @@
       renderBoutiqueStores();
     };
 
-    // RENDER STORES WITH UNIVERSAL OWNER EDIT OVERLAYS
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1267,7 +1258,7 @@
         customerPhone: phone,
         customerAddress: deliveryAddress,
         items: items,
-	itemTotal: itemSubtotal,
+        itemTotal: itemSubtotal,
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
@@ -1276,7 +1267,7 @@
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
         boutiqueAccepted: false,
-        riderAssigned: false,
+	riderAssigned: false,
         financialSplit: {
           storeNetPayout: storeNetPayout,
           platformCommission: platformFee,
@@ -1293,7 +1284,6 @@
       });
     };
 
-    // IMMEDIATE EXECUTION & OWNER EDIT ENFORCEMENT
     renderBoutiqueStores();
 
     db.ref("boutiques").on("value", function(snapshot) {
