@@ -39,7 +39,6 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <!-- Role Switchers / Dashboards -->
       <a href="partner.html" class="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl border border-slate-200 transition">
         💼 Partner Hub
       </a>
@@ -114,7 +113,7 @@
 
   </main>
 
-  <!-- FLOATING ACTIVE ORDER TRACKER PILL (Shows when user has placed an order) -->
+  <!-- FLOATING ACTIVE ORDER TRACKER PILL -->
   <div id="floatingOrderTracker" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 hidden">
     <a href="tracking.html" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 border border-slate-800 transition transform hover:scale-105">
       <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping"></span>
@@ -166,13 +165,13 @@
     var selectedCategory = "All";
     var rawProductsData = {};
 
-    // Live 60-Min Countdown Timer Simulation
     var countdownSecs = 59 * 60 + 59;
     setInterval(function() {
       if (countdownSecs > 0) countdownSecs--;
       var m = Math.floor(countdownSecs / 60);
       var s = countdownSecs % 60;
-      document.getElementById("expressCountdown").innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + " mins";
+      var el = document.getElementById("expressCountdown");
+      if(el) el.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + " mins";
     }, 1000);
 
     function showQuickToast(msg) {
@@ -216,7 +215,6 @@
       renderStoreData(rawProductsData);
     };
 
-    // Check active order for floating pill
     db.ref("orders").on("value", function(snap) {
       var orders = snap.val() || {};
       var activePill = document.getElementById("floatingOrderTracker");
@@ -226,18 +224,17 @@
       Object.values(orders).forEach(function(o) {
         if (o.status && o.status !== "Delivered" && o.delivered !== true) {
           hasActive = true;
-          statusSpan.innerText = o.status;
+          if(statusSpan) statusSpan.innerText = o.status;
         }
       });
 
       if (hasActive) {
-        activePill.classList.remove("hidden");
+        if(activePill) activePill.classList.remove("hidden");
       } else {
-        activePill.classList.add("hidden");
+        if(activePill) activePill.classList.add("hidden");
       }
     });
 
-    // Fetch and Render Products & Stores
     db.ref("boutique_products").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       rawProductsData = data;
@@ -256,17 +253,18 @@
         }
       });
 
-      document.getElementById("countAll").innerText = counts.All;
-      document.getElementById("countUniforms").innerText = counts.Uniforms;
-      document.getElementById("countKids").innerText = counts["Kids Wear"];
-      document.getElementById("countSarees").innerText = counts.Sarees;
-      document.getElementById("countKurtas").innerText = counts.Kurtas;
-      document.getElementById("countLehengas").innerText = counts.Lehengas;
-      document.getElementById("countMens").innerText = counts["Mens Wear"];
+      if(document.getElementById("countAll")) document.getElementById("countAll").innerText = counts.All;
+      if(document.getElementById("countUniforms")) document.getElementById("countUniforms").innerText = counts.Uniforms;
+      if(document.getElementById("countKids")) document.getElementById("countKids").innerText = counts["Kids Wear"];
+      if(document.getElementById("countSarees")) document.getElementById("countSarees").innerText = counts.Sarees;
+      if(document.getElementById("countKurtas")) document.getElementById("countKurtas").innerText = counts.Kurtas;
+      if(document.getElementById("countLehengas")) document.getElementById("countLehengas").innerText = counts.Lehengas;
+      if(document.getElementById("countMens")) document.getElementById("countMens").innerText = counts["Mens Wear"];
     }
 
     function renderStoreData(data) {
-      var searchVal = document.getElementById("searchInput").value.toLowerCase();
+      var searchInputEl = document.getElementById("searchInput");
+      var searchVal = searchInputEl ? searchInputEl.value.toLowerCase() : "";
       var storesMap = {};
       var storeCount = 0;
 
@@ -274,10 +272,8 @@
         var p = data[key];
         if (!p || p.inStock === false) return;
 
-        // Category Filter
         if (selectedCategory !== "All" && p.category !== selectedCategory) return;
 
-        // Search Filter
         if (searchVal) {
           var matchName = (p.name || "").toLowerCase().includes(searchVal);
           var matchStore = (p.store || "").toLowerCase().includes(searchVal);
@@ -296,7 +292,8 @@
       });
 
       var container = document.getElementById("storesContainer");
-      document.getElementById("storeLiveCountBadge.innerText" || "storeLiveCountBadge").innerText = storeCount + " Stores Live";
+      var badgeEl = document.getElementById("storeLiveCountBadge");
+      if(badgeEl) badgeEl.innerText = storeCount + " Stores Live";
 
       var html = "";
       var storeKeys = Object.keys(storesMap);
