@@ -46,7 +46,7 @@
           <h2 id="bannerStoreName" class="font-brand font-black text-xl text-white">Sai Fashions</h2>
           <p id="bannerStoreArea" class="text-xs text-orange-400 mt-0.5">📍 Near TV tower • Mobile: 9515552511</p>
         </div>
-        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Active</span>
+        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Verified ✓</span>
       </div>
 
       <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
@@ -58,11 +58,11 @@
       </div>
     </div>
 
-    <!-- Daily Earnings & Sales Analytics Card -->
+    <!-- Daily Earnings, Instant Settlement Card -->
     <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
-        <span class="text-xs font-bold text-slate-800">📊 Store Business Summary</span>
-        <span id="statLastUpdatedTime" class="text-[10px] text-slate-400 font-mono">Live Sync</span>
+        <span class="text-xs font-bold text-slate-800">📊 Instant Settlement & Earnings</span>
+        <span id="statLastUpdatedTime" class="text-[10px] text-emerald-600 font-bold">⚡ Instant Payouts Active</span>
       </div>
       <div class="grid grid-cols-3 gap-2">
         <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
@@ -80,7 +80,7 @@
       </div>
     </div>
 
-    <!-- Live Store Orders with Pulse Alert -->
+    <!-- Live Store Orders with Pulse Alert & Customer Call -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
         <div class="flex items-center gap-2">
@@ -153,11 +153,11 @@
       </form>
     </div>
 
-    <!-- Manage Uploaded Outfits with Stock Toggle & Edit/Delete -->
+    <!-- Manage Uploaded Outfits with Individual Stock Control -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">Manage Uploaded Outfits & Stock</h3>
-        <span class="text-[10px] text-slate-400 font-bold">In/Out Stock • Edit</span>
+        <h3 class="font-brand font-black text-sm text-slate-900">Manage Outfits & Individual Stock</h3>
+        <span class="text-[10px] text-slate-400 font-bold">Toggle In/Out Stock</span>
       </div>
       <div id="partnerUploadedList" class="space-y-2">
         <p class="text-xs text-slate-400 text-center py-2">Loading your inventory...</p>
@@ -167,11 +167,11 @@
     <!-- Instant Payment & Delivery History -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payment & History</h3>
-        <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Completed</span>
+        <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payout History</h3>
+        <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Settled</span>
       </div>
       <div id="partnerHistoryList" class="space-y-2">
-        <p class="text-xs text-slate-400 text-center py-2">No payment or delivery history yet.</p>
+        <p class="text-xs text-slate-400 text-center py-2">No payment history yet.</p>
       </div>
     </div>
 
@@ -259,7 +259,7 @@
     </div>
   </div>
 
-  <!-- Pure Partner Hub Bottom Bar (No extra links) -->
+  <!-- Pure Partner Hub Bottom Bar -->
   <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-3 px-6 flex items-center justify-center z-40 shadow-lg">
     <div class="flex items-center gap-2 text-orange-600 font-black text-xs uppercase tracking-wider">
       <span>💼</span>
@@ -484,16 +484,19 @@
           if (!isDelivered) {
             liveCount++;
             liveListHtml += 
-              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-2">' +
                 '<div class="flex justify-between items-center font-bold text-slate-900">' +
                   '<span>' + o.orderId + ' (' + o.customerName + ')</span>' +
                   '<span class="text-orange-600 font-mono-num">₹' + o.totalAmount + '</span>' +
                 '</div>' +
-                '<div class="flex justify-between text-[10px] text-slate-500 font-medium">' +
+                '<div class="flex justify-between items-center text-[11px] text-slate-600 font-medium">' +
                   '<span>📍 ' + o.customerAddress + '</span>' +
-                  '<span class="text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded font-bold">🕒 ' + orderDateTime + '</span>' +
+                  '<a href="tel:' + o.customerPhone + '" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-1 rounded-lg border border-emerald-200">📞 Call Customer</a>' +
                 '</div>' +
-                '<p class="text-[10px] text-emerald-600 font-bold">Payment Mode: ' + o.paymentMethod + '</p>' +
+                '<div class="flex justify-between text-[10px] text-slate-500 border-t pt-1.5">' +
+                  '<span class="text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded font-bold">🕒 ' + orderDateTime + '</span>' +
+                  '<span class="text-emerald-600 font-bold">Payment: ' + o.paymentMethod + ' (Instant Payout)</span>' +
+                '</div>' +
               '</div>';
           } else {
             histCount++;
@@ -507,10 +510,10 @@
               '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
                 '<div class="flex justify-between font-bold text-slate-900">' +
                   '<span>' + o.orderId + ' • ₹' + o.totalAmount + '</span>' +
-                  '<span class="text-emerald-600 font-bold">✓ Net Payout: ₹' + netPayout + '</span>' +
+                  '<span class="text-emerald-600 font-bold">✓ Settled: ₹' + netPayout + '</span>' +
                 '</div>' +
                 '<div class="flex justify-between text-[11px] text-slate-600">' +
-                  '<span>Customer: ' + o.customerName + ' (' + o.customerPhone + ')</span>' +
+                  '<span>Customer: ' + o.customerName + '</span>' +
                   '<span class="text-[10px] text-slate-500 font-mono">🕒 ' + deliveryTime + '</span>' +
                 '</div>' +
                 '<p class="text-[10px] text-blue-600 font-bold">🛵 Delivered by: ' + (o.riderName || 'Express Fleet Partner') + '</p>' +
@@ -520,11 +523,11 @@
       });
 
       document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
-      document.getElementById("completedCount").innerText = histCount + " Completed";
+      document.getElementById("completedCount").innerText = histCount + " Settled";
       document.getElementById("statTotalOrders").innerText = (liveCount + histCount);
       document.getElementById("statTotalRevenue").innerText = "₹" + totalRevenue;
       document.getElementById("statSettledAmount").innerText = "₹" + settledAmount;
-      document.getElementById("statLastUpdatedTime").innerText = "Synced: " + formatDateTime(Date.now());
+      document.getElementById("statLastUpdatedTime").innerText = "⚡ Instant Payouts Active";
 
       var pulse = document.getElementById("livePulseIndicator");
       if (liveCount > 0) {
@@ -538,7 +541,7 @@
       if (histCount > 0) {
         document.getElementById("partnerHistoryList").innerHTML = historyListHtml;
       } else {
-        document.getElementById("partnerHistoryList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No payment or delivery history yet.</p>";
+        document.getElementById("partnerHistoryList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No payment history yet.</p>";
       }
     });
 
