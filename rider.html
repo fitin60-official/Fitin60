@@ -21,21 +21,15 @@
     #quickToast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
-<body class="min-h-screen pb-28 antialiased">
+<body class="min-h-screen pb-24 antialiased">
 
-  <!-- Header with Back & Home Buttons -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2">
-      <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-slate-700 transition" title="Back to Home">
-        ←
-      </a>
       <span class="font-brand text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
       <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">RIDER FLEET</span>
     </div>
     <div class="flex items-center gap-2">
-      <a href="index.html" class="text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition">
-        Home 🏠
-      </a>
       <button onclick="selfRemoveRiderAccount()" class="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 cursor-pointer">
         Delete Account
       </button>
@@ -91,7 +85,7 @@
     <div class="space-y-3 pt-2">
       <div class="flex justify-between items-center px-1">
         <h2 class="font-brand font-black text-sm text-slate-900 uppercase tracking-wide">Completed Deliveries History</h2>
-        <span class="text-[10px] bg-slate-200 text-slate-700 font-bold px-2.5 py-0.5 rounded-full">0 Done</span>
+        <span id="completedCountBadge" class="text-[10px] bg-slate-200 text-slate-700 font-bold px-2.5 py-0.5 rounded-full">0 Done</span>
       </div>
       <div id="completedOrdersList" class="space-y-2">
         <div class="bg-white border border-slate-200 rounded-2xl p-4 text-center text-slate-400 text-xs">
@@ -102,24 +96,12 @@
 
   </main>
 
-  <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-6 flex items-center justify-around z-40 shadow-lg">
-    <a href="index.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
-      <span class="text-lg leading-none">🏬</span>
-      <span class="text-[10px] mt-1">Explore</span>
-    </a>
-    <a href="partner.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
-      <span class="text-lg leading-none">🏬</span>
-      <span class="text-[10px] mt-1">Partner Hub</span>
-    </a>
-    <a href="rider.html" class="flex flex-col items-center text-emerald-600 font-bold">
-      <span class="text-lg leading-none">🛵</span>
-      <span class="text-[10px] mt-1">Rider Fleet</span>
-    </a>
-    <a href="tracking.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
-      <span class="text-lg leading-none">⚡</span>
-      <span class="text-[10px] mt-1">Orders</span>
-    </a>
+  <!-- Pure Rider Fleet Bottom Bar -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-3 px-6 flex items-center justify-center z-40 shadow-lg">
+    <div class="flex items-center gap-2 text-emerald-600 font-black text-xs uppercase tracking-wider">
+      <span>🛵</span>
+      <span>Fitin60 Fleet Partner Active</span>
+    </div>
   </nav>
 
   <!-- Toast Notification -->
@@ -175,52 +157,107 @@
       showQuickToast("Status updated to " + status);
     };
 
-    // Listen to orders for delivery radar
+    // Format Date & Time Helper
+    function formatDateTime(timestamp) {
+      if (!timestamp) return "Recently";
+      var d = new Date(timestamp);
+      var day = d.getDate();
+      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var month = months[d.getMonth()];
+      var hours = d.getHours();
+      var minutes = d.getMinutes();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      var strMinutes = minutes < 10 ? '0' + minutes : minutes;
+      return day + " " + month + ", " + hours + ":" + strMinutes + " " + ampm;
+    }
+
+    // Listen to orders for delivery radar and history
     db.ref("orders").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       var radarList = document.getElementById("riderRadarList");
-      var html = "";
-      var count = 0;
+      var historyList = document.getElementById("completedOrdersList");
+      var radarHtml = "";
+      var historyHtml = "";
+      var activeCount = 0;
+      var completedCount = 0;
+      var totalEarnings = 0;
 
       Object.keys(data).forEach(function(key) {
         var o = data[key];
         if (!o) return;
-        // Show orders that are ready for pickup or out for delivery
-        if (o.status === "Ready for Delivery" || o.status === "Out for Delivery") {
-          count++;
-          html += 
-            '<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">' +
-              '<div class="flex justify-between items-start">' +
-                '<div>' +
-                  '<span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full">' + o.orderId + '</span>' +
-                  '<p class="font-brand font-black text-sm text-slate-900 mt-1">' + o.item + '</p>' +
-                  '<p class="text-xs text-slate-500">Store: ' + o.store + '</p>' +
+
+        var isDelivered = (o.status === "Delivered" || o.delivered === true);
+        var orderDateTime = formatDateTime(o.timestamp);
+
+        if (!isDelivered) {
+          if (o.status === "Ready for Delivery" || o.status === "Out for Delivery") {
+            activeCount++;
+            radarHtml += 
+              '<div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">' +
+                '<div class="flex justify-between items-start">' +
+                  '<div>' +
+                    '<span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full">' + o.orderId + '</span>' +
+                    '<p class="font-brand font-black text-sm text-slate-900 mt-1">' + (o.item || 'Express Outfit') + '</p>' +
+                    '<p class="text-xs text-slate-500">Store: ' + (o.store || 'Boutique') + '</p>' +
+                  '</div>' +
+                  '<span class="font-mono-num font-black text-sm text-orange-600">₹' + o.totalAmount + '</span>' +
                 '</div>' +
-                '<span class="font-mono-num font-black text-sm text-orange-600">₹' + o.totalAmount + '</span>' +
-              '</div>' +
-              '<div class="text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100 space-y-1">' +
-                '<p class="text-slate-700 font-bold">👤 ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
-                '<p class="text-slate-500">📍 ' + o.customerAddress + '</p>' +
-              '</div>' +
-              '<div class="flex gap-2 pt-1">' +
-                (o.status === "Ready for Delivery" ? 
-                  '<button onclick="pickupOrder(\'' + o.orderId + '\')" class="flex-1 bg-slate-950 hover:bg-orange-600 text-white font-black py-2.5 rounded-xl text-xs transition">Pickup Order 🛵</button>' :
-                  '<button onclick="deliverOrder(\'' + o.orderId + '\', \'' + o.deliveryOtp + '\')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl text-xs transition">Verify OTP & Deliver ✓</button>'
-                ) +
-              '</div>' +
-            '</div>';
+                '<div class="text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100 space-y-1">' +
+                  '<p class="text-slate-700 font-bold">👤 ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                  '<p class="text-slate-500">📍 ' + o.customerAddress + '</p>' +
+                '</div>' +
+                '<div class="flex gap-2 pt-1">' +
+                  (o.status === "Ready for Delivery" ? 
+                    '<button onclick="pickupOrder(\'' + key + '\')" class="flex-1 bg-slate-950 hover:bg-orange-600 text-white font-black py-2.5 rounded-xl text-xs transition cursor-pointer">Pickup Order 🛵</button>' :
+                    '<button onclick="deliverOrder(\'' + key + '\', \'' + (o.deliveryOtp || '1234') + '\')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl text-xs transition cursor-pointer">Verify OTP & Deliver ✓</button>'
+                  ) +
+                '</div>' +
+              '</div>';
+          }
+        } else {
+          // If delivered by this rider (or general completed)
+          if (!riderId || o.riderId === riderId || o.riderName === riderName) {
+            completedCount++;
+            var fee = o.deliveryFee || 49;
+            totalEarnings += fee;
+            var deliveryTime = o.deliveredTimestamp ? formatDateTime(o.deliveredTimestamp) : orderDateTime;
+
+            historyHtml += 
+              '<div class="bg-white border border-slate-200 rounded-2xl p-3 text-xs space-y-1 shadow-sm">' +
+                '<div class="flex justify-between font-bold text-slate-900">' +
+                  '<span>' + o.orderId + ' • ' + (o.store || 'Boutique') + '</span>' +
+                  '<span class="text-emerald-600 font-bold">+₹' + fee + ' Earning</span>' +
+                '</div>' +
+                '<div class="flex justify-between text-[11px] text-slate-600">' +
+                  '<span>Customer: ' + o.customerName + '</span>' +
+                  '<span class="text-[10px] text-slate-500 font-mono">🕒 ' + deliveryTime + '</span>' +
+                '</div>' +
+              '</div>';
+          }
         }
       });
 
-      if (count === 0) {
+      if (activeCount === 0) {
         radarList.innerHTML = '<div class="bg-white border border-slate-200 rounded-2xl p-5 text-center text-slate-400 text-xs">No active express orders available right now.</div>';
       } else {
-        radarList.innerHTML = html;
+        radarList.innerHTML = radarHtml;
       }
+
+      if (completedCount === 0) {
+        historyList.innerHTML = '<div class="bg-white border border-slate-200 rounded-2xl p-4 text-center text-slate-400 text-xs">No completed deliveries yet.</div>';
+      } else {
+        historyList.innerHTML = historyHtml;
+      }
+
+      document.getElementById("todayDeliveriesCount").innerText = completedCount;
+      document.getElementById("deliveryEarnings").innerText = "₹" + totalEarnings;
+      document.getElementById("completedCountBadge").innerText = completedCount + " Done";
     });
 
-    window.pickupOrder = function(orderId) {
-      db.ref("orders/" + orderId).update({
+    window.pickupOrder = function(orderKey) {
+      db.ref("orders/" + orderKey).update({
         status: "Out for Delivery",
         riderId: riderId,
         riderName: riderName
@@ -229,17 +266,20 @@
       });
     };
 
-    window.deliverOrder = function(orderId, correctOtp) {
+    window.deliverOrder = function(orderKey, correctOtp) {
       var enteredOtp = prompt("Enter 4-digit Delivery OTP given by customer:");
       if (!enteredOtp) return;
-      if (enteredOtp.trim() !== correctOtp) {
+      if (enteredOtp.trim() !== String(correctOtp)) {
         alert("Incorrect OTP! Please check with customer.");
         return;
       }
 
-      db.ref("orders/" + orderId).update({
+      db.ref("orders/" + orderKey).update({
         status: "Delivered",
-        delivered: true
+        delivered: true,
+        deliveredTimestamp: Date.now(),
+        riderId: riderId,
+        riderName: riderName
       }).then(function() {
         showQuickToast("✓ Delivery Completed Successfully!");
       });
