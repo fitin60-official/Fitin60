@@ -25,20 +25,20 @@
 </head>
 <body class="min-h-screen pb-28 antialiased">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
-    <a href="index.html" class="flex items-center gap-1">
-      <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[9px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded-full">MERCHANT STUDIO</span>
-    </a>
-    <div class="flex items-center gap-2">
-      <button onclick="openEditStoreModal()" class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200 cursor-pointer">✏️ Edit Store</button>
-      <button onclick="partnerLogout()" class="text-xs font-bold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 cursor-pointer">Logout</button>
-      <a href="index.html" class="text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">← Radar</a>
+  <!-- Header - Fully Responsive & Non-overlapping -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 h-16 flex items-center justify-between shadow-sm">
+    <div class="flex items-center gap-1.5 shrink-0">
+      <span class="font-brand text-lg sm:text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
+      <span class="text-[8px] sm:text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.5 rounded-full">MERCHANT</span>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button onclick="openEditStoreModal()" class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-xl border border-blue-200 cursor-pointer">✏️ Edit</button>
+      <button onclick="partnerLogout()" class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1.5 rounded-xl border border-rose-200 cursor-pointer">Logout</button>
+      <a href="index.html" class="text-[11px] font-bold text-slate-700 bg-slate-100 px-2.5 py-1.5 rounded-xl border border-slate-200">Radar ⚡</a>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto px-4 mt-6 space-y-5">
+  <main class="max-w-xl mx-auto px-4 mt-5 space-y-5">
     
     <!-- Store Status Banner & Toggle -->
     <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-lg space-y-3">
@@ -47,19 +47,19 @@
           <h2 id="bannerStoreName" class="font-brand font-black text-xl text-white">Sai Fashions</h2>
           <p id="bannerStoreArea" class="text-xs text-orange-400 mt-0.5">📍 Near TV tower • Mobile: 9515552511</p>
         </div>
-        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Live & Active</span>
+        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Active</span>
       </div>
 
       <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-        <span class="text-slate-400">Store Status for 60-min Express:</span>
+        <span class="text-slate-400">Store Status for Express:</span>
         <select id="storeStatusToggle" onchange="updateStoreStatus(this.value)" class="bg-slate-900 border border-slate-700 text-emerald-400 font-bold px-3 py-1.5 rounded-xl focus:outline-none">
           <option value="OPEN">🟢 Open for 60-Min Orders</option>
-          <option value="CLOSED">🔴 Closed / Not Accepting Orders</option>
+          <option value="CLOSED">🔴 Closed / Not Accepting</option>
         </select>
       </div>
     </div>
 
-    <!-- Daily Earnings & Sales Analytics Card with Date/Time -->
+    <!-- Daily Earnings & Sales Analytics Card -->
     <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
         <span class="text-xs font-bold text-slate-800">📊 Store Business Summary</span>
@@ -67,21 +67,21 @@
       </div>
       <div class="grid grid-cols-3 gap-2">
         <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Total Orders</p>
-          <p id="statTotalOrders" class="font-mono-num font-black text-lg text-slate-900 mt-0.5">0</p>
+          <p class="text-[10px] font-bold text-slate-400 uppercase">Orders</p>
+          <p id="statTotalOrders" class="font-mono-num font-black text-base sm:text-lg text-slate-900 mt-0.5">0</p>
         </div>
         <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Total Revenue</p>
-          <p id="statTotalRevenue" class="font-mono-num font-black text-lg text-orange-600 mt-0.5">₹0</p>
+          <p class="text-[10px] font-bold text-slate-400 uppercase">Revenue</p>
+          <p id="statTotalRevenue" class="font-mono-num font-black text-base sm:text-lg text-orange-600 mt-0.5">₹0</p>
         </div>
         <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
           <p class="text-[10px] font-bold text-slate-400 uppercase">Settled</p>
-          <p id="statSettledAmount" class="font-mono-num font-black text-lg text-emerald-600 mt-0.5">₹0</p>
+          <p id="statSettledAmount" class="font-mono-num font-black text-base sm:text-lg text-emerald-600 mt-0.5">₹0</p>
         </div>
       </div>
     </div>
 
-    <!-- Live Store Orders with Pulse Alert & Time -->
+    <!-- Live Store Orders with Pulse Alert -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
         <div class="flex items-center gap-2">
@@ -128,7 +128,7 @@
             <div id="uploadPrompt" class="space-y-1">
               <span class="text-3xl block">📷</span>
               <p class="font-bold text-slate-800 text-xs">Tap to choose or capture outfit photo</p>
-              <p class="text-[10px] text-slate-400">JPG, PNG or WEBP (Direct high resolution)</p>
+              <p class="text-[10px] text-slate-400">JPG, PNG or WEBP</p>
             </div>
 
             <div id="imagePreviewContainer" class="hidden flex-col items-center gap-2">
@@ -165,10 +165,10 @@
       </div>
     </div>
 
-    <!-- Instant Payment & Delivery History with Exact Date & Time -->
+    <!-- Instant Payment & Delivery History -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payment & Delivery History</h3>
+        <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payment & History</h3>
         <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Completed</span>
       </div>
       <div id="partnerHistoryList" class="space-y-2">
@@ -231,7 +231,7 @@
     </div>
   </div>
 
-  <!-- EDIT STORE MODAL (Name & Location Change) -->
+  <!-- EDIT STORE MODAL -->
   <div id="editStoreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
@@ -260,7 +260,7 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation - Partner Hub Only -->
   <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-6 flex items-center justify-around z-40 shadow-lg">
     <a href="index.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
       <span class="text-lg leading-none">🏬</span>
@@ -316,7 +316,6 @@
       setTimeout(function() { toast.classList.remove("show"); }, 1500);
     }
 
-    // Format Date & Time Helper
     function formatDateTime(timestamp) {
       if (!timestamp) return "Recently";
       var d = new Date(timestamp);
@@ -332,7 +331,6 @@
       return day + " " + month + ", " + hours + ":" + strMinutes + " " + ampm;
     }
 
-    // Modern Image Browser Live Preview
     window.handleImagePreview = function(event) {
       var input = event.target;
       if (input.files && input.files[0]) {
@@ -445,7 +443,6 @@
       });
     };
 
-    // Load Uploaded Outfits with Stock Toggle & Edit/Delete
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
       loadedProductsMap = data;
@@ -468,7 +465,7 @@
                 '</div>' +
               '</div>' +
               '<div class="flex gap-1 shrink-0">' +
-                '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '" title="Toggle Stock">' + (inStock ? 'Pause' : 'Stock On') + '</button>' +
+                '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '">' + (inStock ? 'Pause' : 'Stock On') + '</button>' +
                 '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
                 '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
               '</div>' +
@@ -483,7 +480,6 @@
       }
     });
 
-    // Load Live Store Orders, Analytics & Delivery History with Exact Date/Time
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
