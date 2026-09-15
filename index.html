@@ -20,12 +20,14 @@
   
   <style>
     *, *::before, *::after { box-sizing: border-box; }
-    body {
+    html, body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       margin: 0;
       padding: 0;
       background-color: #fafaf9;
       color: #0f172a;
+      overflow-x: hidden;
+      width: 100%;
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
@@ -40,37 +42,37 @@
     #quickToast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
-<body class="min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white">
+<body class="min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white w-full overflow-x-hidden">
 
-  <!-- 1. Live 60-Min Countdown Timer Banner -->
+  <!-- Clean Professional Top Alert Bar -->
   <div class="bg-slate-950 text-white text-[11px] font-bold py-1.5 px-3 text-center flex items-center justify-center gap-2 border-b border-slate-800">
-    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-    <span>⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • Drops in <span id="expressCountdown" class="text-orange-400 font-mono-num">59:59 mins</span></span>
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0"></span>
+    <span class="truncate">⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • Guaranteed 60-Min Drops</span>
   </div>
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 h-16 flex items-center justify-between shadow-sm w-full">
     <a href="index.html" class="flex items-center gap-1 shrink-0">
-      <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
+      <span class="font-brand text-xl sm:text-2xl font-black tracking-tight text-slate-950">
         FITIN<span class="text-orange-600">60</span>
       </span>
       <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-1.5 py-0.5 rounded-full border border-orange-200">15KM</span>
     </a>
 
-    <div class="flex items-center gap-2 shrink-0">
-      <button onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer">
-        <span class="text-sm">🛍️</span>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button onclick="toggleCart()" class="bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold px-2.5 py-1.5 rounded-xl flex items-center gap-1 shadow-sm cursor-pointer text-xs">
+        <span>🛍️</span>
         <span id="cart-count" class="bg-white text-orange-600 text-[10px] font-mono-num font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
       </button>
 
       <div id="authPillContainer" class="relative">
-        <button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">
+        <button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">
           <span>👤</span> <span>Login</span>
         </button>
       </div>
 
       <a href="tracking.html" class="bg-slate-100 hover:bg-slate-200 text-slate-800 p-2 rounded-xl border border-slate-200 transition" title="Orders">
-        <span class="text-sm">⚡</span>
+        <span class="text-xs">⚡</span>
       </a>
     </div>
   </header>
@@ -109,15 +111,15 @@
     </div>
   </div>
 
-  <main class="max-w-4xl mx-auto px-4 mt-4 space-y-4">
-    <!-- Search & 3. Category Filters with Counts -->
-    <div class="space-y-3">
-      <div class="relative">
+  <main class="max-w-4xl mx-auto px-4 mt-4 space-y-4 w-full">
+    <!-- Search & Category Filters with Counts -->
+    <div class="space-y-3 w-full">
+      <div class="relative w-full">
         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">🔍</span>
         <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, saree, school uniform..." class="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-orange-500">
       </div>
 
-      <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold" id="categoryChips">
+      <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
         <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">All Outfits <span id="countAll" class="opacity-70 text-[10px] ml-1">0</span></button>
         <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">🎒 Uniforms <span id="countUniform" class="opacity-50 text-[10px] ml-1">0</span></button>
         <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">🧸 Kids Wear <span id="countKids" class="opacity-50 text-[10px] ml-1">0</span></button>
@@ -129,7 +131,7 @@
     </div>
 
     <!-- 15KM Radar Banner -->
-    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-5 text-white shadow-xl border border-slate-800">
+    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-5 text-white shadow-xl border border-slate-800 w-full">
       <div class="flex justify-between items-center mb-2">
         <div class="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 px-2.5 py-0.5 rounded-full text-[10px] font-bold text-orange-300">
           <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span> 15-KM Hyperlocal Zone
@@ -148,20 +150,20 @@
     </div>
 
     <!-- Stores Section -->
-    <div>
+    <div class="w-full">
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-brand font-black text-lg text-slate-950">Stores Near You</h2>
         <span id="boutiqueCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">Live</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="boutiqueStoreGrid"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full" id="boutiqueStoreGrid"></div>
     </div>
   </main>
 
-  <!-- 2. Live Order Tracking Quick Floating Pill -->
+  <!-- Live Order Tracking Quick Floating Pill (Appears only after placing order with live countdown) -->
   <div id="floatingOrderTracker" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 hidden">
-    <a href="tracking.html" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 border border-slate-800 transition transform hover:scale-105">
+    <a href="tracking.html" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 border border-slate-800 transition transform hover:scale-105 whitespace-nowrap">
       <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping"></span>
-      <span>📦 Active Order: <span id="floatingOrderStatus" class="text-orange-400">On the way</span></span>
+      <span>📦 Active Order: <span id="floatingOrderStatus" class="text-orange-400">On the way</span> (<span id="floatingOrderCountdown" class="font-mono-num text-emerald-400">59:59</span>)</span>
       <span class="bg-white/20 px-2 py-0.5 rounded text-[10px]">Track →</span>
     </a>
   </div>
@@ -586,17 +588,16 @@
     var currentModalImageIndex = 0;
     var selectedModalSize = "";
 
-    // 1. Live Countdown Timer Logic
-    var countdownSecs = 59 * 60 + 59;
+    // Live Order Tracking Quick Pill with Order-Based Countdown
+    var orderTimerSecs = 60 * 60;
     setInterval(function() {
-      if (countdownSecs > 0) countdownSecs--;
-      var m = Math.floor(countdownSecs / 60);
-      var s = countdownSecs % 60;
-      var el = document.getElementById("expressCountdown");
-      if (el) el.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + " mins";
+      if (orderTimerSecs > 0) orderTimerSecs--;
+      var m = Math.floor(orderTimerSecs / 60);
+      var s = orderTimerSecs % 60;
+      var el = document.getElementById("floatingOrderCountdown");
+      if (el) el.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
     }, 1000);
 
-    // 2. Live Order Tracking Quick Pill Listener
     db.ref("orders").on("value", function(snap) {
       var orders = snap.val() || {};
       var activePill = document.getElementById("floatingOrderTracker");
@@ -617,7 +618,7 @@
       }
     });
 
-    // 3. Category Filter Counts Updater
+    // Category Filter Counts Updater
     function updateCategoryCounts() {
       var all = baseProducts.concat(cloudProducts);
       var counts = { All: 0, Uniform: 0, Kids: 0, Saree: 0, Kurti: 0, Lehenga: 0, Men: 0 };
@@ -1072,7 +1073,7 @@
         });
 
         html += 
-          '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3">' +
+          '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3 w-full">' +
             '<div class="flex justify-between items-center">' +
               '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
@@ -1200,8 +1201,8 @@
       if (currentCustomer) {
         var firstName = currentCustomer.name.split(" ")[0];
         container.innerHTML = 
-          '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
-            '<span>👤</span><span class="text-slate-900">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
+          '<button onclick="toggleProfileMenu()" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2.5 py-1.5 rounded-xl font-bold text-xs cursor-pointer transition">' +
+            '<span>👤</span><span class="text-slate-900 truncate max-w-[70px]">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
           '</button>';
 
         document.getElementById("custName").value = currentCustomer.name || "";
@@ -1219,7 +1220,7 @@
         }
       } else {
         container.innerHTML = 
-          '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
+          '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
             '<span>👤</span> <span>Login</span>' +
           '</button>';
       }
@@ -1235,12 +1236,12 @@
         isOwnerActive = false;
         localStorage.removeItem("fitin60_customer_user");
         localStorage.removeItem("fitin60_owner_session");
-        document.getElementById("profilePopover").classList.add("hidden");
+	document.getElementById("profilePopover").classList.add("hidden");
         document.getElementById("custName").value = "";
         document.getElementById("custPhone").value = "";
         document.getElementById("custPermanentAddress").value = "";
         document.getElementById("custNewAddress").value = "";
-	updateAuthHeaderUI();
+        updateAuthHeaderUI();
         renderBoutiqueStores();
       }
     }
