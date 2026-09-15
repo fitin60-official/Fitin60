@@ -112,7 +112,7 @@
   </div>
 
   <main class="max-w-4xl mx-auto px-4 mt-4 space-y-4 w-full">
-    <!-- Search & Clean Minimal Category Filters -->
+    <!-- Search & Clean Category Filters (No Numbers) -->
     <div class="space-y-3 w-full">
       <div class="relative w-full">
         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">🔍</span>
@@ -120,34 +120,13 @@
       </div>
 
       <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
-        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
-          <span>All Outfits</span>
-          <span id="countAll" class="bg-white/20 text-white px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
-        </button>
-        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
-          <span>🎒 Uniforms</span>
-          <span id="countUniform" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
-        </button>
-        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
-          <span>🧸 Kids Wear</span>
-          <span id="countKids" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
-        </button>
-        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
-          <span>🥻 Sarees</span>
-          <span id="countSaree" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
-        </button>
-        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
-          <span>👗 Kurtis</span>
-          <span id="countKurti" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
-        </button>
-        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
-          <span>✨ Lehengas</span>
-          <span id="countLehenga" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
-        </button>
-        <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
-          <span>👔 Men's Wear</span>
-          <span id="countMen" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
-        </button>
+        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2 rounded-full shrink-0 cursor-pointer transition">All Outfits</button>
+        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full shrink-0 cursor-pointer transition">🎒 Uniforms</button>
+        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full shrink-0 cursor-pointer transition">🧸 Kids Wear</button>
+        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full shrink-0 cursor-pointer transition">🥻 Sarees</button>
+        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full shrink-0 cursor-pointer transition">👗 Kurtis</button>
+        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full shrink-0 cursor-pointer transition">✨ Lehengas</button>
+        <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full shrink-0 cursor-pointer transition">👔 Men's Wear</button>
       </div>
     </div>
 
@@ -609,6 +588,7 @@
     var currentModalImageIndex = 0;
     var selectedModalSize = "";
 
+    // Live Order Tracking Quick Pill with Order-Based Countdown
     var orderTimerSecs = 60 * 60;
     setInterval(function() {
       if (orderTimerSecs > 0) orderTimerSecs--;
@@ -637,32 +617,6 @@
         if (activePill) activePill.classList.add("hidden");
       }
     });
-
-    // Updated Category Filter Counts Updater with clean badge styling
-    function updateCategoryCounts() {
-      var all = baseProducts.concat(cloudProducts);
-      var counts = { All: 0, Uniform: 0, Kids: 0, Saree: 0, Kurti: 0, Lehenga: 0, Men: 0 };
-
-      all.forEach(function(p) {
-        if (!p || p.inStock === false) return;
-        counts.All++;
-        var cat = (p.category || "").toLowerCase();
-        if (cat.includes("uniform")) counts.Uniform++;
-        else if (cat.includes("kid")) counts.Kids++;
-        else if (cat.includes("saree")) counts.Saree++;
-        else if (cat.includes("kurti")) counts.Kurti++;
-        else if (cat.includes("lehenga")) counts.Lehenga++;
-        else if (cat.includes("men")) counts.Men++;
-      });
-
-      if (document.getElementById("countAll")) document.getElementById("countAll").innerText = counts.All;
-      if (document.getElementById("countUniform")) document.getElementById("countUniform").innerText = counts.Uniform;
-      if (document.getElementById("countKids")) document.getElementById("countKids").innerText = counts.Kids;
-      if (document.getElementById("countSaree")) document.getElementById("countSaree").innerText = counts.Saree;
-      if (document.getElementById("countKurti")) document.getElementById("countKurti").innerText = counts.Kurti;
-      if (document.getElementById("countLehenga")) document.getElementById("countLehenga").innerText = counts.Lehenga;
-      if (document.getElementById("countMen")) document.getElementById("countMen").innerText = counts.Men;
-    }
 
     function getDistanceFee(distKm) {
       if (distKm <= 3) return 49;
@@ -1022,15 +976,10 @@
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
-        // Check text content inside button
         if (btn.innerText.includes(cat) || (cat === "All" && btn.innerText.includes("All"))) {
-          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm";
-          var badge = btn.querySelector("span:last-child");
-          if(badge) badge.className = "bg-white/20 text-white px-1.5 py-0.5 rounded-md text-[10px] font-mono-num";
+          btn.className = "cat-chip bg-slate-950 text-white px-4 py-2 rounded-full shrink-0 cursor-pointer transition";
         } else {
-          btn.className = "cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm";
-          var badge = btn.querySelector("span:last-child");
-          if(badge) badge.className = "bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num";
+          btn.className = "cat-chip bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full shrink-0 cursor-pointer transition";
         }
       });
       renderBoutiqueStores();
@@ -1310,7 +1259,8 @@
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
 
-      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
+      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:che
+	var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
       var deliveryAddress = "";
 
       if (selectedAddressType === "permanent") {
@@ -1415,4 +1365,3 @@
   </script>
 </body>
 </html>
-	
