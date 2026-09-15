@@ -112,7 +112,7 @@
   </div>
 
   <main class="max-w-4xl mx-auto px-4 mt-4 space-y-4 w-full">
-    <!-- Search & Category Filters with Counts -->
+    <!-- Search & Clean Minimal Category Filters -->
     <div class="space-y-3 w-full">
       <div class="relative w-full">
         <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-sm pointer-events-none">🔍</span>
@@ -120,13 +120,34 @@
       </div>
 
       <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
-        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">All Outfits <span id="countAll" class="opacity-70 text-[10px] ml-1">0</span></button>
-        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">🎒 Uniforms <span id="countUniform" class="opacity-50 text-[10px] ml-1">0</span></button>
-        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">🧸 Kids Wear <span id="countKids" class="opacity-50 text-[10px] ml-1">0</span></button>
-        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">🥻 Sarees <span id="countSaree" class="opacity-50 text-[10px] ml-1">0</span></button>
-        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">👗 Kurtis <span id="countKurti" class="opacity-50 text-[10px] ml-1">0</span></button>
-        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">✨ Lehengas <span id="countLehenga" class="opacity-50 text-[10px] ml-1">0</span></button>
-        <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer">👔 Men's Wear <span id="countMen" class="opacity-50 text-[10px] ml-1">0</span></button>
+        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>All Outfits</span>
+          <span id="countAll" class="bg-white/20 text-white px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
+        </button>
+        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>🎒 Uniforms</span>
+          <span id="countUniform" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
+        </button>
+        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>🧸 Kids Wear</span>
+          <span id="countKids" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
+        </button>
+        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>🥻 Sarees</span>
+          <span id="countSaree" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
+        </button>
+        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>👗 Kurtis</span>
+          <span id="countKurti" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
+        </button>
+        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>✨ Lehengas</span>
+          <span id="countLehenga" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
+        </button>
+        <button onclick="filterByCategory('Men')" class="cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm">
+          <span>👔 Men's Wear</span>
+          <span id="countMen" class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num">0</span>
+        </button>
       </div>
     </div>
 
@@ -159,7 +180,7 @@
     </div>
   </main>
 
-  <!-- Live Order Tracking Quick Floating Pill (Appears only after placing order with live countdown) -->
+  <!-- Live Order Tracking Quick Floating Pill -->
   <div id="floatingOrderTracker" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 hidden">
     <a href="tracking.html" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 border border-slate-800 transition transform hover:scale-105 whitespace-nowrap">
       <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping"></span>
@@ -588,7 +609,6 @@
     var currentModalImageIndex = 0;
     var selectedModalSize = "";
 
-    // Live Order Tracking Quick Pill with Order-Based Countdown
     var orderTimerSecs = 60 * 60;
     setInterval(function() {
       if (orderTimerSecs > 0) orderTimerSecs--;
@@ -618,7 +638,7 @@
       }
     });
 
-    // Category Filter Counts Updater
+    // Updated Category Filter Counts Updater with clean badge styling
     function updateCategoryCounts() {
       var all = baseProducts.concat(cloudProducts);
       var counts = { All: 0, Uniform: 0, Kids: 0, Saree: 0, Kurti: 0, Lehenga: 0, Men: 0 };
@@ -1002,10 +1022,15 @@
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
+        // Check text content inside button
         if (btn.innerText.includes(cat) || (cat === "All" && btn.innerText.includes("All"))) {
-          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer";
+          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm";
+          var badge = btn.querySelector("span:last-child");
+          if(badge) badge.className = "bg-white/20 text-white px-1.5 py-0.5 rounded-md text-[10px] font-mono-num";
         } else {
-          btn.className = "cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-1.5 rounded-full shrink-0 cursor-pointer";
+          btn.className = "cat-chip bg-white border border-slate-200 text-slate-700 px-3.5 py-2 rounded-xl shrink-0 cursor-pointer flex items-center gap-1.5 shadow-sm";
+          var badge = btn.querySelector("span:last-child");
+          if(badge) badge.className = "bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md text-[10px] font-mono-num";
         }
       });
       renderBoutiqueStores();
@@ -1236,7 +1261,7 @@
         isOwnerActive = false;
         localStorage.removeItem("fitin60_customer_user");
         localStorage.removeItem("fitin60_owner_session");
-	document.getElementById("profilePopover").classList.add("hidden");
+        document.getElementById("profilePopover").classList.add("hidden");
         document.getElementById("custName").value = "";
         document.getElementById("custPhone").value = "";
         document.getElementById("custPermanentAddress").value = "";
@@ -1377,7 +1402,6 @@
           }
         });
       }
-      updateCategoryCounts();
       renderBoutiqueStores();
     });
 
@@ -1387,8 +1411,8 @@
     } catch(e){}
 
     updateAuthHeaderUI();
-    updateCategoryCounts();
     renderBoutiqueStores();
   </script>
 </body>
 </html>
+	
