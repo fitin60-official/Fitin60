@@ -576,8 +576,8 @@
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
-    
-    // Load cart items from localStorage so they don't disappear on refresh
+    var boutiqueStatusesMap = {}; // Live store status map
+
     var items = [];
     try {
       var savedCart = localStorage.getItem("fitin60_cart_items");
@@ -748,6 +748,11 @@
     };
 
     window.openStoreExploreModal = function(storeName) {
+      var storeStatus = boutiqueStatusesMap[storeName] || "Open";
+      if (storeStatus === "Closed") {
+        return alert("❌ This store is currently closed by the partner.");
+      }
+
       var all = baseProducts.concat(cloudProducts);
       var storeProds = all.filter(function(p) {
         return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
@@ -803,6 +808,11 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
+      var storeStatus = boutiqueStatusesMap[p.store] || "Open";
+      if (storeStatus === "Closed") {
+        return alert("❌ This store is currently closed by the partner.");
+      }
+
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
@@ -838,6 +848,11 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
+      var storeStatus = boutiqueStatusesMap[p.store] || "Open";
+      if (storeStatus === "Closed") {
+        return alert("❌ Store is currently closed!");
+      }
+
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
         price: p.price,
@@ -854,6 +869,11 @@
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
+
+      var storeStatus = boutiqueStatusesMap[p.store] || "Open";
+      if (storeStatus === "Closed") {
+        return alert("❌ Store is currently closed!");
+      }
 
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
@@ -940,6 +960,11 @@
 
     window.modalAddToBag = function() {
       if (!activeModalProduct) return;
+      var storeStatus = boutiqueStatusesMap[activeModalProduct.store] || "Open";
+      if (storeStatus === "Closed") {
+        return alert("❌ Store is currently closed!");
+      }
+
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
@@ -955,6 +980,11 @@
 
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
+      var storeStatus = boutiqueStatusesMap[activeModalProduct.store] || "Open";
+      if (storeStatus === "Closed") {
+        return alert("❌ Store is currently closed!");
+      }
+
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
@@ -1074,6 +1104,16 @@
 
       var html = "";
       stores.forEach(function(store) {
+        var storeStatus = boutiqueStatusesMap[store.storeName] || "Open";
+        var statusBadgeHtml = "";
+        if (storeStatus === "Closed") {
+          statusBadgeHtml = '<span class="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">🔴 Store Closed</span>';
+        } else if (storeStatus === "Busy") {
+          statusBadgeHtml = '<span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">🟡 Store Busy (90 Mins)</span>';
+        } else {
+          statusBadgeHtml = '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>';
+        }
+
         var previewImages = "";
         store.products.slice(0, 3).forEach(function(p) {
           var isCloud = !!p.cloudKey;
@@ -1099,7 +1139,7 @@
         html += 
           '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3 w-full">' +
             '<div class="flex justify-between items-center">' +
-              '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
+              statusBadgeHtml +
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div>' +
             
@@ -1374,20 +1414,23 @@
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
         localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
-        localStorage.removeItem("fitin60_cart_items"); // Clear cart after order
+        localStorage.removeItem("fitin60_cart_items");
         window.location.href = "tracking.html";
       });
     };
 
     renderBoutiqueStores();
-    renderCart(); // Initialize cart rendering on load
+    renderCart();
 
+    // Listen to boutiques status from Firebase
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
+      boutiqueStatusesMap = {};
       Object.values(data).forEach(function(b) {
-        if (b && b.storeName && b.area) {
-          boutiqueLocationsMap[b.storeName] = b.area;
+        if (b && b.storeName) {
+          if (b.area) boutiqueLocationsMap[b.storeName] = b.area;
+          if (b.status) boutiqueStatusesMap[b.storeName] = b.status;
         }
       });
       renderBoutiqueStores();
