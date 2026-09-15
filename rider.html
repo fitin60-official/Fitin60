@@ -110,24 +110,82 @@
 
   </main>
 
-  <!-- RIDER LOGIN MODAL -->
+  <!-- RIDER AUTH MODAL (Login, New Registration with Address Proof, & Forgot PIN) -->
   <div id="riderLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 text-center">
-      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🛵</div>
-      <h3 class="font-brand font-black text-lg text-slate-950 mt-1">Rider Fleet Login</h3>
-      <p class="text-xs text-slate-500">Enter your Mobile Number & 4-Digit PIN</p>
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
+      <div class="text-center">
+        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🛵</div>
+        <h3 class="font-brand font-black text-lg text-slate-950 mt-1">Rider Fleet Portal</h3>
+        <p class="text-xs text-slate-500">Fast Express Delivery Partner</p>
+      </div>
 
-      <form onsubmit="handleRiderLoginSubmit(event)" class="space-y-3 text-left mt-2 text-xs">
+      <!-- Auth Tabs -->
+      <div class="flex bg-slate-100 p-1 rounded-2xl">
+        <button onclick="switchRiderAuthTab('login')" id="tabLoginBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
+        <button onclick="switchRiderAuthTab('register')" id="tabRegBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
+        <button onclick="switchRiderAuthTab('forgot')" id="tabForgBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Forgot PIN</button>
+      </div>
+
+      <!-- 1. LOGIN FORM -->
+      <form id="riderLoginForm" onsubmit="handleRiderLoginSubmit(event)" class="space-y-3 text-left text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
-          <input type="tel" id="riderLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-3 font-mono">
+          <input type="tel" id="loginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-3 font-mono">
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">4-Digit PIN</label>
-          <input type="password" id="riderLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-3 text-center font-mono tracking-widest text-lg font-black">
+          <input type="password" id="loginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-3 text-center font-mono tracking-widest text-lg font-black">
         </div>
         <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3.5 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
           Login to Fleet ➔
+        </button>
+      </form>
+
+      <!-- 2. REGISTER FORM WITH ADDRESS PROOF -->
+      <form id="riderRegisterForm" onsubmit="handleRiderRegisterSubmit(event)" class="space-y-3 text-left text-xs hidden">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Full Name</label>
+          <input type="text" id="regName" required placeholder="e.g. Ramesh Kumar" class="w-full bg-slate-50 border rounded-xl p-2.5 font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
+            <input type="tel" id="regMobile" required maxlength="10" placeholder="Mobile" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Vehicle / Bike No</label>
+            <input type="text" id="regBike" required placeholder="AP 02 AB 1234" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Address Proof Type & ID (Aadhaar / DL)</label>
+          <input type="text" id="regAddressProof" required placeholder="e.g. Aadhaar - 4521 XXXX 8910" class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Create 4-Digit PIN</label>
+          <input type="password" id="regPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-2.5 text-center font-mono tracking-widest font-black">
+        </div>
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          Register Fleet Account ➔
+        </button>
+      </form>
+
+      <!-- 3. FORGOT PIN FORM -->
+      <form id="riderForgotForm" onsubmit="handleRiderForgotSubmit(event)" class="space-y-3 text-left text-xs hidden">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Registered Mobile</label>
+          <input type="tel" id="forgMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Your Address Proof ID (for verification)</label>
+          <input type="text" id="forgAddressProof" required placeholder="e.g. Aadhaar No / DL No" class="w-full bg-slate-50 border rounded-xl p-2.5">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Set New 4-Digit PIN</label>
+          <input type="password" id="forgNewPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-2.5 text-center font-mono tracking-widest font-black">
+        </div>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          Reset PIN & Login ➔
         </button>
       </form>
     </div>
@@ -217,23 +275,118 @@
       document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
     }
 
+    window.switchRiderAuthTab = function(tab) {
+      var logF = document.getElementById("riderLoginForm");
+      var regF = document.getElementById("riderRegisterForm");
+      var forgF = document.getElementById("riderForgotForm");
+
+      var bL = document.getElementById("tabLoginBtn");
+      var bR = document.getElementById("tabRegBtn");
+      var bF = document.getElementById("tabForgBtn");
+
+      logF.classList.add("hidden");
+      regF.classList.add("hidden");
+      forgF.classList.add("hidden");
+
+      bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      bF.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+
+      if (tab === 'login') {
+        logF.classList.remove("hidden");
+        bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+      } else if (tab === 'register') {
+        regF.classList.remove("hidden");
+        bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+      } else {
+        forgF.classList.remove("hidden");
+        bF.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+      }
+    };
+
     window.handleRiderLoginSubmit = function(e) {
       e.preventDefault();
-      var mob = document.getElementById("riderLoginMobile").value.trim();
-      var pin = document.getElementById("riderLoginPin").value.trim();
+      var mob = document.getElementById("loginMobile").value.trim();
+      var pin = document.getElementById("loginPin").value.trim();
 
-      if (mob.length === 10 && pin.length === 4) {
-        currentRiderName = "Srinu (Rider " + mob.slice(-4) + ")";
+      db.ref("riders/" + mob).once("value").then(function(snap) {
+        var r = snap.val();
+        if (r && String(r.pin) === String(pin)) {
+          currentRiderName = r.name;
+          currentRiderBike = r.bike || "AP 02 AB 1234";
+          localStorage.setItem("fitin60_rider_name", currentRiderName);
+          localStorage.setItem("fitin60_rider_bike", currentRiderBike);
+
+          document.getElementById("displayRiderName").innerText = currentRiderName;
+          document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
+          document.getElementById("riderLoginModal").classList.add("hidden");
+          showQuickToast("✓ Welcome back, " + currentRiderName);
+        } else {
+          alert("❌ Invalid Mobile Number or PIN!");
+        }
+      });
+    };
+
+    window.handleRiderRegisterSubmit = function(e) {
+      e.preventDefault();
+      var name = document.getElementById("regName").value.trim();
+      var mob = document.getElementById("regMobile").value.trim();
+      var bike = document.getElementById("regBike").value.trim();
+      var addressProof = document.getElementById("regAddressProof").value.trim();
+      var pin = document.getElementById("regPin").value.trim();
+
+      if (mob.length !== 10 || pin.length !== 4) {
+        return alert("Please enter valid 10-digit mobile & 4-digit PIN!");
+      }
+
+      var riderData = {
+        name: name,
+        mobile: mob,
+        bike: bike,
+        addressProof: addressProof,
+        pin: pin,
+        registeredAt: Date.now()
+      };
+
+      db.ref("riders/" + mob).set(riderData).then(function() {
+        currentRiderName = name;
+        currentRiderBike = bike;
         localStorage.setItem("fitin60_rider_name", currentRiderName);
         localStorage.setItem("fitin60_rider_bike", currentRiderBike);
-        
+
         document.getElementById("displayRiderName").innerText = currentRiderName;
         document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
         document.getElementById("riderLoginModal").classList.add("hidden");
-        showQuickToast("✓ Logged in Successfully!");
-      } else {
-        alert("Please enter a valid 10-digit mobile and 4-digit PIN.");
-      }
+        showQuickToast("✓ Rider Account Registered Successfully!");
+      }).catch(function(err) {
+        alert("Registration Error: " + err.message);
+      });
+    };
+
+    window.handleRiderForgotSubmit = function(e) {
+      e.preventDefault();
+      var mob = document.getElementById("forgMobile").value.trim();
+      var proof = document.getElementById("forgAddressProof").value.trim();
+      var newPin = document.getElementById("forgNewPin").value.trim();
+
+      db.ref("riders/" + mob).once("value").then(function(snap) {
+        var r = snap.val();
+        if (r && r.addressProof && r.addressProof.toLowerCase() === proof.toLowerCase()) {
+          db.ref("riders/" + mob).update({ pin: newPin }).then(function() {
+            currentRiderName = r.name;
+            currentRiderBike = r.bike || "AP 02 AB 1234";
+            localStorage.setItem("fitin60_rider_name", currentRiderName);
+            localStorage.setItem("fitin60_rider_bike", currentRiderBike);
+
+            document.getElementById("displayRiderName").innerText = currentRiderName;
+            document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
+            document.getElementById("riderLoginModal").classList.add("hidden");
+            showQuickToast("✓ PIN Reset Successful! Logged in.");
+          });
+        } else {
+          alert("❌ Verification Failed! Address Proof ID did not match.");
+        }
+      });
     };
 
     window.riderLogout = function() {
@@ -451,10 +604,9 @@
       prevRiderOrderCount = newAssignedList.length;
 
       activeBadge.innerText = activeCount + " Active";
-      histBadge.histBadge = histCount + " Delivered";
+      histBadge.innerText = histCount + " Delivered";
       document.getElementById("riderCompletedCount").innerText = histCount;
       document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
-      document.getElementById("riderHistCount").innerText = histCount + " Delivered";
 
       if (activeCount > 0) {
         pulseDot.classList.remove("hidden");
