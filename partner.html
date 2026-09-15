@@ -14,264 +14,203 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; color: #0f172a; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fafaf9;
+      color: #0f172a;
+      overflow-x: hidden;
+      width: 100%;
+    }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    #quickToast {
+      transform: translateY(100px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0;
+    }
     #quickToast.show { transform: translateY(0); opacity: 1; }
-    @keyframes pulseAlert { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .live-alert-pulse { animation: pulseAlert 1.5s infinite; }
   </style>
 </head>
-<body class="min-h-screen pb-24 antialiased">
+<body class="min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white w-full overflow-x-hidden">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 h-16 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-1.5 shrink-0">
-      <span class="font-brand text-lg sm:text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[8px] sm:text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.5 rounded-full">MERCHANT HUB</span>
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm w-full">
+    <div class="flex items-center gap-2">
+      <span class="font-brand text-xl sm:text-2xl font-black tracking-tight text-slate-950">
+        FITIN<span class="text-orange-600">60</span>
+      </span>
+      <span class="text-[9px] bg-slate-900 text-white font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Merchant Hub</span>
     </div>
-    <div class="flex items-center gap-1.5 shrink-0">
-      <button onclick="openEditStoreModal()" class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-xl border border-blue-200 cursor-pointer">✏️ Edit Store</button>
-      <button onclick="partnerLogout()" class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1.5 rounded-xl border border-rose-200 cursor-pointer">Logout</button>
+
+    <div class="flex items-center gap-2">
+      <button onclick="openEditStoreModal()" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center gap-1 transition cursor-pointer">
+        <span>✏️</span> <span>Edit Store</span>
+      </button>
+      <button onclick="partnerLogout()" class="bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 border border-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs transition cursor-pointer">
+        Logout
+      </button>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto px-4 mt-5 space-y-5">
+  <main class="max-w-4xl mx-auto px-4 mt-5 space-y-5 w-full">
     
-    <!-- Store Status Banner & Toggle -->
-    <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-lg space-y-3">
+    <!-- Store Status Card -->
+    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-5 text-white shadow-xl border border-slate-800 space-y-4 w-full">
       <div class="flex justify-between items-start">
         <div>
-          <h2 id="bannerStoreName" class="font-brand font-black text-xl text-white">Sai Fashions</h2>
-          <p id="bannerStoreArea" class="text-xs text-orange-400 mt-0.5">📍 Near TV tower • Mobile: 9515552511</p>
+          <h1 id="partnerStoreNameDisplay" class="font-brand text-xl sm:text-2xl font-black tracking-tight text-white">Sai Fashions</h1>
+          <p id="partnerStoreAreaDisplay" class="text-xs text-slate-400 mt-0.5">📍 Near TV tower • Mobile: 9515552511</p>
         </div>
-        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Verified ✓</span>
+        <span class="bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
+          ✓ Verified Store
+        </span>
       </div>
 
-      <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-        <span class="text-slate-400">Store Status for Express:</span>
-        <select id="storeStatusToggle" onchange="updateStoreStatus(this.value)" class="bg-slate-900 border border-slate-700 text-emerald-400 font-bold px-3 py-1.5 rounded-xl focus:outline-none">
-          <option value="OPEN">🟢 Open for 60-Min Orders</option>
-          <option value="CLOSED">🔴 Closed / Not Accepting</option>
+      <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <span class="text-xs text-slate-300 font-medium">Store Status for Express Drop:</span>
+        <select id="storeStatusDropdown" onchange="updateStoreStatusLive(this.value)" class="bg-slate-900 text-emerald-400 border border-slate-700 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-orange-500 cursor-pointer">
+          <option value="Open">🟢 Open for 60-Min Orders</option>
+          <option value="Busy">🟡 Busy (Standard 90 Mins)</option>
+          <option value="Closed">🔴 Temporarily Closed</option>
         </select>
       </div>
     </div>
 
-    <!-- Instant Settlement & Earnings with Live Time & Date -->
-    <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-2 gap-1">
-        <span class="text-xs font-bold text-slate-800">📊 Instant Settlement & Earnings</span>
-        <span id="statLastUpdatedTime" class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg font-mono font-bold border border-emerald-200">🕒 Syncing...</span>
+    <!-- Instant Settlement & Earnings (With Separate Date & Time for each metric) -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4 w-full">
+      <div class="border-b border-slate-100 pb-3">
+        <h2 class="font-brand font-black text-base text-slate-950 flex items-center gap-2">
+          <span>📊</span> Instant Settlement & Earnings
+        </h2>
       </div>
-      <div class="grid grid-cols-3 gap-2">
-        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Orders</p>
-          <p id="statTotalOrders" class="font-mono-num font-black text-base sm:text-lg text-slate-900 mt-0.5">0</p>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Revenue</p>
-          <p id="statTotalRevenue" class="font-mono-num font-black text-base sm:text-lg text-orange-600 mt-0.5">₹0</p>
-        </div>
-        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Settled</p>
-          <p id="statSettledAmount" class="font-mono-num font-black text-base sm:text-lg text-emerald-600 mt-0.5">₹0</p>
-        </div>
-      </div>
-    </div>
 
-    <!-- Live Store Orders with Pulse Alert & Customer Call -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
-      <div class="flex justify-between items-center border-b pb-2">
-        <div class="flex items-center gap-2">
-          <h3 class="font-brand font-black text-sm text-slate-900">Live Store Orders</h3>
-          <span id="livePulseIndicator" class="hidden w-2.5 h-2.5 rounded-full bg-orange-500 live-alert-pulse" title="New Order Received!"></span>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <!-- Orders Metric -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Orders</p>
+          <p id="metricOrdersCount" class="font-mono-num font-black text-2xl text-slate-950">0</p>
+          <p id="timeOrdersLabel" class="text-[9px] font-mono text-slate-500 pt-1 border-t border-slate-200/60">Ordered: --</p>
         </div>
-        <span id="liveOrdersCount" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
-      </div>
-      <div id="partnerLiveOrdersList" class="text-xs text-slate-400 text-center py-3">
-        No orders pending right now.
+
+        <!-- Revenue Metric -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Revenue</p>
+          <p id="metricRevenueAmount" class="font-mono-num font-black text-2xl text-orange-600">₹0</p>
+          <p id="timeRevenueLabel" class="text-[9px] font-mono text-slate-500 pt-1 border-t border-slate-200/60">Generated: --</p>
+        </div>
+
+        <!-- Settled Metric -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Settled Payout</p>
+          <p id="metricSettledAmount" class="font-mono-num font-black text-2xl text-emerald-600">₹0</p>
+          <p id="timeSettledLabel" class="text-[9px] font-mono text-slate-500 pt-1 border-t border-slate-200/60">Settled: --</p>
+        </div>
       </div>
     </div>
 
-    <!-- Upload New Dress Form with Modern Image Browser -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
-      <div class="border-b pb-2">
-        <h3 class="font-brand font-black text-sm text-slate-900">+ Upload New Dress to Radar</h3>
-        <p class="text-[11px] text-slate-500">Publish stock instantly for 60-min express delivery.</p>
+    <!-- Live Store Orders -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4 w-full">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h2 class="font-brand font-black text-base text-slate-950">Live Store Orders</h2>
+        <span id="liveOrdersCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full border border-orange-200">0 Orders</span>
+      </div>
+      <div id="partnerOrdersContainer" class="space-y-3">
+        <p class="text-xs text-slate-400 text-center py-6">No orders pending right now.</p>
+      </div>
+    </div>
+
+    <!-- Upload New Dress to Radar -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4 w-full">
+      <div class="border-b border-slate-100 pb-3">
+        <h2 class="font-brand font-black text-base text-slate-950">+ Upload New Dress to Radar</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Publish stock instantly for 60-min express delivery.</p>
       </div>
 
-      <form onsubmit="handlePartnerUpload(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Dress / Outfit Name</label>
-          <input type="text" id="upName" required placeholder="e.g. Designer Anarkali Kurta" class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500 font-bold">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
+      <form onsubmit="handleUploadProduct(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Price (₹)</label>
-            <input type="number" id="upPrice" required placeholder="899" class="w-full bg-slate-50 border rounded-xl p-3 font-mono focus:outline-none focus:border-orange-500">
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Uniform Name</label>
+            <input type="text" id="prodName" required placeholder="e.g., Silk Designer Saree" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-orange-500">
           </div>
           <div>
-            <label class="block font-bold text-slate-700 mb-1">Original Price (₹)</label>
-            <input type="number" id="upOrigPrice" required placeholder="1499" class="w-full bg-slate-50 border rounded-xl p-3 font-mono focus:outline-none focus:border-orange-500">
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Category</label>
+            <select id="prodCategory" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold focus:outline-none focus:border-orange-500">
+              <option value="Uniform">🎒 School Uniform</option>
+              <option value="Kids">🧸 Kids Wear</option>
+              <option value="Saree">🥻 Saree</option>
+              <option value="Kurti">👗 Kurti</option>
+              <option value="Lehenga">✨ Lehenga</option>
+              <option value="Men">👔 Men's Wear</option>
+            </select>
           </div>
         </div>
 
-        <!-- Modern Image Browser Dropzone & Preview -->
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Outfit Photo</label>
-          <div class="relative border-2 border-dashed border-slate-300 hover:border-orange-500 bg-slate-50 rounded-2xl p-4 text-center cursor-pointer transition" id="dropzoneBox">
-            <input type="file" id="upImageFile" accept="image/*" required onchange="handleImagePreview(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-            
-            <div id="uploadPrompt" class="space-y-1">
-              <span class="text-3xl block">📷</span>
-              <p class="font-bold text-slate-800 text-xs">Tap to choose or capture outfit photo</p>
-              <p class="text-[10px] text-slate-400">JPG, PNG or WEBP</p>
-            </div>
-
-            <div id="imagePreviewContainer" class="hidden flex-col items-center gap-2">
-              <img id="imagePreview" src="" alt="Preview" class="w-32 h-36 object-cover rounded-xl border border-slate-200 shadow-sm">
-              <span class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full">✓ Photo Selected (Tap to Change)</span>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
+            <input type="number" id="prodPrice" required placeholder="899" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-mono focus:outline-none focus:border-orange-500">
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes</label>
+            <input type="text" id="prodSizes" placeholder="e.g., M, L, XL or 28, 30, 32" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-orange-500">
           </div>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Available Sizes</label>
-          <input type="text" id="upSizes" required placeholder="Free size, M, L, XL, 28, 30..." class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500">
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Image URL (Unsplash / ImgBB)</label>
+          <input type="url" id="prodImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-mono text-[11px] focus:outline-none focus:border-orange-500">
         </div>
 
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Description</label>
-          <textarea id="upDesc" rows="2" placeholder="Pure cotton fabric..." class="w-full bg-slate-50 border rounded-xl p-3 focus:outline-none focus:border-orange-500"></textarea>
-        </div>
-
-        <button type="submit" id="pubBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          + Publish Live to Fitin60
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          🚀 Publish to 15KM Radar Instantly
         </button>
       </form>
-    </div>
-
-    <!-- Manage Uploaded Outfits with Individual Stock Control -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
-      <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">Manage Outfits & Individual Stock</h3>
-        <span class="text-[10px] text-slate-400 font-bold">Toggle In/Out Stock</span>
-      </div>
-      <div id="partnerUploadedList" class="space-y-2">
-        <p class="text-xs text-slate-400 text-center py-2">Loading your inventory...</p>
-      </div>
-    </div>
-
-    <!-- Instant Payout History with Time & Date -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
-      <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payout History</h3>
-        <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Settled</span>
-      </div>
-      <div id="partnerHistoryList" class="space-y-2">
-        <p class="text-xs text-slate-400 text-center py-2">No payment history yet.</p>
-      </div>
-    </div>
-
-    <!-- Simple Store Deletion -->
-    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-4 flex items-center justify-between text-xs">
-      <div>
-        <p class="font-bold text-slate-800">Delete Store Account</p>
-        <p class="text-[10px] text-slate-500">Permanently remove this store from Fitin60 radar.</p>
-      </div>
-      <button onclick="deletePartnerStorePermanently()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-3 py-2 rounded-xl transition cursor-pointer">
-        Delete Store
-      </button>
     </div>
 
   </main>
-
-  <!-- EDIT OUTFIT MODAL -->
-  <div id="partnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
-      <div class="flex items-center justify-between border-b pb-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">✏️</span>
-          <h3 class="font-brand font-bold text-sm text-slate-900">Edit Outfit Details</h3>
-        </div>
-        <button onclick="closePartnerEditModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
-      </div>
-
-      <form onsubmit="handlePartnerEditSave(event)" class="space-y-3 text-xs">
-        <input type="hidden" id="editProdKey">
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Outfit Name</label>
-          <input type="text" id="editName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Price (₹)</label>
-            <input type="number" id="editPrice" required class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono text-slate-900">
-          </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Original Price (₹)</label>
-            <input type="number" id="editOrigPrice" required class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono text-slate-900">
-          </div>
-        </div>
-
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Available Sizes</label>
-          <input type="text" id="editSizes" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
-        </div>
-
-        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          ✓ Save Updates
-        </button>
-      </form>
-    </div>
-  </div>
 
   <!-- EDIT STORE MODAL -->
   <div id="editStoreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">🏬</span>
-          <h3 class="font-brand font-bold text-sm text-slate-900">Edit Store Profile</h3>
-        </div>
+        <h3 class="font-brand font-bold text-sm text-slate-900">Edit Store Profile</h3>
         <button onclick="closeEditStoreModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
-      <form onsubmit="handleStoreProfileSave(event)" class="space-y-3 text-xs">
+      <form onsubmit="handleSaveStoreProfile(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Store Name</label>
-          <input type="text" id="storeModalName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Store Name</label>
+          <input type="text" id="editStoreNameInput" required class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-bold">
         </div>
-
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Store Location / Area</label>
-          <input type="text" id="storeModalArea" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Area / Location</label>
+          <input type="text" id="editStoreAreaInput" required class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5">
         </div>
-
-        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          ✓ Update Store Details
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Mobile Number</label>
+          <input type="tel" id="editStorePhoneInput" required maxlength="10" class="w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 font-mono">
+        </div>
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+          ✓ Save Store Details
         </button>
       </form>
     </div>
   </div>
 
-  <!-- Pure Partner Hub Bottom Bar -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-3 px-6 flex items-center justify-center z-40 shadow-lg">
-    <div class="flex items-center gap-2 text-orange-600 font-black text-xs uppercase tracking-wider">
-      <span>💼</span>
-      <span>Fitin60 Merchant Studio Active</span>
-    </div>
-  </nav>
-
   <!-- Toast Notification -->
-  <div id="quickToast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-950/90 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 border border-slate-800 pointer-events-none">
+  <div id="quickToast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-slate-950/90 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 border border-slate-800 pointer-events-none">
     <span class="text-emerald-400">✓</span>
     <span id="toastMsg">Success</span>
   </div>
+
+  <!-- Notification Beep Audio (Hidden) -->
+  <audio id="orderAlertAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
   <script>
     var firebaseConfig = {
@@ -287,53 +226,17 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var activeStoreName = localStorage.getItem("fitin60_partner_store") || "Sai Fashions";
-    var activeStoreArea = localStorage.getItem("fitin60_partner_area") || "Near TV tower • Mobile: 9515552511";
+    var currentPartnerStore = localStorage.getItem("fitin60_partner_store") || "Sai Fashions";
+    var currentPartnerPhone = localStorage.getItem("fitin60_partner_phone") || "9515552511";
+    var currentPartnerArea = localStorage.getItem("fitin60_partner_area") || "Near TV tower";
 
-    document.getElementById("bannerStoreName").innerText = activeStoreName;
-    document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
-
-    var loadedProductsMap = {};
-
-    function showQuickToast(msg) {
-      var toast = document.getElementById("quickToast");
-      var text = document.getElementById("toastMsg");
-      text.innerText = msg;
-      toast.classList.add("show");
-      setTimeout(function() { toast.classList.remove("show"); }, 1500);
-    }
-
-    function formatDateTime(timestamp) {
-      if (!timestamp) return "Recently";
-      var d = new Date(timestamp);
-      var day = d.getDate();
-      var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      var month = months[d.getMonth()];
-      var hours = d.getHours();
-      var minutes = d.getMinutes();
-      var ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12;
-      var strMinutes = minutes < 10 ? '0' + minutes : minutes;
-      return day + " " + month + ", " + hours + ":" + strMinutes + " " + ampm;
-    }
-
-    window.handleImagePreview = function(event) {
-      var input = event.target;
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById("imagePreview").src = e.target.result;
-          document.getElementById("uploadPrompt").classList.add("hidden");
-          document.getElementById("imagePreviewContainer").classList.remove("hidden");
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    };
+    document.getElementById("partnerStoreNameDisplay").innerText = currentPartnerStore;
+    document.getElementById("partnerStoreAreaDisplay").innerText = "📍 " + currentPartnerArea + " • Mobile: " + currentPartnerPhone;
 
     window.openEditStoreModal = function() {
-      document.getElementById("storeModalName").value = activeStoreName;
-      document.getElementById("storeModalArea").value = activeStoreArea;
+      document.getElementById("editStoreNameInput").value = currentPartnerStore;
+      document.getElementById("editStoreAreaInput").value = currentPartnerArea;
+      document.getElementById("editStorePhoneInput").value = currentPartnerPhone;
       document.getElementById("editStoreModal").classList.remove("hidden");
     };
 
@@ -341,279 +244,196 @@
       document.getElementById("editStoreModal").classList.add("hidden");
     };
 
-    window.handleStoreProfileSave = function(e) {
+    window.handleSaveStoreProfile = function(e) {
       e.preventDefault();
-      var newName = document.getElementById("storeModalName").value.trim();
-      var newArea = document.getElementById("storeModalArea").value.trim();
+      currentPartnerStore = document.getElementById("editStoreNameInput").value.trim();
+      currentPartnerArea = document.getElementById("editStoreAreaInput").value.trim();
+      currentPartnerPhone = document.getElementById("editStorePhoneInput").value.trim();
 
-      if (!newName || !newArea) return;
+      localStorage.setItem("fitin60_partner_store", currentPartnerStore);
+      localStorage.setItem("fitin60_partner_area", currentPartnerArea);
+      localStorage.setItem("fitin60_partner_phone", currentPartnerPhone);
 
-      activeStoreName = newName;
-      activeStoreArea = newArea;
-      localStorage.setItem("fitin60_partner_store", newName);
-      localStorage.setItem("fitin60_partner_area", newArea);
+      db.ref("boutiques/" + currentPartnerStore).set({
+        storeName: currentPartnerStore,
+        area: currentPartnerArea,
+        phone: currentPartnerPhone
+      });
 
-      document.getElementById("bannerStoreName").innerText = newName;
-      document.getElementById("bannerStoreArea").innerText = "📍 " + newArea;
+      document.getElementById("partnerStoreNameDisplay").innerText = currentPartnerStore;
+      document.getElementById("partnerStoreAreaDisplay").innerText = "📍 " + currentPartnerArea + " • Mobile: " + currentPartnerPhone;
 
       closeEditStoreModal();
-      showQuickToast("✓ Store details updated successfully!");
+      showQuickToast("✓ Store Profile Updated!");
     };
 
-    window.updateStoreStatus = function(status) {
-      var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed / Not Accepting Orders";
-      showQuickToast("✓ Store status: " + label);
-      db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).update({ status: status });
+    window.updateStoreStatusLive = function(status) {
+      db.ref("boutiques/" + currentPartnerStore).update({ status: status });
+      showQuickToast("✓ Store Status: " + status);
     };
 
-    window.handlePartnerUpload = function(e) {
+    window.handleUploadProduct = function(e) {
       e.preventDefault();
-      var name = document.getElementById("upName").value.trim();
-      var price = parseInt(document.getElementById("upPrice").value);
-      var origPrice = parseInt(document.getElementById("upOrigPrice").value);
-      var sizesStr = document.getElementById("upSizes").value.trim();
-      var desc = document.getElementById("upDesc").value.trim();
-      var fileInput = document.getElementById("upImageFile");
-      var btn = document.getElementById("pubBtn");
+      var name = document.getElementById("prodName").value.trim();
+      var category = document.getElementById("prodCategory").value;
+      var price = parseInt(document.getElementById("prodPrice").value);
+      var sizesStr = document.getElementById("prodSizes").value.trim();
+      var image = document.getElementById("prodImage").value.trim();
 
-      if (!fileInput.files || fileInput.files.length === 0) {
-        return alert("Please select an outfit photo!");
-      }
+      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
 
-      var file = fileInput.files[0];
-      btn.innerText = "⏳ Processing Photo...";
-      btn.disabled = true;
-
-      var reader = new FileReader();
-      reader.onload = function(uploadEvent) {
-        var base64Img = uploadEvent.target.result;
-        var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
-
-        var prodKey = db.ref("boutique_products").push().key;
-        var prodData = {
-          store: activeStoreName,
-          area: activeStoreArea,
-          name: name,
-          price: price,
-          originalPrice: origPrice,
-          sizes: sizes,
-          desc: desc,
-          image: base64Img,
-          images: [base64Img],
-          inStock: true,
-          category: "Uniform",
-          eta: "30 MINS",
-          rating: "5.0",
-          timestamp: Date.now()
-        };
-
-        db.ref("boutique_products/" + prodKey).set(prodData).then(function() {
-          btn.innerText = "+ Publish Live to Fitin60";
-          btn.disabled = false;
-          showQuickToast("✓ Outfit published live!");
-          e.target.reset();
-          document.getElementById("imagePreviewContainer").classList.add("hidden");
-          document.getElementById("uploadPrompt").classList.remove("hidden");
-        }).catch(function(err) {
-          btn.innerText = "+ Publish Live to Fitin60";
-          btn.disabled = false;
-          alert("Error: " + err.message);
-        });
+      var prodData = {
+        name: name,
+        store: currentPartnerStore,
+        area: currentPartnerArea,
+        category: category,
+        price: price,
+        originalPrice: Math.round(price * 1.4),
+        sizes: sizes,
+        image: image,
+        images: [image],
+        eta: "30 MINS",
+        rating: "5.0",
+        inStock: true,
+        timestamp: Date.now()
       };
-      reader.readAsDataURL(file);
-    };
 
-    window.toggleStockStatus = function(key, currentStatus) {
-      var newStatus = (currentStatus === false) ? true : false;
-      db.ref("boutique_products/" + key).update({ inStock: newStatus }).then(function() {
-        showQuickToast(newStatus ? "✓ Marked as In-Stock" : "✓ Marked as Out of Stock");
+      db.ref("boutique_products").push(prodData).then(function() {
+        showQuickToast("✓ Outfit Published to Radar!");
+        e.target.reset();
       });
     };
 
-    db.ref("boutique_products").on("value", function(snap) {
-      var data = snap.val() || {};
-      loadedProductsMap = data;
-      var container = document.getElementById("partnerUploadedList");
-      var html = "";
-      var count = 0;
+    window.updateOrderStatus = function(orderId, newStatus) {
+      var updates = { status: newStatus };
+      if (newStatus === "Boutique Packed") updates.boutiqueAccepted = true;
+      if (newStatus === "Out for Delivery") updates.riderAssigned = true;
 
-      Object.keys(data).forEach(function(k) {
-        var p = data[k];
-        if (p && p.store && p.store.toLowerCase() === activeStoreName.toLowerCase()) {
-          count++;
-          var inStock = (p.inStock !== false);
-          html += 
-            '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs">' +
-              '<div class="flex items-center gap-2.5 truncate">' +
-                '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
-                '<div class="truncate">' +
-                  '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
-                  '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • <span class="' + (inStock ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold') + '">' + (inStock ? 'In Stock' : 'Out of Stock') + '</span></p>' +
-                '</div>' +
-              '</div>' +
-              '<div class="flex gap-1 shrink-0">' +
-                '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '">' + (inStock ? 'Pause' : 'Stock On') + '</button>' +
-                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
-                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
-              '</div>' +
-            '</div>';
-        }
+      db.ref("orders/" + orderId).update(updates).then(function() {
+        showQuickToast("✓ Order marked as: " + newStatus);
       });
+    };
 
-      if (count === 0) {
-        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No custom outfits uploaded yet.</p>";
-      } else {
-        container.innerHTML = html;
+    window.partnerLogout = function() {
+      if (confirm("Log out of Merchant Hub?")) {
+        localStorage.removeItem("fitin60_partner_store");
+        window.location.href = "index.html";
       }
-    });
+    };
 
-    db.ref("orders").on("value", function(snap) {
-      var data = snap.val() || {};
-      var liveListHtml = "";
-      var historyListHtml = "";
-      var liveCount = 0;
-      var histCount = 0;
-      var totalRevenue = 0;
-      var settledAmount = 0;
+    function showQuickToast(msg) {
+      var toast = document.getElementById("quickToast");
+      var text = document.getElementById("toastMsg");
+      text.innerText = msg;
+      toast.classList.add("show");
+      setTimeout(function() { toast.classList.remove("show"); }, 2000);
+    }
 
-      Object.values(data).forEach(function(o) {
-        if (o.store && o.store.toLowerCase() === activeStoreName.toLowerCase()) {
-          var isDelivered = (o.status === "Delivered" || o.delivered === true);
-          var orderDateTime = formatDateTime(o.timestamp);
-          
-          if (!isDelivered) {
-            liveCount++;
-            liveListHtml += 
-              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-2">' +
-                '<div class="flex justify-between items-center font-bold text-slate-900">' +
-                  '<span>' + o.orderId + ' (' + o.customerName + ')</span>' +
-                  '<span class="text-orange-600 font-mono-num">₹' + o.totalAmount + '</span>' +
-                '</div>' +
-                '<div class="flex justify-between items-center text-[11px] text-slate-600 font-medium">' +
-                  '<span>📍 ' + o.customerAddress + '</span>' +
-                  '<a href="tel:' + o.customerPhone + '" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-1 rounded-lg border border-emerald-200">📞 Call Customer</a>' +
-                '</div>' +
-                '<div class="flex justify-between text-[10px] text-slate-500 border-t pt-1.5">' +
-                  '<span class="text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded font-bold">🕒 ' + orderDateTime + '</span>' +
-                  '<span class="text-emerald-600 font-bold">Payment: ' + o.paymentMethod + ' (Instant Payout)</span>' +
-                '</div>' +
-              '</div>';
-          } else {
-            histCount++;
-            totalRevenue += o.totalAmount;
-            var netPayout = (o.financialSplit && o.financialSplit.storeNetPayout) ? o.financialSplit.storeNetPayout : Math.round(o.totalAmount * 0.85);
-            settledAmount += netPayout;
+    var previousOrdersCount = -1;
 
-            var deliveryTime = o.deliveredTimestamp ? formatDateTime(o.deliveredTimestamp) : orderDateTime;
+    // Listen to orders for this store
+    db.ref("orders").on("value", function(snapshot) {
+      var orders = snapshot.val() || {};
+      var container = document.getElementById("partnerOrdersContainer");
+      var badge = document.getElementById("liveOrdersCountBadge");
 
-            historyListHtml += 
-              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
-                '<div class="flex justify-between font-bold text-slate-900">' +
-                  '<span>' + o.orderId + ' • ₹' + o.totalAmount + '</span>' +
-                  '<span class="text-emerald-600 font-bold">✓ Settled: ₹' + netPayout + '</span>' +
-                '</div>' +
-                '<div class="flex justify-between text-[11px] text-slate-600">' +
-                  '<span>Customer: ' + o.customerName + '</span>' +
-                  '<span class="text-[10px] text-slate-500 font-mono font-bold">🕒 ' + deliveryTime + '</span>' +
-                '</div>' +
-                '<p class="text-[10px] text-blue-600 font-bold">🛵 Delivered by: ' + (o.riderName || 'Express Fleet Partner') + '</p>' +
-              '</div>';
+      var myStoreOrders = [];
+      var totalOrdersCount = 0;
+      var totalRevenueAmount = 0;
+      var totalSettledAmount = 0;
+
+      var latestOrderTimestamp = null;
+      var latestSettledTimestamp = null;
+      var latestRevenueTimestamp = null;
+
+      Object.values(orders).forEach(function(o) {
+        if (o.store && o.store.trim().toLowerCase() === currentPartnerStore.trim().toLowerCase()) {
+          totalOrdersCount++;
+          var amt = o.totalAmount || o.itemTotal || 0;
+          totalRevenueAmount += amt;
+
+          if (o.status === "Delivered" || o.delivered === true) {
+            totalSettledAmount += (o.financialSplit ? o.financialSplit.storeNetPayout : Math.round(amt * 0.85));
+            latestSettledTimestamp = o.timestamp;
+          }
+
+          latestRevenueTimestamp = o.timestamp;
+
+          if (o.status !== "Delivered" && o.delivered !== true) {
+            myStoreOrders.push(o);
+            latestOrderTimestamp = o.timestamp;
           }
         }
       });
 
-      document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
-      document.getElementById("completedCount").innerText = histCount + " Settled";
-      document.getElementById("statTotalOrders").innerText = (liveCount + histCount);
-      document.getElementById("statTotalRevenue").innerText = "₹" + totalRevenue;
-      document.getElementById("statSettledAmount").innerText = "₹" + settledAmount;
-      document.getElementById("statLastUpdatedTime").innerText = "🕒 " + formatDateTime(Date.now());
+      if (previousOrdersCount !== -1 && myStoreOrders.length > previousOrdersCount) {
+        var audio = document.getElementById("orderAlertAudio");
+        if (audio) audio.play().catch(function(e){ console.log("Audio play blocked", e); });
+        showQuickToast("🔔 NEW EXPRESS ORDER RECEIVED!");
+      }
+      previousOrdersCount = myStoreOrders.length;
 
-      var pulse = document.getElementById("livePulseIndicator");
-      if (liveCount > 0) {
-        pulse.classList.remove("hidden");
-        document.getElementById("partnerLiveOrdersList").innerHTML = liveListHtml;
-      } else {
-        pulse.classList.add("hidden");
-        document.getElementById("partnerLiveOrdersList").innerHTML = "<p class='text-xs text-slate-400 text-center py-3'>No orders pending right now.</p>";
+      // Update Metrics with Separate Date & Time for each box
+      document.getElementById("metricOrdersCount").innerText = totalOrdersCount;
+      document.getElementById("metricRevenueAmount").innerText = "₹" + totalRevenueAmount;
+      document.getElementById("metricSettledAmount").innerText = "₹" + totalSettledAmount;
+
+      document.getElementById("timeOrdersLabel").innerText = latestOrderTimestamp ? "Last Order: " + new Date(latestOrderTimestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' • ' + new Date(latestOrderTimestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : "No active orders";
+      document.getElementById("timeRevenueLabel").innerText = latestRevenueTimestamp ? "Last Sale: " + new Date(latestRevenueTimestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' • ' + new Date(latestRevenueTimestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : "No revenue yet";
+      document.getElementById("timeSettledLabel").innerText = latestSettledTimestamp ? "Last Settled: " + new Date(latestSettledTimestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' • ' + new Date(latestSettledTimestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : "Pending settlement";
+
+      badge.innerText = myStoreOrders.length + " Active";
+
+      if (myStoreOrders.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No orders pending right now.</p>';
+        return;
       }
 
-      if (histCount > 0) {
-        document.getElementById("partnerHistoryList").innerHTML = historyListHtml;
-      } else {
-        document.getElementById("partnerHistoryList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No payment history yet.</p>";
-      }
-    });
+      var html = "";
+      myStoreOrders.forEach(function(o) {
+        var status = o.status || "Order Placed";
+        var itemsHtml = "";
+        if (o.items && Array.isArray(o.items)) {
+          o.items.forEach(function(it) {
+            itemsHtml += '<div class="text-xs font-bold text-slate-800">• ' + it.name + ' - <span class="font-mono-num text-orange-600">₹' + it.price + '</span></div>';
+          });
+        }
 
-    window.openPartnerEditModal = function(key) {
-      var p = loadedProductsMap[key];
-      if (!p) return;
+        var orderTimeStr = new Date(o.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' • ' + new Date(o.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-      document.getElementById("editProdKey").value = key;
-      document.getElementById("editName").value = p.name || "";
-      document.getElementById("editPrice").value = p.price || 0;
-      document.getElementById("editOrigPrice").value = p.originalPrice || 0;
-      document.getElementById("editSizes").value = (p.sizes || ["Free size"]).join(", ");
+        html += 
+          '<div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">' +
+            '<div class="flex justify-between items-start">' +
+              '<div>' +
+                '<span class="text-[10px] font-bold text-orange-600 bg-orange-100 px-2.5 py-0.5 rounded-md">ID: ' + o.orderId + '</span>' +
+                '<p class="text-xs font-black text-slate-900 mt-1">Customer: ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+              '</div>' +
+              '<div class="text-right">' +
+                '<span class="text-[10px] font-black bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full">' + status + '</span>' +
+                '<p class="text-[10px] text-slate-400 font-mono mt-1">🕒 ' + orderTimeStr + '</p>' +
+              '</div>' +
+            '</div>' +
 
-      document.getElementById("partnerEditModal").classList.remove("hidden");
-    };
+            '<div class="bg-white p-3 rounded-xl border border-slate-200 space-y-1">' +
+              '<p class="text-[10px] font-bold text-slate-400 uppercase">Items:</p>' +
+              itemsHtml +
+            '</div>' +
 
-    window.closePartnerEditModal = function() {
-      document.getElementById("partnerEditModal").classList.add("hidden");
-    };
+            '<div class="flex justify-between items-center text-xs">' +
+              '<p class="font-bold text-slate-600 truncate max-w-[200px]">📍 ' + o.customerAddress + '</p>' +
+              '<p class="font-mono-num font-black text-base text-orange-600">₹' + o.totalAmount + '</p>' +
+            '</div>' +
 
-    window.handlePartnerEditSave = function(e) {
-      e.preventDefault();
-      var key = document.getElementById("editProdKey").value;
-      if (!key) return;
-
-      var sizesStr = document.getElementById("editSizes").value.trim();
-      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
-
-      var updateData = {
-        name: document.getElementById("editName").value.trim(),
-        price: parseInt(document.getElementById("editPrice").value),
-        originalPrice: parseInt(document.getElementById("editOrigPrice").value),
-        sizes: sizes
-      };
-
-      db.ref("boutique_products/" + key).update(updateData).then(function() {
-        closePartnerEditModal();
-        showQuickToast("✓ Outfit updated successfully!");
+            '<div class="pt-2 border-t border-slate-200 flex gap-2">' +
+              '<button onclick="updateOrderStatus(\'' + o.orderId + '\', \'Boutique Packed\')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-xs transition cursor-pointer">📦 Accept & Pack</button>' +
+              '<button onclick="updateOrderStatus(\'' + o.orderId + '\', \'Out for Delivery\')" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 rounded-xl text-xs transition cursor-pointer">🚀 Hand to Rider</button>' +
+              '<button onclick="updateOrderStatus(\'' + o.orderId + '\', \'Delivered\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs transition cursor-pointer">✓ Complete</button>' +
+            '</div>' +
+          '</div>';
       });
-    };
 
-    window.deletePartnerOutfit = function(key) {
-      if (confirm("Delete this outfit?")) {
-        db.ref("boutique_products/" + key).remove().then(function() {
-          showQuickToast("✓ Outfit deleted");
-        });
-      }
-    };
-
-    window.deletePartnerStorePermanently = function() {
-      if (confirm("Permanently delete your store and all items from Fitin60?")) {
-        db.ref("boutique_products").once("value").then(function(snap) {
-          var prods = snap.val() || {};
-          var updates = {};
-          Object.keys(prods).forEach(function(k) {
-            if (prods[k].store && prods[k].store.toLowerCase() === activeStoreName.toLowerCase()) {
-              updates[k] = null;
-            }
-          });
-          db.ref("boutique_products").update(updates).then(function() {
-            db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).remove();
-            alert("✓ Store deleted permanently.");
-            window.location.href = "index.html";
-          });
-        });
-      }
-    };
-
-    window.partnerLogout = function() {
-      localStorage.removeItem("fitin60_owner_session");
-      window.location.href = "index.html";
-    };
+      container.innerHTML = html;
+    });
   </script>
 </body>
 </html>
