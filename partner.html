@@ -82,7 +82,7 @@
       </div>
     </div>
 
-    <!-- Instant Settlement & Earnings (With Separate Date & Time for each metric) -->
+    <!-- Instant Settlement & Earnings (With Separate Date & Time) -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4 w-full">
       <div class="border-b border-slate-100 pb-3">
         <h2 class="font-brand font-black text-base text-slate-950 flex items-center gap-2">
@@ -125,7 +125,7 @@
       </div>
     </div>
 
-    <!-- Upload New Dress to Radar -->
+    <!-- Upload New Dress to Radar (Restored Original Layout) -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4 w-full">
       <div class="border-b border-slate-100 pb-3">
         <h2 class="font-brand font-black text-base text-slate-950">+ Upload New Dress to Radar</h2>
@@ -133,11 +133,12 @@
       </div>
 
       <form onsubmit="handleUploadProduct(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Uniform Name</label>
+          <input type="text" id="prodName" required placeholder="e.g., Silk Designer Saree" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-orange-500">
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Dress / Uniform Name</label>
-            <input type="text" id="prodName" required placeholder="e.g., Silk Designer Saree" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-orange-500">
-          </div>
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Category</label>
             <select id="prodCategory" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold focus:outline-none focus:border-orange-500">
@@ -149,17 +150,15 @@
               <option value="Men">👔 Men's Wear</option>
             </select>
           </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Selling Price (₹)</label>
             <input type="number" id="prodPrice" required placeholder="899" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-mono focus:outline-none focus:border-orange-500">
           </div>
-          <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes</label>
-            <input type="text" id="prodSizes" placeholder="e.g., M, L, XL or 28, 30, 32" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-orange-500">
-          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Available Sizes</label>
+          <input type="text" id="prodSizes" placeholder="e.g., M, L, XL or 28, 30, 32" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-orange-500">
         </div>
 
         <div>
@@ -373,7 +372,7 @@
       }
       previousOrdersCount = myStoreOrders.length;
 
-      // Update Metrics with Separate Date & Time for each box
+      // Update Metrics with Separate Date & Time
       document.getElementById("metricOrdersCount").innerText = totalOrdersCount;
       document.getElementById("metricRevenueAmount").innerText = "₹" + totalRevenueAmount;
       document.getElementById("metricSettledAmount").innerText = "₹" + totalSettledAmount;
