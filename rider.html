@@ -110,7 +110,7 @@
 
   </main>
 
-  <!-- RIDER AUTH MODAL (Login, New Registration with Address Proof, & Forgot PIN) -->
+  <!-- RIDER AUTH MODAL -->
   <div id="riderLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="text-center">
@@ -126,14 +126,17 @@
         <button onclick="switchRiderAuthTab('forgot')" id="tabForgBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Forgot PIN</button>
       </div>
 
-      <!-- 1. LOGIN FORM -->
+      <!-- 1. LOGIN FORM (With Forgot PIN Link) -->
       <form id="riderLoginForm" onsubmit="handleRiderLoginSubmit(event)" class="space-y-3 text-left text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
           <input type="tel" id="loginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-3 font-mono">
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">4-Digit PIN</label>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block font-bold text-slate-700 uppercase text-[10px]">4-Digit PIN</label>
+            <button type="button" onclick="switchRiderAuthTab('forgot')" class="text-[10px] text-orange-600 font-bold hover:underline cursor-pointer">Forgot PIN?</button>
+          </div>
           <input type="password" id="loginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-3 text-center font-mono tracking-widest text-lg font-black">
         </div>
         <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3.5 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
