@@ -386,7 +386,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer (With Small Image Preview) -->
+  <!-- Shopping Bag Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
@@ -576,7 +576,14 @@
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
+    
+    // Load cart items from localStorage so they don't disappear on refresh
     var items = [];
+    try {
+      var savedCart = localStorage.getItem("fitin60_cart_items");
+      if (savedCart) items = JSON.parse(savedCart);
+    } catch(e) { items = []; }
+
     var currentCustomer = null;
     var currentCategoryFilter = "All";
 
@@ -838,6 +845,7 @@
         image: p.image
       };
       items.push(itemObj);
+      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
       renderCart();
       showQuickToast("✓ Added to Bag");
     };
@@ -854,6 +862,7 @@
         image: p.image
       };
       items.push(itemObj);
+      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
       renderCart();
       toggleCart();
     };
@@ -938,6 +947,7 @@
         image: activeModalProduct.image
       };
       items.push(itemObj);
+      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
       renderCart();
       closeProductDetailModal();
       showQuickToast("✓ Added to Bag");
@@ -952,6 +962,7 @@
         image: activeModalProduct.image
       };
       items.push(itemObj);
+      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
       renderCart();
       closeProductDetailModal();
       toggleCart();
@@ -1162,7 +1173,7 @@
                 '<p class="font-mono-num font-black text-orange-600">₹' + item.price + '</p>' +
               '</div>' +
             '</div>' +
-            '<button onclick="items.splice(' + idx + ', 1); renderCart();" class="text-rose-600 hover:text-rose-800 p-1.5 cursor-pointer shrink-0">🗑️</button>' +
+            '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-600 hover:text-rose-800 p-1.5 cursor-pointer shrink-0">🗑️</button>' +
           '</div>';
       });
       list.innerHTML = html;
@@ -1363,11 +1374,13 @@
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
         localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
+        localStorage.removeItem("fitin60_cart_items"); // Clear cart after order
         window.location.href = "tracking.html";
       });
     };
 
     renderBoutiqueStores();
+    renderCart(); // Initialize cart rendering on load
 
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
