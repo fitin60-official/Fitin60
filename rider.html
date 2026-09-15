@@ -119,11 +119,10 @@
         <p class="text-xs text-slate-500">Fast Express Delivery Partner</p>
       </div>
 
-      <!-- Auth Tabs -->
+      <!-- Clean Auth Tabs (Only Login & Register) -->
       <div class="flex bg-slate-100 p-1 rounded-2xl">
         <button onclick="switchRiderAuthTab('login')" id="tabLoginBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
         <button onclick="switchRiderAuthTab('register')" id="tabRegBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
-        <button onclick="switchRiderAuthTab('forgot')" id="tabForgBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Forgot PIN</button>
       </div>
 
       <!-- 1. LOGIN FORM (With Forgot PIN Link) -->
@@ -175,6 +174,10 @@
 
       <!-- 3. FORGOT PIN FORM -->
       <form id="riderForgotForm" onsubmit="handleRiderForgotSubmit(event)" class="space-y-3 text-left text-xs hidden">
+        <div class="flex justify-between items-center border-b pb-2">
+          <span class="font-bold text-slate-900">Reset Your PIN</span>
+          <button type="button" onclick="switchRiderAuthTab('login')" class="text-[10px] text-blue-600 font-bold hover:underline">← Back to Login</button>
+        </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Registered Mobile</label>
           <input type="tel" id="forgMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
@@ -285,25 +288,22 @@
 
       var bL = document.getElementById("tabLoginBtn");
       var bR = document.getElementById("tabRegBtn");
-      var bF = document.getElementById("tabForgBtn");
 
       logF.classList.add("hidden");
       regF.classList.add("hidden");
       forgF.classList.add("hidden");
 
-      bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
-      bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
-      bF.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      if (bL) bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      if (bR) bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
 
       if (tab === 'login') {
         logF.classList.remove("hidden");
-        bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        if (bL) bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
       } else if (tab === 'register') {
         regF.classList.remove("hidden");
-        bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        if (bR) bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
       } else {
         forgF.classList.remove("hidden");
-        bF.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
       }
     };
 
