@@ -25,7 +25,7 @@
 </head>
 <body class="min-h-screen pb-24 antialiased">
 
-  <!-- Header with Rides On/Off Duty Switch -->
+  <!-- Header with Rides On/Off & Logout -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-1.5 shrink-0">
       <span class="font-brand text-lg sm:text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
@@ -33,9 +33,12 @@
     </div>
     
     <div class="flex items-center gap-2">
-      <button onclick="toggleRiderDuty()" id="dutyToggleBtn" class="bg-emerald-50 text-emerald-800 border border-emerald-300 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm">
-        <span id="dutyIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      <button onclick="toggleRiderDuty()" id="dutyToggleBtn" class="bg-emerald-50 text-emerald-800 border border-emerald-300 font-black px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 transition cursor-pointer shadow-sm">
+        <span id="dutyIndicatorDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         <span id="dutyToggleLabel">Rides: ON</span>
+      </button>
+      <button onclick="riderLogout()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-2.5 py-1.5 rounded-xl text-xs transition cursor-pointer">
+        Logout
       </button>
     </div>
   </header>
@@ -106,6 +109,29 @@
     </div>
 
   </main>
+
+  <!-- RIDER LOGIN MODAL -->
+  <div id="riderLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 text-center">
+      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🛵</div>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-1">Rider Fleet Login</h3>
+      <p class="text-xs text-slate-500">Enter your Mobile Number & 4-Digit PIN</p>
+
+      <form onsubmit="handleRiderLoginSubmit(event)" class="space-y-3 text-left mt-2 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
+          <input type="tel" id="riderLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-3 font-mono">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">4-Digit PIN</label>
+          <input type="password" id="riderLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-3 text-center font-mono tracking-widest text-lg font-black">
+        </div>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3.5 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          Login to Fleet ➔
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- EDIT RIDER PROFILE MODAL -->
   <div id="editRiderModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
@@ -181,11 +207,41 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var currentRiderName = localStorage.getItem("fitin60_rider_name") || "Srinu (Express Fleet #1)";
+    var currentRiderName = localStorage.getItem("fitin60_rider_name") || "";
     var currentRiderBike = localStorage.getItem("fitin60_rider_bike") || "AP 02 AB 1234";
 
-    document.getElementById("displayRiderName").innerText = currentRiderName;
-    document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
+    if (!currentRiderName) {
+      document.getElementById("riderLoginModal").classList.remove("hidden");
+    } else {
+      document.getElementById("displayRiderName").innerText = currentRiderName;
+      document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
+    }
+
+    window.handleRiderLoginSubmit = function(e) {
+      e.preventDefault();
+      var mob = document.getElementById("riderLoginMobile").value.trim();
+      var pin = document.getElementById("riderLoginPin").value.trim();
+
+      if (mob.length === 10 && pin.length === 4) {
+        currentRiderName = "Srinu (Rider " + mob.slice(-4) + ")";
+        localStorage.setItem("fitin60_rider_name", currentRiderName);
+        localStorage.setItem("fitin60_rider_bike", currentRiderBike);
+        
+        document.getElementById("displayRiderName").innerText = currentRiderName;
+        document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
+        document.getElementById("riderLoginModal").classList.add("hidden");
+        showQuickToast("✓ Logged in Successfully!");
+      } else {
+        alert("Please enter a valid 10-digit mobile and 4-digit PIN.");
+      }
+    };
+
+    window.riderLogout = function() {
+      if (confirm("Log out of Rider Fleet?")) {
+        localStorage.removeItem("fitin60_rider_name");
+        window.location.reload();
+      }
+    };
 
     var isRiderDutyOn = localStorage.getItem("fitin60_rider_duty") !== "off";
     updateDutyUI();
@@ -203,12 +259,12 @@
       var label = document.getElementById("dutyToggleLabel");
 
       if (isRiderDutyOn) {
-        btn.className = "bg-emerald-50 text-emerald-800 border border-emerald-300 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm";
-        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+        btn.className = "bg-emerald-50 text-emerald-800 border border-emerald-300 font-black px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 transition cursor-pointer shadow-sm";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
         label.innerText = "Rides: ON";
       } else {
-        btn.className = "bg-rose-50 text-rose-800 border border-rose-300 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm";
-        dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
+        btn.className = "bg-rose-50 text-rose-800 border border-rose-300 font-black px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 transition cursor-pointer shadow-sm";
+        dot.className = "w-2 h-2 rounded-full bg-rose-500";
         label.innerText = "Rides: OFF";
       }
     }
@@ -352,7 +408,6 @@
           newAssignedList.push(o);
           var orderTime = formatDateTime(o.timestamp);
 
-          // Update order in Firebase with current rider details so customer sees them
           db.ref("orders/" + o.orderId).update({
             riderName: currentRiderName + " (" + currentRiderBike + ")"
           });
@@ -386,7 +441,6 @@
         }
       });
 
-      // Sound notification trigger when new delivery is assigned and Rides are ON
       if (isRiderDutyOn && prevRiderOrderCount !== -1 && newAssignedList.length > prevRiderOrderCount) {
         var audio = document.getElementById("riderAlertAudio");
         if (audio) {
@@ -397,9 +451,10 @@
       prevRiderOrderCount = newAssignedList.length;
 
       activeBadge.innerText = activeCount + " Active";
-      histBadge.innerText = histCount + " Delivered";
+      histBadge.histBadge = histCount + " Delivered";
       document.getElementById("riderCompletedCount").innerText = histCount;
       document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
+      document.getElementById("riderHistCount").innerText = histCount + " Delivered";
 
       if (activeCount > 0) {
         pulseDot.classList.remove("hidden");
