@@ -32,6 +32,7 @@
       <span class="text-[8px] sm:text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.5 rounded-full">MERCHANT HUB</span>
     </div>
     <div class="flex items-center gap-1.5 shrink-0">
+      <button onclick="enableAudioAlerts()" id="soundToggleBtn" class="text-[11px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1.5 rounded-xl border border-orange-200 cursor-pointer animate-pulse">🔊 Enable Sound</button>
       <button onclick="openEditStoreModal()" class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-xl border border-blue-200 cursor-pointer">✏️ Edit Store</button>
       <button onclick="partnerLogout()" class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1.5 rounded-xl border border-rose-200 cursor-pointer">Logout</button>
     </div>
@@ -58,11 +59,10 @@
       </div>
     </div>
 
-    <!-- Instant Settlement & Earnings with Live Time & Date -->
+    <!-- Instant Settlement & Earnings (Date & Time Pill Removed) -->
     <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-2 gap-1">
+      <div class="border-b pb-2">
         <span class="text-xs font-bold text-slate-800">📊 Instant Settlement & Earnings</span>
-        <span id="statLastUpdatedTime" class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg font-mono font-bold border border-emerald-200">🕒 Syncing...</span>
       </div>
       <div class="grid grid-cols-3 gap-2">
         <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
@@ -94,7 +94,7 @@
       </div>
     </div>
 
-    <!-- Upload New Dress Form with Modern Image Browser (Original Locked Layout) -->
+    <!-- Upload New Dress Form with Modern Image Browser -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
       <div class="border-b pb-2">
         <h3 class="font-brand font-black text-sm text-slate-900">+ Upload New Dress to Radar</h3>
@@ -164,7 +164,7 @@
       </div>
     </div>
 
-    <!-- Instant Payout History with Time & Date -->
+    <!-- Instant Payout History -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
         <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payout History</h3>
@@ -298,6 +298,22 @@
 
     var loadedProductsMap = {};
     var previousOrdersCount = -1;
+
+    function enableAudioAlerts() {
+      var audio = document.getElementById("orderAlertAudio");
+      if (audio) {
+        audio.play().then(function() {
+          audio.pause();
+          audio.currentTime = 0;
+          var btn = document.getElementById("soundToggleBtn");
+          btn.innerText = "🔊 Sound Active";
+          btn.className = "text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200";
+          showQuickToast("✓ Notification Sound Enabled!");
+        }).catch(function(e) {
+          alert("Please interact with the page to enable sound.");
+        });
+      }
+    }
 
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
@@ -551,7 +567,6 @@
       document.getElementById("statTotalOrders").innerText = (liveCount + histCount);
       document.getElementById("statTotalRevenue").innerText = "₹" + totalRevenue;
       document.getElementById("statSettledAmount").innerText = "₹" + settledAmount;
-      document.getElementById("statLastUpdatedTime").innerText = "🕒 " + formatDateTime(Date.now());
 
       var pulse = document.getElementById("livePulseIndicator");
       if (liveCount > 0) {
