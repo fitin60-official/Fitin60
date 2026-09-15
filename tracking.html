@@ -45,10 +45,12 @@
 
   <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6 w-full">
     
-    <!-- Top Banner -->
-    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl border border-slate-800">
+    <!-- Top Banner (Appears only when active order exists) -->
+    <div id="topBanner" class="hidden bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl border border-slate-800">
       <div class="flex justify-between items-center mb-2">
-        <span class="text-[10px] font-bold bg-orange-500 text-white px-3 py-1 rounded-full uppercase tracking-wider">⚡ 60-Min Hyperlocal Express</span>
+        <span class="text-[10px] font-bold bg-orange-500 text-white px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> ⚡ 60-Min Hyperlocal Express
+        </span>
         <span id="headerTimer" class="font-mono-num text-orange-400 font-bold text-sm">59:59 mins left</span>
       </div>
       <h1 class="font-brand text-2xl font-black tracking-tight">Live Order Radar</h1>
@@ -90,22 +92,50 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    // Countdown timer for top banner
-    var cSecs = 59 * 60 + 59;
-    setInterval(function() {
-      if (cSecs > 0) cSecs--;
-      var m = Math.floor(cSecs / 60);
-      var s = cSecs % 60;
-      var el = document.getElementById("headerTimer");
-      if (el) el.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + " mins left";
-    }, 1000);
+    // Cancel order function (Within 2 mins)
+    window.cancelCustomerOrder = function(orderId, timestamp) {
+      var diffMins = (Date.now() - timestamp) / (1000 * 60);
+      if (diffMins > 2) {
+        return alert("❌ Order cannot be cancelled after 2 minutes of placement!");
+      }
+
+      if (confirm("Are you sure you want to cancel order " + orderId + "?")) {
+        db.ref("orders/" + orderId).remove().then(function() {
+          alert("✓ Order cancelled successfully.");
+        });
+      }
+    };
 
     // Listen to orders from Firebase
     db.ref("orders").on("value", function(snapshot) {
       var orders = snapshot.val() || {};
       var container = document.getElementById("ordersContainer");
+      var topBanner = document.getElementById("topBanner");
       
-      var ordersList = Object.values(orders).reverse(); // Latest orders first
+      var ordersList = Object.values(orders).reverse();
+
+      // Filter only active (non-delivered) orders for top banner countdown
+      var activeOrder = ordersList.find(function(o) { return o.status !== "Delivered" && o.delivered !== true; });
+
+      if (activeOrder) {
+        topBanner.classList.remove("hidden");
+        // Start accurate countdown based on order timestamp (60 mins total)
+        var orderTime = activeOrder.timestamp || Date.now();
+        var elapsedSecs = Math.floor((Date.now() - orderTime) / 1000);
+        var remainingSecs = Math.max(0, (60 * 60) - elapsedSecs);
+
+        // Update timer every second
+        if (window.activeOrderTimer) clearInterval(window.activeOrderTimer);
+        window.activeOrderTimer = setInterval(function() {
+          if (remainingSecs > 0) remainingSecs--;
+          var m = Math.floor(remainingSecs / 60);
+          var s = remainingSecs % 60;
+          var el = document.getElementById("headerTimer");
+          if (el) el.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + " mins left";
+        }, 1000);
+      } else {
+        topBanner.classList.add("hidden");
+      }
 
       if (ordersList.length === 0) {
         container.innerHTML = 
@@ -125,6 +155,7 @@
         var total = o.totalAmount || o.itemTotal || 0;
         var address = o.customerAddress || "Permanent Delivery Address";
         var storeName = o.store || "Boutique Studio";
+        var timestamp = o.timestamp || Date.now();
 
         // Progress bar step logic
         var step1 = true;
@@ -138,6 +169,8 @@
             itemsHtml += '<div class="text-xs font-bold text-slate-800 flex justify-between"><span>• ' + it.name + '</span><span class="font-mono-num text-orange-600">₹' + it.price + '</span></div>';
           });
         }
+
+        var canCancel = (Date.now() - timestamp) <= (2 * 60 * 1000) && status === "Order Placed";
 
         html += 
           '<div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5 w-full">' +
@@ -175,6 +208,17 @@
                 '<p class="font-bold text-slate-400 text-[10px] uppercase">Total Payable</p>' +
                 '<p class="font-mono-num font-black text-lg text-orange-600">₹' + total + '</p>' +
               '</div>' +
+            '</div>' +
+
+            // Support & Cancel action bar
+            '<div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">' +
+              '<a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20regarding%20order%20' + o.orderId + '" target="_blank" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-2.5 rounded-xl text-xs text-center transition">' +
+                '💬 WhatsApp Support' +
+              '</a>' +
+              (canCancel ? 
+                '<button onclick="cancelCustomerOrder(\'' + o.orderId + '\', ' + timestamp + ')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer">' +
+                  'Cancel Order' +
+                '</button>' : '') +
             '</div>' +
           '</div>';
       });
