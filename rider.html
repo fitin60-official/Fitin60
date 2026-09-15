@@ -19,21 +19,24 @@
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
     #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
     #quickToast.show { transform: translateY(0); opacity: 1; }
+    @keyframes pulseAlert { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .live-alert-pulse { animation: pulseAlert 1.2s infinite; }
   </style>
 </head>
 <body class="min-h-screen pb-24 antialiased">
 
-  <!-- Header -->
+  <!-- Header with Rides On/Off Duty Switch -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-1.5 shrink-0">
       <span class="font-brand text-lg sm:text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
       <span class="text-[8px] sm:text-[9px] bg-emerald-600 text-white font-bold px-1.5 py-0.5 rounded-full">RIDER FLEET</span>
     </div>
+    
     <div class="flex items-center gap-2">
-      <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>Online / Ready</span>
-      </div>
+      <button onclick="toggleRiderDuty()" id="dutyToggleBtn" class="bg-emerald-50 text-emerald-800 border border-emerald-300 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm">
+        <span id="dutyIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="dutyToggleLabel">Rides: ON</span>
+      </button>
     </div>
   </header>
 
@@ -61,10 +64,13 @@
       </div>
     </div>
 
-    <!-- Active Assigned Deliveries -->
+    <!-- Active Assigned Deliveries (With Order Time & Date) -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-brand font-black text-sm text-slate-900">Assigned Express Deliveries</h3>
+        <div class="flex items-center gap-2">
+          <h3 class="font-brand font-black text-sm text-slate-900">Assigned Express Deliveries</h3>
+          <span id="riderPulseDot" class="hidden w-2.5 h-2.5 rounded-full bg-orange-500 live-alert-pulse"></span>
+        </div>
         <span id="riderActiveCountBadge" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Active</span>
       </div>
       <div id="riderActiveOrdersList" class="space-y-3">
@@ -72,7 +78,7 @@
       </div>
     </div>
 
-    <!-- Completed Deliveries History -->
+    <!-- Completed Deliveries History (With Delivered Time & Date) -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
         <h3 class="font-brand font-black text-sm text-slate-900">Completed Deliveries History</h3>
@@ -113,6 +119,9 @@
     <span id="toastMsg">Success</span>
   </div>
 
+  <!-- Notification Beep Audio -->
+  <audio id="riderAlertAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
   <script>
     var firebaseConfig = {
       apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
@@ -126,6 +135,32 @@
 
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
+
+    var isRiderDutyOn = localStorage.getItem("fitin60_rider_duty") !== "off";
+    updateDutyUI();
+
+    function toggleRiderDuty() {
+      isRiderDutyOn = !isRiderDutyOn;
+      localStorage.setItem("fitin60_rider_duty", isRiderDutyOn ? "on" : "off");
+      updateDutyUI();
+      showQuickToast(isRiderDutyOn ? "🟢 You are Online (Rides ON)" : "🔴 You are Offline (Rides OFF)");
+    }
+
+    function updateDutyUI() {
+      var btn = document.getElementById("dutyToggleBtn");
+      var dot = document.getElementById("dutyIndicatorDot");
+      var label = document.getElementById("dutyToggleLabel");
+
+      if (isRiderDutyOn) {
+        btn.className = "bg-emerald-50 text-emerald-800 border border-emerald-300 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+        label.innerText = "Rides: ON";
+      } else {
+        btn.className = "bg-rose-50 text-rose-800 border border-rose-300 font-black px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500";
+        label.innerText = "Rides: OFF";
+      }
+    }
 
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
@@ -176,7 +211,6 @@
           return alert("❌ Incorrect Delivery OTP! Please check with customer.");
         }
 
-        var riderFee = order.deliveryFee || 49;
         db.ref("orders/" + orderId).update({
           status: "Delivered",
           delivered: true,
@@ -190,6 +224,8 @@
       });
     };
 
+    var prevRiderOrderCount = -1;
+
     // Listen to orders for Rider Fleet
     db.ref("orders").on("value", function(snap) {
       var orders = snap.val() || {};
@@ -197,12 +233,14 @@
       var historyContainer = document.getElementById("riderHistoryList");
       var activeBadge = document.getElementById("riderActiveCountBadge");
       var histBadge = document.getElementById("riderHistCount");
+      var pulseDot = document.getElementById("riderPulseDot");
       
       var activeHtml = "";
       var historyHtml = "";
       var activeCount = 0;
       var histCount = 0;
       var totalEarnings = 0;
+      var newAssignedList = [];
 
       Object.values(orders).forEach(function(o) {
         var isDelivered = (o.status === "Delivered" || o.delivered === true);
@@ -214,22 +252,23 @@
           var deliveredTime = formatDateTime(o.deliveredTimestamp || o.timestamp);
 
           historyHtml += 
-            '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+            '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
               '<div class="flex justify-between font-bold text-slate-900">' +
                 '<span>' + o.orderId + ' • ' + o.store + '</span>' +
                 '<span class="text-emerald-600 font-mono-num font-black">+₹' + (o.deliveryFee || 49) + '</span>' +
               '</div>' +
               '<div class="flex justify-between text-[11px] text-slate-600">' +
                 '<span>Customer: ' + o.customerName + '</span>' +
-                '<span class="text-[10px] text-slate-500 font-mono font-bold">🕒 ' + deliveredTime + '</span>' +
+                '<span class="text-[10px] text-slate-500 font-mono font-bold">🕒 Delivered: ' + deliveredTime + '</span>' +
               '</div>' +
             '</div>';
-        } else if (isPackedOrOut) {
+        } else if (isPackedOrOut && isRiderDutyOn) {
           activeCount++;
+          newAssignedList.push(o);
           var orderTime = formatDateTime(o.timestamp);
 
           activeHtml += 
-            '<div class="p-4 bg-orange-50/50 border border-orange-200 rounded-2xl text-xs space-y-3">' +
+            '<div class="p-4 bg-orange-50/50 border border-orange-200 rounded-2xl text-xs space-y-3 shadow-sm">' +
               '<div class="flex justify-between items-start">' +
                 '<div>' +
                   '<span class="text-[10px] font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded">ID: ' + o.orderId + '</span>' +
@@ -244,6 +283,11 @@
                 '<p class="font-mono text-xs text-orange-600 font-bold">Distance: ~' + (o.distanceKm || 2.5) + ' KM (Fee: ₹' + (o.deliveryFee || 49) + ')</p>' +
               '</div>' +
 
+              '<div class="flex justify-between items-center text-[10px] text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg font-mono font-bold border">' +
+                '<span>🕒 Order Time: ' + orderTime + '</span>' +
+                '<span class="text-emerald-700">⚡ Express 60-Min Drop</span>' +
+              '</div>' +
+
               '<div class="flex items-center gap-2 pt-1">' +
                 '<a href="tel:' + o.customerPhone + '" class="flex-1 bg-white hover:bg-slate-50 text-slate-900 border border-slate-300 font-bold py-2.5 rounded-xl text-center shadow-sm">📞 Call Customer</a>' +
                 '<button onclick="openOtpModal(\'' + o.orderId + '\')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl shadow transition cursor-pointer">✓ Enter OTP & Deliver</button>' +
@@ -252,15 +296,27 @@
         }
       });
 
+      // Sound notification trigger when new delivery is assigned and Rides are ON
+      if (isRiderDutyOn && prevRiderOrderCount !== -1 && newAssignedList.length > prevRiderOrderCount) {
+        var audio = document.getElementById("riderAlertAudio");
+        if (audio) {
+          audio.play().catch(function(e) { console.log("Audio play blocked", e); });
+        }
+        showQuickToast("🔔 NEW EXPRESS DELIVERY ASSIGNED!");
+      }
+      prevRiderOrderCount = newAssignedList.length;
+
       activeBadge.innerText = activeCount + " Active";
       histBadge.innerText = histCount + " Delivered";
       document.getElementById("riderCompletedCount").innerText = histCount;
       document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
 
       if (activeCount > 0) {
+        pulseDot.classList.remove("hidden");
         activeContainer.innerHTML = activeHtml;
       } else {
-        activeContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No active delivery assigned right now.</p>';
+        pulseDot.classList.add("hidden");
+        activeContainer.innerHTML = isRiderDutyOn ? '<p class="text-xs text-slate-400 text-center py-6">No active delivery assigned right now.</p>' : '<p class="text-xs text-rose-500 font-bold text-center py-6">🔴 You are offline (Rides OFF). Turn on rides to receive express deliveries.</p>';
       }
 
       if (histCount > 0) {
