@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Fitin60 | Master Order Tracking & Financial Dashboard</title>
+  <title>Fitin60 | Live Order Tracking</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -14,68 +14,54 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; color: #0f172a; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fafaf9;
+      color: #0f172a;
+      overflow-x: hidden;
+      width: 100%;
+    }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
-    #quickToast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
-<body class="min-h-screen pb-28 antialiased">
+<body class="min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white w-full overflow-x-hidden">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
-    <a href="index.html" class="flex items-center gap-1">
-      <span class="font-brand text-2xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full">Live Tracking</span>
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm w-full">
+    <a href="index.html" class="flex items-center gap-1 shrink-0">
+      <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
+        FITIN<span class="text-orange-600">60</span>
+      </span>
+      <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-1.5 py-0.5 rounded-full border border-orange-200">LIVE TRACKER</span>
     </a>
-    <div id="ownerStatusBadge" class="hidden text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-black px-2.5 py-1 rounded-xl">
-      🛡️ Master Owner Dashboard Active
-    </div>
+    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl text-xs transition">
+      ← Back to Explore
+    </a>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6">
-    <!-- Active Customer Order Card -->
-    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-      <div class="flex items-center justify-between border-b pb-3">
-        <h1 class="font-brand font-black text-lg text-slate-950">⚡ Active Express Order</h1>
-        <span class="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">60-Min Radar</span>
+  <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6 w-full">
+    
+    <!-- Top Banner -->
+    <div class="bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl border border-slate-800">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-[10px] font-bold bg-orange-500 text-white px-3 py-1 rounded-full uppercase tracking-wider">⚡ 60-Min Hyperlocal Express</span>
+        <span id="headerTimer" class="font-mono-num text-orange-400 font-bold text-sm">59:59 mins left</span>
       </div>
-      <div id="activeOrderContainer" class="space-y-3">
-        <p class="text-xs text-slate-400 text-center py-6">No active order found in your session. Place an order from explore page!</p>
+      <h1 class="font-brand text-2xl font-black tracking-tight">Live Order Radar</h1>
+      <p class="text-slate-400 text-xs mt-1">Real-time updates straight from boutique to your doorstep.</p>
+    </div>
+
+    <!-- Active Orders Container -->
+    <div id="ordersContainer" class="space-y-4 w-full">
+      <div class="bg-white rounded-3xl p-6 border border-slate-200 text-center py-12 text-slate-400 text-xs">
+        Loading active express orders...
       </div>
     </div>
 
-    <!-- Master Owner Financial & Fleet Dashboard -->
-    <div id="masterAdminDashboard" class="hidden bg-slate-950 text-white rounded-3xl p-6 shadow-xl space-y-5 border border-slate-800">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <div>
-          <h2 class="font-brand font-black text-xl text-orange-400">📊 Master Financial & Ops Split</h2>
-          <p class="text-xs text-slate-400">Total platform revenue, store payouts, and delivery tracking.</p>
-        </div>
-        <span class="text-xs bg-orange-600 text-white font-black px-3 py-1 rounded-full">Admin View</span>
-      </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-        <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-          <p class="text-slate-400 text-[10px]">Total Platform Orders</p>
-          <p id="adminTotalOrders" class="font-mono-num font-black text-lg text-white mt-1">0</p>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl">
-          <p class="text-slate-400 text-[10px]">Total Commission (15%)</p>
-          <p id="adminTotalCommission" class="font-mono-num font-black text-lg text-emerald-400 mt-1">₹0</p>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl col-span-2 sm:col-span-1">
-          <p class="text-slate-400 text-[10px]">Active Delivery Fleet</p>
-          <p id="adminActiveRiders" class="font-mono-num font-black text-lg text-orange-400 mt-1">0 Riders</p>
-        </div>
-      </div>
-
-      <div class="space-y-3 pt-2">
-        <h3 class="font-bold text-xs uppercase tracking-wider text-slate-400">All Platform Orders & Settlement Split</h3>
-        <div id="adminAllOrdersList" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar"></div>
-      </div>
-    </div>
   </main>
 
   <!-- Bottom Navigation -->
@@ -84,25 +70,11 @@
       <span class="text-lg leading-none">🏬</span>
       <span class="text-[10px] mt-1">Explore</span>
     </a>
-    <a href="partner.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
-      <span class="text-lg leading-none">💼</span>
-      <span class="text-[10px] mt-1">Partner Hub</span>
-    </a>
-    <a href="rider.html" class="flex flex-col items-center text-slate-600 hover:text-emerald-600 font-bold">
-      <span class="text-lg leading-none">🛵</span>
-      <span class="text-[10px] mt-1">Rider Fleet</span>
-    </a>
     <a href="tracking.html" class="flex flex-col items-center text-orange-600 font-bold">
       <span class="text-lg leading-none">⚡</span>
       <span class="text-[10px] mt-1">Orders</span>
     </a>
   </nav>
-
-  <!-- Toast Notification -->
-  <div id="quickToast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-slate-950/90 backdrop-blur-md text-white text-xs font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 border border-slate-800 pointer-events-none">
-    <span class="text-emerald-400">✓</span>
-    <span id="toastMsg">Success</span>
-  </div>
 
   <script>
     var firebaseConfig = {
@@ -118,84 +90,97 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
-    if (isOwnerActive) {
-      document.getElementById("ownerStatusBadge").classList.remove("hidden");
-      document.getElementById("masterAdminDashboard").classList.remove("hidden");
-    }
+    // Countdown timer for top banner
+    var cSecs = 59 * 60 + 59;
+    setInterval(function() {
+      if (cSecs > 0) cSecs--;
+      var m = Math.floor(cSecs / 60);
+      var s = cSecs % 60;
+      var el = document.getElementById("headerTimer");
+      if (el) el.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + " mins left";
+    }, 1000);
 
-    function showQuickToast(msg) {
-      var toast = document.getElementById("quickToast");
-      var text = document.getElementById("toastMsg");
-      text.innerText = msg;
-      toast.classList.add("show");
-      setTimeout(function() { toast.classList.remove("show"); }, 1500);
-    }
+    // Listen to orders from Firebase
+    db.ref("orders").on("value", function(snapshot) {
+      var orders = snapshot.val() || {};
+      var container = document.getElementById("ordersContainer");
+      
+      var ordersList = Object.values(orders).reverse(); // Latest orders first
 
-    // Render active order for customer
-    try {
-      var activeOrder = JSON.parse(localStorage.getItem("chitikelo_active_order"));
-      if (activeOrder) {
-        var container = document.getElementById("activeOrderContainer");
+      if (ordersList.length === 0) {
         container.innerHTML = 
-          '<div class="p-4 bg-slate-50 border rounded-2xl space-y-3 text-xs">' +
-            '<div class="flex justify-between items-center font-bold">' +
-              '<span class="text-orange-600 text-sm font-black">' + activeOrder.orderId + '</span>' +
-              '<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-lg">Delivery OTP: <strong>' + activeOrder.deliveryOtp + '</strong></span>' +
-            '</div>' +
-            '<div class="border-t pt-2 space-y-1 text-slate-700">' +
-              '<p><strong>Store:</strong> ' + activeOrder.store + '</p>' +
-              '<p><strong>Delivery Address:</strong> ' + activeOrder.customerAddress + '</p>' +
-              '<p><strong>Total Amount:</strong> ₹' + activeOrder.totalAmount + ' (' + activeOrder.paymentMethod + ')</p>' +
-            '</div>' +
+          '<div class="bg-white rounded-3xl p-8 border border-slate-200 text-center space-y-3 shadow-sm">' +
+            '<span class="text-3xl">🛍️</span>' +
+            '<h3 class="font-brand font-bold text-base text-slate-900">No Active Express Orders</h3>' +
+            '<p class="text-xs text-slate-500">Explore nearby boutiques and place your 60-minute express order now!</p>' +
+            '<a href="index.html" class="inline-block bg-slate-950 text-white font-bold px-5 py-2.5 rounded-xl text-xs mt-2">Explore Outfits ➔</a>' +
           '</div>';
+        return;
       }
-    } catch(e){}
 
-    // Master Owner Financial & Order Split Dashboard
-    if (isOwnerActive) {
-      db.ref("orders").on("value", function(snapshot) {
-        var ordersData = snapshot.val() || {};
-        var ordersList = Object.values(ordersData).reverse();
+      var html = "";
+      ordersList.forEach(function(o) {
+        var status = o.status || "Order Placed";
+        var otp = o.deliveryOtp || Math.floor(1000 + Math.random() * 9000);
+        var total = o.totalAmount || o.itemTotal || 0;
+        var address = o.customerAddress || "Permanent Delivery Address";
+        var storeName = o.store || "Boutique Studio";
 
-        document.getElementById("adminTotalOrders").innerText = ordersList.length;
+        // Progress bar step logic
+        var step1 = true;
+        var step2 = o.boutiqueAccepted || status !== "Order Placed";
+        var step3 = status === "Out for Delivery" || status === "Delivered" || o.riderAssigned;
+        var step4 = status === "Delivered" || o.delivered === true;
 
-        var totalCommission = 0;
-        ordersList.forEach(function(o) {
-          if (o.financialSplit && o.financialSplit.platformCommission) {
-            totalCommission += o.financialSplit.platformCommission;
-          }
-        });
-        document.getElementById("adminTotalCommission").innerText = "₹" + totalCommission;
-
-        var html = "";
-        if (ordersList.length === 0) {
-          html = "<p class='text-xs text-slate-500'>No orders placed yet.</p>";
-        } else {
-          ordersList.forEach(function(o) {
-            var split = o.financialSplit || { storeNetPayout: 0, platformCommission: 0, riderFee: 0 };
-            html += 
-              '<div class="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1 text-xs">' +
-                '<div class="flex justify-between font-bold text-white">' +
-                  '<span>' + o.orderId + ' • ' + o.customerName + '</span>' +
-                  '<span class="text-orange-400">₹' + o.totalAmount + '</span>' +
-                '</div>' +
-                '<p class="text-[11px] text-slate-400">Store: ' + o.store + ' | Delivery Fee: ₹' + split.riderFee + '</p>' +
-                '<div class="flex gap-3 text-[10px] text-emerald-400 font-mono pt-1 border-t border-slate-800">' +
-                  '<span>Store Net: ₹' + split.storeNetPayout + '</span>' +
-                  '<span>Platform Comm: ₹' + split.platformCommission + '</span>' +
-                '</div>' +
-              '</div>';
+        var itemsHtml = "";
+        if (o.items && Array.isArray(o.items)) {
+          o.items.forEach(function(it) {
+            itemsHtml += '<div class="text-xs font-bold text-slate-800 flex justify-between"><span>• ' + it.name + '</span><span class="font-mono-num text-orange-600">₹' + it.price + '</span></div>';
           });
         }
-        document.getElementById("adminAllOrdersList").innerHTML = html;
+
+        html += 
+          '<div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5 w-full">' +
+            '<div class="flex justify-between items-start border-b border-slate-100 pb-4">' +
+              '<div>' +
+                '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md">ID: ' + o.orderId + '</span>' +
+                '<h3 class="font-brand font-black text-lg text-slate-950 mt-1">' + storeName + '</h3>' +
+              '</div>' +
+              '<div class="text-right">' +
+                '<span class="text-xs font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300">' + status + '</span>' +
+                '<p class="text-[10px] font-mono font-bold text-slate-400 mt-1">Delivery OTP: <span class="text-slate-900 font-mono-num font-black">' + otp + '</span></p>' +
+              '</div>' +
+            '</div>' +
+
+            // Visual Status Timeline
+            '<div class="grid grid-cols-4 gap-2 text-center text-[10px] font-bold">' +
+              '<div class="p-2 rounded-xl ' + (step1 ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-400') + '">1. Placed</div>' +
+              '<div class="p-2 rounded-xl ' + (step2 ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-400') + '">2. Packed</div>' +
+              '<div class="p-2 rounded-xl ' + (step3 ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-400') + '">3. On Way</div>' +
+              '<div class="p-2 rounded-xl ' + (step4 ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400') + '">4. Delivered</div>' +
+            '</div>' +
+
+            // Items breakdown
+            '<div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1.5">' +
+              '<p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Ordered Items</p>' +
+              itemsHtml +
+            '</div>' +
+
+            '<div class="flex justify-between items-center pt-2 text-xs text-slate-600">' +
+              '<div>' +
+                '<p class="font-bold text-slate-400 text-[10px] uppercase">Delivery Address</p>' +
+                '<p class="font-bold text-slate-800 truncate max-w-xs">📍 ' + address + '</p>' +
+              '</div>' +
+              '<div class="text-right">' +
+                '<p class="font-bold text-slate-400 text-[10px] uppercase">Total Payable</p>' +
+                '<p class="font-mono-num font-black text-lg text-orange-600">₹' + total + '</p>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
       });
 
-      db.ref("riders").on("value", function(snap) {
-        var ridersCount = snap.numChildren();
-        document.getElementById("adminActiveRiders").innerText = ridersCount + " Riders";
-      });
-    }
+      container.innerHTML = html;
+    });
   </script>
 </body>
 </html>
