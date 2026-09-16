@@ -187,7 +187,7 @@
 
   </main>
 
-  <!-- PARTNER LOGIN / REGISTRATION MODAL (Appears on Logout) -->
+  <!-- PARTNER AUTH MODAL (Login, Register & Forgot PIN) -->
   <div id="partnerAuthModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 text-center">
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🏬</div>
@@ -200,14 +200,17 @@
         <button onclick="switchPartnerAuthTab('register')" id="partnerTabReg" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
       </div>
 
-      <!-- 1. LOGIN FORM -->
+      <!-- 1. LOGIN FORM (With Forgot PIN Link) -->
       <form id="partnerLoginForm" onsubmit="handlePartnerLoginSubmit(event)" class="space-y-3 text-left text-xs mt-3">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Store Name / Registered Mobile</label>
           <input type="text" id="partnerLoginName" required placeholder="e.g. Sai Fashions" class="w-full bg-slate-50 border rounded-xl p-3 font-bold">
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">4-Digit Store PIN</label>
+          <div class="flex justify-between items-center mb-1">
+            <label class="block font-bold text-slate-700 uppercase text-[10px]">4-Digit Store PIN</label>
+            <button type="button" onclick="switchPartnerAuthTab('forgot')" class="text-[10px] text-orange-600 font-bold hover:underline cursor-pointer">Forgot PIN?</button>
+          </div>
           <input type="password" id="partnerLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-3 text-center font-mono tracking-widest text-lg font-black">
         </div>
         <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
@@ -231,6 +234,25 @@
         </div>
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
           Register New Store ➔
+        </button>
+      </form>
+
+      <!-- 3. FORGOT PIN FORM -->
+      <form id="partnerForgotForm" onsubmit="handlePartnerForgotSubmit(event)" class="space-y-3 text-left text-xs mt-3 hidden">
+        <div class="flex justify-between items-center border-b pb-2">
+          <span class="font-bold text-slate-900">Reset Store PIN</span>
+          <button type="button" onclick="switchPartnerAuthTab('login')" class="text-[10px] text-blue-600 font-bold hover:underline">← Back to Login</button>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Registered Store Name</label>
+          <input type="text" id="partnerForgName" required placeholder="e.g. Sai Fashions" class="w-full bg-slate-50 border rounded-xl p-2.5 font-bold">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Set New 4-Digit PIN</label>
+          <input type="password" id="partnerForgPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-2.5 text-center font-mono tracking-widest font-black">
+        </div>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          Reset PIN & Login ➔
         </button>
       </form>
     </div>
@@ -341,7 +363,6 @@
     var activeStoreName = localStorage.getItem("fitin60_partner_store") || "";
     var activeStoreArea = localStorage.getItem("fitin60_partner_area") || "";
 
-    // If store session is not set, force open the Login / Registration modal directly inside the page!
     if (!activeStoreName) {
       document.getElementById("partnerAuthModal").classList.remove("hidden");
     } else {
@@ -352,20 +373,25 @@
     window.switchPartnerAuthTab = function(tab) {
       var logF = document.getElementById("partnerLoginForm");
       var regF = document.getElementById("partnerRegisterForm");
+      var forgF = document.getElementById("partnerForgotForm");
       var bL = document.getElementById("partnerTabLogin");
       var bR = document.getElementById("partnerTabReg");
 
       logF.classList.add("hidden");
       regF.classList.add("hidden");
-      bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
-      bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      forgF.classList.add("hidden");
+
+      if (bL) bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      if (bR) bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
 
       if (tab === 'login') {
         logF.classList.remove("hidden");
-        bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
-      } else {
+        if (bL) bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+      } else if (tab === 'register') {
         regF.classList.remove("hidden");
-        bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+        if (bR) bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+      } else if (tab === 'forgot') {
+        forgF.classList.remove("hidden");
       }
     };
 
@@ -376,7 +402,7 @@
 
       db.ref("boutiques/" + storeNameInput.replace(/[^a-zA-Z0-9]/g, "_")).once("value").then(function(snap) {
         var store = snap.val();
-        if (store) {
+        if (store && String(store.pin) === String(pin)) {
           activeStoreName = store.name;
           activeStoreArea = store.area;
           localStorage.setItem("fitin60_partner_store", activeStoreName);
@@ -388,7 +414,6 @@
           showQuickToast("✓ Welcome back, " + activeStoreName);
           window.location.reload();
         } else {
-          // Fallback for default Sai Fashions if not in DB yet
           if (storeNameInput.toLowerCase() === "sai fashions") {
             activeStoreName = "Sai Fashions";
             activeStoreArea = "Near TV tower • Mobile: 9515552511";
@@ -397,7 +422,7 @@
             document.getElementById("partnerAuthModal").classList.add("hidden");
             window.location.reload();
           } else {
-            alert("❌ Store not found! Please check name or Register new store.");
+            alert("❌ Incorrect Store Name or PIN!");
           }
         }
       });
@@ -433,6 +458,31 @@
         window.location.reload();
       }).catch(function(err) {
         alert("Error: " + err.message);
+      });
+    };
+
+    window.handlePartnerForgotSubmit = function(e) {
+      e.preventDefault();
+      var name = document.getElementById("partnerForgName").value.trim();
+      var newPin = document.getElementById("partnerForgPin").value.trim();
+
+      var storeKey = name.replace(/[^a-zA-Z0-9]/g, "_");
+      db.ref("boutiques/" + storeKey).once("value").then(function(snap) {
+        var store = snap.val();
+        if (store) {
+          db.ref("boutiques/" + storeKey).update({ pin: newPin }).then(function() {
+            activeStoreName = store.name;
+            activeStoreArea = store.area || "Local Store";
+            localStorage.setItem("fitin60_partner_store", activeStoreName);
+            localStorage.setItem("fitin60_partner_area", activeStoreArea);
+
+            document.getElementById("partnerAuthModal").classList.add("hidden");
+            showQuickToast("✓ PIN Reset Successful! Logged in.");
+            window.location.reload();
+          });
+        } else {
+          alert("❌ Store not found in database!");
+        }
       });
     };
 
@@ -791,7 +841,6 @@
       }
     };
 
-    // Logout: Clears store session and immediately prompts Login/Registration modal on the same page!
     window.partnerLogout = function() {
       if (confirm("Are you sure you want to logout?")) {
         localStorage.removeItem("fitin60_partner_store");
