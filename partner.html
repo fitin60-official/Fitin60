@@ -80,10 +80,10 @@
       </div>
     </div>
 
-    <!-- Partner Payout UPI Setup Box -->
+    <!-- Partner Payout UPI & Bank Setup Box -->
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">🏦 Payout UPI / Bank Details</h3>
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">🏦 Payout UPI & Bank Details</h3>
         <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">For 85% Net Payouts</span>
       </div>
       <div class="space-y-3 text-xs">
@@ -91,8 +91,18 @@
           <label class="block font-bold text-slate-700 mb-1">UPI ID (GPay / PhonePe / Paytm)</label>
           <input type="text" id="partnerUpiIdInput" placeholder="e.g. saifashions@oksbi" class="w-full bg-slate-50 border rounded-xl p-3 font-mono font-bold text-slate-900">
         </div>
-        <button onclick="savePartnerUpiDetails()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
-          💾 Save UPI ID for Settlements
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Bank Account Number</label>
+            <input type="text" id="partnerAccNumInput" placeholder="Account Number" class="w-full bg-slate-50 border rounded-xl p-3 font-mono text-slate-900">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">IFSC Code</label>
+            <input type="text" id="partnerIfscInput" placeholder="SBIN0001234" class="w-full bg-slate-50 border rounded-xl p-3 font-mono uppercase text-slate-900">
+          </div>
+        </div>
+        <button onclick="savePartnerBankDetails()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          💾 Save UPI & Bank Details for Settlements
         </button>
       </div>
     </div>
@@ -389,26 +399,37 @@
     } else {
       document.getElementById("bannerStoreName").innerText = activeStoreName;
       document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
-      loadPartnerUpiDetails();
+      loadPartnerBankDetails();
     }
 
-    function loadPartnerUpiDetails() {
+    function loadPartnerBankDetails() {
       if (!activeStoreMobile) return;
       db.ref("boutiques/" + activeStoreMobile).once("value").then(function(snap) {
         var st = snap.val();
-        if (st && st.upiId) {
-          document.getElementById("partnerUpiIdInput").value = st.upiId;
+        if (st) {
+          if (st.upiId) document.getElementById("partnerUpiIdInput").value = st.upiId;
+          if (st.accNum) document.getElementById("partnerAccNumInput").value = st.accNum;
+          if (st.ifsc) document.getElementById("partnerIfscInput").value = st.ifsc;
         }
       });
     }
 
-    window.savePartnerUpiDetails = function() {
+    window.savePartnerBankDetails = function() {
       var upiId = document.getElementById("partnerUpiIdInput").value.trim();
-      if (!upiId) return alert("Please enter valid UPI ID!");
+      var accNum = document.getElementById("partnerAccNumInput").value.trim();
+      var ifsc = document.getElementById("partnerIfscInput").value.trim().toUpperCase();
+
+      if (!upiId && (!accNum || !ifsc)) {
+        return alert("Please enter either UPI ID or Bank Account Details (Account No & IFSC)!");
+      }
 
       var key = activeStoreMobile || activeStoreName.replace(/[^a-zA-Z0-9]/g, "_");
-      db.ref("boutiques/" + key).update({ upiId: upiId }).then(function() {
-        showQuickToast("✓ Payout UPI ID Saved Successfully!");
+      db.ref("boutiques/" + key).update({
+        upiId: upiId,
+        accNum: accNum,
+        ifsc: ifsc
+      }).then(function() {
+        showQuickToast("✓ Payout Bank Details Saved Successfully!");
       });
     };
 
