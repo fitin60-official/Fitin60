@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; color: #0f172a; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafaf9; color: #0f172a; overflow-x: hidden; }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
     #quickToast { transform: translateY(100px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
@@ -23,68 +23,68 @@
     .live-alert-pulse { animation: pulseAlert 1.5s infinite; }
   </style>
 </head>
-<body class="min-h-screen pb-24 antialiased">
+<body class="min-h-screen pb-24 antialiased w-full overflow-x-hidden">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 h-16 flex items-center justify-between shadow-sm">
+  <!-- Header (Mobile Optimized Flex Wrap) -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 h-auto py-2.5 flex flex-wrap items-center justify-between gap-2 shadow-sm w-full">
     <div class="flex items-center gap-1.5 shrink-0">
-      <span class="font-brand text-lg sm:text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
-      <span class="text-[8px] sm:text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.5 rounded-full">MERCHANT HUB</span>
+      <span class="font-brand text-base sm:text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
+      <span class="text-[8px] sm:text-[9px] bg-slate-900 text-white font-bold px-1.5 py-0.5 rounded-full">MERCHANT</span>
     </div>
-    <div class="flex items-center gap-1.5 shrink-0">
-      <button onclick="enableAudioAlerts()" id="soundToggleBtn" class="text-[11px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1.5 rounded-xl border border-orange-200 cursor-pointer animate-pulse">🔊 Enable Sound</button>
-      <button onclick="openEditStoreModal()" class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-xl border border-blue-200 cursor-pointer">✏️ Edit Store</button>
-      <button onclick="partnerLogout()" class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1.5 rounded-xl border border-rose-200 cursor-pointer">Logout</button>
+    <div class="flex items-center gap-1 shrink-0">
+      <button onclick="enableAudioAlerts()" id="soundToggleBtn" class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-lg border border-orange-200 cursor-pointer animate-pulse">🔊 Sound</button>
+      <button onclick="openEditStoreModal()" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200 cursor-pointer">✏️ Edit</button>
+      <button onclick="partnerLogout()" class="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg border border-rose-200 cursor-pointer">Logout</button>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto px-4 mt-5 space-y-5">
+  <main class="max-w-xl mx-auto px-3 sm:px-4 mt-4 space-y-4 w-full">
     
     <!-- Store Status Banner & Toggle -->
-    <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-lg space-y-3">
-      <div class="flex justify-between items-start">
-        <div>
-          <h2 id="bannerStoreName" class="font-brand font-black text-xl text-white">Sai Fashions</h2>
-          <p id="bannerStoreArea" class="text-xs text-orange-400 mt-0.5">📍 Near TV tower • Mobile: 9515552511</p>
+    <div class="bg-slate-950 text-white rounded-3xl p-4 sm:p-5 shadow-lg space-y-3 w-full">
+      <div class="flex justify-between items-start gap-2">
+        <div class="truncate">
+          <h2 id="bannerStoreName" class="font-brand font-black text-lg sm:text-xl text-white truncate">Sai Fashions</h2>
+          <p id="bannerStoreArea" class="text-[11px] sm:text-xs text-orange-400 mt-0.5 truncate">📍 Near TV tower • Mobile: 9515552511</p>
         </div>
-        <span class="text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">Verified ✓</span>
+        <span class="text-[9px] sm:text-[10px] bg-emerald-500 text-slate-950 font-black px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0">Verified ✓</span>
       </div>
 
-      <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+      <div class="pt-2 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
         <span class="text-slate-400">Store Status for Express:</span>
-        <select id="storeStatusToggle" onchange="updateStoreStatus(this.value)" class="bg-slate-900 border border-slate-700 text-emerald-400 font-bold px-3 py-1.5 rounded-xl focus:outline-none">
+        <select id="storeStatusToggle" onchange="updateStoreStatus(this.value)" class="bg-slate-900 border border-slate-700 text-emerald-400 font-bold px-3 py-1.5 rounded-xl focus:outline-none w-full sm:w-auto">
           <option value="OPEN">🟢 Open for 60-Min Orders</option>
           <option value="CLOSED">🔴 Closed / Not Accepting</option>
         </select>
       </div>
     </div>
 
-    <!-- Instant Settlement & Earnings (Date & Time Pill Removed) -->
-    <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3">
+    <!-- Instant Settlement & Earnings -->
+    <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2">
         <span class="text-xs font-bold text-slate-800">📊 Instant Settlement & Earnings</span>
       </div>
-      <div class="grid grid-cols-3 gap-2">
-        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Orders</p>
-          <p id="statTotalOrders" class="font-mono-num font-black text-base sm:text-lg text-slate-900 mt-0.5">0</p>
+      <div class="grid grid-cols-3 gap-2 w-full">
+        <div class="bg-slate-50 p-2.5 sm:p-3 rounded-2xl text-center border border-slate-100">
+          <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Orders</p>
+          <p id="statTotalOrders" class="font-mono-num font-black text-sm sm:text-lg text-slate-900 mt-0.5">0</p>
         </div>
-        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Revenue</p>
-          <p id="statTotalRevenue" class="font-mono-num font-black text-base sm:text-lg text-orange-600 mt-0.5">₹0</p>
+        <div class="bg-slate-50 p-2.5 sm:p-3 rounded-2xl text-center border border-slate-100">
+          <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Revenue</p>
+          <p id="statTotalRevenue" class="font-mono-num font-black text-sm sm:text-lg text-orange-600 mt-0.5">₹0</p>
         </div>
-        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Settled</p>
-          <p id="statSettledAmount" class="font-mono-num font-black text-base sm:text-lg text-emerald-600 mt-0.5">₹0</p>
+        <div class="bg-slate-50 p-2.5 sm:p-3 rounded-2xl text-center border border-slate-100">
+          <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Settled</p>
+          <p id="statSettledAmount" class="font-mono-num font-black text-sm sm:text-lg text-emerald-600 mt-0.5">₹0</p>
         </div>
       </div>
     </div>
 
-    <!-- Live Store Orders with Pulse Alert, Date & Time, and Customer Call -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+    <!-- Live Store Orders -->
+    <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="flex justify-between items-center border-b pb-2">
         <div class="flex items-center gap-2">
-          <h3 class="font-brand font-black text-sm text-slate-900">Live Store Orders</h3>
+          <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">Live Store Orders</h3>
           <span id="livePulseIndicator" class="hidden w-2.5 h-2.5 rounded-full bg-orange-500 live-alert-pulse" title="New Order Received!"></span>
         </div>
         <span id="liveOrdersCount" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
@@ -94,11 +94,11 @@
       </div>
     </div>
 
-    <!-- Upload New Dress Form with Modern Image Browser -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-4">
+    <!-- Upload New Dress Form -->
+    <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-4 w-full">
       <div class="border-b pb-2">
-        <h3 class="font-brand font-black text-sm text-slate-900">+ Upload New Dress to Radar</h3>
-        <p class="text-[11px] text-slate-500">Publish stock instantly for 60-min express delivery.</p>
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">+ Upload New Dress to Radar</h3>
+        <p class="text-[10px] sm:text-[11px] text-slate-500">Publish stock instantly for 60-min express delivery.</p>
       </div>
 
       <form onsubmit="handlePartnerUpload(event)" class="space-y-3 text-xs">
@@ -118,7 +118,6 @@
           </div>
         </div>
 
-        <!-- Modern Image Browser Dropzone & Preview -->
         <div>
           <label class="block font-bold text-slate-700 mb-1">Outfit Photo</label>
           <div class="relative border-2 border-dashed border-slate-300 hover:border-orange-500 bg-slate-50 rounded-2xl p-4 text-center cursor-pointer transition" id="dropzoneBox">
@@ -153,10 +152,10 @@
       </form>
     </div>
 
-    <!-- Manage Uploaded Outfits with Individual Stock Control -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+    <!-- Manage Uploaded Outfits -->
+    <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">Manage Outfits & Individual Stock</h3>
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">Manage Outfits & Stock</h3>
         <span class="text-[10px] text-slate-400 font-bold">Toggle In/Out Stock</span>
       </div>
       <div id="partnerUploadedList" class="space-y-2">
@@ -165,9 +164,9 @@
     </div>
 
     <!-- Instant Payout History -->
-    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+    <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">💳 Instant Payout History</h3>
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">💳 Instant Payout History</h3>
         <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Settled</span>
       </div>
       <div id="partnerHistoryList" class="space-y-2">
@@ -176,13 +175,13 @@
     </div>
 
     <!-- Simple Store Deletion -->
-    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-4 flex items-center justify-between text-xs">
+    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-4 flex items-center justify-between text-xs w-full">
       <div>
         <p class="font-bold text-slate-800">Delete Store Account</p>
-        <p class="text-[10px] text-slate-500">Permanently remove this store from Fitin60 radar.</p>
+        <p class="text-[10px] text-slate-500">Permanently remove this store from radar.</p>
       </div>
-      <button onclick="deletePartnerStorePermanently()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-3 py-2 rounded-xl transition cursor-pointer">
-        Delete Store
+      <button onclick="deletePartnerStorePermanently()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-3 py-2 rounded-xl transition cursor-pointer shrink-0">
+        Delete
       </button>
     </div>
 
@@ -260,8 +259,8 @@
   </div>
 
   <!-- Pure Partner Hub Bottom Bar -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-3 px-6 flex items-center justify-center z-40 shadow-lg">
-    <div class="flex items-center gap-2 text-orange-600 font-black text-xs uppercase tracking-wider">
+  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-4 flex items-center justify-center z-40 shadow-lg">
+    <div class="flex items-center gap-2 text-orange-600 font-black text-[11px] uppercase tracking-wider truncate">
       <span>💼</span>
       <span>Fitin60 Merchant Studio Active</span>
     </div>
@@ -306,11 +305,11 @@
           audio.pause();
           audio.currentTime = 0;
           var btn = document.getElementById("soundToggleBtn");
-          btn.innerText = "🔊 Sound Active";
-          btn.className = "text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200";
+          btn.innerText = "🔊 Active";
+          btn.className = "text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200";
           showQuickToast("✓ Notification Sound Enabled!");
         }).catch(function(e) {
-          alert("Please interact with the page to enable sound.");
+          alert("Please tap anywhere to enable sound.");
         });
       }
     }
@@ -463,8 +462,8 @@
           count++;
           var inStock = (p.inStock !== false);
           html += 
-            '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs">' +
-              '<div class="flex items-center gap-2.5 truncate">' +
+            '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs gap-2">' +
+              '<div class="flex items-center gap-2 truncate">' +
                 '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
                 '<div class="truncate">' +
                   '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
@@ -472,9 +471,9 @@
                 '</div>' +
               '</div>' +
               '<div class="flex gap-1 shrink-0">' +
-                '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '">' + (inStock ? 'Pause' : 'Stock On') + '</button>' +
-                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
-                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
+                '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '">' + (inStock ? 'Pause' : 'Stock') + '</button>' +
+                '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 text-white px-2 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
+                '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 text-white px-2 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
               '</div>' +
             '</div>';
         }
@@ -552,12 +551,12 @@
               '<span class="text-orange-600 font-mono-num">₹' + o.totalAmount + '</span>' +
             '</div>' +
             '<div class="flex justify-between items-center text-[11px] text-slate-600 font-medium">' +
-              '<span>📍 ' + o.customerAddress + '</span>' +
-              '<a href="tel:' + o.customerPhone + '" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-1 rounded-lg border border-emerald-200">📞 Call Customer</a>' +
+              '<span class="truncate max-w-[180px]">📍 ' + o.customerAddress + '</span>' +
+              '<a href="tel:' + o.customerPhone + '" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-1 rounded-lg border border-emerald-200 shrink-0">📞 Call</a>' +
             '</div>' +
             '<div class="flex justify-between text-[10px] text-slate-500 border-t pt-1.5">' +
               '<span class="text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded font-bold">🕒 ' + orderDateTime + '</span>' +
-              '<span class="text-emerald-600 font-bold">Payment: ' + o.paymentMethod + '</span>' +
+              '<span class="text-emerald-600 font-bold">' + o.paymentMethod + '</span>' +
             '</div>' +
           '</div>';
       });
