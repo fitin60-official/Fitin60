@@ -360,8 +360,12 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var activeStoreName = localStorage.getItem("fitin60_partner_store") || "";
-    var activeStoreArea = localStorage.getItem("fitin60_partner_area") || "";
+    // Safe retrieval from localStorage preventing 'undefined' string bug
+    var rawStore = localStorage.getItem("fitin60_partner_store");
+    var rawArea = localStorage.getItem("fitin60_partner_area");
+
+    var activeStoreName = (!rawStore || rawStore === "undefined" || rawStore === "null") ? "" : rawStore;
+    var activeStoreArea = (!rawArea || rawArea === "undefined" || rawArea === "null") ? "" : rawArea;
 
     if (!activeStoreName) {
       document.getElementById("partnerAuthModal").classList.remove("hidden");
