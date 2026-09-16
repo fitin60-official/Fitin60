@@ -405,10 +405,10 @@
     } else {
       document.getElementById("bannerStoreName").innerText = activeStoreName;
       document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
-      loadPartnerBankDetails();
+      loadPartnerStoreData();
     }
 
-    function loadPartnerBankDetails() {
+    function loadPartnerStoreData() {
       if (!activeStoreMobile) return;
       db.ref("boutiques/" + activeStoreMobile).once("value").then(function(snap) {
         var st = snap.val();
@@ -418,9 +418,30 @@
           if (st.bankName) document.getElementById("partnerBankNameInput").value = st.bankName;
           if (st.accNum) document.getElementById("partnerAccNumInput").value = st.accNum;
           if (st.ifsc) document.getElementById("partnerIfscInput").value = st.ifsc;
+
+          // Load Saved Store Status
+          if (st.status) {
+            document.getElementById("storeStatusToggle").value = st.status;
+          }
         }
       });
     }
+
+    window.updateStoreStatus = function(status) {
+      if (!activeStoreMobile) return;
+      
+      var updateObj = { status: status };
+      if (status === "CLOSED") {
+        updateObj.closedSince = Date.now(); // Track closure time for 30-day auto-delete
+      } else {
+        updateObj.closedSince = null; // Reset if opened
+      }
+
+      db.ref("boutiques/" + activeStoreMobile).update(updateObj).then(function() {
+        var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed / Not Accepting";
+        showQuickToast("✓ Store status: " + label);
+      });
+    };
 
     window.savePartnerBankDetails = function() {
       var upiId = document.getElementById("partnerUpiIdInput").value.trim();
@@ -675,19 +696,14 @@
       document.getElementById("bannerStoreName").innerText = newName;
       document.getElementById("bannerStoreArea").innerText = "📍 " + newArea;
 
+      if (activeStoreMobile) {
+        db.ref("boutiques/" + activeStoreMobile).update({ name: newName, area: newArea });
+      }
+
       closeEditStoreModal();
       showQuickToast("✓ Store details updated!");
     };
 
-    window.updateStoreStatus = function(status) {
-      var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed";
-      showQuickToast("✓ Store status: " + label);
-      if (activeStoreMobile) {
-        db.ref("boutiques/" + activeStoreMobile).update({ status: status });
-      }
-    };
-
-    // Store Owner Marks Order as Packaged for Express Delivery
     window.markOrderPackaged = function(orderId) {
       var randomOtp = Math.floor(1000 + Math.random() * 9000);
       db.ref("orders/" + orderId).update({
@@ -725,6 +741,7 @@
         var prodKey = db.ref("boutique_products").push().key;
         var prodData = {
           store: activeStoreName,
+          storeMobile: activeStoreMobile,
           area: activeStoreArea,
           name: name,
           price: price,
@@ -768,7 +785,7 @@
 
       Object.keys(data).forEach(function(k) {
         var p = data[k];
-        if (p && p.store && p.store.toLowerCase() === activeStoreName.toLowerCase()) {
+        if (p && ((p.store && p.store.toLowerCase() === activeStoreName.toLowerCase()) || (p.storeMobile && p.storeMobile === activeStoreMobile))) {
           count++;
           var inStock = (p.inStock !== false);
           html += 
@@ -796,7 +813,6 @@
       }
     });
 
-    // Listen to Orders & Rider Locations for Store Owner
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
@@ -812,7 +828,6 @@
           if (!isDelivered) {
             myStoreOrdersList.push(o);
           }
-          
           if (isDelivered) {
             totalRevenue += o.totalAmount;
             var netPayout = (o.financialSplit && o.financialSplit.storeNetPayout) ? o.financialSplit.storeNetPayout : Math.round(o.totalAmount * 0.85);
@@ -821,38 +836,33 @@
         }
       });
 
-      // Fetch Rider Locations for Store Owner to Track Assigned Rider
-      db.ref("rider_locations").once("value").then(function(rLocSnap) {
-        var rLocs = rLocSnap.val() || {};
+      db.ref("withdrawals").once("value").then(function(wSnap) {
+        var wData = wSnap.val() || {};
+        var wListHtml = "";
+        var wCount = 0;
+        Object.values(wData).forEach(function(w) {
+          if (w.storeName && w.storeName.toLowerCase() === activeStoreName.toLowerCase()) {
+            wCount++;
+            withdrawnAmount += w.amount;
+            walletBalance -= w.amount;
 
-        db.ref("withdrawals").once("value").then(function(wSnap) {
-          var wData = wSnap.val() || {};
-          var wListHtml = "";
-          var wCount = 0;
-          Object.values(wData).forEach(function(w) {
-            if (w.storeName && w.storeName.toLowerCase() === activeStoreName.toLowerCase()) {
-              wCount++;
-              withdrawnAmount += w.amount;
-              walletBalance -= w.amount;
-
-              wListHtml += 
-                '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
-                  '<div class="flex justify-between font-bold text-slate-900">' +
-                    '<span>' + w.withdrawalId + ' • ₹' + w.amount + '</span>' +
-                    '<span class="text-amber-600 font-bold">' + w.status + '</span>' +
-                  '</div>' +
-                  '<p class="text-[11px] text-slate-600">Destination: ' + w.destination + '</p>' +
-                '</div>';
-            }
-          });
-
-          document.getElementById("statWalletBalance").innerText = "₹" + Math.max(0, walletBalance);
-          document.getElementById("statWithdrawnAmount").innerText = "₹" + withdrawnAmount;
-          document.getElementById("withdrawalCountBadge").innerText = wCount + " Requests";
-          if (wCount > 0) {
-            document.getElementById("partnerHistoryList").innerHTML = wListHtml;
+            wListHtml += 
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+                '<div class="flex justify-between font-bold text-slate-900">' +
+                  '<span>' + w.withdrawalId + ' • ₹' + w.amount + '</span>' +
+                  '<span class="text-amber-600 font-bold">' + w.status + '</span>' +
+                '</div>' +
+                '<p class="text-[11px] text-slate-600">Destination: ' + w.destination + '</p>' +
+              '</div>';
           }
         });
+
+        document.getElementById("statWalletBalance").innerText = "₹" + Math.max(0, walletBalance);
+        document.getElementById("statWithdrawnAmount").innerText = "₹" + withdrawnAmount;
+        document.getElementById("withdrawalCountBadge").innerText = wCount + " Requests";
+        if (wCount > 0) {
+          document.getElementById("partnerHistoryList").innerHTML = wListHtml;
+        }
       });
 
       if (previousOrdersCount !== -1 && myStoreOrdersList.length > previousOrdersCount) {
@@ -868,8 +878,6 @@
         var orderDateTime = formatDateTime(o.timestamp);
         var statusBadge = o.status || "Pending";
         var isPacked = (statusBadge === "Boutique Packed" || statusBadge === "Out for Delivery" || statusBadge === "Delivered");
-
-        // Find assigned rider location if available
         var assignedRiderInfo = o.riderName ? o.riderName : "Looking for nearby rider...";
 
         liveListHtml += 
@@ -954,6 +962,9 @@
 
     window.deletePartnerStorePermanently = function() {
       if (confirm("Permanently delete your store and all items from Fitin60?")) {
+        if (activeStoreMobile) {
+          db.ref("boutiques/" + activeStoreMobile).remove();
+        }
         localStorage.removeItem("fitin60_partner_store");
         localStorage.removeItem("fitin60_partner_area");
         localStorage.removeItem("fitin60_partner_mobile");
