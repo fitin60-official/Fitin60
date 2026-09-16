@@ -52,6 +52,7 @@
           <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Rider Partner Profile</p>
           <h2 id="displayRiderName" class="font-brand font-black text-xl text-white mt-0.5">Srinu (Express Fleet #1)</h2>
           <p id="displayRiderBike" class="text-xs text-orange-400 font-mono mt-0.5">🏍️ Bike: AP 02 AB 1234</p>
+          <p id="gpsStatusText" class="text-[10px] text-emerald-400 font-mono mt-1">📍 GPS Tracking: Active</p>
         </div>
         <div class="flex gap-1.5">
           <button onclick="openEditRiderModal()" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-2.5 py-1.5 rounded-xl text-[11px] transition cursor-pointer">
@@ -323,6 +324,37 @@
       document.getElementById("displayRiderName").innerText = currentRiderName;
       document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
       loadRiderBankDetails();
+      startLiveGpsTracking();
+    }
+
+    // Live GPS Location Tracking
+    function startLiveGpsTracking() {
+      if (!navigator.geolocation) {
+        document.getElementById("gpsStatusText").innerText = "📍 GPS Not Supported";
+        return;
+      }
+
+      navigator.geolocation.watchPosition(function(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        var mobileKey = currentRiderMobile || "rider_default";
+
+        db.ref("rider_locations/" + mobileKey).set({
+          riderName: currentRiderName,
+          bike: currentRiderBike,
+          lat: lat,
+          lng: lng,
+          lastUpdated: Date.now()
+        });
+
+        document.getElementById("gpsStatusText").innerText = "📍 GPS Live: " + lat.toFixed(4) + ", " + lng.toFixed(4);
+      }, function(error) {
+        document.getElementById("gpsStatusText").innerText = "📍 GPS Permission Denied";
+      }, {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 5000
+      });
     }
 
     function loadRiderBankDetails() {
