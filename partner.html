@@ -80,6 +80,23 @@
       </div>
     </div>
 
+    <!-- Partner Payout UPI Setup Box -->
+    <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
+      <div class="border-b pb-2 flex justify-between items-center">
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">🏦 Payout UPI / Bank Details</h3>
+        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">For 85% Net Payouts</span>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">UPI ID (GPay / PhonePe / Paytm)</label>
+          <input type="text" id="partnerUpiIdInput" placeholder="e.g. saifashions@oksbi" class="w-full bg-slate-50 border rounded-xl p-3 font-mono font-bold text-slate-900">
+        </div>
+        <button onclick="savePartnerUpiDetails()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          💾 Save UPI ID for Settlements
+        </button>
+      </div>
+    </div>
+
     <!-- Live Store Orders -->
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="flex justify-between items-center border-b pb-2">
@@ -365,13 +382,35 @@
 
     var activeStoreName = (!rawStore || rawStore === "undefined" || rawStore === "null") ? "" : rawStore;
     var activeStoreArea = (!rawArea || rawArea === "undefined" || rawArea === "null") ? "" : rawArea;
+    var activeStoreMobile = localStorage.getItem("fitin60_partner_mobile") || "";
 
     if (!activeStoreName) {
       document.getElementById("partnerAuthModal").classList.remove("hidden");
     } else {
       document.getElementById("bannerStoreName").innerText = activeStoreName;
       document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
+      loadPartnerUpiDetails();
     }
+
+    function loadPartnerUpiDetails() {
+      if (!activeStoreMobile) return;
+      db.ref("boutiques/" + activeStoreMobile).once("value").then(function(snap) {
+        var st = snap.val();
+        if (st && st.upiId) {
+          document.getElementById("partnerUpiIdInput").value = st.upiId;
+        }
+      });
+    }
+
+    window.savePartnerUpiDetails = function() {
+      var upiId = document.getElementById("partnerUpiIdInput").value.trim();
+      if (!upiId) return alert("Please enter valid UPI ID!");
+
+      var key = activeStoreMobile || activeStoreName.replace(/[^a-zA-Z0-9]/g, "_");
+      db.ref("boutiques/" + key).update({ upiId: upiId }).then(function() {
+        showQuickToast("✓ Payout UPI ID Saved Successfully!");
+      });
+    };
 
     window.switchPartnerAuthTab = function(tab) {
       var logF = document.getElementById("partnerLoginForm");
@@ -398,7 +437,6 @@
       }
     };
 
-    // Instant & Flexible Login: Always logs in successfully with any mobile number
     window.handlePartnerLoginSubmit = function(e) {
       e.preventDefault();
       var mobile = document.getElementById("partnerLoginMobile").value.trim();
@@ -411,10 +449,11 @@
         if (store) {
           activeStoreName = store.name || "Sai Fashions";
           activeStoreArea = store.area || ("Mobile: " + mobile);
+          activeStoreMobile = mobile;
         } else {
-          // If store is not pre-registered in DB, auto-create and log in seamlessly
           activeStoreName = (mobile === "9515552511") ? "Sai Fashions" : ("Store " + mobile);
           activeStoreArea = "Near TV tower • Mobile: " + mobile;
+          activeStoreMobile = mobile;
           db.ref("boutiques/" + mobile).set({
             name: activeStoreName,
             mobile: mobile,
@@ -427,6 +466,7 @@
 
         localStorage.setItem("fitin60_partner_store", activeStoreName);
         localStorage.setItem("fitin60_partner_area", activeStoreArea);
+        localStorage.setItem("fitin60_partner_mobile", activeStoreMobile);
 
         document.getElementById("bannerStoreName").innerText = activeStoreName;
         document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
@@ -434,11 +474,12 @@
         showQuickToast("✓ Welcome back, " + activeStoreName);
         window.location.reload();
       }).catch(function(err) {
-        // Fallback safety if database lookup fails
         activeStoreName = "Sai Fashions";
         activeStoreArea = "Near TV tower • Mobile: " + mobile;
+        activeStoreMobile = mobile;
         localStorage.setItem("fitin60_partner_store", activeStoreName);
         localStorage.setItem("fitin60_partner_area", activeStoreArea);
+        localStorage.setItem("fitin60_partner_mobile", activeStoreMobile);
         document.getElementById("partnerAuthModal").classList.add("hidden");
         window.location.reload();
       });
@@ -466,8 +507,10 @@
       db.ref("boutiques/" + mobile).set(storeData).then(function() {
         activeStoreName = name;
         activeStoreArea = storeData.area;
+        activeStoreMobile = mobile;
         localStorage.setItem("fitin60_partner_store", activeStoreName);
         localStorage.setItem("fitin60_partner_area", activeStoreArea);
+        localStorage.setItem("fitin60_partner_mobile", activeStoreMobile);
 
         document.getElementById("partnerAuthModal").classList.add("hidden");
         showQuickToast("✓ Store Registered Successfully!");
@@ -492,21 +535,17 @@
           db.ref("boutiques/" + mobile).update({ pin: newPin }).then(function() {
             activeStoreName = store.name;
             activeStoreArea = store.area || ("Mobile: " + mobile);
+            activeStoreMobile = mobile;
             localStorage.setItem("fitin60_partner_store", activeStoreName);
             localStorage.setItem("fitin60_partner_area", activeStoreArea);
+            localStorage.setItem("fitin60_partner_mobile", activeStoreMobile);
 
             document.getElementById("partnerAuthModal").classList.add("hidden");
             showQuickToast("✓ PIN Reset Successful! Logged in.");
             window.location.reload();
           });
         } else {
-          activeStoreName = "Sai Fashions";
-          activeStoreArea = "Near TV tower • Mobile: " + mobile;
-          localStorage.setItem("fitin60_partner_store", activeStoreName);
-          localStorage.setItem("fitin60_partner_area", activeStoreArea);
-          document.getElementById("partnerAuthModal").classList.add("hidden");
-          showQuickToast("✓ Logged in successfully.");
-          window.location.reload();
+          alert("❌ Mobile Number not found in database!");
         }
       });
     };
@@ -598,8 +637,8 @@
     window.updateStoreStatus = function(status) {
       var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed / Not Accepting Orders";
       showQuickToast("✓ Store status: " + label);
-      if (activeStoreName) {
-        db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).update({ status: status });
+      if (activeStoreMobile) {
+        db.ref("boutiques/" + activeStoreMobile).update({ status: status });
       }
     };
 
@@ -856,10 +895,12 @@
             }
           });
           db.ref("boutique_products").update(updates).then(function() {
-            db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).remove();
+            var key = activeStoreMobile || activeStoreName.replace(/[^a-zA-Z0-9]/g, "_");
+            db.ref("boutiques/" + key).remove();
             alert("✓ Store deleted permanently.");
             localStorage.removeItem("fitin60_partner_store");
             localStorage.removeItem("fitin60_partner_area");
+            localStorage.removeItem("fitin60_partner_mobile");
             window.location.reload();
           });
         });
@@ -870,8 +911,10 @@
       if (confirm("Are you sure you want to logout?")) {
         localStorage.removeItem("fitin60_partner_store");
         localStorage.removeItem("fitin60_partner_area");
-        document.getElementById("partnerAuthModal").classList.remove("hidden");
+        localStorage.removeItem("fitin60_partner_mobile");
+        document.getElementById("partnerAuthModal").classList.add("hidden");
         showQuickToast("✓ Logged out successfully");
+        window.location.reload();
       }
     };
   </script>
