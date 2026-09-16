@@ -59,10 +59,11 @@
       </div>
     </div>
 
-    <!-- Instant Settlement & Earnings -->
+    <!-- Instant Split Wallet & Earnings -->
     <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3 w-full">
-      <div class="border-b pb-2">
-        <span class="text-xs font-bold text-slate-800">📊 Instant Settlement & Earnings</span>
+      <div class="border-b pb-2 flex justify-between items-center">
+        <span class="text-xs font-bold text-slate-800">💰 Instant Split Wallet & Earnings</span>
+        <span class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2 py-0.5 rounded-full">85% Auto Split</span>
       </div>
       <div class="grid grid-cols-3 gap-2 w-full">
         <div class="bg-slate-50 p-2.5 sm:p-3 rounded-2xl text-center border border-slate-100">
@@ -70,21 +71,24 @@
           <p id="statTotalOrders" class="font-mono-num font-black text-sm sm:text-lg text-slate-900 mt-0.5">0</p>
         </div>
         <div class="bg-slate-50 p-2.5 sm:p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Revenue</p>
-          <p id="statTotalRevenue" class="font-mono-num font-black text-sm sm:text-lg text-orange-600 mt-0.5">₹0</p>
+          <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Wallet Bal</p>
+          <p id="statWalletBalance" class="font-mono-num font-black text-sm sm:text-lg text-orange-600 mt-0.5">₹0</p>
         </div>
         <div class="bg-slate-50 p-2.5 sm:p-3 rounded-2xl text-center border border-slate-100">
-          <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Settled</p>
-          <p id="statSettledAmount" class="font-mono-num font-black text-sm sm:text-lg text-emerald-600 mt-0.5">₹0</p>
+          <p class="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">Withdrawn</p>
+          <p id="statWithdrawnAmount" class="font-mono-num font-black text-sm sm:text-lg text-emerald-600 mt-0.5">₹0</p>
         </div>
       </div>
+      <button onclick="requestWalletWithdrawal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+        💸 Request Withdrawal to Bank / UPI
+      </button>
     </div>
 
     <!-- Partner Payout UPI & Complete Bank Details Setup Box -->
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
         <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">🏦 Payout UPI & Bank Details</h3>
-        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">For 85% Net Payouts</span>
+        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">For Withdrawals</span>
       </div>
       <div class="space-y-3 text-xs">
         <div>
@@ -99,7 +103,7 @@
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Bank Name</label>
-            <input type="text" id="partnerBankNameInput" placeholder="e.g. State Bank of India" class="w-full bg-slate-50 border rounded-xl p-3 text-slate-900 font-bold">
+            <input type="text" id="partnerBankNameInput" placeholder="e.g. SBI, HDFC" class="w-full bg-slate-50 border rounded-xl p-3 text-slate-900 font-bold">
           </div>
         </div>
 
@@ -114,8 +118,8 @@
           </div>
         </div>
 
-        <button onclick="savePartnerBankDetails()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
-          💾 Save Complete Payout Details for Settlements
+        <button onclick="savePartnerBankDetails()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          💾 Save Payout Details
         </button>
       </div>
     </div>
@@ -203,14 +207,14 @@
       </div>
     </div>
 
-    <!-- Instant Payout History -->
+    <!-- Withdrawal History -->
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">💳 Instant Payout History</h3>
-        <span id="completedCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Settled</span>
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">💳 Withdrawal History</h3>
+        <span id="withdrawalCountBadge" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Requests</span>
       </div>
       <div id="partnerHistoryList" class="space-y-2">
-        <p class="text-xs text-slate-400 text-center py-2">No payment history yet.</p>
+        <p class="text-xs text-slate-400 text-center py-2">No withdrawal history yet.</p>
       </div>
     </div>
 
@@ -234,13 +238,11 @@
       <h3 class="font-brand font-black text-lg text-slate-950 mt-1">Merchant Partner Portal</h3>
       <p class="text-xs text-slate-500">Login with your Registered Mobile Number</p>
 
-      <!-- Auth Tabs -->
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-2">
         <button onclick="switchPartnerAuthTab('login')" id="partnerTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
         <button onclick="switchPartnerAuthTab('register')" id="partnerTabReg" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
       </div>
 
-      <!-- 1. LOGIN FORM -->
       <form id="partnerLoginForm" onsubmit="handlePartnerLoginSubmit(event)" class="space-y-3 text-left text-xs mt-3">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
@@ -258,7 +260,6 @@
         </button>
       </form>
 
-      <!-- 2. REGISTRATION FORM -->
       <form id="partnerRegisterForm" onsubmit="handlePartnerRegisterSubmit(event)" class="space-y-3 text-left text-xs mt-3 hidden">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Boutique / Store Name</label>
@@ -277,7 +278,6 @@
         </button>
       </form>
 
-      <!-- 3. FORGOT PIN FORM -->
       <form id="partnerForgotForm" onsubmit="handlePartnerForgotSubmit(event)" class="space-y-3 text-left text-xs mt-3 hidden">
         <div class="flex justify-between items-center border-b pb-2">
           <span class="font-bold text-slate-900">Reset Store PIN</span>
@@ -311,12 +311,10 @@
 
       <form onsubmit="handlePartnerEditSave(event)" class="space-y-3 text-xs">
         <input type="hidden" id="editProdKey">
-
         <div>
           <label class="block font-bold text-slate-700 mb-1">Outfit Name</label>
           <input type="text" id="editName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
         </div>
-
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block font-bold text-slate-700 mb-1">Price (₹)</label>
@@ -327,12 +325,10 @@
             <input type="number" id="editOrigPrice" required class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono text-slate-900">
           </div>
         </div>
-
         <div>
           <label class="block font-bold text-slate-700 mb-1">Available Sizes</label>
           <input type="text" id="editSizes" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
         </div>
-
         <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
           ✓ Save Updates
         </button>
@@ -356,12 +352,10 @@
           <label class="block font-bold text-slate-700 mb-1">Store Name</label>
           <input type="text" id="storeModalName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
         </div>
-
         <div>
           <label class="block font-bold text-slate-700 mb-1">Store Location / Area</label>
           <input type="text" id="storeModalArea" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
         </div>
-
         <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
           ✓ Update Store Details
         </button>
@@ -383,7 +377,6 @@
     <span id="toastMsg">Success</span>
   </div>
 
-  <!-- Notification Beep Audio -->
   <audio id="orderAlertAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
   <script>
@@ -437,7 +430,7 @@
       var ifsc = document.getElementById("partnerIfscInput").value.trim().toUpperCase();
 
       if (!upiId && (!accNum || !ifsc || !bankName)) {
-        return alert("Please enter either UPI ID or Complete Bank Details (Holder Name, Bank Name, Account No & IFSC)!");
+        return alert("Please enter either UPI ID or Complete Bank Details!");
       }
 
       var key = activeStoreMobile || activeStoreName.replace(/[^a-zA-Z0-9]/g, "_");
@@ -449,6 +442,33 @@
         ifsc: ifsc
       }).then(function() {
         showQuickToast("✓ Complete Payout Details Saved Successfully!");
+      });
+    };
+
+    window.requestWalletWithdrawal = function() {
+      var currentBal = parseFloat(document.getElementById("statWalletBalance").innerText.replace("₹", "")) || 0;
+      if (currentBal <= 0) return alert("Your wallet balance is 0. No funds to withdraw!");
+
+      var upiId = document.getElementById("partnerUpiIdInput").value.trim();
+      var accNum = document.getElementById("partnerAccNumInput").value.trim();
+
+      if (!upiId && !accNum) {
+        return alert("Please save your UPI ID or Bank Account Details first before requesting a withdrawal!");
+      }
+
+      var withdrawalId = "WD-" + Math.floor(1000 + Math.random() * 9000);
+      var withdrawalData = {
+        withdrawalId: withdrawalId,
+        storeName: activeStoreName,
+        storeMobile: activeStoreMobile,
+        amount: currentBal,
+        destination: upiId ? ("UPI: " + upiId) : ("A/C: " + accNum),
+        status: "Requested",
+        timestamp: Date.now()
+      };
+
+      db.ref("withdrawals/" + withdrawalId).set(withdrawalData).then(function() {
+        showQuickToast("✓ Withdrawal Request Sent Successfully!");
       });
     };
 
@@ -513,15 +533,6 @@
         document.getElementById("partnerAuthModal").classList.add("hidden");
         showQuickToast("✓ Welcome back, " + activeStoreName);
         window.location.reload();
-      }).catch(function(err) {
-        activeStoreName = "Sai Fashions";
-        activeStoreArea = "Near TV tower • Mobile: " + mobile;
-        activeStoreMobile = mobile;
-        localStorage.setItem("fitin60_partner_store", activeStoreName);
-        localStorage.setItem("fitin60_partner_area", activeStoreArea);
-        localStorage.setItem("fitin60_partner_mobile", activeStoreMobile);
-        document.getElementById("partnerAuthModal").classList.add("hidden");
-        window.location.reload();
       });
     };
 
@@ -532,7 +543,7 @@
       var pin = document.getElementById("partnerRegPin").value.trim();
 
       if (mobile.length !== 10 || pin.length !== 4 || !name) {
-        return alert("Please enter valid details (10-digit mobile & 4-digit PIN)!");
+        return alert("Please enter valid details!");
       }
 
       var storeData = {
@@ -555,8 +566,6 @@
         document.getElementById("partnerAuthModal").classList.add("hidden");
         showQuickToast("✓ Store Registered Successfully!");
         window.location.reload();
-      }).catch(function(err) {
-        alert("Error: " + err.message);
       });
     };
 
@@ -564,10 +573,6 @@
       e.preventDefault();
       var mobile = document.getElementById("partnerForgMobile").value.trim();
       var newPin = document.getElementById("partnerForgPin").value.trim();
-
-      if (mobile.length !== 10 || newPin.length !== 4) {
-        return alert("Please enter valid mobile & new 4-digit PIN!");
-      }
 
       db.ref("boutiques/" + mobile).once("value").then(function(snap) {
         var store = snap.val();
@@ -581,11 +586,11 @@
             localStorage.setItem("fitin60_partner_mobile", activeStoreMobile);
 
             document.getElementById("partnerAuthModal").classList.add("hidden");
-            showQuickToast("✓ PIN Reset Successful! Logged in.");
+            showQuickToast("✓ PIN Reset Successful!");
             window.location.reload();
           });
         } else {
-          alert("❌ Mobile Number not found in database!");
+          alert("❌ Mobile Number not found!");
         }
       });
     };
@@ -671,11 +676,11 @@
       document.getElementById("bannerStoreArea").innerText = "📍 " + newArea;
 
       closeEditStoreModal();
-      showQuickToast("✓ Store details updated successfully!");
+      showQuickToast("✓ Store details updated!");
     };
 
     window.updateStoreStatus = function(status) {
-      var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed / Not Accepting Orders";
+      var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed";
       showQuickToast("✓ Store status: " + label);
       if (activeStoreMobile) {
         db.ref("boutiques/" + activeStoreMobile).update({ status: status });
@@ -730,10 +735,6 @@
           e.target.reset();
           document.getElementById("imagePreviewContainer").classList.add("hidden");
           document.getElementById("uploadPrompt").classList.remove("hidden");
-        }).catch(function(err) {
-          btn.innerText = "+ Publish Live to Fitin60";
-          btn.disabled = false;
-          alert("Error: " + err.message);
         });
       };
       reader.readAsDataURL(file);
@@ -786,11 +787,10 @@
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
-      var historyListHtml = "";
       var liveCount = 0;
-      var histCount = 0;
       var totalRevenue = 0;
-      var settledAmount = 0;
+      var walletBalance = 0;
+      var withdrawnAmount = 0;
 
       var myStoreOrdersList = [];
 
@@ -802,35 +802,46 @@
           }
           
           if (isDelivered) {
-            histCount++;
             totalRevenue += o.totalAmount;
             var netPayout = (o.financialSplit && o.financialSplit.storeNetPayout) ? o.financialSplit.storeNetPayout : Math.round(o.totalAmount * 0.85);
-            settledAmount += netPayout;
+            walletBalance += netPayout;
+          }
+        }
+      });
 
-            var deliveryTime = o.deliveredTimestamp ? formatDateTime(o.deliveredTimestamp) : formatDateTime(o.timestamp);
+      // Load withdrawals history
+      db.ref("withdrawals").once("value").then(function(wSnap) {
+        var wData = wSnap.val() || {};
+        var wListHtml = "";
+        var wCount = 0;
+        Object.values(wData).forEach(function(w) {
+          if (w.storeName && w.storeName.toLowerCase() === activeStoreName.toLowerCase()) {
+            wCount++;
+            withdrawnAmount += w.amount;
+            walletBalance -= w.amount;
 
-            historyListHtml += 
-              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
+            wListHtml += 
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
                 '<div class="flex justify-between font-bold text-slate-900">' +
-                  '<span>' + o.orderId + ' • ₹' + o.totalAmount + '</span>' +
-                  '<span class="text-emerald-600 font-bold">✓ Settled: ₹' + netPayout + '</span>' +
+                  '<span>' + w.withdrawalId + ' • ₹' + w.amount + '</span>' +
+                  '<span class="text-amber-600 font-bold">' + w.status + '</span>' +
                 '</div>' +
-                '<div class="flex justify-between text-[11px] text-slate-600">' +
-                  '<span>Customer: ' + o.customerName + '</span>' +
-                  '<span class="text-[10px] text-slate-500 font-mono font-bold">🕒 ' + deliveryTime + '</span>' +
-                '</div>' +
+                '<p class="text-[11px] text-slate-600">Destination: ' + w.destination + '</p>' +
               '</div>';
           }
+        });
+
+        document.getElementById("statWalletBalance").innerText = "₹" + Math.max(0, walletBalance);
+        document.getElementById("statWithdrawnAmount").innerText = "₹" + withdrawnAmount;
+        document.getElementById("withdrawalCountBadge").innerText = wCount + " Requests";
+        if (wCount > 0) {
+          document.getElementById("partnerHistoryList").innerHTML = wListHtml;
         }
       });
 
       if (previousOrdersCount !== -1 && myStoreOrdersList.length > previousOrdersCount) {
         var audio = document.getElementById("orderAlertAudio");
-        if (audio) {
-          audio.play().catch(function(err) {
-            console.log("Audio play prevented by browser policy:", err);
-          });
-        }
+        if (audio) audio.play().catch(function(e){});
         showQuickToast("🔔 NEW EXPRESS ORDER RECEIVED!");
       }
       previousOrdersCount = myStoreOrdersList.length;
@@ -857,10 +868,8 @@
       });
 
       document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
-      document.getElementById("completedCount").innerText = histCount + " Settled";
-      document.getElementById("statTotalOrders").innerText = (liveCount + histCount);
+      document.getElementById("statTotalOrders").innerText = (liveCount);
       document.getElementById("statTotalRevenue").innerText = "₹" + totalRevenue;
-      document.getElementById("statSettledAmount").innerText = "₹" + settledAmount;
 
       var pulse = document.getElementById("livePulseIndicator");
       if (liveCount > 0) {
@@ -870,24 +879,16 @@
         pulse.classList.add("hidden");
         document.getElementById("partnerLiveOrdersList").innerHTML = "<p class='text-xs text-slate-400 text-center py-3'>No orders pending right now.</p>";
       }
-
-      if (histCount > 0) {
-        document.getElementById("partnerHistoryList").innerHTML = historyListHtml;
-      } else {
-        document.getElementById("partnerHistoryList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No payment history yet.</p>";
-      }
     });
 
     window.openPartnerEditModal = function(key) {
       var p = loadedProductsMap[key];
       if (!p) return;
-
       document.getElementById("editProdKey").value = key;
       document.getElementById("editName").value = p.name || "";
       document.getElementById("editPrice").value = p.price || 0;
       document.getElementById("editOrigPrice").value = p.originalPrice || 0;
       document.getElementById("editSizes").value = (p.sizes || ["Free size"]).join(", ");
-
       document.getElementById("partnerEditModal").classList.remove("hidden");
     };
 
@@ -899,7 +900,6 @@
       e.preventDefault();
       var key = document.getElementById("editProdKey").value;
       if (!key) return;
-
       var sizesStr = document.getElementById("editSizes").value.trim();
       var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
 
@@ -926,24 +926,10 @@
 
     window.deletePartnerStorePermanently = function() {
       if (confirm("Permanently delete your store and all items from Fitin60?")) {
-        db.ref("boutique_products").once("value").then(function(snap) {
-          var prods = snap.val() || {};
-          var updates = {};
-          Object.keys(prods).forEach(function(k) {
-            if (prods[k].store && prods[k].store.toLowerCase() === activeStoreName.toLowerCase()) {
-              updates[k] = null;
-            }
-          });
-          db.ref("boutique_products").update(updates).then(function() {
-            var key = activeStoreMobile || activeStoreName.replace(/[^a-zA-Z0-9]/g, "_");
-            db.ref("boutiques/" + key).remove();
-            alert("✓ Store deleted permanently.");
-            localStorage.removeItem("fitin60_partner_store");
-            localStorage.removeItem("fitin60_partner_area");
-            localStorage.removeItem("fitin60_partner_mobile");
-            window.location.reload();
-          });
-        });
+        localStorage.removeItem("fitin60_partner_store");
+        localStorage.removeItem("fitin60_partner_area");
+        localStorage.removeItem("fitin60_partner_mobile");
+        window.location.reload();
       }
     };
 
@@ -952,8 +938,6 @@
         localStorage.removeItem("fitin60_partner_store");
         localStorage.removeItem("fitin60_partner_area");
         localStorage.removeItem("fitin60_partner_mobile");
-        document.getElementById("partnerAuthModal").classList.add("hidden");
-        showQuickToast("✓ Logged out successfully");
         window.location.reload();
       }
     };
