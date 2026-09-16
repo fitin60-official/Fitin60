@@ -316,7 +316,8 @@
 
     var currentRiderName = localStorage.getItem("fitin60_rider_name") || "";
     var currentRiderBike = localStorage.getItem("fitin60_rider_bike") || "AP 02 AB 1234";
-    var currentRiderMobile = localStorage.getItem("fitin60_rider_mobile") || "";
+    var currentRiderMobile = localStorage.getItem("fitin60_rider_mobile"] || "";
+    var gpsWatchId = null;
 
     if (!currentRiderName) {
       document.getElementById("riderLoginModal").classList.remove("hidden");
@@ -324,37 +325,50 @@
       document.getElementById("displayRiderName").innerText = currentRiderName;
       document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
       loadRiderBankDetails();
-      startLiveGpsTracking();
+      checkAndToggleGpsTracking();
     }
 
-    // Live GPS Location Tracking
-    function startLiveGpsTracking() {
-      if (!navigator.geolocation) {
-        document.getElementById("gpsStatusText").innerText = "📍 GPS Not Supported";
-        return;
-      }
+    // Conditional Live GPS Location Tracking based on Duty Status
+    function checkAndToggleGpsTracking() {
+      var isDutyOn = localStorage.getItem("fitin60_rider_duty") !== "off";
+      var mobileKey = currentRiderMobile || "rider_default";
 
-      navigator.geolocation.watchPosition(function(position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        var mobileKey = currentRiderMobile || "rider_default";
+      if (isDutyOn) {
+        if (!navigator.geolocation) {
+          document.getElementById("gpsStatusText").innerText = "📍 GPS Not Supported";
+          return;
+        }
 
-        db.ref("rider_locations/" + mobileKey).set({
-          riderName: currentRiderName,
-          bike: currentRiderBike,
-          lat: lat,
-          lng: lng,
-          lastUpdated: Date.now()
+        document.getElementById("gpsStatusText").innerText = "📍 GPS Tracking: Active";
+        gpsWatchId = navigator.geolocation.watchPosition(function(position) {
+          var lat = position.coords.latitude;
+          var lng = position.coords.longitude;
+
+          db.ref("rider_locations/" + mobileKey).set({
+            riderName: currentRiderName,
+            bike: currentRiderBike,
+            lat: lat,
+            lng: lng,
+            lastUpdated: Date.now()
+          });
+
+          document.getElementById("gpsStatusText").innerText = "📍 GPS Live: " + lat.toFixed(4) + ", " + lng.toFixed(4);
+        }, function(error) {
+          document.getElementById("gpsStatusText").innerText = "📍 GPS Permission Denied";
+        }, {
+          enableHighAccuracy: true,
+          maximumAge: 10000,
+          timeout: 5000
         });
-
-        document.getElementById("gpsStatusText").innerText = "📍 GPS Live: " + lat.toFixed(4) + ", " + lng.toFixed(4);
-      }, function(error) {
-        document.getElementById("gpsStatusText").innerText = "📍 GPS Permission Denied";
-      }, {
-        enableHighAccuracy: true,
-        maximumAge: 10000,
-        timeout: 5000
-      });
+      } else {
+        if (gpsWatchId !== null) {
+          navigator.geolocation.clearWatch(gpsWatchId);
+          gpsWatchId = null;
+        }
+        // Remove location from database when offline
+        db.ref("rider_locations/" + mobileKey).remove();
+        document.getElementById("gpsStatusText").innerText = "📍 GPS Tracking: Offline (Rides OFF)";
+      }
     }
 
     function loadRiderBankDetails() {
@@ -543,6 +557,8 @@
 
     window.riderLogout = function() {
       if (confirm("Log out of Rider Fleet?")) {
+        var mobileKey = currentRiderMobile || "rider_default";
+        db.ref("rider_locations/" + mobileKey).remove();
         localStorage.removeItem("fitin60_rider_name");
         localStorage.removeItem("fitin60_rider_bike");
         localStorage.removeItem("fitin60_rider_mobile");
@@ -557,6 +573,7 @@
       isRiderDutyOn = !isRiderDutyOn;
       localStorage.setItem("fitin60_rider_duty", isRiderDutyOn ? "on" : "off");
       updateDutyUI();
+      checkAndToggleGpsTracking();
       showQuickToast(isRiderDutyOn ? "🟢 You are Online (Rides ON)" : "🔴 You are Offline (Rides OFF)");
     }
 
@@ -603,6 +620,8 @@
 
     window.deleteRiderAccountPermanently = function() {
       if (confirm("⚠️ Permanently delete your rider account?")) {
+        var mobileKey = currentRiderMobile || "rider_default";
+        db.ref("rider_locations/" + mobileKey).remove();
         localStorage.clear();
         alert("✓ Rider account removed.");
         window.location.reload();
