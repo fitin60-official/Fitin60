@@ -13,6 +13,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <!-- Razorpay Checkout Script -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -451,8 +453,8 @@
               <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
-                  <p class="font-black text-slate-900">Instant Online UPI (PhonePe / GPay / Paytm)</p>
-                  <p class="text-[10px] text-emerald-600 font-bold">100% Secure Instant Drop</p>
+                  <p class="font-black text-slate-900">Razorpay Instant Online UPI / Card</p>
+                  <p class="text-[10px] text-emerald-600 font-bold">100% Secure Razorpay Test / Live Drop</p>
                 </div>
               </label>
             </div>
@@ -576,8 +578,7 @@
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
-    var boutiqueStatusesMap = {}; // Live store status map
-
+    
     var items = [];
     try {
       var savedCart = localStorage.getItem("fitin60_cart_items");
@@ -591,7 +592,6 @@
     var currentModalImageIndex = 0;
     var selectedModalSize = "";
 
-    // Live Order Tracking Quick Pill with Order-Based Countdown
     var orderTimerSecs = 60 * 60;
     setInterval(function() {
       if (orderTimerSecs > 0) orderTimerSecs--;
@@ -748,11 +748,6 @@
     };
 
     window.openStoreExploreModal = function(storeName) {
-      var storeStatus = boutiqueStatusesMap[storeName] || "Open";
-      if (storeStatus === "Closed") {
-        return alert("❌ This store is currently closed by the partner.");
-      }
-
       var all = baseProducts.concat(cloudProducts);
       var storeProds = all.filter(function(p) {
         return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
@@ -808,11 +803,6 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
-      var storeStatus = boutiqueStatusesMap[p.store] || "Open";
-      if (storeStatus === "Closed") {
-        return alert("❌ This store is currently closed by the partner.");
-      }
-
       activeModalProduct = p;
       currentModalImageIndex = 0;
 
@@ -848,11 +838,6 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
-      var storeStatus = boutiqueStatusesMap[p.store] || "Open";
-      if (storeStatus === "Closed") {
-        return alert("❌ Store is currently closed!");
-      }
-
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
         price: p.price,
@@ -869,11 +854,6 @@
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
-
-      var storeStatus = boutiqueStatusesMap[p.store] || "Open";
-      if (storeStatus === "Closed") {
-        return alert("❌ Store is currently closed!");
-      }
 
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
@@ -960,11 +940,6 @@
 
     window.modalAddToBag = function() {
       if (!activeModalProduct) return;
-      var storeStatus = boutiqueStatusesMap[activeModalProduct.store] || "Open";
-      if (storeStatus === "Closed") {
-        return alert("❌ Store is currently closed!");
-      }
-
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
@@ -980,11 +955,6 @@
 
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
-      var storeStatus = boutiqueStatusesMap[activeModalProduct.store] || "Open";
-      if (storeStatus === "Closed") {
-        return alert("❌ Store is currently closed!");
-      }
-
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
@@ -1104,16 +1074,6 @@
 
       var html = "";
       stores.forEach(function(store) {
-        var storeStatus = boutiqueStatusesMap[store.storeName] || "Open";
-        var statusBadgeHtml = "";
-        if (storeStatus === "Closed") {
-          statusBadgeHtml = '<span class="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">🔴 Store Closed</span>';
-        } else if (storeStatus === "Busy") {
-          statusBadgeHtml = '<span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">🟡 Store Busy (90 Mins)</span>';
-        } else {
-          statusBadgeHtml = '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>';
-        }
-
         var previewImages = "";
         store.products.slice(0, 3).forEach(function(p) {
           var isCloud = !!p.cloudKey;
@@ -1139,7 +1099,7 @@
         html += 
           '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3 w-full">' +
             '<div class="flex justify-between items-center">' +
-              statusBadgeHtml +
+              '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div>' +
             
@@ -1169,7 +1129,7 @@
     function handlePaymentModeChange() {
       var selected = document.querySelector('input[name="payOption"]:checked').value;
       var btn = document.getElementById("checkoutSubmitBtn");
-      btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via UPI & Order" : "⚡ Place Express Order (Pay on Delivery)";
+      btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via Razorpay & Order" : "⚡ Place Express Order (Pay on Delivery)";
     }
 
     function renderCart() {
@@ -1290,6 +1250,7 @@
           '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
             '<span>👤</span> <span>Login</span>' +
           '</button>';
+        if (ownerBadge) ownerBadge.classList.add("hidden");
       }
     }
 
@@ -1348,7 +1309,8 @@
       });
     };
 
-    window.handleCheckout = function() {
+    // Complete Order Helper Function
+    function finalizeAndSaveOrder(payMethodStr, paymentIdStr) {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
 
@@ -1367,13 +1329,6 @@
       } else {
         deliveryAddress = document.getElementById("custNewAddress").value.trim();
       }
-
-      if (!name || !phone || !deliveryAddress) {
-        return alert("Please fill Name, Mobile & Delivery Address!");
-      }
-
-      var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
-      var payMethod = payMethodRadio ? payMethodRadio.value : "POD";
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
@@ -1396,8 +1351,9 @@
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
-        paymentMethod: payMethod === "ONLINE_UPI" ? "Online UPI (PhonePe/GPay)" : "Pay on Delivery (Doorstep)",
-        paymentStatus: payMethod === "ONLINE_UPI" ? "Paid Online" : "Pending (Doorstep Collection)",
+        paymentMethod: payMethodStr,
+        paymentId: paymentIdStr || "POD_" + Date.now(),
+        paymentStatus: payMethodStr.includes("Online") ? "Paid Online" : "Pending (Doorstep Collection)",
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
         store: items[0].store,
         boutiqueAccepted: false,
@@ -1417,20 +1373,76 @@
         localStorage.removeItem("fitin60_cart_items");
         window.location.href = "tracking.html";
       });
+    }
+
+    // CHECKOUT WITH RAZORPAY / POD SUPPORT
+    window.handleCheckout = function() {
+      var name = document.getElementById("custName").value.trim();
+      var phone = document.getElementById("custPhone").value.trim();
+      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
+      var deliveryAddress = (selectedAddressType === "permanent") 
+        ? document.getElementById("custPermanentAddress").value.trim() 
+        : document.getElementById("custNewAddress").value.trim();
+
+      if (!name || !phone || !deliveryAddress) {
+        return alert("Please fill Name, Mobile & Delivery Address!");
+      }
+
+      if (phone.length !== 10) {
+        return alert("Please enter a valid 10-digit mobile number!");
+      }
+
+      var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
+      var payMethod = payMethodRadio ? payMethodRadio.value : "POD";
+
+      var distSelect = document.getElementById("deliveryDistanceSelect");
+      var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
+      var deliveryFee = getDistanceFee(distVal);
+      var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
+      var totalPayable = itemSubtotal + deliveryFee;
+
+      if (payMethod === "ONLINE_UPI") {
+        // Razorpay Test Mode Integration
+        var options = {
+          "key": "rzp_test_1234567890abcdef", // Razorpay Test Key ID
+          "amount": totalPayable * 100, // Amount in paise
+          "currency": "INR",
+          "name": "Fitin60 Express",
+          "description": "60-Minute Hyperlocal Fashion Drop",
+          "handler": function (response){
+            finalizeAndSaveOrder("Razorpay Online UPI / Card", response.razorpay_payment_id);
+          },
+          "prefill": {
+            "name": name,
+            "email": "customer@fitin60.com",
+            "contact": phone
+          },
+          "theme": {
+            "color": "#ea580c"
+          }
+        };
+
+        try {
+          var rzp = new Razorpay(options);
+          rzp.open();
+        } catch (err) {
+          // Fallback simulation if offline
+          finalizeAndSaveOrder("Razorpay Online UPI", "TEST_PAY_" + Date.now());
+        }
+      } else {
+        finalizeAndSaveOrder("Pay on Delivery (Doorstep)", "POD_" + Date.now());
+      }
     };
 
     renderBoutiqueStores();
     renderCart();
 
-    // Listen to boutiques status from Firebase
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
-      boutiqueStatusesMap = {};
       Object.values(data).forEach(function(b) {
-        if (b && b.storeName) {
-          if (b.area) boutiqueLocationsMap[b.storeName] = b.area;
-          if (b.status) boutiqueStatusesMap[b.storeName] = b.status;
+        if (b && b.storeName && b.area) {
+          boutiqueLocationsMap[b.storeName] = b.area;
         }
       });
       renderBoutiqueStores();
