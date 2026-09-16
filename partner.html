@@ -187,12 +187,12 @@
 
   </main>
 
-  <!-- PARTNER AUTH MODAL (Login, Register & Forgot PIN) -->
+  <!-- PARTNER AUTH MODAL (Phone Number & PIN Login) -->
   <div id="partnerAuthModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 text-center">
       <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🏬</div>
       <h3 class="font-brand font-black text-lg text-slate-950 mt-1">Merchant Partner Portal</h3>
-      <p class="text-xs text-slate-500">Please login or register your boutique store</p>
+      <p class="text-xs text-slate-500">Login with your Registered Mobile Number</p>
 
       <!-- Auth Tabs -->
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-2">
@@ -200,11 +200,11 @@
         <button onclick="switchPartnerAuthTab('register')" id="partnerTabReg" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
       </div>
 
-      <!-- 1. LOGIN FORM (With Forgot PIN Link) -->
+      <!-- 1. LOGIN FORM (Mobile Number & PIN) -->
       <form id="partnerLoginForm" onsubmit="handlePartnerLoginSubmit(event)" class="space-y-3 text-left text-xs mt-3">
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Store Name / Registered Mobile</label>
-          <input type="text" id="partnerLoginName" required placeholder="e.g. Sai Fashions" class="w-full bg-slate-50 border rounded-xl p-3 font-bold">
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
+          <input type="tel" id="partnerLoginMobile" required maxlength="10" placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border rounded-xl p-3 font-mono">
         </div>
         <div>
           <div class="flex justify-between items-center mb-1">
@@ -222,11 +222,11 @@
       <form id="partnerRegisterForm" onsubmit="handlePartnerRegisterSubmit(event)" class="space-y-3 text-left text-xs mt-3 hidden">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Boutique / Store Name</label>
-          <input type="text" id="partnerRegName" required placeholder="e.g. Anu Ram Fashions" class="w-full bg-slate-50 border rounded-xl p-2.5 font-bold">
+          <input type="text" id="partnerRegName" required placeholder="e.g. Sai Fashions" class="w-full bg-slate-50 border rounded-xl p-2.5 font-bold">
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Area / Mobile Location</label>
-          <input type="text" id="partnerRegArea" required placeholder="e.g. Near TV tower • Mobile: 9515552511" class="w-full bg-slate-50 border rounded-xl p-2.5">
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
+          <input type="tel" id="partnerRegMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Create 4-Digit PIN</label>
@@ -244,8 +244,8 @@
           <button type="button" onclick="switchPartnerAuthTab('login')" class="text-[10px] text-blue-600 font-bold hover:underline">← Back to Login</button>
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Registered Store Name</label>
-          <input type="text" id="partnerForgName" required placeholder="e.g. Sai Fashions" class="w-full bg-slate-50 border rounded-xl p-2.5 font-bold">
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Registered Mobile Number</label>
+          <input type="tel" id="partnerForgMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Set New 4-Digit PIN</label>
@@ -360,7 +360,6 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    // Safe retrieval from localStorage preventing 'undefined' string bug
     var rawStore = localStorage.getItem("fitin60_partner_store");
     var rawArea = localStorage.getItem("fitin60_partner_area");
 
@@ -399,12 +398,15 @@
       }
     };
 
+    // Mobile Number Based Login
     window.handlePartnerLoginSubmit = function(e) {
       e.preventDefault();
-      var storeNameInput = document.getElementById("partnerLoginName").value.trim();
+      var mobile = document.getElementById("partnerLoginMobile").value.trim();
       var pin = document.getElementById("partnerLoginPin").value.trim();
 
-      db.ref("boutiques/" + storeNameInput.replace(/[^a-zA-Z0-9]/g, "_")).once("value").then(function(snap) {
+      if (mobile.length !== 10) return alert("Please enter valid 10-digit mobile number!");
+
+      db.ref("boutiques/" + mobile).once("value").then(function(snap) {
         var store = snap.val();
         if (store && String(store.pin) === String(pin)) {
           activeStoreName = store.name;
@@ -418,7 +420,8 @@
           showQuickToast("✓ Welcome back, " + activeStoreName);
           window.location.reload();
         } else {
-          if (storeNameInput.toLowerCase() === "sai fashions") {
+          // Default fallback for quick testing with mobile 9515552511
+          if (mobile === "9515552511") {
             activeStoreName = "Sai Fashions";
             activeStoreArea = "Near TV tower • Mobile: 9515552511";
             localStorage.setItem("fitin60_partner_store", activeStoreName);
@@ -426,7 +429,7 @@
             document.getElementById("partnerAuthModal").classList.add("hidden");
             window.location.reload();
           } else {
-            alert("❌ Incorrect Store Name or PIN!");
+            alert("❌ Invalid Mobile Number or PIN!");
           }
         }
       });
@@ -435,25 +438,25 @@
     window.handlePartnerRegisterSubmit = function(e) {
       e.preventDefault();
       var name = document.getElementById("partnerRegName").value.trim();
-      var area = document.getElementById("partnerRegArea").value.trim();
+      var mobile = document.getElementById("partnerRegMobile").value.trim();
       var pin = document.getElementById("partnerRegPin").value.trim();
 
-      if (!name || !area || pin.length !== 4) {
-        return alert("Please fill all details & 4-digit PIN!");
+      if (mobile.length !== 10 || pin.length !== 4 || !name) {
+        return alert("Please enter valid details (10-digit mobile & 4-digit PIN)!");
       }
 
-      var storeKey = name.replace(/[^a-zA-Z0-9]/g, "_");
       var storeData = {
         name: name,
-        area: area,
+        mobile: mobile,
+        area: "Near TV tower • Mobile: " + mobile,
         pin: pin,
         status: "OPEN",
         registeredAt: Date.now()
       };
 
-      db.ref("boutiques/" + storeKey).set(storeData).then(function() {
+      db.ref("boutiques/" + mobile).set(storeData).then(function() {
         activeStoreName = name;
-        activeStoreArea = area;
+        activeStoreArea = storeData.area;
         localStorage.setItem("fitin60_partner_store", activeStoreName);
         localStorage.setItem("fitin60_partner_area", activeStoreArea);
 
@@ -467,16 +470,19 @@
 
     window.handlePartnerForgotSubmit = function(e) {
       e.preventDefault();
-      var name = document.getElementById("partnerForgName").value.trim();
+      var mobile = document.getElementById("partnerForgMobile").value.trim();
       var newPin = document.getElementById("partnerForgPin").value.trim();
 
-      var storeKey = name.replace(/[^a-zA-Z0-9]/g, "_");
-      db.ref("boutiques/" + storeKey).once("value").then(function(snap) {
+      if (mobile.length !== 10 || newPin.length !== 4) {
+        return alert("Please enter valid mobile & new 4-digit PIN!");
+      }
+
+      db.ref("boutiques/" + mobile).once("value").then(function(snap) {
         var store = snap.val();
         if (store) {
-          db.ref("boutiques/" + storeKey).update({ pin: newPin }).then(function() {
+          db.ref("boutiques/" + mobile).update({ pin: newPin }).then(function() {
             activeStoreName = store.name;
-            activeStoreArea = store.area || "Local Store";
+            activeStoreArea = store.area || ("Mobile: " + mobile);
             localStorage.setItem("fitin60_partner_store", activeStoreName);
             localStorage.setItem("fitin60_partner_area", activeStoreArea);
 
@@ -485,7 +491,7 @@
             window.location.reload();
           });
         } else {
-          alert("❌ Store not found in database!");
+          alert("❌ Mobile Number not found in database!");
         }
       });
     };
