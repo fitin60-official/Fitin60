@@ -25,7 +25,7 @@
 </head>
 <body class="min-h-screen pb-24 antialiased w-full overflow-x-hidden">
 
-  <!-- Header (Mobile Optimized Flex Wrap) -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 h-auto py-2.5 flex flex-wrap items-center justify-between gap-2 shadow-sm w-full">
     <div class="flex items-center gap-1.5 shrink-0">
       <span class="font-brand text-base sm:text-xl font-black text-slate-950">FITIN<span class="text-orange-600">60</span></span>
@@ -486,7 +486,6 @@
       }
     });
 
-    // Listen to orders and handle notification sound & order date/time
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
@@ -528,7 +527,6 @@
         }
       });
 
-      // Notification Sound Trigger on New Order
       if (previousOrdersCount !== -1 && myStoreOrdersList.length > previousOrdersCount) {
         var audio = document.getElementById("orderAlertAudio");
         if (audio) {
@@ -648,9 +646,15 @@
       }
     };
 
+    // Safe Logout Function (Prevents page from closing/crashing)
     window.partnerLogout = function() {
-      localStorage.removeItem("fitin60_owner_session");
-      window.location.href = "index.html";
+      if (confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem("fitin60_owner_session");
+        showQuickToast("✓ Logged out successfully");
+        setTimeout(function() {
+          window.location.href = "index.html";
+        }, 800);
+      }
     };
   </script>
 </body>
