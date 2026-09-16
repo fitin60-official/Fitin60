@@ -124,11 +124,11 @@
       </div>
     </div>
 
-    <!-- Live Store Orders -->
+    <!-- Live Store Orders & Rider Tracking Radar -->
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="flex justify-between items-center border-b pb-2">
         <div class="flex items-center gap-2">
-          <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">Live Store Orders</h3>
+          <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">Live Store Orders & Rider Radar</h3>
           <span id="livePulseIndicator" class="hidden w-2.5 h-2.5 rounded-full bg-orange-500 live-alert-pulse" title="New Order Received!"></span>
         </div>
         <span id="liveOrdersCount" class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-0.5 rounded-full">0 Orders</span>
@@ -687,6 +687,18 @@
       }
     };
 
+    // Store Owner Marks Order as Packaged for Express Delivery
+    window.markOrderPackaged = function(orderId) {
+      var randomOtp = Math.floor(1000 + Math.random() * 9000);
+      db.ref("orders/" + orderId).update({
+        status: "Boutique Packed",
+        deliveryOtp: randomOtp,
+        packagedTimestamp: Date.now()
+      }).then(function() {
+        showQuickToast("✓ Order Packaged & Sent to Rider Radar!");
+      });
+    };
+
     window.handlePartnerUpload = function(e) {
       e.preventDefault();
       var name = document.getElementById("upName").value.trim();
@@ -784,6 +796,7 @@
       }
     });
 
+    // Listen to Orders & Rider Locations for Store Owner
     db.ref("orders").on("value", function(snap) {
       var data = snap.val() || {};
       var liveListHtml = "";
@@ -791,7 +804,6 @@
       var totalRevenue = 0;
       var walletBalance = 0;
       var withdrawnAmount = 0;
-
       var myStoreOrdersList = [];
 
       Object.values(data).forEach(function(o) {
@@ -809,34 +821,38 @@
         }
       });
 
-      // Load withdrawals history
-      db.ref("withdrawals").once("value").then(function(wSnap) {
-        var wData = wSnap.val() || {};
-        var wListHtml = "";
-        var wCount = 0;
-        Object.values(wData).forEach(function(w) {
-          if (w.storeName && w.storeName.toLowerCase() === activeStoreName.toLowerCase()) {
-            wCount++;
-            withdrawnAmount += w.amount;
-            walletBalance -= w.amount;
+      // Fetch Rider Locations for Store Owner to Track Assigned Rider
+      db.ref("rider_locations").once("value").then(function(rLocSnap) {
+        var rLocs = rLocSnap.val() || {};
 
-            wListHtml += 
-              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
-                '<div class="flex justify-between font-bold text-slate-900">' +
-                  '<span>' + w.withdrawalId + ' • ₹' + w.amount + '</span>' +
-                  '<span class="text-amber-600 font-bold">' + w.status + '</span>' +
-                '</div>' +
-                '<p class="text-[11px] text-slate-600">Destination: ' + w.destination + '</p>' +
-              '</div>';
+        db.ref("withdrawals").once("value").then(function(wSnap) {
+          var wData = wSnap.val() || {};
+          var wListHtml = "";
+          var wCount = 0;
+          Object.values(wData).forEach(function(w) {
+            if (w.storeName && w.storeName.toLowerCase() === activeStoreName.toLowerCase()) {
+              wCount++;
+              withdrawnAmount += w.amount;
+              walletBalance -= w.amount;
+
+              wListHtml += 
+                '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+                  '<div class="flex justify-between font-bold text-slate-900">' +
+                    '<span>' + w.withdrawalId + ' • ₹' + w.amount + '</span>' +
+                    '<span class="text-amber-600 font-bold">' + w.status + '</span>' +
+                  '</div>' +
+                  '<p class="text-[11px] text-slate-600">Destination: ' + w.destination + '</p>' +
+                '</div>';
+            }
+          });
+
+          document.getElementById("statWalletBalance").innerText = "₹" + Math.max(0, walletBalance);
+          document.getElementById("statWithdrawnAmount").innerText = "₹" + withdrawnAmount;
+          document.getElementById("withdrawalCountBadge").innerText = wCount + " Requests";
+          if (wCount > 0) {
+            document.getElementById("partnerHistoryList").innerHTML = wListHtml;
           }
         });
-
-        document.getElementById("statWalletBalance").innerText = "₹" + Math.max(0, walletBalance);
-        document.getElementById("statWithdrawnAmount").innerText = "₹" + withdrawnAmount;
-        document.getElementById("withdrawalCountBadge").innerText = wCount + " Requests";
-        if (wCount > 0) {
-          document.getElementById("partnerHistoryList").innerHTML = wListHtml;
-        }
       });
 
       if (previousOrdersCount !== -1 && myStoreOrdersList.length > previousOrdersCount) {
@@ -850,6 +866,12 @@
 
       myStoreOrdersList.forEach(function(o) {
         var orderDateTime = formatDateTime(o.timestamp);
+        var statusBadge = o.status || "Pending";
+        var isPacked = (statusBadge === "Boutique Packed" || statusBadge === "Out for Delivery" || statusBadge === "Delivered");
+
+        // Find assigned rider location if available
+        var assignedRiderInfo = o.riderName ? o.riderName : "Looking for nearby rider...";
+
         liveListHtml += 
           '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-2">' +
             '<div class="flex justify-between items-center font-bold text-slate-900">' +
@@ -860,16 +882,22 @@
               '<span class="truncate max-w-[180px]">📍 ' + o.customerAddress + '</span>' +
               '<a href="tel:' + o.customerPhone + '" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-1 rounded-lg border border-emerald-200 shrink-0">📞 Call</a>' +
             '</div>' +
-            '<div class="flex justify-between text-[10px] text-slate-500 border-t pt-1.5">' +
-              '<span class="text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded font-bold">🕒 ' + orderDateTime + '</span>' +
-              '<span class="text-emerald-600 font-bold">' + o.paymentMethod + '</span>' +
+            '<div class="bg-white p-2 rounded-lg border border-slate-200 space-y-1">' +
+              '<p class="text-[10px] text-slate-700 font-bold">🏍️ Rider Status: <span class="text-orange-600">' + assignedRiderInfo + '</span></p>' +
+              '<p class="text-[10px] text-slate-500 font-mono">📦 Status: <span class="text-emerald-600 font-bold">' + statusBadge + '</span></p>' +
+            '</div>' +
+            '<div class="flex items-center justify-between border-t pt-2">' +
+              '<span class="text-orange-700 bg-orange-50 px-1.5 py-0.5 rounded font-bold text-[10px]">🕒 ' + orderDateTime + '</span>' +
+              (!isPacked ? 
+                '<button onclick="markOrderPackaged(\'' + o.orderId + '\')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-3 py-1.5 rounded-xl text-[10px] uppercase shadow cursor-pointer">📦 Packaged & Call Rider</button>' :
+                '<span class="text-emerald-700 bg-emerald-50 px-2 py-1 rounded font-bold text-[10px]">✓ Packaged & Dispatched</span>'
+              ) +
             '</div>' +
           '</div>';
       });
 
       document.getElementById("liveOrdersCount").innerText = liveCount + " Orders";
-      document.getElementById("statTotalOrders").innerText = (liveCount);
-      document.getElementById("statTotalRevenue").innerText = "₹" + totalRevenue;
+      document.getElementById("statTotalOrders").innerText = liveCount;
 
       var pulse = document.getElementById("livePulseIndicator");
       if (liveCount > 0) {
