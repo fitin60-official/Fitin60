@@ -578,6 +578,7 @@
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
+    var boutiquesStatusMap = {}; // Added store status map
     
     var items = [];
     try {
@@ -754,8 +755,10 @@
       });
 
       var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
+      var storeStatus = boutiquesStatusMap[storeName.trim().toLowerCase()] || "OPEN";
+      var isStoreClosed = (storeStatus === "CLOSED");
 
-      document.getElementById("exploreStoreName").innerText = storeName;
+      document.getElementById("exploreStoreName").innerText = storeName + (isStoreClosed ? " (CLOSED)" : "");
       document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
       document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
 
@@ -765,8 +768,11 @@
       storeProds.forEach(function(p) {
         var isCloud = !!p.cloudKey;
         var targetId = p.id || p.cloudKey;
+        var inStock = (p.inStock !== false && !isStoreClosed);
+
         html += 
-          '<div class="relative bg-white border border-slate-200 rounded-2xl p-3 shadow-sm transition space-y-2 flex flex-col justify-between">' +
+          '<div class="relative bg-white border border-slate-200 rounded-2xl p-3 shadow-sm transition space-y-2 flex flex-col justify-between overflow-hidden">' +
+            (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[1px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-2.5 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
             (isOwnerActive && isCloud ? 
               '<div class="absolute top-2 right-2 flex gap-1 z-20" onclick="event.stopPropagation();">' +
                 '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-lg text-xs shadow-md cursor-pointer" title="Edit Outfit">✏️</button>' +
@@ -774,7 +780,7 @@
               '</div>' : '') +
             '<div class="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
               '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">' +
-              '<span class="absolute top-2 left-2 bg-slate-950/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">⚡ 60-Min</span>' +
+              '<span class="absolute top-1 left-1 bg-slate-950/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">⚡ 60-Min</span>' +
             '</div>' +
             '<div>' +
               '<p class="font-bold text-slate-900 text-xs sm:text-sm truncate cursor-pointer hover:text-orange-600" onclick="openProductDetailModal(\'' + targetId + '\')">' + p.name + '</p>' +
@@ -784,8 +790,8 @@
               '</div>' +
             '</div>' +
             '<div class="grid grid-cols-2 gap-1.5 pt-1">' +
-              '<button onclick="quickAddBag(\'' + targetId + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2 rounded-xl text-[11px] cursor-pointer transition">🛍️ Add Bag</button>' +
-              '<button onclick="quickBuyNow(\'' + targetId + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 rounded-xl text-[11px] cursor-pointer shadow transition">⚡ Buy Now</button>' +
+              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2 rounded-xl text-[11px] cursor-pointer transition disabled:opacity-50">🛍️ Add Bag</button>' +
+              '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2 rounded-xl text-[11px] cursor-pointer shadow transition disabled:opacity-50">⚡ Buy Now</button>' +
             '</div>' +
           '</div>';
       });
@@ -802,6 +808,12 @@
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
+
+      var storeStatus = boutiquesStatusMap[(p.store || "").trim().toLowerCase()] || "OPEN";
+      if (storeStatus === "CLOSED") {
+        alert("❌ This boutique is currently closed and not accepting orders!");
+        return;
+      }
 
       activeModalProduct = p;
       currentModalImageIndex = 0;
@@ -838,6 +850,11 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
+      var storeStatus = boutiquesStatusMap[(p.store || "").trim().toLowerCase()] || "OPEN";
+      if (storeStatus === "CLOSED") {
+        return alert("❌ This boutique is currently closed!");
+      }
+
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
         price: p.price,
@@ -854,6 +871,11 @@
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
+
+      var storeStatus = boutiquesStatusMap[(p.store || "").trim().toLowerCase()] || "OPEN";
+      if (storeStatus === "CLOSED") {
+        return alert("❌ This boutique is currently closed!");
+      }
 
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
@@ -940,6 +962,11 @@
 
     window.modalAddToBag = function() {
       if (!activeModalProduct) return;
+      var storeStatus = boutiquesStatusMap[(activeModalProduct.store || "").trim().toLowerCase()] || "OPEN";
+      if (storeStatus === "CLOSED") {
+        return alert("❌ This boutique is currently closed!");
+      }
+
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
@@ -955,6 +982,11 @@
 
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
+      var storeStatus = boutiquesStatusMap[(activeModalProduct.store || "").trim().toLowerCase()] || "OPEN";
+      if (storeStatus === "CLOSED") {
+        return alert("❌ This boutique is currently closed!");
+      }
+
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
@@ -1074,31 +1106,37 @@
 
       var html = "";
       stores.forEach(function(store) {
+        var storeStatus = boutiquesStatusMap[store.storeName.trim().toLowerCase()] || "OPEN";
+        var isStoreClosed = (storeStatus === "CLOSED");
+
         var previewImages = "";
         store.products.slice(0, 3).forEach(function(p) {
           var isCloud = !!p.cloudKey;
           var targetId = p.id || p.cloudKey;
+          var inStock = (p.inStock !== false && !isStoreClosed);
 
           previewImages += 
             '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col justify-between p-1.5 space-y-1">' +
+              (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[1px] z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
               '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
                 '<img src="' + p.image + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
-                '<span class="absolute top-1 left-1 bg-slate-950/80 text-white font-mono-num font-bold text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm">₹' + p.price + '</span>' +
+                '<span class="absolute top-1 left-1 bg-slate-950/70 text-white font-mono-num font-bold text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm">₹' + p.price + '</span>' +
                 (isOwnerActive && isCloud ? 
                   '<div class="absolute top-1 right-1 z-20" onclick="event.stopPropagation();">' +
                     '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1 rounded text-[9px]">✏️</button>' +
                   '</div>' : '') +
               '</div>' +
               '<div class="grid grid-cols-2 gap-1">' +
-                '<button onclick="quickAddBag(\'' + targetId + '\')" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-lg text-[10px] cursor-pointer transition">🛍️ Add</button>' +
-                '<button onclick="quickBuyNow(\'' + targetId + '\')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-1.5 rounded-lg text-[10px] cursor-pointer shadow transition">⚡ Buy</button>' +
+                '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-lg text-[10px] cursor-pointer transition disabled:opacity-50">🛍️ Add</button>' +
+                '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-1.5 rounded-lg text-[10px] cursor-pointer shadow transition disabled:opacity-50">⚡ Buy</button>' +
               '</div>' +
             '</div>';
         });
 
         html += 
-          '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3 w-full">' +
-            '<div class="flex justify-between items-center">' +
+          '<div class="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-3 w-full relative overflow-hidden">' +
+            (isStoreClosed ? '<div class="absolute top-0 inset-x-0 bg-rose-600 text-white text-[10px] font-black text-center py-1 tracking-wider uppercase">🔴 Store Closed / Not Accepting Orders</div>' : '') +
+            '<div class="flex justify-between items-center ' + (isStoreClosed ? 'mt-3' : '') + '">' +
               '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
               '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div>' +
@@ -1248,7 +1286,7 @@
       } else {
         container.innerHTML = 
           '<button onclick="openLoginModal()" class="bg-slate-950 hover:bg-orange-600 text-white font-bold px-2.5 py-1.5 rounded-xl text-xs flex items-center gap-1 cursor-pointer transition">' +
-            '<span>👤</span> <span>Login</span>' +
+           '<span>👤</span> <span>Login</span>' +
           '</button>';
         if (ownerBadge) ownerBadge.classList.add("hidden");
       }
@@ -1309,7 +1347,6 @@
       });
     };
 
-    // Complete Order Helper Function
     function finalizeAndSaveOrder(payMethodStr, paymentIdStr) {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -1375,7 +1412,6 @@
       });
     }
 
-    // CHECKOUT WITH RAZORPAY / POD SUPPORT
     window.handleCheckout = function() {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -1402,10 +1438,9 @@
       var totalPayable = itemSubtotal + deliveryFee;
 
       if (payMethod === "ONLINE_UPI") {
-        // Razorpay Test Mode Integration
         var options = {
-          "key": "rzp_test_1234567890abcdef", // Razorpay Test Key ID
-          "amount": totalPayable * 100, // Amount in paise
+          "key": "rzp_test_1234567890abcdef",
+          "amount": totalPayable * 100,
           "currency": "INR",
           "name": "Fitin60 Express",
           "description": "60-Minute Hyperlocal Fashion Drop",
@@ -1426,7 +1461,6 @@
           var rzp = new Razorpay(options);
           rzp.open();
         } catch (err) {
-          // Fallback simulation if offline
           finalizeAndSaveOrder("Razorpay Online UPI", "TEST_PAY_" + Date.now());
         }
       } else {
@@ -1434,15 +1468,17 @@
       }
     };
 
-    renderBoutiqueStores();
-    renderCart();
-
+    // Live Listeners for Boutiques & Products Status
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
+      boutiquesStatusMap = {};
+
       Object.values(data).forEach(function(b) {
-        if (b && b.storeName && b.area) {
-          boutiqueLocationsMap[b.storeName] = b.area;
+        if (b && b.name) {
+          var sName = b.name.trim().toLowerCase();
+          boutiqueLocationsMap[b.name] = b.area;
+          boutiquesStatusMap[sName] = b.status || "OPEN";
         }
       });
       renderBoutiqueStores();
