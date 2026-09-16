@@ -60,15 +60,62 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800">
-        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Total Deliveries</p>
-          <p id="riderCompletedCount" class="font-mono-num font-black text-xl text-white mt-0.5">0</p>
+      <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-800">
+        <div class="bg-slate-900/80 p-2.5 rounded-2xl border border-slate-800 text-center">
+          <p class="text-[9px] font-bold text-slate-400 uppercase">Deliveries</p>
+          <p id="riderCompletedCount" class="font-mono-num font-black text-base text-white mt-0.5">0</p>
         </div>
-        <div class="bg-slate-900/80 p-3 rounded-2xl border border-slate-800">
-          <p class="text-[10px] font-bold text-slate-400 uppercase">Today's Earnings</p>
-          <p id="riderTotalEarnings" class="font-mono-num font-black text-xl text-emerald-400 mt-0.5">₹0</p>
+        <div class="bg-slate-900/80 p-2.5 rounded-2xl border border-slate-800 text-center">
+          <p class="text-[9px] font-bold text-slate-400 uppercase">Wallet Bal</p>
+          <p id="riderWalletBalance" class="font-mono-num font-black text-base text-orange-400 mt-0.5">₹0</p>
         </div>
+        <div class="bg-slate-900/80 p-2.5 rounded-2xl border border-slate-800 text-center">
+          <p class="text-[9px] font-bold text-slate-400 uppercase">Earnings</p>
+          <p id="riderTotalEarnings" class="font-mono-num font-black text-base text-emerald-400 mt-0.5">₹0</p>
+        </div>
+      </div>
+      <button onclick="requestRiderWithdrawal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-2.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
+        💸 Request Withdrawal to Bank / UPI
+      </button>
+    </div>
+
+    <!-- Rider Payout UPI & Bank Details Setup Box -->
+    <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
+      <div class="border-b pb-2 flex justify-between items-center">
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">🏦 Rider Payout UPI & Bank Details</h3>
+        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">For Withdrawals</span>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">UPI ID (GPay / PhonePe / Paytm)</label>
+          <input type="text" id="riderUpiIdInput" placeholder="e.g. srinu@oksbi" class="w-full bg-slate-50 border rounded-xl p-3 font-mono font-bold text-slate-900">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Account Holder Name</label>
+            <input type="text" id="riderAccHolderInput" placeholder="Name as in Bank" class="w-full bg-slate-50 border rounded-xl p-3 text-slate-900 font-bold">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Bank Name</label>
+            <input type="text" id="riderBankNameInput" placeholder="e.g. SBI, HDFC" class="w-full bg-slate-50 border rounded-xl p-3 text-slate-900 font-bold">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Bank Account Number</label>
+            <input type="text" id="riderAccNumInput" placeholder="Account Number" class="w-full bg-slate-50 border rounded-xl p-3 font-mono text-slate-900">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">IFSC Code</label>
+            <input type="text" id="riderIfscInput" placeholder="SBIN0001234" class="w-full bg-slate-50 border rounded-xl p-3 font-mono uppercase text-slate-900">
+          </div>
+        </div>
+
+        <button onclick="saveRiderBankDetails()" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          💾 Save Payout Details
+        </button>
       </div>
     </div>
 
@@ -86,14 +133,14 @@
       </div>
     </div>
 
-    <!-- Completed Deliveries History -->
+    <!-- Completed Deliveries History & Withdrawals -->
     <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-sm text-slate-900">Completed Deliveries History</h3>
-        <span id="riderHistCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 Delivered</span>
+        <h3 class="font-brand font-black text-sm text-slate-900">Delivery & Withdrawal History</h3>
+        <span id="riderHistCount" class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">0 History</span>
       </div>
       <div id="riderHistoryList" class="space-y-2">
-        <p class="text-xs text-slate-400 text-center py-3">No delivery history yet.</p>
+        <p class="text-xs text-slate-400 text-center py-3">No history yet.</p>
       </div>
     </div>
 
@@ -119,13 +166,11 @@
         <p class="text-xs text-slate-500">Fast Express Delivery Partner</p>
       </div>
 
-      <!-- Clean Auth Tabs (Only Login & Register) -->
       <div class="flex bg-slate-100 p-1 rounded-2xl">
         <button onclick="switchRiderAuthTab('login')" id="tabLoginBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
         <button onclick="switchRiderAuthTab('register')" id="tabRegBtn" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
       </div>
 
-      <!-- 1. LOGIN FORM (With Forgot PIN Link) -->
       <form id="riderLoginForm" onsubmit="handleRiderLoginSubmit(event)" class="space-y-3 text-left text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Mobile Number</label>
@@ -143,7 +188,6 @@
         </button>
       </form>
 
-      <!-- 2. REGISTER FORM WITH ADDRESS PROOF -->
       <form id="riderRegisterForm" onsubmit="handleRiderRegisterSubmit(event)" class="space-y-3 text-left text-xs hidden">
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Full Name</label>
@@ -160,8 +204,8 @@
           </div>
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Address Proof Type & ID (Aadhaar / DL)</label>
-          <input type="text" id="regAddressProof" required placeholder="e.g. Aadhaar - 4521 XXXX 8910" class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Address Proof Type & ID</label>
+          <input type="text" id="regAddressProof" required placeholder="e.g. ID - 4521 XXXX 8910" class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Create 4-Digit PIN</label>
@@ -172,7 +216,6 @@
         </button>
       </form>
 
-      <!-- 3. FORGOT PIN FORM -->
       <form id="riderForgotForm" onsubmit="handleRiderForgotSubmit(event)" class="space-y-3 text-left text-xs hidden">
         <div class="flex justify-between items-center border-b pb-2">
           <span class="font-bold text-slate-900">Reset Your PIN</span>
@@ -183,8 +226,8 @@
           <input type="tel" id="forgMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Your Address Proof ID (for verification)</label>
-          <input type="text" id="forgAddressProof" required placeholder="e.g. Aadhaar No / DL No" class="w-full bg-slate-50 border rounded-xl p-2.5">
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Your Address Proof ID</label>
+          <input type="text" id="forgAddressProof" required placeholder="e.g. ID No" class="w-full bg-slate-50 border rounded-xl p-2.5">
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Set New 4-Digit PIN</label>
@@ -254,7 +297,6 @@
     <span id="toastMsg">Success</span>
   </div>
 
-  <!-- Notification Beep Audio -->
   <audio id="riderAlertAudio" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
   <script>
@@ -273,13 +315,80 @@
 
     var currentRiderName = localStorage.getItem("fitin60_rider_name") || "";
     var currentRiderBike = localStorage.getItem("fitin60_rider_bike") || "AP 02 AB 1234";
+    var currentRiderMobile = localStorage.getItem("fitin60_rider_mobile") || "";
 
     if (!currentRiderName) {
       document.getElementById("riderLoginModal").classList.remove("hidden");
     } else {
       document.getElementById("displayRiderName").innerText = currentRiderName;
       document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
+      loadRiderBankDetails();
     }
+
+    function loadRiderBankDetails() {
+      if (!currentRiderMobile) return;
+      db.ref("riders/" + currentRiderMobile).once("value").then(function(snap) {
+        var r = snap.val();
+        if (r) {
+          if (r.upiId) document.getElementById("riderUpiIdInput").value = r.upiId;
+          if (r.accHolder) document.getElementById("riderAccHolderInput").value = r.accHolder;
+          if (r.bankName) document.getElementById("riderBankNameInput").value = r.bankName;
+          if (r.accNum) document.getElementById("riderAccNumInput").value = r.accNum;
+          if (r.ifsc) document.getElementById("riderIfscInput").value = r.ifsc;
+        }
+      });
+    }
+
+    window.saveRiderBankDetails = function() {
+      var upiId = document.getElementById("riderUpiIdInput").value.trim();
+      var accHolder = document.getElementById("riderAccHolderInput").value.trim();
+      var bankName = document.getElementById("riderBankNameInput").value.trim();
+      var accNum = document.getElementById("riderAccNumInput").value.trim();
+      var ifsc = document.getElementById("riderIfscInput").value.trim().toUpperCase();
+
+      if (!upiId && (!accNum || !ifsc || !bankName)) {
+        return alert("Please enter either UPI ID or Complete Bank Details!");
+      }
+
+      if (!currentRiderMobile) return alert("Please login again!");
+
+      db.ref("riders/" + currentRiderMobile).update({
+        upiId: upiId,
+        accHolder: accHolder,
+        bankName: bankName,
+        accNum: accNum,
+        ifsc: ifsc
+      }).then(function() {
+        showQuickToast("✓ Rider Payout Details Saved!");
+      });
+    };
+
+    window.requestRiderWithdrawal = function() {
+      var currentBal = parseFloat(document.getElementById("riderWalletBalance").innerText.replace("₹", "")) || 0;
+      if (currentBal <= 0) return alert("Your wallet balance is 0. No funds to withdraw!");
+
+      var upiId = document.getElementById("riderUpiIdInput").value.trim();
+      var accNum = document.getElementById("riderAccNumInput").value.trim();
+
+      if (!upiId && !accNum) {
+        return alert("Please save your UPI ID or Bank Account Details first!");
+      }
+
+      var wdId = "RWD-" + Math.floor(1000 + Math.random() * 9000);
+      var wdData = {
+        withdrawalId: wdId,
+        riderName: currentRiderName,
+        riderMobile: currentRiderMobile,
+        amount: currentBal,
+        destination: upiId ? ("UPI: " + upiId) : ("A/C: " + accNum),
+        status: "Requested",
+        timestamp: Date.now()
+      };
+
+      db.ref("rider_withdrawals/" + wdId).set(wdData).then(function() {
+        showQuickToast("✓ Withdrawal Request Sent Successfully!");
+      });
+    };
 
     window.switchRiderAuthTab = function(tab) {
       var logF = document.getElementById("riderLoginForm");
@@ -317,13 +426,17 @@
         if (r && String(r.pin) === String(pin)) {
           currentRiderName = r.name;
           currentRiderBike = r.bike || "AP 02 AB 1234";
+          currentRiderMobile = mob;
+
           localStorage.setItem("fitin60_rider_name", currentRiderName);
           localStorage.setItem("fitin60_rider_bike", currentRiderBike);
+          localStorage.setItem("fitin60_rider_mobile", currentRiderMobile);
 
           document.getElementById("displayRiderName").innerText = currentRiderName;
           document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
           document.getElementById("riderLoginModal").classList.add("hidden");
           showQuickToast("✓ Welcome back, " + currentRiderName);
+          window.location.reload();
         } else {
           alert("❌ Invalid Mobile Number or PIN!");
         }
@@ -354,15 +467,17 @@
       db.ref("riders/" + mob).set(riderData).then(function() {
         currentRiderName = name;
         currentRiderBike = bike;
+        currentRiderMobile = mob;
+
         localStorage.setItem("fitin60_rider_name", currentRiderName);
         localStorage.setItem("fitin60_rider_bike", currentRiderBike);
+        localStorage.setItem("fitin60_rider_mobile", currentRiderMobile);
 
         document.getElementById("displayRiderName").innerText = currentRiderName;
         document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
         document.getElementById("riderLoginModal").classList.add("hidden");
-        showQuickToast("✓ Rider Account Registered Successfully!");
-      }).catch(function(err) {
-        alert("Registration Error: " + err.message);
+        showQuickToast("✓ Rider Registered Successfully!");
+        window.location.reload();
       });
     };
 
@@ -378,16 +493,18 @@
           db.ref("riders/" + mob).update({ pin: newPin }).then(function() {
             currentRiderName = r.name;
             currentRiderBike = r.bike || "AP 02 AB 1234";
+            currentRiderMobile = mob;
+
             localStorage.setItem("fitin60_rider_name", currentRiderName);
             localStorage.setItem("fitin60_rider_bike", currentRiderBike);
+            localStorage.setItem("fitin60_rider_mobile", currentRiderMobile);
 
-            document.getElementById("displayRiderName").innerText = currentRiderName;
-            document.getElementById("displayRiderBike").innerText = "🏍️ Bike: " + currentRiderBike;
             document.getElementById("riderLoginModal").classList.add("hidden");
-            showQuickToast("✓ PIN Reset Successful! Logged in.");
+            showQuickToast("✓ PIN Reset Successful!");
+            window.location.reload();
           });
         } else {
-          alert("❌ Verification Failed! Address Proof ID did not match.");
+          alert("❌ Verification Failed!");
         }
       });
     };
@@ -395,6 +512,8 @@
     window.riderLogout = function() {
       if (confirm("Log out of Rider Fleet?")) {
         localStorage.removeItem("fitin60_rider_name");
+        localStorage.removeItem("fitin60_rider_bike");
+        localStorage.removeItem("fitin60_rider_mobile");
         window.location.reload();
       }
     };
@@ -452,8 +571,7 @@
 
     window.deleteRiderAccountPermanently = function() {
       if (confirm("⚠️ Permanently delete your rider account?")) {
-        localStorage.removeItem("fitin60_rider_name");
-        localStorage.removeItem("fitin60_rider_bike");
+        localStorage.clear();
         alert("✓ Rider account removed.");
         window.location.reload();
       }
@@ -505,25 +623,23 @@
         if (!order) return alert("Order not found!");
 
         if (String(order.deliveryOtp) !== String(enteredOtp)) {
-          return alert("❌ Incorrect Delivery OTP! Please check with customer.");
+          return alert("❌ Incorrect Delivery OTP!");
         }
 
         db.ref("orders/" + orderId).update({
           status: "Delivered",
           delivered: true,
           deliveredTimestamp: Date.now(),
-          riderName: currentRiderName + " (" + currentRiderBike + ")",
-          "financialSplit/riderSettlementStatus": "Settled"
+          riderName: currentRiderName + " (" + currentRiderBike + ")"
         }).then(function() {
           closeOtpModal();
-          showQuickToast("✓ Delivery Completed Successfully!");
+          showQuickToast("✓ Delivery Completed & Earnings Added!");
         });
       });
     };
 
     var prevRiderOrderCount = -1;
 
-    // Listen to orders for Rider Fleet
     db.ref("orders").on("value", function(snap) {
       var orders = snap.val() || {};
       var activeContainer = document.getElementById("riderActiveOrdersList");
@@ -537,6 +653,7 @@
       var activeCount = 0;
       var histCount = 0;
       var totalEarnings = 0;
+      var walletBalance = 0;
       var newAssignedList = [];
 
       Object.values(orders).forEach(function(o) {
@@ -545,28 +662,26 @@
 
         if (isDelivered) {
           histCount++;
-          totalEarnings += (o.deliveryFee || 49);
+          var fee = (o.deliveryFee || 49);
+          totalEarnings += fee;
+          walletBalance += fee;
           var deliveredTime = formatDateTime(o.deliveredTimestamp || o.timestamp);
 
           historyHtml += 
             '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1.5">' +
               '<div class="flex justify-between font-bold text-slate-900">' +
                 '<span>' + o.orderId + ' • ' + o.store + '</span>' +
-                '<span class="text-emerald-600 font-mono-num font-black">+₹' + (o.deliveryFee || 49) + '</span>' +
+                '<span class="text-emerald-600 font-mono-num font-black">+₹' + fee + '</span>' +
               '</div>' +
               '<div class="flex justify-between text-[11px] text-slate-600">' +
                 '<span>Customer: ' + o.customerName + '</span>' +
-                '<span class="text-[10px] text-slate-500 font-mono font-bold">🕒 Delivered: ' + deliveredTime + '</span>' +
+                '<span class="text-[10px] text-slate-500 font-mono font-bold">🕒 ' + deliveredTime + '</span>' +
               '</div>' +
             '</div>';
         } else if (isPackedOrOut && isRiderDutyOn) {
           activeCount++;
           newAssignedList.push(o);
           var orderTime = formatDateTime(o.timestamp);
-
-          db.ref("orders/" + o.orderId).update({
-            riderName: currentRiderName + " (" + currentRiderBike + ")"
-          });
 
           activeHtml += 
             '<div class="p-4 bg-orange-50/50 border border-orange-200 rounded-2xl text-xs space-y-3 shadow-sm">' +
@@ -581,12 +696,7 @@
               '<div class="bg-white p-3 rounded-xl border border-orange-100 space-y-1">' +
                 '<p class="font-bold text-slate-900">👤 Customer: ' + o.customerName + '</p>' +
                 '<p class="text-slate-600">📍 Address: ' + o.customerAddress + '</p>' +
-                '<p class="font-mono text-xs text-orange-600 font-bold">Distance: ~' + (o.distanceKm || 2.5) + ' KM (Fee: ₹' + (o.deliveryFee || 49) + ')</p>' +
-              '</div>' +
-
-              '<div class="flex justify-between items-center text-[10px] text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg font-mono font-bold border">' +
-                '<span>🕒 Order Time: ' + orderTime + '</span>' +
-                '<span class="text-emerald-700">⚡ Express 60-Min Drop</span>' +
+                '<p class="font-mono text-xs text-orange-600 font-bold">Delivery Fee: ₹' + (o.deliveryFee || 49) + '</p>' +
               '</div>' +
 
               '<div class="flex items-center gap-2 pt-1">' +
@@ -597,32 +707,49 @@
         }
       });
 
+      // Load Rider Withdrawals
+      db.ref("rider_withdrawals").once("value").then(function(wSnap) {
+        var wData = wSnap.val() || {};
+        var wCount = 0;
+        Object.values(wData).forEach(function(w) {
+          if (w.riderMobile === currentRiderMobile) {
+            wCount++;
+            walletBalance -= w.amount;
+            historyHtml += 
+              '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">' +
+                '<div class="flex justify-between font-bold text-slate-900">' +
+                  '<span>' + w.withdrawalId + ' • -₹' + w.amount + '</span>' +
+                  '<span class="text-amber-600 font-bold">' + w.status + '</span>' +
+                '</div>' +
+                '<p class="text-[11px] text-slate-600">Destination: ' + w.destination + '</p>' +
+              '</div>';
+          }
+        });
+
+        document.getElementById("riderWalletBalance").innerText = "₹" + Math.max(0, walletBalance);
+        document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
+        document.getElementById("riderCompletedCount").innerText = histCount;
+        document.getElementById("riderHistCount").innerText = (histCount + wCount) + " History";
+        if (histCount > 0 || wCount > 0) {
+          historyContainer.innerHTML = historyHtml;
+        }
+      });
+
       if (isRiderDutyOn && prevRiderOrderCount !== -1 && newAssignedList.length > prevRiderOrderCount) {
         var audio = document.getElementById("riderAlertAudio");
-        if (audio) {
-          audio.play().catch(function(e) { console.log("Audio play blocked", e); });
-        }
+        if (audio) audio.play().catch(function(e){});
         showQuickToast("🔔 NEW EXPRESS DELIVERY ASSIGNED!");
       }
       prevRiderOrderCount = newAssignedList.length;
 
       activeBadge.innerText = activeCount + " Active";
-      histBadge.innerText = histCount + " Delivered";
-      document.getElementById("riderCompletedCount").innerText = histCount;
-      document.getElementById("riderTotalEarnings").innerText = "₹" + totalEarnings;
 
       if (activeCount > 0) {
         pulseDot.classList.remove("hidden");
         activeContainer.innerHTML = activeHtml;
       } else {
         pulseDot.classList.add("hidden");
-        activeContainer.innerHTML = isRiderDutyOn ? '<p class="text-xs text-slate-400 text-center py-6">No active delivery assigned right now.</p>' : '<p class="text-xs text-rose-500 font-bold text-center py-6">🔴 You are offline (Rides OFF). Turn on rides to receive express deliveries.</p>';
-      }
-
-      if (histCount > 0) {
-        historyContainer.innerHTML = historyHtml;
-      } else {
-        historyContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-3">No delivery history yet.</p>';
+        activeContainer.innerHTML = isRiderDutyOn ? '<p class="text-xs text-slate-400 text-center py-6">No active delivery assigned right now.</p>' : '<p class="text-xs text-rose-500 font-bold text-center py-6">🔴 You are offline (Rides OFF).</p>';
       }
     });
   </script>
