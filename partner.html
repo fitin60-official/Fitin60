@@ -187,6 +187,55 @@
 
   </main>
 
+  <!-- PARTNER LOGIN / REGISTRATION MODAL (Appears on Logout) -->
+  <div id="partnerAuthModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 text-center">
+      <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">🏬</div>
+      <h3 class="font-brand font-black text-lg text-slate-950 mt-1">Merchant Partner Portal</h3>
+      <p class="text-xs text-slate-500">Please login or register your boutique store</p>
+
+      <!-- Auth Tabs -->
+      <div class="flex bg-slate-100 p-1 rounded-2xl mt-2">
+        <button onclick="switchPartnerAuthTab('login')" id="partnerTabLogin" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer">Login</button>
+        <button onclick="switchPartnerAuthTab('register')" id="partnerTabReg" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
+      </div>
+
+      <!-- 1. LOGIN FORM -->
+      <form id="partnerLoginForm" onsubmit="handlePartnerLoginSubmit(event)" class="space-y-3 text-left text-xs mt-3">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Store Name / Registered Mobile</label>
+          <input type="text" id="partnerLoginName" required placeholder="e.g. Sai Fashions" class="w-full bg-slate-50 border rounded-xl p-3 font-bold">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">4-Digit Store PIN</label>
+          <input type="password" id="partnerLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-3 text-center font-mono tracking-widest text-lg font-black">
+        </div>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          Login to Partner Hub ➔
+        </button>
+      </form>
+
+      <!-- 2. REGISTRATION FORM -->
+      <form id="partnerRegisterForm" onsubmit="handlePartnerRegisterSubmit(event)" class="space-y-3 text-left text-xs mt-3 hidden">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Boutique / Store Name</label>
+          <input type="text" id="partnerRegName" required placeholder="e.g. Anu Ram Fashions" class="w-full bg-slate-50 border rounded-xl p-2.5 font-bold">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Area / Mobile Location</label>
+          <input type="text" id="partnerRegArea" required placeholder="e.g. Near TV tower • Mobile: 9515552511" class="w-full bg-slate-50 border rounded-xl p-2.5">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Create 4-Digit PIN</label>
+          <input type="password" id="partnerRegPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-2.5 text-center font-mono tracking-widest font-black">
+        </div>
+        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3 rounded-xl uppercase tracking-wider transition cursor-pointer shadow">
+          Register New Store ➔
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- EDIT OUTFIT MODAL -->
   <div id="partnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
@@ -289,11 +338,103 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var activeStoreName = localStorage.getItem("fitin60_partner_store") || "Sai Fashions";
-    var activeStoreArea = localStorage.getItem("fitin60_partner_area") || "Near TV tower • Mobile: 9515552511";
+    var activeStoreName = localStorage.getItem("fitin60_partner_store") || "";
+    var activeStoreArea = localStorage.getItem("fitin60_partner_area") || "";
 
-    document.getElementById("bannerStoreName").innerText = activeStoreName;
-    document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
+    // If store session is not set, force open the Login / Registration modal directly inside the page!
+    if (!activeStoreName) {
+      document.getElementById("partnerAuthModal").classList.remove("hidden");
+    } else {
+      document.getElementById("bannerStoreName").innerText = activeStoreName;
+      document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
+    }
+
+    window.switchPartnerAuthTab = function(tab) {
+      var logF = document.getElementById("partnerLoginForm");
+      var regF = document.getElementById("partnerRegisterForm");
+      var bL = document.getElementById("partnerTabLogin");
+      var bR = document.getElementById("partnerTabReg");
+
+      logF.classList.add("hidden");
+      regF.classList.add("hidden");
+      bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+      bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
+
+      if (tab === 'login') {
+        logF.classList.remove("hidden");
+        bL.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+      } else {
+        regF.classList.remove("hidden");
+        bR.className = "flex-1 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-sm transition cursor-pointer";
+      }
+    };
+
+    window.handlePartnerLoginSubmit = function(e) {
+      e.preventDefault();
+      var storeNameInput = document.getElementById("partnerLoginName").value.trim();
+      var pin = document.getElementById("partnerLoginPin").value.trim();
+
+      db.ref("boutiques/" + storeNameInput.replace(/[^a-zA-Z0-9]/g, "_")).once("value").then(function(snap) {
+        var store = snap.val();
+        if (store) {
+          activeStoreName = store.name;
+          activeStoreArea = store.area;
+          localStorage.setItem("fitin60_partner_store", activeStoreName);
+          localStorage.setItem("fitin60_partner_area", activeStoreArea);
+
+          document.getElementById("bannerStoreName").innerText = activeStoreName;
+          document.getElementById("bannerStoreArea").innerText = "📍 " + activeStoreArea;
+          document.getElementById("partnerAuthModal").classList.add("hidden");
+          showQuickToast("✓ Welcome back, " + activeStoreName);
+          window.location.reload();
+        } else {
+          // Fallback for default Sai Fashions if not in DB yet
+          if (storeNameInput.toLowerCase() === "sai fashions") {
+            activeStoreName = "Sai Fashions";
+            activeStoreArea = "Near TV tower • Mobile: 9515552511";
+            localStorage.setItem("fitin60_partner_store", activeStoreName);
+            localStorage.setItem("fitin60_partner_area", activeStoreArea);
+            document.getElementById("partnerAuthModal").classList.add("hidden");
+            window.location.reload();
+          } else {
+            alert("❌ Store not found! Please check name or Register new store.");
+          }
+        }
+      });
+    };
+
+    window.handlePartnerRegisterSubmit = function(e) {
+      e.preventDefault();
+      var name = document.getElementById("partnerRegName").value.trim();
+      var area = document.getElementById("partnerRegArea").value.trim();
+      var pin = document.getElementById("partnerRegPin").value.trim();
+
+      if (!name || !area || pin.length !== 4) {
+        return alert("Please fill all details & 4-digit PIN!");
+      }
+
+      var storeKey = name.replace(/[^a-zA-Z0-9]/g, "_");
+      var storeData = {
+        name: name,
+        area: area,
+        pin: pin,
+        status: "OPEN",
+        registeredAt: Date.now()
+      };
+
+      db.ref("boutiques/" + storeKey).set(storeData).then(function() {
+        activeStoreName = name;
+        activeStoreArea = area;
+        localStorage.setItem("fitin60_partner_store", activeStoreName);
+        localStorage.setItem("fitin60_partner_area", activeStoreArea);
+
+        document.getElementById("partnerAuthModal").classList.add("hidden");
+        showQuickToast("✓ Store Registered Successfully!");
+        window.location.reload();
+      }).catch(function(err) {
+        alert("Error: " + err.message);
+      });
+    };
 
     var loadedProductsMap = {};
     var previousOrdersCount = -1;
@@ -382,7 +523,9 @@
     window.updateStoreStatus = function(status) {
       var label = (status === "OPEN") ? "Open for 60-Min Orders" : "Closed / Not Accepting Orders";
       showQuickToast("✓ Store status: " + label);
-      db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).update({ status: status });
+      if (activeStoreName) {
+        db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).update({ status: status });
+      }
     };
 
     window.handlePartnerUpload = function(e) {
@@ -640,20 +783,21 @@
           db.ref("boutique_products").update(updates).then(function() {
             db.ref("boutiques/" + activeStoreName.replace(/[^a-zA-Z0-9]/g, "_")).remove();
             alert("✓ Store deleted permanently.");
-            window.location.href = "index.html";
+            localStorage.removeItem("fitin60_partner_store");
+            localStorage.removeItem("fitin60_partner_area");
+            window.location.reload();
           });
         });
       }
     };
 
-    // Corrected Logout: Clears session and smoothly redirects to index.html (Login / Home)
+    // Logout: Clears store session and immediately prompts Login/Registration modal on the same page!
     window.partnerLogout = function() {
       if (confirm("Are you sure you want to logout?")) {
-        localStorage.removeItem("fitin60_owner_session");
+        localStorage.removeItem("fitin60_partner_store");
+        localStorage.removeItem("fitin60_partner_area");
+        document.getElementById("partnerAuthModal").classList.remove("hidden");
         showQuickToast("✓ Logged out successfully");
-        setTimeout(function() {
-          window.location.href = "index.html";
-        }, 600);
       }
     };
   </script>
