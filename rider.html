@@ -316,7 +316,7 @@
 
     var currentRiderName = localStorage.getItem("fitin60_rider_name") || "";
     var currentRiderBike = localStorage.getItem("fitin60_rider_bike") || "AP 02 AB 1234";
-    var currentRiderMobile = localStorage.getItem("fitin60_rider_mobile"] || "";
+    var currentRiderMobile = localStorage.getItem("fitin60_rider_mobile") || "";
     var gpsWatchId = null;
 
     if (!currentRiderName) {
@@ -365,7 +365,6 @@
           navigator.geolocation.clearWatch(gpsWatchId);
           gpsWatchId = null;
         }
-        // Remove location from database when offline
         db.ref("rider_locations/" + mobileKey).remove();
         document.getElementById("gpsStatusText").innerText = "📍 GPS Tracking: Offline (Rides OFF)";
       }
@@ -433,6 +432,7 @@
 
       db.ref("rider_withdrawals/" + wdId).set(wdData).then(function() {
         showQuickToast("✓ Withdrawal Request Sent Successfully!");
+        window.location.reload();
       });
     };
 
@@ -569,13 +569,13 @@
     var isRiderDutyOn = localStorage.getItem("fitin60_rider_duty") !== "off";
     updateDutyUI();
 
-    function toggleRiderDuty() {
+    window.toggleRiderDuty = function() {
       isRiderDutyOn = !isRiderDutyOn;
       localStorage.setItem("fitin60_rider_duty", isRiderDutyOn ? "on" : "off");
       updateDutyUI();
       checkAndToggleGpsTracking();
       showQuickToast(isRiderDutyOn ? "🟢 You are Online (Rides ON)" : "🔴 You are Offline (Rides OFF)");
-    }
+    };
 
     function updateDutyUI() {
       var btn = document.getElementById("dutyToggleBtn");
