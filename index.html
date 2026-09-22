@@ -1468,16 +1468,24 @@
       }
     };
 
+    // Firebase listener for boutiques status (supporting both name and key/mobile mapping)
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
       boutiquesStatusMap = {};
 
-      Object.values(data).forEach(function(b) {
-        if (b && b.name) {
-          var sName = b.name.trim().toLowerCase();
-          boutiqueLocationsMap[b.name] = b.area;
-          boutiquesStatusMap[sName] = b.status || "OPEN";
+      Object.keys(data).forEach(function(key) {
+        var b = data[key];
+        if (b) {
+          var status = b.status || "OPEN";
+          if (b.name) {
+            boutiquesStatusMap[b.name.trim().toLowerCase()] = status;
+            boutiqueLocationsMap[b.name] = b.area;
+          }
+          if (b.mobile) {
+            boutiquesStatusMap[b.mobile] = status;
+          }
+          boutiquesStatusMap[key.trim().toLowerCase()] = status;
         }
       });
       renderBoutiqueStores();
