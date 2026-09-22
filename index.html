@@ -1468,7 +1468,6 @@
       }
     };
 
-    // Live Listeners for Boutiques & Products Status (Fixed store mapping by name)
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
