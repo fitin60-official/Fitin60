@@ -48,7 +48,7 @@
   <!-- Professional Top Alert Bar -->
   <div class="bg-slate-950 text-white text-[11px] font-bold py-1.5 px-3 text-center flex items-center justify-center gap-2 border-b border-slate-800">
     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0"></span>
-    <span class="truncate">⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • Guaranteed 60-Min Drops</span>
+    <span class="truncate">⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • Centralized Platform Collection</span>
   </div>
 
   <!-- Header -->
@@ -439,21 +439,21 @@
           </div>
 
           <div class="pt-2 border-t border-slate-200 space-y-2">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Method</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Method (Centralized Gateway)</h4>
             <div class="grid grid-cols-1 gap-2">
               <label class="flex items-center gap-3 p-3 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer">
-                <input type="radio" name="payOption" value="POD" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
+                <input type="radio" name="payOption" value="ONLINE_UPI" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
-                  <p class="font-black text-slate-900">Pay on Delivery (Doorstep UPI QR / Cash)</p>
-                  <p class="text-[10px] text-slate-500">Scan QR via PhonePe/GPay or cash to rider</p>
+                  <p class="font-black text-slate-900">Fitin60 Centralized Online UPI / Card / QR</p>
+                  <p class="text-[10px] text-emerald-600 font-bold">100% Platform Secured (Auto-Splits to Store Wallet)</p>
                 </div>
               </label>
 
               <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
-                <input type="radio" name="payOption" value="ONLINE_UPI" onchange="handlePaymentModeChange()" class="accent-orange-600">
+                <input type="radio" name="payOption" value="POD" onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
-                  <p class="font-black text-slate-900">Razorpay Instant Online UPI / Card</p>
-                  <p class="text-[10px] text-emerald-600 font-bold">100% Secure Razorpay Test / Live Drop</p>
+                  <p class="font-black text-slate-900">Pay on Delivery (Platform Cash/QR Collection)</p>
+                  <p class="text-[10px] text-slate-500">Collected by rider & credited to platform ledger</p>
                 </div>
               </label>
             </div>
@@ -480,7 +480,7 @@
 
       <div class="p-4 bg-slate-50 border-t border-slate-200">
         <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase cursor-pointer shadow-md transition">
-          ⚡ Place Express Order
+          ⚡ Pay via Centralized Gateway & Order
         </button>
       </div>
     </div>
@@ -580,8 +580,8 @@
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
-    var boutiquesStatusMap = {}; // Maps mobile & store name to exact status
-    var boutiqueNameByMobile = {}; // Maps mobile to current store name
+    var boutiquesStatusMap = {};
+    var boutiqueNameByMobile = {};
     
     var items = [];
     try {
@@ -751,7 +751,6 @@
       });
     };
 
-    // Robust function to check store status using Mobile Number OR Store Name
     function getStoreStatus(storeName, storeMobile) {
       if (storeMobile && boutiquesStatusMap[storeMobile]) {
         return boutiquesStatusMap[storeMobile];
@@ -763,7 +762,6 @@
       return "OPEN";
     }
 
-    // Robust function to get current updated Store Name by mobile
     function getStoreDisplayName(originalStoreName, storeMobile) {
       if (storeMobile && boutiqueNameByMobile[storeMobile]) {
         return boutiqueNameByMobile[storeMobile];
@@ -885,6 +883,7 @@
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
         price: p.price,
         store: dispName,
+        storeMobile: p.storeMobile || "",
         image: p.image
       };
       items.push(itemObj);
@@ -908,6 +907,7 @@
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
         price: p.price,
         store: dispName,
+        storeMobile: p.storeMobile || "",
         image: p.image
       };
       items.push(itemObj);
@@ -999,6 +999,7 @@
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
         store: dispName,
+        storeMobile: activeModalProduct.storeMobile || "",
         image: activeModalProduct.image
       };
       items.push(itemObj);
@@ -1020,6 +1021,7 @@
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
         store: dispName,
+        storeMobile: activeModalProduct.storeMobile || "",
         image: activeModalProduct.image
       };
       items.push(itemObj);
@@ -1105,7 +1107,7 @@
         if (!p) return;
         var sMobile = p.storeMobile || "";
         var rawStoreName = p.store || "Boutique Studio";
-        var sName = getStoreDisplayName(rawStoreName, sMobile); // Always use latest updated store name from mobile lookup
+        var sName = getStoreDisplayName(rawStoreName, sMobile);
 
         var oName = (p.name || "").toLowerCase();
         var cat = (p.category || "").toLowerCase();
@@ -1204,7 +1206,7 @@
     function handlePaymentModeChange() {
       var selected = document.querySelector('input[name="payOption"]:checked').value;
       var btn = document.getElementById("checkoutSubmitBtn");
-      btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via Razorpay & Order" : "⚡ Place Express Order (Pay on Delivery)";
+      btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via Centralized Gateway & Order" : "⚡ Place Express Order (Platform Cash/QR)";
     }
 
     function renderCart() {
@@ -1384,6 +1386,7 @@
       });
     };
 
+    // TRUE CENTRALIZED COLLECTION: Automatically credits 85% to Store Wallet Ledger
     function finalizeAndSaveOrder(payMethodStr, paymentIdStr) {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -1415,6 +1418,9 @@
       var platformFee = Math.round(itemSubtotal * 0.15);
       var storeNetPayout = itemSubtotal - platformFee;
 
+      var storeName = items[0].store;
+      var storeMobile = items[0].storeMobile || "";
+
       var orderData = {
         orderId: orderId,
         customerName: name,
@@ -1426,23 +1432,37 @@
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
         paymentMethod: payMethodStr,
-        paymentId: paymentIdStr || "POD_" + Date.now(),
-        paymentStatus: payMethodStr.includes("Online") ? "Paid Online" : "Pending (Doorstep Collection)",
+        paymentId: paymentIdStr || "PLATFORM_COLLECT_" + Date.now(),
+        paymentStatus: "Paid via Centralized Platform Gateway",
         deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
-        store: items[0].store,
+        store: storeName,
+        storeMobile: storeMobile,
         boutiqueAccepted: false,
         riderAssigned: false,
         financialSplit: {
           storeNetPayout: storeNetPayout,
           platformCommission: platformFee,
           riderFee: deliveryFee,
-          storeSettlementStatus: "Settled",
+          storeSettlementStatus: "Credited to Wallet",
           riderSettlementStatus: "Pending"
         },
         timestamp: Date.now()
       };
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
+        // Automatically credit store earnings to their central ledger/wallet node
+        if (storeMobile) {
+          var storeWalletRef = db.ref("boutiques/" + storeMobile + "/walletBalance");
+          storeWalletRef.transaction(function(currentBalance) {
+            return (currentBalance || 0) + storeNetPayout;
+          });
+          
+          var storeOrdersCountRef = db.ref("boutiques/" + storeMobile + "/totalOrdersCount");
+          storeOrdersCountRef.transaction(function(count) {
+            return (count || 0) + 1;
+          });
+        }
+
         localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
         localStorage.removeItem("fitin60_cart_items");
         window.location.href = "tracking.html";
@@ -1466,7 +1486,7 @@
       }
 
       var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
-      var payMethod = payMethodRadio ? payMethodRadio.value : "POD";
+      var payMethod = payMethodRadio ? payMethodRadio.value : "ONLINE_UPI";
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
@@ -1474,38 +1494,35 @@
       var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
       var totalPayable = itemSubtotal + deliveryFee;
 
-      if (payMethod === "ONLINE_UPI") {
-        var options = {
-          "key": "rzp_test_1234567890abcdef",
-          "amount": totalPayable * 100,
-          "currency": "INR",
-          "name": "Fitin60 Express",
-          "description": "60-Minute Hyperlocal Fashion Drop",
-          "handler": function (response){
-            finalizeAndSaveOrder("Razorpay Online UPI / Card", response.razorpay_payment_id);
-          },
-          "prefill": {
-            "name": name,
-            "email": "customer@fitin60.com",
-            "contact": phone
-          },
-          "theme": {
-            "color": "#ea580c"
-          }
-        };
-
-        try {
-          var rzp = new Razorpay(options);
-          rzp.open();
-        } catch (err) {
-          finalizeAndSaveOrder("Razorpay Online UPI", "TEST_PAY_" + Date.now());
+      // Razorpay Centralized Gateway Integration
+      var options = {
+        "key": "rzp_test_1234567890abcdef",
+        "amount": totalPayable * 100,
+        "currency": "INR",
+        "name": "Fitin60 Centralized Gateway",
+        "description": "60-Minute Hyperlocal Express Drop",
+        "handler": function (response){
+          finalizeAndSaveOrder("Razorpay Centralized Online UPI", response.razorpay_payment_id);
+        },
+        "prefill": {
+          "name": name,
+          "email": "customer@fitin60.com",
+          "contact": phone
+        },
+        "theme": {
+          "color": "#ea580c"
         }
-      } else {
-        finalizeAndSaveOrder("Pay on Delivery (Doorstep)", "POD_" + Date.now());
+      };
+
+      try {
+        var rzp = new Razorpay(options);
+        rzp.open();
+      } catch (err) {
+        finalizeAndSaveOrder(payMethod === "ONLINE_UPI" ? "Centralized Online UPI" : "Platform Cash Collection", "PLATFORM_TXN_" + Date.now());
       }
     };
 
-    // Advanced Listener: Maps both mobile number key and store name seamlessly for status and names
+    // Realtime listener syncing boutique states and auto-updating store names and statuses
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
