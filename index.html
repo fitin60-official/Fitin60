@@ -519,6 +519,7 @@
         id: "base_1",
         name: "Floral Designer Anarkali Kurta Set",
         store: "Sai Fashions",
+        storeMobile: "9515552511",
         category: "Kurti",
         area: "Near Upparapalli Road",
         price: 899,
@@ -538,6 +539,7 @@
         id: "base_2",
         name: "Casual Grey Winter Jacket",
         store: "Mummy Daddy",
+        storeMobile: "9000000002",
         category: "Men",
         area: "Bala Nagar, Hyderabad",
         price: 1000,
@@ -557,6 +559,7 @@
         id: "base_uniform_1",
         name: "Standard School Uniform Set",
         store: "AdhyaSai Uniforms & Fashions",
+        storeMobile: "9000000003",
         category: "Uniform",
         area: "Kamalanagar, Anantapur",
         price: 699,
@@ -577,8 +580,8 @@
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
-    var boutiquesStatusMap = {};
-    var boutiqueMobileMap = {}; // Maps store name / mobile to exact status
+    var boutiquesStatusMap = {}; // Maps mobile & store name to exact status
+    var boutiqueNameByMobile = {}; // Maps mobile to current store name
     
     var items = [];
     try {
@@ -748,29 +751,38 @@
       });
     };
 
-    // Helper to check store status accurately by name or mobile
+    // Robust function to check store status using Mobile Number OR Store Name
     function getStoreStatus(storeName, storeMobile) {
       if (storeMobile && boutiquesStatusMap[storeMobile]) {
         return boutiquesStatusMap[storeMobile];
       }
       if (storeName) {
-        var sKey = storeName.trim().toLowerCase();
-        if (boutiquesStatusMap[sKey]) return boutiquesStatusMap[sKey];
+        var key = storeName.trim().toLowerCase();
+        if (boutiquesStatusMap[key]) return boutiquesStatusMap[key];
       }
-      return "OPEN"; // Default fallback
+      return "OPEN";
+    }
+
+    // Robust function to get current updated Store Name by mobile
+    function getStoreDisplayName(originalStoreName, storeMobile) {
+      if (storeMobile && boutiqueNameByMobile[storeMobile]) {
+        return boutiqueNameByMobile[storeMobile];
+      }
+      return originalStoreName || "Boutique Studio";
     }
 
     window.openStoreExploreModal = function(storeName, storeMobile) {
+      var actualStoreName = getStoreDisplayName(storeName, storeMobile);
       var all = baseProducts.concat(cloudProducts);
       var storeProds = all.filter(function(p) {
-        return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
+        return p && ((p.storeMobile && p.storeMobile === storeMobile) || (p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase()));
       });
 
-      var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
-      var storeStatus = getStoreStatus(storeName, storeMobile);
+      var storeArea = boutiqueLocationsMap[actualStoreName] || boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
+      var storeStatus = getStoreStatus(actualStoreName, storeMobile);
       var isStoreClosed = (storeStatus === "CLOSED");
 
-      document.getElementById("exploreStoreName").innerText = storeName + (isStoreClosed ? " (CLOSED)" : "");
+      document.getElementById("exploreStoreName").innerText = actualStoreName + (isStoreClosed ? " (CLOSED)" : "");
       document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
       document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
 
@@ -833,8 +845,9 @@
       var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
       activeModalProduct._resolvedImages = imagesList;
 
+      var dispName = getStoreDisplayName(p.store, p.storeMobile);
       document.getElementById("modalProdName").innerText = p.name;
-      document.getElementById("modalProdStore").innerText = "🏬 " + p.store;
+      document.getElementById("modalProdStore").innerText = "🏬 " + dispName;
       document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
       document.getElementById("modalProdPrice").innerText = "₹" + p.price;
       document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
@@ -867,10 +880,11 @@
         return alert("❌ This boutique is currently closed!");
       }
 
+      var dispName = getStoreDisplayName(p.store, p.storeMobile);
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
         price: p.price,
-        store: p.store,
+        store: dispName,
         image: p.image
       };
       items.push(itemObj);
@@ -889,10 +903,11 @@
         return alert("❌ This boutique is currently closed!");
       }
 
+      var dispName = getStoreDisplayName(p.store, p.storeMobile);
       var itemObj = {
         name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
         price: p.price,
-        store: p.store,
+        store: dispName,
         image: p.image
       };
       items.push(itemObj);
@@ -979,10 +994,11 @@
         return alert("❌ This boutique is currently closed!");
       }
 
+      var dispName = getStoreDisplayName(activeModalProduct.store, activeModalProduct.storeMobile);
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
-        store: activeModalProduct.store,
+        store: dispName,
         image: activeModalProduct.image
       };
       items.push(itemObj);
@@ -999,10 +1015,11 @@
         return alert("❌ This boutique is currently closed!");
       }
 
+      var dispName = getStoreDisplayName(activeModalProduct.store, activeModalProduct.storeMobile);
       var itemObj = {
         name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
         price: activeModalProduct.price,
-        store: activeModalProduct.store,
+        store: dispName,
         image: activeModalProduct.image
       };
       items.push(itemObj);
@@ -1086,18 +1103,21 @@
       var storesMap = {};
       all.forEach(function(p) {
         if (!p) return;
-        var sName = p.store || "Boutique Studio";
         var sMobile = p.storeMobile || "";
+        var rawStoreName = p.store || "Boutique Studio";
+        var sName = getStoreDisplayName(rawStoreName, sMobile); // Always use latest updated store name from mobile lookup
+
         var oName = (p.name || "").toLowerCase();
         var cat = (p.category || "").toLowerCase();
-        var realLocation = p.area || (boutiqueLocationsMap[sName] ? boutiqueLocationsMap[sName] : "Anantapur");
+        var realLocation = p.area || boutiqueLocationsMap[sName] || boutiqueLocationsMap[rawStoreName] || "Anantapur";
 
         var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
         var matchC = (currentCategoryFilter === "All") || oName.includes(currentCategoryFilter.toLowerCase()) || cat.includes(currentCategoryFilter.toLowerCase());
 
         if (matchS && matchC) {
-          if (!storesMap[sName]) {
-            storesMap[sName] = {
+          var storeKey = sMobile || sName;
+          if (!storesMap[storeKey]) {
+            storesMap[storeKey] = {
               storeName: sName,
               storeMobile: sMobile,
               area: realLocation,
@@ -1106,7 +1126,7 @@
               products: []
             };
           }
-          storesMap[sName].products.push(p);
+          storesMap[storeKey].products.push(p);
         }
       });
 
@@ -1228,7 +1248,7 @@
                 '<p class="font-mono-num font-black text-orange-600">₹' + item.price + '</p>' +
               '</div>' +
             '</div>' +
-	'<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-600 hover:text-rose-800 p-1.5 cursor-pointer shrink-0">🗑️</button>' +
+            '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-600 hover:text-rose-800 p-1.5 cursor-pointer shrink-0">🗑️</button>' +
           '</div>';
       });
       list.innerHTML = html;
@@ -1485,22 +1505,27 @@
       }
     };
 
-    // Realtime listener mapping both mobile number key and store name accurately
+    // Advanced Listener: Maps both mobile number key and store name seamlessly for status and names
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
       boutiquesStatusMap = {};
+      boutiqueNameByMobile = {};
 
       Object.keys(data).forEach(function(key) {
         var b = data[key];
         if (b) {
           var status = (b.status || "OPEN").trim().toUpperCase();
-          if (b.name) {
-            boutiquesStatusMap[b.name.trim().toLowerCase()] = status;
-            boutiqueLocationsMap[b.name] = b.area;
+          var sName = b.name ? b.name.trim() : "";
+          var sMobile = b.mobile ? String(b.mobile).trim() : String(key).trim();
+
+          if (sName) {
+            boutiquesStatusMap[sName.toLowerCase()] = status;
+            boutiqueLocationsMap[sName] = b.area;
           }
-          if (b.mobile) {
-            boutiquesStatusMap[b.mobile] = status;
+          if (sMobile) {
+            boutiquesStatusMap[sMobile] = status;
+            boutiqueNameByMobile[sMobile] = sName;
           }
           boutiquesStatusMap[key.trim().toLowerCase()] = status;
         }
@@ -1534,4 +1559,3 @@
   </script>
 </body>
 </html>
-    
