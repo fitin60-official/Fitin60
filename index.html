@@ -13,7 +13,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <!-- Razorpay Checkout Script -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1138,7 +1137,10 @@
             (isStoreClosed ? '<div class="absolute top-0 inset-x-0 bg-rose-600 text-white text-[10px] font-black text-center py-1 tracking-wider uppercase">🔴 Store Closed / Not Accepting Orders</div>' : '') +
             '<div class="flex justify-between items-center ' + (isStoreClosed ? 'mt-3' : '') + '">' +
               '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md">⚡ ' + store.eta + '</span>' +
-              '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
+              '<div class="flex items-center gap-1.5">' +
+                '<span class="text-[10px] font-black px-2 py-0.5 rounded-full ' + (isStoreClosed ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700') + '">' + (isStoreClosed ? '🔴 Closed' : '🟢 Open') + '</span>' +
+                '<span class="text-[10px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
+              '</div>' +
             '</div>' +
             
             '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\')">' +
@@ -1468,7 +1470,7 @@
       }
     };
 
-    // Firebase listener for boutiques status (supporting both name and key/mobile mapping)
+    // Robust Realtime Listener for Boutiques Status
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
@@ -1477,7 +1479,7 @@
       Object.keys(data).forEach(function(key) {
         var b = data[key];
         if (b) {
-          var status = b.status || "OPEN";
+          var status = (b.status || "OPEN").trim().toUpperCase();
           if (b.name) {
             boutiquesStatusMap[b.name.trim().toLowerCase()] = status;
             boutiqueLocationsMap[b.name] = b.area;
