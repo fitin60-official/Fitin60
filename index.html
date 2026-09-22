@@ -578,6 +578,7 @@
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
     var boutiquesStatusMap = {};
+    var boutiqueMobileMap = {}; // Maps store name / mobile to exact status
     
     var items = [];
     try {
@@ -747,14 +748,26 @@
       });
     };
 
-    window.openStoreExploreModal = function(storeName) {
+    // Helper to check store status accurately by name or mobile
+    function getStoreStatus(storeName, storeMobile) {
+      if (storeMobile && boutiquesStatusMap[storeMobile]) {
+        return boutiquesStatusMap[storeMobile];
+      }
+      if (storeName) {
+        var sKey = storeName.trim().toLowerCase();
+        if (boutiquesStatusMap[sKey]) return boutiquesStatusMap[sKey];
+      }
+      return "OPEN"; // Default fallback
+    }
+
+    window.openStoreExploreModal = function(storeName, storeMobile) {
       var all = baseProducts.concat(cloudProducts);
       var storeProds = all.filter(function(p) {
         return p && p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase();
       });
 
       var storeArea = boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
-      var storeStatus = boutiquesStatusMap[storeName.trim().toLowerCase()] || "OPEN";
+      var storeStatus = getStoreStatus(storeName, storeMobile);
       var isStoreClosed = (storeStatus === "CLOSED");
 
       document.getElementById("exploreStoreName").innerText = storeName + (isStoreClosed ? " (CLOSED)" : "");
@@ -808,7 +821,7 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
-      var storeStatus = boutiquesStatusMap[(p.store || "").trim().toLowerCase()] || "OPEN";
+      var storeStatus = getStoreStatus(p.store, p.storeMobile);
       if (storeStatus === "CLOSED") {
         alert("❌ This boutique is currently closed and not accepting orders!");
         return;
@@ -849,7 +862,7 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
-      var storeStatus = boutiquesStatusMap[(p.store || "").trim().toLowerCase()] || "OPEN";
+      var storeStatus = getStoreStatus(p.store, p.storeMobile);
       if (storeStatus === "CLOSED") {
         return alert("❌ This boutique is currently closed!");
       }
@@ -871,7 +884,7 @@
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
 
-      var storeStatus = boutiquesStatusMap[(p.store || "").trim().toLowerCase()] || "OPEN";
+      var storeStatus = getStoreStatus(p.store, p.storeMobile);
       if (storeStatus === "CLOSED") {
         return alert("❌ This boutique is currently closed!");
       }
@@ -961,7 +974,7 @@
 
     window.modalAddToBag = function() {
       if (!activeModalProduct) return;
-      var storeStatus = boutiquesStatusMap[(activeModalProduct.store || "").trim().toLowerCase()] || "OPEN";
+      var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
       if (storeStatus === "CLOSED") {
         return alert("❌ This boutique is currently closed!");
       }
@@ -981,7 +994,7 @@
 
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
-      var storeStatus = boutiquesStatusMap[(activeModalProduct.store || "").trim().toLowerCase()] || "OPEN";
+      var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
       if (storeStatus === "CLOSED") {
         return alert("❌ This boutique is currently closed!");
       }
@@ -1074,6 +1087,7 @@
       all.forEach(function(p) {
         if (!p) return;
         var sName = p.store || "Boutique Studio";
+        var sMobile = p.storeMobile || "";
         var oName = (p.name || "").toLowerCase();
         var cat = (p.category || "").toLowerCase();
         var realLocation = p.area || (boutiqueLocationsMap[sName] ? boutiqueLocationsMap[sName] : "Anantapur");
@@ -1085,6 +1099,7 @@
           if (!storesMap[sName]) {
             storesMap[sName] = {
               storeName: sName,
+              storeMobile: sMobile,
               area: realLocation,
               eta: p.eta || "35 MINS",
               rating: p.rating || "5.0",
@@ -1105,7 +1120,7 @@
 
       var html = "";
       stores.forEach(function(store) {
-        var storeStatus = boutiquesStatusMap[store.storeName.trim().toLowerCase()] || "OPEN";
+        var storeStatus = getStoreStatus(store.storeName, store.storeMobile);
         var isStoreClosed = (storeStatus === "CLOSED");
 
         var previewImages = "";
@@ -1143,7 +1158,7 @@
               '</div>' +
             '</div>' +
             
-            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\')">' +
+            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\', \'' + store.storeMobile + '\')">' +
               '<div class="flex items-center justify-between">' +
                 '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
                 '<span class="text-xs text-orange-600 font-bold group-hover:underline">Explore Store ➔</span>' +
@@ -1213,7 +1228,7 @@
                 '<p class="font-mono-num font-black text-orange-600">₹' + item.price + '</p>' +
               '</div>' +
             '</div>' +
-            '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-600 hover:text-rose-800 p-1.5 cursor-pointer shrink-0">🗑️</button>' +
+	'<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-600 hover:text-rose-800 p-1.5 cursor-pointer shrink-0">🗑️</button>' +
           '</div>';
       });
       list.innerHTML = html;
@@ -1470,7 +1485,7 @@
       }
     };
 
-    // Robust Realtime Listener for Boutiques Status
+    // Realtime listener mapping both mobile number key and store name accurately
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
@@ -1519,3 +1534,4 @@
   </script>
 </body>
 </html>
+    
