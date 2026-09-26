@@ -203,7 +203,7 @@
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">Available Collections</span>
-          <span class="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -868,6 +868,7 @@
       document.getElementById("productDetailModal").classList.remove("hidden");
     };
 
+    // PROFESSIONAL ADD BAG: ONLY adds item to cart, updates count, and shows toast. DOES NOT open cart drawer!
     window.quickAddBag = function(prodId) {
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -892,7 +893,7 @@
       showQuickToast("✓ Added to Bag");
     };
 
-    // FIXED: Prevent duplication on Buy Now and go directly to Checkout / Cart Drawer
+    // PROFESSIONAL BUY NOW: Adds item (no duplicates) AND directly opens the checkout drawer
     window.quickBuyNow = function(prodId) {
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -906,7 +907,6 @@
       var dispName = getStoreDisplayName(p.store, p.storeMobile);
       var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
       
-      // Check if item already exists in cart to prevent duplicates
       var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
       if (existingIndex === -1) {
         var itemObj = {
@@ -921,7 +921,6 @@
       }
 
       renderCart();
-      // Directly open cart drawer for checkout flow
       document.getElementById("cartDrawer").classList.remove("hidden");
     };
 
@@ -996,6 +995,7 @@
       document.getElementById("productDetailModal").classList.add("hidden");
     };
 
+    // MODAL ADD TO BAG: ONLY adds to bag and shows toast, NO drawer opening
     window.modalAddToBag = function() {
       if (!activeModalProduct) return;
       var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
@@ -1018,7 +1018,7 @@
       showQuickToast("✓ Added to Bag");
     };
 
-    // FIXED: Prevent duplication on Modal Buy Now and go directly to Checkout
+    // MODAL BUY NOW: Adds item and opens checkout directly
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
       var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
