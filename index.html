@@ -387,21 +387,30 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer -->
+  <!-- Shopping Bag Drawer (Redesigned Professional Interface) -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
-    <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10">
-      <div class="p-4 bg-slate-950 text-white flex items-center justify-between">
-        <h3 class="font-brand font-bold text-sm">Express Bag</h3>
-        <button onclick="toggleCart()" class="text-slate-400 text-2xl cursor-pointer">&times;</button>
+    <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 overflow-hidden">
+      <!-- Header -->
+      <div class="p-4 bg-slate-950 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🛍️</span>
+          <h3 class="font-brand font-black text-sm uppercase tracking-wide">Express Bag</h3>
+        </div>
+        <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
+      <!-- Scrollable Content -->
       <div class="flex-1 p-4 overflow-y-auto space-y-4">
-        <div id="cartItems" class="space-y-2.5"></div>
+        <!-- Added Dresses List -->
+        <div class="space-y-3">
+          <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400">Selected Outfits in Bag</h4>
+          <div id="cartItems" class="space-y-2.5"></div>
+        </div>
         
         <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
           <div>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Choose Delivery Address</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">Choose Delivery Address</h4>
             <div class="grid grid-cols-2 gap-2 mb-3">
               <label class="flex items-center gap-2 p-2.5 bg-orange-50 border border-orange-300 rounded-xl cursor-pointer text-xs font-bold text-slate-900">
                 <input type="radio" name="checkoutAddressType" value="permanent" checked onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
@@ -439,7 +448,7 @@
           </div>
 
           <div class="pt-2 border-t border-slate-200 space-y-2">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Method (Centralized Gateway)</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Payment Method (Centralized Gateway)</h4>
             <div class="grid grid-cols-1 gap-2">
               <label class="flex items-center gap-3 p-3 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
@@ -478,7 +487,8 @@
         </div>
       </div>
 
-      <div class="p-4 bg-slate-50 border-t border-slate-200">
+      <!-- Sticky Footer Checkout Button -->
+      <div id="checkoutFooter" class="p-4 bg-slate-50 border-t border-slate-200 shrink-0">
         <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase cursor-pointer shadow-md transition">
           ⚡ Pay via Centralized Gateway & Order
         </button>
@@ -868,7 +878,7 @@
       document.getElementById("productDetailModal").classList.remove("hidden");
     };
 
-    // PROFESSIONAL ADD BAG: ONLY adds item to cart, updates count, and shows toast. DOES NOT open cart drawer!
+    // ADD BAG: Prevents duplicates, adds timestamp, updates badge, shows toast, DOES NOT open drawer
     window.quickAddBag = function(prodId) {
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -880,20 +890,30 @@
       }
 
       var dispName = getStoreDisplayName(p.store, p.storeMobile);
-      var itemObj = {
-        name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
-        price: p.price,
-        store: dispName,
-        storeMobile: p.storeMobile || "",
-        image: p.image
-      };
-      items.push(itemObj);
-      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
+      
+      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
+      if (existingIndex === -1) {
+        var now = new Date();
+        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+        
+        var itemObj = {
+          name: itemName,
+          price: p.price,
+          store: dispName,
+          storeMobile: p.storeMobile || "",
+          image: p.image,
+          addedTime: timeStr
+        };
+        items.push(itemObj);
+        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      }
+
       renderCart();
       showQuickToast("✓ Added to Bag");
     };
 
-    // PROFESSIONAL BUY NOW: Adds item (no duplicates) AND directly opens the checkout drawer
+    // BUY NOW: Adds item (no duplicates) and directly opens payment drawer
     window.quickBuyNow = function(prodId) {
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -909,12 +929,16 @@
       
       var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
       if (existingIndex === -1) {
+        var now = new Date();
+        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+        
         var itemObj = {
           name: itemName,
           price: p.price,
           store: dispName,
           storeMobile: p.storeMobile || "",
-          image: p.image
+          image: p.image,
+          addedTime: timeStr
         };
         items.push(itemObj);
         localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
@@ -995,7 +1019,6 @@
       document.getElementById("productDetailModal").classList.add("hidden");
     };
 
-    // MODAL ADD TO BAG: ONLY adds to bag and shows toast, NO drawer opening
     window.modalAddToBag = function() {
       if (!activeModalProduct) return;
       var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
@@ -1004,21 +1027,30 @@
       }
 
       var dispName = getStoreDisplayName(activeModalProduct.store, activeModalProduct.storeMobile);
-      var itemObj = {
-        name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
-        price: activeModalProduct.price,
-        store: dispName,
-        storeMobile: activeModalProduct.storeMobile || "",
-        image: activeModalProduct.image
-      };
-      items.push(itemObj);
-      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      var itemName = activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : "");
+      
+      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
+      if (existingIndex === -1) {
+        var now = new Date();
+        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+        
+        var itemObj = {
+          name: itemName,
+          price: activeModalProduct.price,
+          store: dispName,
+          storeMobile: activeModalProduct.storeMobile || "",
+          image: activeModalProduct.image,
+          addedTime: timeStr
+        };
+        items.push(itemObj);
+        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      }
+
       renderCart();
       closeProductDetailModal();
       showQuickToast("✓ Added to Bag");
     };
 
-    // MODAL BUY NOW: Adds item and opens checkout directly
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
       var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
@@ -1031,12 +1063,16 @@
       
       var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
       if (existingIndex === -1) {
+        var now = new Date();
+        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+        
         var itemObj = {
           name: itemName,
           price: activeModalProduct.price,
           store: dispName,
           storeMobile: activeModalProduct.storeMobile || "",
-          image: activeModalProduct.image
+          image: activeModalProduct.image,
+          addedTime: timeStr
         };
         items.push(itemObj);
         localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
@@ -1225,10 +1261,12 @@
       btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via Centralized Gateway & Order" : "⚡ Place Express Order (Platform Cash/QR)";
     }
 
+    // Professional Express Bag Rendering with Price, Timestamp & Buy Now Button per item
     function renderCart() {
       document.getElementById("cart-count").innerText = items.length;
       var list = document.getElementById("cartItems");
       var addr = document.getElementById("addressSection");
+      var footer = document.getElementById("checkoutFooter");
       var total = items.reduce(function(a, b) { return a + b.price; }, 0);
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
@@ -1241,12 +1279,14 @@
       document.getElementById("billFinalPayable").innerText = "₹" + (total > 0 ? (total + deliveryFee) : 0);
 
       if (items.length === 0) {
-        list.innerHTML = "<p class='text-xs text-slate-400 text-center py-4'>Bag is empty.</p>";
+        list.innerHTML = "<div class='text-center py-10 text-slate-400 text-xs space-y-2'><p class='text-2xl'>🛍️</p><p>Your Express Bag is empty!</p></div>";
         addr.classList.add("hidden");
+        footer.classList.add("hidden");
         return;
       }
 
       addr.classList.remove("hidden");
+      footer.classList.remove("hidden");
 
       if (currentCustomer) {
         var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
@@ -1255,22 +1295,39 @@
 
       var html = "";
       items.forEach(function(item, idx) {
-        var imgTag = item.image ? '<img src="' + item.image + '" class="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0">' : '<div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-xs shrink-0">👗</div>';
+        var imgTag = item.image ? '<img src="' + item.image + '" class="w-14 h-14 rounded-2xl object-cover border border-slate-200 shrink-0 shadow-sm">' : '<div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-sm shrink-0">👗</div>';
+        var timeLabel = item.addedTime || "Just now";
         
         html += 
-          '<div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-2xl gap-3 text-xs">' +
-            '<div class="flex items-center gap-2.5 truncate">' +
+          '<div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-2xl gap-3 text-xs transition hover:border-orange-300">' +
+            '<div class="flex items-center gap-3 truncate">' +
               imgTag +
-              '<div class="truncate">' +
+              '<div class="truncate space-y-0.5">' +
                 '<p class="font-bold text-slate-900 truncate">' + item.name + '</p>' +
-                '<p class="font-mono-num font-black text-orange-600">₹' + item.price + '</p>' +
+                '<p class="text-[10px] text-slate-500 font-medium">🏬 ' + item.store + '</p>' +
+                '<p class="text-[9px] text-slate-400 font-mono">🕒 Added: ' + timeLabel + '</p>' +
               '</div>' +
             '</div>' +
-            '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-600 hover:text-rose-800 p-1.5 cursor-pointer shrink-0">🗑️</button>' +
+            '<div class="flex flex-col items-end gap-1.5 shrink-0">' +
+              '<span class="font-mono-num font-black text-sm text-orange-600">₹' + item.price + '</span>' +
+              '<div class="flex items-center gap-1.5">' +
+                '<button onclick="proceedSingleItemCheckout(' + idx + ')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] shadow cursor-pointer transition">⚡ Buy</button>' +
+                '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Remove">🗑️</button>' +
+              '</div>' +
+            '</div>' +
           '</div>';
       });
       list.innerHTML = html;
     }
+
+    // Direct Buy Now for specific item in bag
+    window.proceedSingleItemCheckout = function(idx) {
+      // Keep only this item in cart for direct checkout or keep all items
+      renderCart();
+      // Scroll down to address/payment section smoothly inside drawer
+      var drawer = document.querySelector('#cartDrawer .overflow-y-auto');
+      if(drawer) drawer.scrollTop = drawer.scrollHeight;
+    };
 
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
@@ -1585,6 +1642,7 @@
 
     updateAuthHeaderUI();
     renderBoutiqueStores();
+    renderCart();
   </script>
 </body>
 </html>
