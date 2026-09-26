@@ -387,7 +387,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer (Redesigned Professional Interface) -->
+  <!-- Shopping Bag Drawer (Pure Express Bag View or Single Item Checkout View) -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 overflow-hidden">
@@ -395,22 +395,34 @@
       <div class="p-4 bg-slate-950 text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-lg">🛍️</span>
-          <h3 class="font-brand font-black text-sm uppercase tracking-wide">Express Bag</h3>
+          <h3 id="drawerTitle" class="font-brand font-black text-sm uppercase tracking-wide">Express Bag</h3>
         </div>
         <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
       <!-- Scrollable Content -->
       <div class="flex-1 p-4 overflow-y-auto space-y-4">
-        <!-- Added Dresses List -->
-        <div class="space-y-3">
+        <!-- Cart Items List View -->
+        <div id="cartBagViewContainer" class="space-y-3">
           <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400">Selected Outfits in Bag</h4>
           <div id="cartItems" class="space-y-2.5"></div>
         </div>
         
-        <div id="addressSection" class="hidden pt-2 border-t border-slate-200 space-y-3">
+        <!-- Checkout / Payment View (Only visible when Buy Now is clicked for a specific item) -->
+        <div id="checkoutViewContainer" class="hidden space-y-3 pt-2">
+          <div class="flex items-center justify-between bg-orange-50 border border-orange-200 p-2.5 rounded-2xl">
+            <div class="flex items-center gap-2 truncate">
+              <img id="checkoutItemImg" src="" class="w-10 h-10 rounded-xl object-cover border shrink-0">
+              <div class="truncate">
+                <p id="checkoutItemName" class="font-bold text-xs text-slate-900 truncate">Item Name</p>
+                <p id="checkoutItemPrice" class="font-mono-num font-bold text-orange-600 text-xs">₹0</p>
+              </div>
+            </div>
+            <button onclick="backToCartBagView()" class="text-[10px] font-bold bg-white text-slate-700 border border-slate-300 px-2 py-1 rounded-lg cursor-pointer">← Back to Bag</button>
+          </div>
+
           <div>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">Choose Delivery Address</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Choose Delivery Address</h4>
             <div class="grid grid-cols-2 gap-2 mb-3">
               <label class="flex items-center gap-2 p-2.5 bg-orange-50 border border-orange-300 rounded-xl cursor-pointer text-xs font-bold text-slate-900">
                 <input type="radio" name="checkoutAddressType" value="permanent" checked onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
@@ -448,7 +460,7 @@
           </div>
 
           <div class="pt-2 border-t border-slate-200 space-y-2">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">Payment Method (Centralized Gateway)</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Method (Centralized Gateway)</h4>
             <div class="grid grid-cols-1 gap-2">
               <label class="flex items-center gap-3 p-3 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
@@ -472,7 +484,7 @@
           <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
             <h5 class="font-bold text-slate-900 uppercase tracking-wider text-[10px]">Bill Summary</h5>
             <div class="flex justify-between text-slate-600">
-              <span>Item Total</span>
+              <span>Item Price</span>
               <span class="font-mono-num font-bold" id="billItemTotal">₹0</span>
             </div>
             <div class="flex justify-between text-slate-600">
@@ -487,8 +499,8 @@
         </div>
       </div>
 
-      <!-- Sticky Footer Checkout Button -->
-      <div id="checkoutFooter" class="p-4 bg-slate-50 border-t border-slate-200 shrink-0">
+      <!-- Sticky Footer Checkout Button (Only active during checkout) -->
+      <div id="checkoutFooter" class="p-4 bg-slate-50 border-t border-slate-200 shrink-0 hidden">
         <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-xl text-xs uppercase cursor-pointer shadow-md transition">
           ⚡ Pay via Centralized Gateway & Order
         </button>
@@ -601,6 +613,7 @@
 
     var currentCustomer = null;
     var currentCategoryFilter = "All";
+    var activeCheckoutItem = null; // Holds single item being bought now
 
     var activeModalProduct = null;
     var currentModalImageIndex = 0;
@@ -643,7 +656,17 @@
     }
 
     function recalculateDistanceFee() {
-      renderCart();
+      if (activeCheckoutItem) {
+        var distSelect = document.getElementById("deliveryDistanceSelect");
+        var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
+        var deliveryFee = getDistanceFee(distVal);
+        var total = activeCheckoutItem.price + deliveryFee;
+
+        document.getElementById("billItemTotal").innerText = "₹" + activeCheckoutItem.price;
+        document.getElementById("billDistanceLabel").innerText = "~" + distVal + " KM";
+        document.getElementById("billDeliveryFee").innerText = "₹" + deliveryFee;
+        document.getElementById("billFinalPayable").innerText = "₹" + total;
+      }
     }
 
     window.openLoginModal = function() {
@@ -878,7 +901,7 @@
       document.getElementById("productDetailModal").classList.remove("hidden");
     };
 
-    // ADD BAG: Prevents duplicates, adds timestamp, updates badge, shows toast, DOES NOT open drawer
+    // ADD BAG: Adds item with timestamp, avoids duplicates, shows toast
     window.quickAddBag = function(prodId) {
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -913,7 +936,7 @@
       showQuickToast("✓ Added to Bag");
     };
 
-    // BUY NOW: Adds item (no duplicates) and directly opens payment drawer
+    // BUY NOW: Directly initiates single-item checkout for this product
     window.quickBuyNow = function(prodId) {
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -927,25 +950,15 @@
       var dispName = getStoreDisplayName(p.store, p.storeMobile);
       var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
       
-      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
-      if (existingIndex === -1) {
-        var now = new Date();
-        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-        
-        var itemObj = {
-          name: itemName,
-          price: p.price,
-          store: dispName,
-          storeMobile: p.storeMobile || "",
-          image: p.image,
-          addedTime: timeStr
-        };
-        items.push(itemObj);
-        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
-      }
+      activeCheckoutItem = {
+        name: itemName,
+        price: p.price,
+        store: dispName,
+        storeMobile: p.storeMobile || "",
+        image: p.image
+      };
 
-      renderCart();
-      document.getElementById("cartDrawer").classList.remove("hidden");
+      openSingleCheckoutView();
     };
 
     window.selectModalSize = function(size) {
@@ -1061,26 +1074,16 @@
       var dispName = getStoreDisplayName(activeModalProduct.store, activeModalProduct.storeMobile);
       var itemName = activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : "");
       
-      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
-      if (existingIndex === -1) {
-        var now = new Date();
-        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-        
-        var itemObj = {
-          name: itemName,
-          price: activeModalProduct.price,
-          store: dispName,
-          storeMobile: activeModalProduct.storeMobile || "",
-          image: activeModalProduct.image,
-          addedTime: timeStr
-        };
-        items.push(itemObj);
-        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
-      }
+      activeCheckoutItem = {
+        name: itemName,
+        price: activeModalProduct.price,
+        store: dispName,
+        storeMobile: activeModalProduct.storeMobile || "",
+        image: activeModalProduct.image
+      };
 
-      renderCart();
       closeProductDetailModal();
-      document.getElementById("cartDrawer").classList.remove("hidden");
+      openSingleCheckoutView();
     };
 
     window.directOwnerDelete = function(key) {
@@ -1248,11 +1251,43 @@
     }
 
     window.toggleCart = function() {
+      activeCheckoutItem = null; // Reset single checkout item so bag opens normally
       if (currentCustomer) {
         var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
         document.getElementById("custPermanentAddress").value = pAddr;
       }
+      renderCart();
       document.getElementById("cartDrawer").classList.toggle("hidden");
+    };
+
+    function openSingleCheckoutView() {
+      if (currentCustomer) {
+        var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
+        document.getElementById("custPermanentAddress").value = pAddr;
+      }
+
+      document.getElementById("drawerTitle").innerText = "Express Checkout";
+      document.getElementById("cartBagViewContainer").classList.add("hidden");
+      document.getElementById("checkoutViewContainer").classList.remove("hidden");
+      document.getElementById("checkoutFooter").classList.remove("hidden");
+
+      if (activeCheckoutItem) {
+        document.getElementById("checkoutItemImg").src = activeCheckoutItem.image || "";
+        document.getElementById("checkoutItemName").innerText = activeCheckoutItem.name;
+        document.getElementById("checkoutItemPrice").innerText = "₹" + activeCheckoutItem.price;
+      }
+
+      recalculateDistanceFee();
+      document.getElementById("cartDrawer").classList.remove("hidden");
+    }
+
+    window.backToCartBagView = function() {
+      activeCheckoutItem = null;
+      document.getElementById("drawerTitle").innerText = "Express Bag";
+      document.getElementById("cartBagViewContainer").classList.remove("hidden");
+      document.getElementById("checkoutViewContainer").classList.add("hidden");
+      document.getElementById("checkoutFooter").classList.add("hidden");
+      renderCart();
     };
 
     function handlePaymentModeChange() {
@@ -1261,36 +1296,22 @@
       btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via Centralized Gateway & Order" : "⚡ Place Express Order (Platform Cash/QR)";
     }
 
-    // Professional Express Bag Rendering with Price, Timestamp & Buy Now Button per item
+    // Render Express Bag items with Buy button per item
     function renderCart() {
       document.getElementById("cart-count").innerText = items.length;
       var list = document.getElementById("cartItems");
-      var addr = document.getElementById("addressSection");
-      var footer = document.getElementById("checkoutFooter");
-      var total = items.reduce(function(a, b) { return a + b.price; }, 0);
+      
+      // If we are currently in single item checkout view, do not override
+      if (activeCheckoutItem) return;
 
-      var distSelect = document.getElementById("deliveryDistanceSelect");
-      var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
-      var deliveryFee = getDistanceFee(distVal);
-
-      document.getElementById("billItemTotal").innerText = "₹" + total;
-      document.getElementById("billDistanceLabel").innerText = "~" + distVal + " KM";
-      document.getElementById("billDeliveryFee").innerText = "₹" + deliveryFee;
-      document.getElementById("billFinalPayable").innerText = "₹" + (total > 0 ? (total + deliveryFee) : 0);
+      document.getElementById("drawerTitle").innerText = "Express Bag";
+      document.getElementById("cartBagViewContainer").classList.remove("hidden");
+      document.getElementById("checkoutViewContainer").classList.add("hidden");
+      document.getElementById("checkoutFooter").classList.add("hidden");
 
       if (items.length === 0) {
         list.innerHTML = "<div class='text-center py-10 text-slate-400 text-xs space-y-2'><p class='text-2xl'>🛍️</p><p>Your Express Bag is empty!</p></div>";
-        addr.classList.add("hidden");
-        footer.classList.add("hidden");
         return;
-      }
-
-      addr.classList.remove("hidden");
-      footer.classList.remove("hidden");
-
-      if (currentCustomer) {
-        var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
-        document.getElementById("custPermanentAddress").value = pAddr;
       }
 
       var html = "";
@@ -1311,7 +1332,7 @@
             '<div class="flex flex-col items-end gap-1.5 shrink-0">' +
               '<span class="font-mono-num font-black text-sm text-orange-600">₹' + item.price + '</span>' +
               '<div class="flex items-center gap-1.5">' +
-                '<button onclick="proceedSingleItemCheckout(' + idx + ')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] shadow cursor-pointer transition">⚡ Buy</button>' +
+                '<button onclick="proceedBagItemCheckout(' + idx + ')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-2.5 py-1 rounded-lg text-[10px] shadow cursor-pointer transition">⚡ Buy</button>' +
                 '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Remove">🗑️</button>' +
               '</div>' +
             '</div>' +
@@ -1320,13 +1341,19 @@
       list.innerHTML = html;
     }
 
-    // Direct Buy Now for specific item in bag
-    window.proceedSingleItemCheckout = function(idx) {
-      // Keep only this item in cart for direct checkout or keep all items
-      renderCart();
-      // Scroll down to address/payment section smoothly inside drawer
-      var drawer = document.querySelector('#cartDrawer .overflow-y-auto');
-      if(drawer) drawer.scrollTop = drawer.scrollHeight;
+    window.proceedBagItemCheckout = function(idx) {
+      var item = items[idx];
+      if (!item) return;
+
+      activeCheckoutItem = {
+        name: item.name,
+        price: item.price,
+        store: item.store,
+        storeMobile: item.storeMobile || "",
+        image: item.image
+      };
+
+      openSingleCheckoutView();
     };
 
     function showQuickToast(msg) {
@@ -1459,7 +1486,9 @@
       });
     };
 
+    // Save order for the active single item being bought now
     function finalizeAndSaveOrder(payMethodStr, paymentIdStr) {
+      if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
 
@@ -1484,22 +1513,22 @@
       var deliveryFee = getDistanceFee(distVal);
 
       var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
-      var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
-      var totalPayable = itemSubtotal + deliveryFee;
+      var itemPrice = activeCheckoutItem.price;
+      var totalPayable = itemPrice + deliveryFee;
 
-      var platformFee = Math.round(itemSubtotal * 0.15);
-      var storeNetPayout = itemSubtotal - platformFee;
+      var platformFee = Math.round(itemPrice * 0.15);
+      var storeNetPayout = itemPrice - platformFee;
 
-      var storeName = items[0].store;
-      var storeMobile = items[0].storeMobile || "";
+      var storeName = activeCheckoutItem.store;
+      var storeMobile = activeCheckoutItem.storeMobile || "";
 
       var orderData = {
         orderId: orderId,
         customerName: name,
         customerPhone: phone,
         customerAddress: deliveryAddress,
-        items: items,
-        itemTotal: itemSubtotal,
+        items: [activeCheckoutItem],
+        itemTotal: itemPrice,
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
@@ -1535,12 +1564,12 @@
         }
 
         localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
-        localStorage.removeItem("fitin60_cart_items");
         window.location.href = "tracking.html";
       });
     }
 
     window.handleCheckout = function() {
+      if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
       var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
@@ -1562,8 +1591,7 @@
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
       var deliveryFee = getDistanceFee(distVal);
-      var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
-      var totalPayable = itemSubtotal + deliveryFee;
+      var totalPayable = activeCheckoutItem.price + deliveryFee;
 
       var options = {
         "key": "rzp_test_1234567890abcdef",
