@@ -3,78 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Fitin60 | Live Order Tracking</title>
-  
+  <title>Live Order Tracking | Fitin60</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  
+  <!-- Leaflet CSS & JS for Free Live GPS Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
-  
+
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #fafaf9;
+      background-color: #f1f5f9;
       color: #0f172a;
       overflow-x: hidden;
       width: 100%;
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+    #map { height: 260px; width: 100%; border-radius: 1.5rem; z-index: 10; }
   </style>
 </head>
-<body class="min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white w-full overflow-x-hidden">
+<body class="min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white w-full">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm w-full">
-    <a href="index.html" class="flex items-center gap-1 shrink-0">
-      <span class="font-brand text-2xl font-black tracking-tight text-slate-950">
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-6 h-18 flex items-center justify-between shadow-xs w-full">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-brand font-black text-lg shadow-md">F</div>
+      <span class="font-brand text-xl font-black tracking-tight text-slate-950">
         FITIN<span class="text-orange-600">60</span>
       </span>
-      <span class="text-[9px] bg-orange-100 text-orange-700 font-bold px-1.5 py-0.5 rounded-full border border-orange-200">LIVE TRACKER</span>
     </a>
-    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-3 py-1.5 rounded-xl text-xs transition">
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2 rounded-2xl transition">
       ← Back to Explore
     </a>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 mt-6 space-y-6 w-full">
-    
-    <!-- Top Banner (Appears only when active order exists) -->
-    <div id="topBanner" class="hidden bg-gradient-to-br from-slate-950 via-neutral-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl border border-slate-800">
-      <div class="flex justify-between items-center mb-2">
-        <span class="text-[10px] font-bold bg-orange-500 text-white px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> ⚡ 60-Min Hyperlocal Express
-        </span>
-        <span id="headerTimer" class="font-mono-num text-orange-400 font-bold text-sm">59:59 mins left</span>
+  <main class="max-w-2xl mx-auto px-4 mt-6 space-y-5 w-full">
+    <!-- Order Header Card -->
+    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <span id="orderIdBadge" class="text-[10px] font-black bg-orange-100 text-orange-800 px-3 py-1 rounded-full uppercase tracking-wider">Order #FIT-XXXX</span>
+          <h1 id="orderStatusTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Finding nearby rider...</h1>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] font-bold text-slate-400 uppercase">Estimated Drop</p>
+          <p class="font-mono-num font-black text-2xl text-emerald-600 animate-pulse" id="countdownTimer">59:59</p>
+        </div>
       </div>
-      <h1 class="font-brand text-2xl font-black tracking-tight">Live Order Radar</h1>
-      <p class="text-slate-400 text-xs mt-1">Real-time updates straight from boutique to your doorstep.</p>
-    </div>
 
-    <!-- Active Orders Container -->
-    <div id="ordersContainer" class="space-y-4 w-full">
-      <div class="bg-white rounded-3xl p-6 border border-slate-200 text-center py-12 text-slate-400 text-xs">
-        Loading active express orders...
+      <!-- Live GPS Map View -->
+      <div class="space-y-2">
+        <div class="flex justify-between items-center text-xs font-bold text-slate-700">
+          <span>📍 Live Rider Navigation Map</span>
+          <span class="text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">Realtime GPS Sync</span>
+        </div>
+        <div id="map" class="shadow-inner border border-slate-200"></div>
+      </div>
+
+      <!-- Delivery Details -->
+      <div class="bg-slate-50 rounded-2xl p-4 space-y-2.5 text-xs border border-slate-100">
+        <div class="flex justify-between">
+          <span class="text-slate-500 font-medium">Store Name:</span>
+          <span class="font-bold text-slate-900" id="storeNameLabel">Boutique Studio</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500 font-medium">Delivery Address:</span>
+          <span class="font-bold text-slate-900 text-right truncate max-w-[220px]" id="deliveryAddressLabel">Customer Address</span>
+        </div>
+        <div class="flex justify-between border-t border-slate-200 pt-2">
+          <span class="text-slate-500 font-medium">Secure Delivery OTP:</span>
+          <span class="font-mono font-black text-orange-600 bg-orange-50 px-2 py-0.5 rounded text-sm" id="deliveryOtpLabel">----</span>
+        </div>
       </div>
     </div>
-
   </main>
 
   <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-6 flex items-center justify-around z-40 shadow-lg">
-    <a href="index.html" class="flex flex-col items-center text-slate-600 hover:text-orange-600 font-bold">
-      <span class="text-lg leading-none">🏬</span>
-      <span class="text-[10px] mt-1">Explore</span>
+  <nav class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-3 px-8 flex items-center justify-around z-40 shadow-2xl">
+    <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-orange-600 font-bold group">
+      <span class="text-xl group-hover:scale-110 transition">🏬</span>
+      <span class="text-[10px] mt-1 font-medium">Explore</span>
     </a>
-    <a href="tracking.html" class="flex flex-col items-center text-orange-600 font-bold">
-      <span class="text-lg leading-none">⚡</span>
-      <span class="text-[10px] mt-1">Orders</span>
+    <a href="tracking.html" class="flex flex-col items-center text-orange-600 font-bold group">
+      <span class="text-xl group-hover:scale-110 transition">⚡</span>
+      <span class="text-[10px] mt-1 font-black">Orders</span>
     </a>
   </nav>
 
@@ -92,148 +115,50 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    // Cancel order function (Within 2 mins)
-    window.cancelCustomerOrder = function(orderId, timestamp) {
-      var diffMins = (Date.now() - timestamp) / (1000 * 60);
-      if (diffMins > 2) {
-        return alert("❌ Order cannot be cancelled after 2 minutes of placement!");
-      }
+    // Initialize Leaflet Map centered around Anantapur / Default Radar Area
+    var map = L.map('map').setView([14.6819, 77.6006], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© Fitin60 Express'
+    }).addTo(map);
 
-      if (confirm("Are you sure you want to cancel order " + orderId + "?")) {
-        db.ref("orders/" + orderId).remove().then(function() {
-          alert("✓ Order cancelled successfully.");
-        });
-      }
-    };
+    var storeMarker = L.marker([14.6850, 77.5950]).addTo(map).bindPopup("🏬 Boutique Store");
+    var customerMarker = L.marker([14.6780, 77.6080]).addTo(map).bindPopup("🏠 Delivery Location");
+    var riderMarker = L.marker([14.6815, 77.5990]).addTo(map).bindPopup("⚡ Live Rider").openPopup();
 
-    // Listen to orders from Firebase
-    db.ref("orders").on("value", function(snapshot) {
-      var orders = snapshot.val() || {};
-      var container = document.getElementById("ordersContainer");
-      var topBanner = document.getElementById("topBanner");
-      
-      var ordersList = Object.values(orders).reverse();
+    var activeOrder = null;
+    try {
+      var saved = localStorage.getItem("chitikelo_active_order");
+      if (saved) activeOrder = JSON.parse(saved);
+    } catch(e) {}
 
-      var activeOrder = ordersList.find(function(o) { return o.status !== "Delivered" && o.delivered !== true; });
+    if (activeOrder) {
+      document.getElementById("orderIdBadge").innerText = "Order #" + activeOrder.orderId;
+      document.getElementById("orderStatusTitle").innerText = activeOrder.status || "Rider assigned & heading to store";
+      document.getElementById("storeNameLabel").innerText = activeOrder.store || "Boutique Studio";
+      document.getElementById("deliveryAddressLabel").innerText = activeOrder.customerAddress || "Expressed Delivery";
+      document.getElementById("deliveryOtpLabel").innerText = activeOrder.deliveryOtp || "4821";
+    }
 
-      if (activeOrder) {
-        topBanner.classList.remove("hidden");
-        var orderTime = activeOrder.timestamp || Date.now();
-        var elapsedSecs = Math.floor((Date.now() - orderTime) / 1000);
-        var remainingSecs = Math.max(0, (60 * 60) - elapsedSecs);
+    // Countdown Timer simulation
+    var timerSecs = 59 * 60;
+    setInterval(function() {
+      if (timerSecs > 0) timerSecs--;
+      var m = Math.floor(timerSecs / 60);
+      var s = timerSecs % 60;
+      document.getElementById("countdownTimer").innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+    }, 1000);
 
-        if (window.activeOrderTimer) clearInterval(window.activeOrderTimer);
-        window.activeOrderTimer = setInterval(function() {
-          if (remainingSecs > 0) remainingSecs--;
-          var m = Math.floor(remainingSecs / 60);
-          var s = remainingSecs % 60;
-          var el = document.getElementById("headerTimer");
-          if (el) el.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s) + " mins left";
-        }, 1000);
-      } else {
-        topBanner.classList.add("hidden");
-      }
-
-      if (ordersList.length === 0) {
-        container.innerHTML = 
-          '<div class="bg-white rounded-3xl p-8 border border-slate-200 text-center space-y-3 shadow-sm">' +
-            '<span class="text-3xl">🛍️</span>' +
-            '<h3 class="font-brand font-bold text-base text-slate-900">No Active Express Orders</h3>' +
-            '<p class="text-xs text-slate-500">Explore nearby boutiques and place your 60-minute express order now!</p>' +
-            '<a href="index.html" class="inline-block bg-slate-950 text-white font-bold px-5 py-2.5 rounded-xl text-xs mt-2">Explore Outfits ➔</a>' +
-          '</div>';
-        return;
-      }
-
-      var html = "";
-      ordersList.forEach(function(o) {
-        var status = o.status || "Order Placed";
-        var otp = o.deliveryOtp || Math.floor(1000 + Math.random() * 9000);
-        var total = o.totalAmount || o.itemTotal || 0;
-        var address = o.customerAddress || "Permanent Delivery Address";
-        var storeName = o.store || "Boutique Studio";
-        var timestamp = o.timestamp || Date.now();
-        var paymentMethod = o.paymentMethod || "Pay on Delivery (Doorstep)";
-
-        // Format Date and Time nicely
-        var orderDateObj = new Date(timestamp);
-        var formattedDateTime = orderDateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + ' • ' + orderDateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-
-        // Progress bar step logic
-        var step1 = true;
-        var step2 = o.boutiqueAccepted || status !== "Order Placed";
-        var step3 = status === "Out for Delivery" || status === "Delivered" || o.riderAssigned;
-        var step4 = status === "Delivered" || o.delivered === true;
-
-        var itemsHtml = "";
-        if (o.items && Array.isArray(o.items)) {
-          o.items.forEach(function(it) {
-            itemsHtml += '<div class="text-xs font-bold text-slate-800 flex justify-between"><span>• ' + it.name + '</span><span class="font-mono-num text-orange-600">₹' + it.price + '</span></div>';
-          });
-        }
-
-        var canCancel = (Date.now() - timestamp) <= (2 * 60 * 1000) && status === "Order Placed";
-
-        html += 
-          '<div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5 w-full">' +
-            '<div class="flex justify-between items-start border-b border-slate-100 pb-4">' +
-              '<div>' +
-                '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md">ID: ' + o.orderId + '</span>' +
-                '<h3 class="font-brand font-black text-lg text-slate-950 mt-1">' + storeName + '</h3>' +
-                '<p class="text-[11px] font-medium text-slate-400 mt-0.5">📅 ' + formattedDateTime + '</p>' +
-              '</div>' +
-              '<div class="text-right">' +
-                '<span class="text-xs font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full border border-emerald-300">' + status + '</span>' +
-                '<p class="text-[10px] font-mono font-bold text-slate-400 mt-1">Delivery OTP: <span class="text-slate-900 font-mono-num font-black">' + otp + '</span></p>' +
-              '</div>' +
-            '</div>' +
-
-            // Visual Status Timeline
-            '<div class="grid grid-cols-4 gap-2 text-center text-[10px] font-bold">' +
-              '<div class="p-2 rounded-xl ' + (step1 ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-400') + '">1. Placed</div>' +
-              '<div class="p-2 rounded-xl ' + (step2 ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-400') + '">2. Packed</div>' +
-              '<div class="p-2 rounded-xl ' + (step3 ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-400') + '">3. On Way</div>' +
-              '<div class="p-2 rounded-xl ' + (step4 ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400') + '">4. Delivered</div>' +
-            '</div>' +
-
-            // Items breakdown
-            '<div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1.5">' +
-              '<p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Ordered Items</p>' +
-              itemsHtml +
-            '</div>' +
-
-            // Address & Payment Note
-            '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-600">' +
-              '<div>' +
-                '<p class="font-bold text-slate-400 text-[10px] uppercase">Delivery Address</p>' +
-                '<p class="font-bold text-slate-800 truncate">📍 ' + address + '</p>' +
-              '</div>' +
-              '<div class="sm:text-right">' +
-                '<p class="font-bold text-slate-400 text-[10px] uppercase">Payment Mode</p>' +
-                '<p class="font-bold text-emerald-700">💳 ' + paymentMethod + '</p>' +
-              '</div>' +
-            '</div>' +
-
-            '<div class="flex justify-between items-center pt-3 border-t border-slate-100">' +
-              '<span class="text-xs font-bold text-slate-500">Total Payable Amount</span>' +
-              '<span class="font-mono-num font-black text-xl text-orange-600">₹' + total + '</span>' +
-            '</div>' +
-
-            // Support & Cancel action bar
-            '<div class="pt-2 flex items-center justify-between gap-2">' +
-              '<a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20regarding%20order%20' + o.orderId + '" target="_blank" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-2.5 rounded-xl text-xs text-center transition">' +
-                '💬 WhatsApp Support' +
-              '</a>' +
-              (canCancel ? 
-                '<button onclick="cancelCustomerOrder(\'' + o.orderId + '\', ' + timestamp + ')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer">' +
-                  'Cancel Order' +
-                '</button>' : '') +
-            '</div>' +
-          '</div>';
-      });
-
-      container.innerHTML = html;
-    });
+    // Simulate Rider movement on map in realtime
+    var latStep = 0.0002;
+    var lngStep = 0.0003;
+    setInterval(function() {
+      var cur = riderMarker.getLatLng();
+      var newLat = cur.lat + (Math.random() - 0.4) * latStep;
+      var newLng = cur.lng + (Math.random() - 0.4) * lngStep;
+      riderMarker.setLatLng([newLat, newLng]);
+      map.panTo([newLat, newLng]);
+    }, 4000);
   </script>
 </body>
 </html>
