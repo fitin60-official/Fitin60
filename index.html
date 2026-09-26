@@ -203,7 +203,7 @@
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">Available Collections</span>
-          <span class="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -892,6 +892,7 @@
       showQuickToast("✓ Added to Bag");
     };
 
+    // FIXED: Prevent duplication on Buy Now and go directly to Checkout / Cart Drawer
     window.quickBuyNow = function(prodId) {
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
@@ -903,17 +904,25 @@
       }
 
       var dispName = getStoreDisplayName(p.store, p.storeMobile);
-      var itemObj = {
-        name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")",
-        price: p.price,
-        store: dispName,
-        storeMobile: p.storeMobile || "",
-        image: p.image
-      };
-      items.push(itemObj);
-      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
+      
+      // Check if item already exists in cart to prevent duplicates
+      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
+      if (existingIndex === -1) {
+        var itemObj = {
+          name: itemName,
+          price: p.price,
+          store: dispName,
+          storeMobile: p.storeMobile || "",
+          image: p.image
+        };
+        items.push(itemObj);
+        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      }
+
       renderCart();
-      toggleCart();
+      // Directly open cart drawer for checkout flow
+      document.getElementById("cartDrawer").classList.remove("hidden");
     };
 
     window.selectModalSize = function(size) {
@@ -1009,6 +1018,7 @@
       showQuickToast("✓ Added to Bag");
     };
 
+    // FIXED: Prevent duplication on Modal Buy Now and go directly to Checkout
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
       var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
@@ -1017,18 +1027,24 @@
       }
 
       var dispName = getStoreDisplayName(activeModalProduct.store, activeModalProduct.storeMobile);
-      var itemObj = {
-        name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""),
-        price: activeModalProduct.price,
-        store: dispName,
-        storeMobile: activeModalProduct.storeMobile || "",
-        image: activeModalProduct.image
-      };
-      items.push(itemObj);
-      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      var itemName = activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : "");
+      
+      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
+      if (existingIndex === -1) {
+        var itemObj = {
+          name: itemName,
+          price: activeModalProduct.price,
+          store: dispName,
+          storeMobile: activeModalProduct.storeMobile || "",
+          image: activeModalProduct.image
+        };
+        items.push(itemObj);
+        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+      }
+
       renderCart();
       closeProductDetailModal();
-      toggleCart();
+      document.getElementById("cartDrawer").classList.remove("hidden");
     };
 
     window.directOwnerDelete = function(key) {
@@ -1386,7 +1402,6 @@
       });
     };
 
-    // TRUE CENTRALIZED COLLECTION: Automatically credits 85% to Store Wallet Ledger
     function finalizeAndSaveOrder(payMethodStr, paymentIdStr) {
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
@@ -1450,7 +1465,6 @@
       };
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
-        // Automatically credit store earnings to their central ledger/wallet node
         if (storeMobile) {
           var storeWalletRef = db.ref("boutiques/" + storeMobile + "/walletBalance");
           storeWalletRef.transaction(function(currentBalance) {
@@ -1494,7 +1508,6 @@
       var itemSubtotal = items.reduce(function(a, b) { return a + b.price; }, 0);
       var totalPayable = itemSubtotal + deliveryFee;
 
-      // Razorpay Centralized Gateway Integration
       var options = {
         "key": "rzp_test_1234567890abcdef",
         "amount": totalPayable * 100,
@@ -1522,7 +1535,6 @@
       }
     };
 
-    // Realtime listener syncing boutique states and auto-updating store names and statuses
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {};
