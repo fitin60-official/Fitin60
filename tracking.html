@@ -9,7 +9,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
   
-  <!-- Leaflet CSS & JS for Free Live GPS Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -21,16 +20,11 @@
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f1f5f9;
-      color: #0f172a;
-      overflow-x: hidden;
-      width: 100%;
+      margin: 0; padding: 0; background-color: #f1f5f9; color: #0f172a; overflow-x: hidden; width: 100%;
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    #map { height: 260px; width: 100%; border-radius: 1.5rem; z-index: 10; }
+    #map { height: 220px; width: 100%; border-radius: 1.5rem; z-index: 10; }
   </style>
 </head>
 <body class="min-h-screen pb-28 antialiased selection:bg-orange-500 selection:text-white w-full">
@@ -39,22 +33,18 @@
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-6 h-18 flex items-center justify-between shadow-xs w-full">
     <a href="index.html" class="flex items-center gap-2">
       <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-brand font-black text-lg shadow-md">F</div>
-      <span class="font-brand text-xl font-black tracking-tight text-slate-950">
-        FITIN<span class="text-orange-600">60</span>
-      </span>
+      <span class="font-brand text-xl font-black tracking-tight text-slate-950">FITIN<span class="text-orange-600">60</span></span>
     </a>
-    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2 rounded-2xl transition">
-      ← Back to Explore
-    </a>
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2 rounded-2xl transition">← Explore</a>
   </header>
 
   <main class="max-w-2xl mx-auto px-4 mt-6 space-y-5 w-full">
-    <!-- Order Header Card -->
+    <!-- Status Card -->
     <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
         <div>
           <span id="orderIdBadge" class="text-[10px] font-black bg-orange-100 text-orange-800 px-3 py-1 rounded-full uppercase tracking-wider">Order #FIT-XXXX</span>
-          <h1 id="orderStatusTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Finding nearby rider...</h1>
+          <h1 id="orderStatusTitle" class="font-brand font-black text-xl text-slate-950 mt-1">Rider heading to store...</h1>
         </div>
         <div class="text-right">
           <p class="text-[10px] font-bold text-slate-400 uppercase">Estimated Drop</p>
@@ -62,44 +52,69 @@
         </div>
       </div>
 
-      <!-- Live GPS Map View -->
+      <!-- Map -->
       <div class="space-y-2">
         <div class="flex justify-between items-center text-xs font-bold text-slate-700">
-          <span>📍 Live Rider Navigation Map</span>
-          <span class="text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">Realtime GPS Sync</span>
+          <span>📍 Live Rider GPS Navigation</span>
+          <span class="text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">Realtime Sync</span>
         </div>
         <div id="map" class="shadow-inner border border-slate-200"></div>
       </div>
 
-      <!-- Delivery Details -->
-      <div class="bg-slate-50 rounded-2xl p-4 space-y-2.5 text-xs border border-slate-100">
+      <!-- Delivery Details & OTP Section -->
+      <div class="bg-slate-50 rounded-2xl p-4 space-y-3 text-xs border border-slate-100">
         <div class="flex justify-between">
           <span class="text-slate-500 font-medium">Store Name:</span>
           <span class="font-bold text-slate-900" id="storeNameLabel">Boutique Studio</span>
         </div>
         <div class="flex justify-between">
           <span class="text-slate-500 font-medium">Delivery Address:</span>
-          <span class="font-bold text-slate-900 text-right truncate max-w-[220px]" id="deliveryAddressLabel">Customer Address</span>
+          <span class="font-bold text-slate-900 text-right truncate max-w-[200px]" id="deliveryAddressLabel">Customer Address</span>
         </div>
-        <div class="flex justify-between border-t border-slate-200 pt-2">
-          <span class="text-slate-500 font-medium">Secure Delivery OTP:</span>
-          <span class="font-mono font-black text-orange-600 bg-orange-50 px-2 py-0.5 rounded text-sm" id="deliveryOtpLabel">----</span>
+        
+        <!-- Secure OTP Box -->
+        <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 flex items-center justify-between">
+          <div>
+            <p class="font-bold text-orange-900">Secure Delivery OTP</p>
+            <p class="text-[10px] text-orange-700">Give this OTP to rider upon arrival to unlock QR payment</p>
+          </div>
+          <span class="font-mono-num font-black text-lg text-orange-600 bg-white px-3 py-1 rounded-lg border border-orange-300 shadow-xs" id="deliveryOtpLabel">----</span>
+        </div>
+      </div>
+
+      <!-- Rider Verification & Dynamic QR Payment Section -->
+      <div id="qrPaymentSection" class="bg-slate-900 text-white rounded-2xl p-5 space-y-3 text-center">
+        <h3 class="font-brand font-bold text-sm text-orange-400">⚡ Rider Arrival & Payment Verification</h3>
+        <p class="text-[11px] text-slate-300">Rider will enter your Delivery OTP to generate the Secure Payment QR code.</p>
+        
+        <div id="otpInputBox" class="space-y-2 pt-2">
+          <input type="text" id="riderEnteredOtp" maxlength="4" placeholder="Rider enters 4-digit OTP" class="w-full max-w-xs mx-auto bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-center font-mono text-sm tracking-widest text-white focus:outline-none focus:border-orange-500">
+          <div>
+            <button onclick="verifyOtpAndShowQr()" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs uppercase shadow transition cursor-pointer">
+              Verify OTP & Show QR
+            </button>
+          </div>
+        </div>
+
+        <!-- Hidden QR Box (Appears after successful OTP verification) -->
+        <div id="dynamicQrCodeBox" class="hidden space-y-3 bg-white text-slate-900 p-4 rounded-2xl max-w-xs mx-auto animate-in zoom-in duration-300">
+          <p class="text-[11px] font-bold text-emerald-700 bg-emerald-50 py-1 rounded">✓ OTP Verified! Scan QR to Pay</p>
+          <div class="w-36 h-36 mx-auto bg-slate-100 border-2 border-slate-300 rounded-2xl flex items-center justify-center p-2 shadow-inner">
+            <!-- Simulated Secure Payment QR Code -->
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FITIN60_SECURE_PAYMENT_VERIFIED" alt="Payment QR" class="w-full h-full object-contain">
+          </div>
+          <p class="font-mono font-black text-sm text-slate-950" id="qrAmountDisplay">Amount: ₹0</p>
+          <button onclick="simulatePaymentSuccess()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase shadow transition cursor-pointer">
+            ✓ Simulate Scan & Pay Success
+          </button>
+        </div>
+
+        <div id="paymentSuccessBadge" class="hidden bg-emerald-500 text-slate-950 font-black py-3 px-4 rounded-xl text-xs uppercase tracking-wider animate-bounce">
+          🎉 Payment Successful & Order Delivered!
         </div>
       </div>
     </div>
   </main>
-
-  <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-3 px-8 flex items-center justify-around z-40 shadow-2xl">
-    <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-orange-600 font-bold group">
-      <span class="text-xl group-hover:scale-110 transition">🏬</span>
-      <span class="text-[10px] mt-1 font-medium">Explore</span>
-    </a>
-    <a href="tracking.html" class="flex flex-col items-center text-orange-600 font-bold group">
-      <span class="text-xl group-hover:scale-110 transition">⚡</span>
-      <span class="text-[10px] mt-1 font-black">Orders</span>
-    </a>
-  </nav>
 
   <script>
     var firebaseConfig = {
@@ -115,18 +130,16 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    // Initialize Leaflet Map centered around Anantapur / Default Radar Area
     var map = L.map('map').setView([14.6819, 77.6006], 14);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© Fitin60 Express'
-    }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© Fitin60' }).addTo(map);
 
     var storeMarker = L.marker([14.6850, 77.5950]).addTo(map).bindPopup("🏬 Boutique Store");
     var customerMarker = L.marker([14.6780, 77.6080]).addTo(map).bindPopup("🏠 Delivery Location");
     var riderMarker = L.marker([14.6815, 77.5990]).addTo(map).bindPopup("⚡ Live Rider").openPopup();
 
     var activeOrder = null;
+    var correctOtp = "4821";
+
     try {
       var saved = localStorage.getItem("chitikelo_active_order");
       if (saved) activeOrder = JSON.parse(saved);
@@ -137,10 +150,41 @@
       document.getElementById("orderStatusTitle").innerText = activeOrder.status || "Rider assigned & heading to store";
       document.getElementById("storeNameLabel").innerText = activeOrder.store || "Boutique Studio";
       document.getElementById("deliveryAddressLabel").innerText = activeOrder.customerAddress || "Expressed Delivery";
-      document.getElementById("deliveryOtpLabel").innerText = activeOrder.deliveryOtp || "4821";
+      
+      if (activeOrder.deliveryOtp) {
+        correctOtp = activeOrder.deliveryOtp;
+        document.getElementById("deliveryOtpLabel").innerText = correctOtp;
+      }
+      if (activeOrder.totalAmount) {
+        document.getElementById("qrAmountDisplay").innerText = "Amount: ₹" + activeOrder.totalAmount;
+      }
     }
 
-    // Countdown Timer simulation
+    function verifyOtpAndShowQr() {
+      var entered = document.getElementById("riderEnteredOtp").value.trim();
+      if (entered !== correctOtp) {
+        return alert("❌ Incorrect Delivery OTP! Ask customer for correct 4-digit OTP.");
+      }
+
+      document.getElementById("otpInputBox").classList.add("hidden");
+      document.getElementById("dynamicQrCodeBox").classList.remove("hidden");
+      alert("✓ OTP Verified Successfully! QR Code generated for payment.");
+    }
+
+    function simulatePaymentSuccess() {
+      document.getElementById("dynamicQrCodeBox").classList.add("hidden");
+      document.getElementById("paymentSuccessBadge").classList.remove("hidden");
+      document.getElementById("orderStatusTitle").innerText = "Delivered & Paid Successfully";
+      
+      if (activeOrder && activeOrder.orderId) {
+        db.ref("orders/" + activeOrder.orderId).update({
+          status: "Delivered & Paid",
+          paymentStatus: "Paid via Delivery QR",
+          delivered: true
+        });
+      }
+    }
+
     var timerSecs = 59 * 60;
     setInterval(function() {
       if (timerSecs > 0) timerSecs--;
@@ -149,15 +193,9 @@
       document.getElementById("countdownTimer").innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
     }, 1000);
 
-    // Simulate Rider movement on map in realtime
-    var latStep = 0.0002;
-    var lngStep = 0.0003;
     setInterval(function() {
       var cur = riderMarker.getLatLng();
-      var newLat = cur.lat + (Math.random() - 0.4) * latStep;
-      var newLng = cur.lng + (Math.random() - 0.4) * lngStep;
-      riderMarker.setLatLng([newLat, newLng]);
-      map.panTo([newLat, newLng]);
+      riderMarker.setLatLng([cur.lat + (Math.random() - 0.4) * 0.0002, cur.lng + (Math.random() - 0.4) * 0.0003]);
     }, 4000);
   </script>
 </body>
