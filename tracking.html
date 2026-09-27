@@ -47,31 +47,31 @@
           <h1 id="orderStatusTitle" class="font-brand font-black text-sm text-slate-950 mt-0.5">Order Placed - Waiting for Boutique Acceptance</h1>
         </div>
         <div class="text-right">
-          <p class="text-[9px] font-bold text-slate-400 uppercase">Drop ETA</p>
-          <p class="font-mono-num font-black text-xl text-emerald-600 animate-pulse" id="countdownTimer">59:59</p>
+          <p class="text-[9px] font-bold text-slate-400 uppercase">Drop ETA Timer</p>
+          <p class="font-mono-num font-black text-xl text-slate-400" id="countdownTimer">Waiting Pickup</p>
         </div>
       </div>
 
       <!-- Step Acceptance Progress UI -->
       <div class="grid grid-cols-2 gap-2 text-[11px]">
         <div id="boutiqueStatusStep" class="bg-amber-50 border border-amber-200 text-amber-800 font-bold p-2 rounded-xl text-center">
-          ⏳ Boutique Acceptance Pending
+          ⏳ Boutique Pending
         </div>
         <div id="riderStatusStep" class="bg-slate-50 border border-slate-200 text-slate-500 font-bold p-2 rounded-xl text-center">
-          ⏳ Rider Assignment Pending
+          ⏳ Rider Pending
         </div>
       </div>
 
-      <!-- Compact Map (Visible only after Rider picks up / accepts) -->
+      <!-- Compact Map (Visible only after Rider picks up) -->
       <div id="mapContainerWrapper" class="space-y-1.5 hidden">
         <div class="flex justify-between items-center text-[11px] font-bold text-slate-700">
           <span>📍 Live Rider Radar</span>
-          <span class="text-orange-600 bg-orange-50 px-2 py-0.5 rounded text-[10px]">Sync Active</span>
+          <span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[10px]">Picked Up & On the way</span>
         </div>
         <div id="map" class="shadow-inner border border-slate-200"></div>
       </div>
 
-      <!-- Compact Delivery Details & Professional OTP Display -->
+      <!-- Compact Delivery Details & Clean OTP Display -->
       <div class="bg-slate-50 rounded-xl p-3 space-y-2.5 text-xs border border-slate-100">
         <div class="flex justify-between">
           <span class="text-slate-500">Store:</span>
@@ -82,20 +82,20 @@
           <span class="font-bold text-slate-900 text-right truncate max-w-[180px]" id="deliveryAddressLabel">Customer Address</span>
         </div>
         
-        <!-- Secure OTP Notice for Customer -->
+        <!-- Secure OTP Display for Customer -->
         <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 flex items-center justify-between">
           <div>
             <p class="font-bold text-orange-900 text-xs">🔒 Secure Delivery OTP</p>
-            <p class="text-[10px] text-orange-700 mt-0.5">Share this OTP with the arrival rider to verify & pay</p>
+            <p class="text-[10px] text-orange-700 mt-0.5">Share with arrival rider to verify & pay</p>
           </div>
           <span class="font-mono-num font-black text-lg text-orange-600 bg-white px-3 py-1 rounded-lg border border-orange-300 shadow-xs" id="deliveryOtpLabel">----</span>
         </div>
       </div>
 
-      <!-- Professional Status Banner -->
-      <div class="bg-slate-900 text-white rounded-xl p-3.5 text-center space-y-1">
+      <!-- Professional Guarantee Banner -->
+      <div class="bg-slate-900 text-white rounded-xl p-3 text-center space-y-1">
         <p class="font-brand font-bold text-xs text-orange-400">⚡ Fitin60 Express Hyperlocal Guarantee</p>
-        <p class="text-[10px] text-slate-300">Your order is tracked in real-time. Payment will be collected securely upon delivery verification.</p>
+        <p class="text-[10px] text-slate-300">Timer starts automatically once the rider picks up your order from the boutique.</p>
       </div>
     </div>
   </main>
@@ -129,6 +129,8 @@
     var map = null;
     var riderMarker = null;
     var activeOrder = null;
+    var timerInterval = null;
+    var timerSecs = 60 * 60; // 60 mins
 
     try {
       var saved = localStorage.getItem("chitikelo_active_order");
@@ -144,41 +146,62 @@
         document.getElementById("deliveryOtpLabel").innerText = activeOrder.deliveryOtp;
       }
 
-      // Realtime listener for order acceptance & tracking status
+      // Realtime listener for order acceptance & pickup status
       db.ref("orders/" + activeOrder.orderId).on("value", function(snap) {
         var ord = snap.val();
         if (!ord) return;
 
         var boutiqueAccepted = ord.boutiqueAccepted === true;
         var riderAssigned = ord.riderAssigned === true;
+        var orderPickedUp = ord.orderPickedUp === true; // Trigger for timer & live radar
 
         var bStep = document.getElementById("boutiqueStatusStep");
         var rStep = document.getElementById("riderStatusStep");
         var title = document.getElementById("orderStatusTitle");
         var mapWrapper = document.getElementById("mapContainerWrapper");
+        var timerDisplay = document.getElementById("countdownTimer");
 
         if (!boutiqueAccepted) {
           bStep.className = "bg-amber-50 border border-amber-200 text-amber-800 font-bold p-2 rounded-xl text-center";
-          bStep.innerText = "⏳ Boutique Acceptance Pending";
+          bStep.innerText = "⏳ Boutique Pending";
           rStep.className = "bg-slate-50 border border-slate-200 text-slate-400 font-bold p-2 rounded-xl text-center";
-          rStep.innerText = "⏳ Rider Waiting for Store";
+          rStep.innerText = "⏳ Rider Waiting";
           title.innerText = "Order Placed - Waiting for Boutique Acceptance";
           mapWrapper.classList.add("hidden");
         } else if (boutiqueAccepted && !riderAssigned) {
           bStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          bStep.innerText = "✓ Boutique Accepted!";
+          bStep.innerText = "✓ Boutique Accepted";
           rStep.className = "bg-amber-50 border border-amber-200 text-amber-800 font-bold p-2 rounded-xl text-center";
-          rStep.innerText = "⏳ Assigning Nearby Rider...";
+          rStep.innerText = "⏳ Assigning Rider...";
           title.innerText = "Boutique Accepted! Assigning Rider...";
           mapWrapper.classList.add("hidden");
-        } else if (boutiqueAccepted && riderAssigned) {
+        } else if (boutiqueAccepted && riderAssigned && !orderPickedUp) {
           bStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          bStep.innerText = "✓ Boutique Accepted!";
+          bStep.innerText = "✓ Boutique Accepted";
           rStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          rStep.innerText = "✓ Rider Assigned & Heading to Store!";
-          title.innerText = ord.status || "Rider assigned & heading to store";
+          rStep.innerText = "✓ Rider Assigned (Heading to Store)";
+          title.innerText = "Rider arrived at store & packing order...";
+          mapWrapper.classList.add("hidden");
+          timerDisplay.innerText = "Waiting Pickup";
+        } else if (orderPickedUp || ord.status === "Picked Up") {
+          bStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
+          bStep.innerText = "✓ Boutique Accepted";
+          rStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
+          rStep.innerText = "✓ Order Picked Up!";
+          title.innerText = "Rider on the way to your address ⚡";
           
-          // Show Map once rider is assigned and heading
+          // Start countdown timer only after pickup
+          timerDisplay.className = "font-mono-num font-black text-xl text-emerald-600 animate-pulse";
+          if (!timerInterval) {
+            timerInterval = setInterval(function() {
+              if (timerSecs > 0) timerSecs--;
+              var m = Math.floor(timerSecs / 60);
+              var s = timerSecs % 60;
+              timerDisplay.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+            }, 1000);
+          }
+
+          // Show Map after pickup
           mapWrapper.classList.remove("hidden");
           if (!map) {
             setTimeout(function() {
@@ -186,20 +209,12 @@
               L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© Fitin60' }).addTo(map);
               L.marker([14.6850, 77.5950]).addTo(map).bindPopup("🏬 Boutique");
               L.marker([14.6780, 77.6080]).addTo(map).bindPopup("🏠 Customer");
-              riderMarker = L.marker([14.6815, 77.5990]).addTo(map).bindPopup("⚡ Rider").openPopup();
+              riderMarker = L.marker([14.6815, 77.5990]).addTo(map).bindPopup("⚡ Rider on the way").openPopup();
             }, 200);
           }
         }
       });
     }
-
-    var timerSecs = 59 * 60;
-    setInterval(function() {
-      if (timerSecs > 0) timerSecs--;
-      var m = Math.floor(timerSecs / 60);
-      var s = timerSecs % 60;
-      document.getElementById("countdownTimer").innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-    }, 1000);
 
     setInterval(function() {
       if (riderMarker) {
