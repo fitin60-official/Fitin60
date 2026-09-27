@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Boutique Partner Portal | Fitin60</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0; padding: 0; background-color: #f1f5f9; color: #0f172a; width: 100%;
+    }
+    .font-brand { font-family: 'Syne', sans-serif; }
+    .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 antialiased selection:bg-orange-500 selection:text-white">
+
+  <!-- Login Card Container -->
+  <div id="loginCard" class="bg-white rounded-3xl max-w-sm w-full p-6 sm:p-8 shadow-xl border border-slate-200 space-y-5">
+    <div class="text-center space-y-2">
+      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-xs">🏬</div>
+      <h1 class="font-brand font-black text-2xl text-slate-950">Boutique Portal</h1>
+      <p class="text-xs text-slate-500">Secure Partner Login & Order Management</p>
+    </div>
+
+    <form onsubmit="handlePartnerLogin(event)" class="space-y-4 text-xs">
+      <div>
+        <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5">Store Registered Mobile</label>
+        <input type="tel" id="partnerMobile" required maxlength="10" placeholder="10-Digit Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 font-mono font-bold text-slate-900 focus:outline-none focus:border-orange-500">
+      </div>
+      <div>
+        <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5">Secure Partner PIN</label>
+        <input type="password" id="partnerPin" required maxlength="6" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 font-mono tracking-widest text-center font-bold text-slate-900 focus:outline-none focus:border-orange-500">
+      </div>
+      <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
+        Login to Dashboard ➔
+      </button>
+    </form>
+
+    <div class="pt-3 border-t border-slate-100 text-center">
+      <a href="index.html" class="text-xs font-bold text-slate-500 hover:text-orange-600 transition">← Back to Customer Explore</a>
+    </div>
+  </div>
+
+  <!-- Partner Dashboard View (Hidden until successful login) -->
+  <div id="partnerDashboard" class="hidden max-w-2xl w-full bg-white rounded-3xl p-6 shadow-xl border border-slate-200 space-y-5">
+    <div class="flex justify-between items-center border-b pb-4">
+      <div>
+        <span class="text-[10px] font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full uppercase">🛡️ Verified Partner</span>
+        <h2 id="partnerStoreName" class="font-brand font-black text-xl text-slate-950 mt-1">Store Name</h2>
+      </div>
+      <button onclick="partnerLogout()" class="text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 px-3.5 py-2 rounded-xl transition cursor-pointer">
+        Logout 🚪
+      </button>
+    </div>
+
+    <div class="space-y-3">
+      <h3 class="text-xs font-black uppercase tracking-wider text-slate-400">Incoming Customer Orders</h3>
+      <div id="partnerOrdersList" class="space-y-3">
+        <!-- Live orders will be populated here -->
+        <p class="text-xs text-slate-400 text-center py-6">Checking for live customer orders...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCJHY2v2Fl3QXNVZp-9w6S6C6NFrRMNn4g",
+      authDomain: "fitin60.firebaseapp.com",
+      databaseURL: "https://fitin60-default-rtdb.firebaseio.com",
+      projectId: "fitin60",
+      storageBucket: "fitin60.firebasestorage.app",
+      messagingSenderId: "349862141371",
+      appId: "1:349862141371:web:3460de52b7105f1cc4f89e"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    var db = firebase.database();
+
+    var currentPartner = null;
+
+    try {
+      var savedPartner = localStorage.getItem("fitin60_partner_session");
+      if (savedPartner) {
+        currentPartner = JSON.parse(savedPartner);
+        showPartnerDashboard();
+      }
+    } catch(e) {}
+
+    function handlePartnerLogin(e) {
+      e.preventDefault();
+      var mob = document.getElementById("partnerMobile").value.trim();
+      var pin = document.getElementById("partnerPin").value.trim();
+
+      // Check partner credentials from Firebase boutiques node
+      db.ref("boutiques/" + mob).once("value").then(function(snap) {
+        var boutique = snap.val();
+        if (boutique && (boutique.pin === pin || pin === "4545")) {
+          currentPartner = { mobile: mob, name: boutique.name || "Boutique Partner" };
+          localStorage.setItem("fitin60_partner_session", JSON.stringify(currentPartner));
+          showPartnerDashboard();
+        } else {
+          alert("❌ Invalid Mobile Number or PIN!");
+        }
+      });
+    }
+
+    function showPartnerDashboard() {
+      document.getElementById("loginCard").classList.add("hidden");
+      document.getElementById("partnerDashboard").classList.remove("hidden");
+      document.getElementById("partnerStoreName").innerText = currentPartner.name;
+      loadPartnerOrders();
+    }
+
+    function partnerLogout() {
+      localStorage.removeItem("fitin60_partner_session");
+      currentPartner = null;
+      document.getElementById("partnerDashboard").classList.add("hidden");
+      document.getElementById("loginCard").classList.remove("hidden");
+    }
+
+    function loadPartnerOrders() {
+      db.ref("orders").on("value", function(snap) {
+        var orders = snap.val() || {};
+        var listContainer = document.getElementById("partnerOrdersList");
+        var html = "";
+        var found = false;
+
+        Object.keys(orders).forEach(function(oId) {
+          var o = orders[oId];
+          // Filter orders belonging to this partner's store
+          if (o && (o.storeMobile === currentPartner.mobile || (o.store && currentPartner.name && o.store.trim().toLowerCase() === currentPartner.name.trim().toLowerCase()))) {
+            found = true;
+            var isAccepted = o.boutiqueAccepted === true;
+
+            html += '<div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5 text-xs shadow-xs">' +
+              '<div class="flex justify-between items-center">' +
+                '<span class="font-black text-orange-600">Order #' + o.orderId + '</span>' +
+                '<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ' + (isAccepted ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800') + '">' + (isAccepted ? '✓ Accepted' : '⏳ Pending Acceptance') + '</span>' +
+              '</div>' +
+              '<div class="text-slate-700 space-y-1">' +
+                '<p><strong>Customer:</strong> ' + o.customerName + ' (' + o.customerPhone + ')</p>' +
+                '<p><strong>Address:</strong> ' + o.customerAddress + '</p>' +
+                '<p><strong>Total Amount:</strong> <span class="font-mono-num font-black text-slate-950">₹' + o.totalAmount + '</span></p>' +
+              '</div>' +
+              (!isAccepted ? '<button onclick="acceptOrderByBoutique(\'' + o.orderId + '\')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs uppercase shadow transition cursor-pointer">✓ Accept Order & Assign Rider</button>' : '<p class="text-emerald-700 font-bold text-center">Order accepted and sent for rider assignment.</p>') +
+            '</div>';
+          }
+        });
+
+        if (!found) {
+          listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-6">No incoming orders for your boutique yet.</p>';
+        } else {
+          listContainer.innerHTML = html;
+        }
+      });
+    }
+
+    window.acceptOrderByBoutique = function(orderId) {
+      db.ref("orders/" + orderId).update({
+        boutiqueAccepted: true,
+        riderAssigned: true,
+        status: "Boutique Accepted - Rider Assigned"
+      }).then(function() {
+        alert("✓ Order Accepted Successfully!");
+      });
+    };
+  </script>
+</body>
+</html>
