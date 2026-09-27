@@ -67,7 +67,6 @@
         <h3 class="text-[11px] font-black uppercase tracking-wider text-slate-400">Ordered Item Details</h3>
         
         <div id="orderedItemsContainer" class="space-y-2">
-          <!-- Dynamically populated ordered items -->
           <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
             <img id="summaryItemImg" src="" alt="" class="w-12 h-12 rounded-lg object-cover border shrink-0">
             <div class="flex-1 truncate">
@@ -106,7 +105,6 @@
           <span class="font-bold text-slate-900 text-right truncate max-w-[180px]" id="deliveryAddressLabel">Customer Address</span>
         </div>
         
-        <!-- Secure OTP Display for Customer -->
         <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 flex items-center justify-between">
           <div>
             <p class="font-bold text-orange-900 text-xs">🔒 Secure Delivery OTP</p>
@@ -114,6 +112,13 @@
           </div>
           <span class="font-mono-num font-black text-lg text-orange-600 bg-white px-3 py-1 rounded-lg border border-orange-300 shadow-xs" id="deliveryOtpLabel">----</span>
         </div>
+      </div>
+
+      <!-- Cancel Order Button (Active only before boutique acceptance) -->
+      <div id="cancelOrderActionBox" class="pt-1">
+        <button onclick="cancelActiveOrder()" id="cancelOrderBtn" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow-xs">
+          ✕ Cancel Order
+        </button>
       </div>
 
       <!-- Guarantee Banner -->
@@ -169,7 +174,6 @@
         document.getElementById("deliveryOtpLabel").innerText = activeOrder.deliveryOtp;
       }
 
-      // Populate Ordered Item Details & Cost Summary
       if (activeOrder.items && activeOrder.items.length > 0) {
         var firstItem = activeOrder.items[0];
         document.getElementById("summaryItemImg").src = firstItem.image || "";
@@ -189,7 +193,13 @@
       // Realtime listener for order acceptance & pickup status
       db.ref("orders/" + activeOrder.orderId).on("value", function(snap) {
         var ord = snap.val();
-        if (!ord) return;
+        if (!ord) {
+          // Order was deleted/cancelled
+          alert("❌ This order has been cancelled.");
+          localStorage.removeItem("chitikelo_active_order");
+          window.location.href = "index.html";
+          return;
+        }
 
         var boutiqueAccepted = ord.boutiqueAccepted === true;
         var riderAssigned = ord.riderAssigned === true;
@@ -200,6 +210,14 @@
         var title = document.getElementById("orderStatusTitle");
         var mapWrapper = document.getElementById("mapContainerWrapper");
         var timerDisplay = document.getElementById("countdownTimer");
+        var cancelBox = document.getElementById("cancelOrderActionBox");
+
+        // If boutique accepted, hide cancel button (locking order processing)
+        if (boutiqueAccepted) {
+          cancelBox.classList.add("hidden");
+        } else {
+          cancelBox.classList.remove("hidden");
+        }
 
         if (!boutiqueAccepted) {
           bStep.className = "bg-amber-50 border border-amber-200 text-amber-800 font-bold p-2 rounded-xl text-center";
@@ -252,6 +270,19 @@
           }
         }
       });
+    }
+
+    function cancelActiveOrder() {
+      if (!activeOrder || !activeOrder.orderId) return;
+      if (confirm("Are you sure you want to cancel this order?")) {
+        db.ref("orders/" + activeOrder.orderId).remove().then(function() {
+          alert("✓ Order cancelled successfully.");
+          localStorage.removeItem("chitikelo_active_order");
+          window.location.href = "index.html";
+        }).catch(function(err) {
+          alert("Error cancelling order: " + err.message);
+        });
+      }
     }
 
     setInterval(function() {
