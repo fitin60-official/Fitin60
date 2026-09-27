@@ -62,6 +62,34 @@
         </div>
       </div>
 
+      <!-- Ordered Items & Cost Summary Box -->
+      <div class="bg-slate-50 rounded-xl p-3 space-y-3 border border-slate-200/80">
+        <h3 class="text-[11px] font-black uppercase tracking-wider text-slate-400">Ordered Item Details</h3>
+        
+        <div id="orderedItemsContainer" class="space-y-2">
+          <!-- Dynamically populated ordered items -->
+          <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
+            <img id="summaryItemImg" src="" alt="" class="w-12 h-12 rounded-lg object-cover border shrink-0">
+            <div class="flex-1 truncate">
+              <p id="summaryItemName" class="font-bold text-xs text-slate-950 truncate">Outfit Name</p>
+              <p id="summaryStoreName" class="text-[10px] text-slate-500">Store: Loading...</p>
+            </div>
+            <span id="summaryItemPrice" class="font-mono-num font-black text-xs text-orange-600">₹0</span>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-200 pt-2 space-y-1 text-xs font-medium text-slate-600">
+          <div class="flex justify-between">
+            <span>Delivery Fee (<span id="summaryDistance">~2.5 KM</span>)</span>
+            <span id="summaryDeliveryFee" class="font-mono font-bold text-emerald-700">₹49</span>
+          </div>
+          <div class="flex justify-between font-black text-slate-950 text-sm pt-1 border-t border-slate-100">
+            <span>Total Paid Amount</span>
+            <span id="summaryTotalAmount" class="font-mono-num text-orange-600 text-base">₹0</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Compact Map (Visible only after Rider picks up) -->
       <div id="mapContainerWrapper" class="space-y-1.5 hidden">
         <div class="flex justify-between items-center text-[11px] font-bold text-slate-700">
@@ -71,14 +99,10 @@
         <div id="map" class="shadow-inner border border-slate-200"></div>
       </div>
 
-      <!-- Compact Delivery Details & Clean OTP Display -->
-      <div class="bg-slate-50 rounded-xl p-3 space-y-2.5 text-xs border border-slate-100">
+      <!-- Delivery Details & Clean OTP Display -->
+      <div class="bg-slate-50 rounded-xl p-3 space-y-2 text-xs border border-slate-100">
         <div class="flex justify-between">
-          <span class="text-slate-500">Store:</span>
-          <span class="font-bold text-slate-900" id="storeNameLabel">Boutique Studio</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-500">Address:</span>
+          <span class="text-slate-500">Delivery Address:</span>
           <span class="font-bold text-slate-900 text-right truncate max-w-[180px]" id="deliveryAddressLabel">Customer Address</span>
         </div>
         
@@ -92,7 +116,7 @@
         </div>
       </div>
 
-      <!-- Professional Guarantee Banner -->
+      <!-- Guarantee Banner -->
       <div class="bg-slate-900 text-white rounded-xl p-3 text-center space-y-1">
         <p class="font-brand font-bold text-xs text-orange-400">⚡ Fitin60 Express Hyperlocal Guarantee</p>
         <p class="text-[10px] text-slate-300">Timer starts automatically once the rider picks up your order from the boutique.</p>
@@ -130,7 +154,7 @@
     var riderMarker = null;
     var activeOrder = null;
     var timerInterval = null;
-    var timerSecs = 60 * 60; // 60 mins
+    var timerSecs = 60 * 60;
 
     try {
       var saved = localStorage.getItem("chitikelo_active_order");
@@ -139,12 +163,28 @@
 
     if (activeOrder && activeOrder.orderId) {
       document.getElementById("orderIdBadge").innerText = "Order #" + activeOrder.orderId;
-      document.getElementById("storeNameLabel").innerText = activeOrder.store || "Boutique Studio";
       document.getElementById("deliveryAddressLabel").innerText = activeOrder.customerAddress || "Expressed Delivery";
       
       if (activeOrder.deliveryOtp) {
         document.getElementById("deliveryOtpLabel").innerText = activeOrder.deliveryOtp;
       }
+
+      // Populate Ordered Item Details & Cost Summary
+      if (activeOrder.items && activeOrder.items.length > 0) {
+        var firstItem = activeOrder.items[0];
+        document.getElementById("summaryItemImg").src = firstItem.image || "";
+        document.getElementById("summaryItemName").innerText = firstItem.name || "Outfit";
+        document.getElementById("summaryStoreName").innerText = "Store: " + (activeOrder.store || firstItem.store || "Boutique");
+        document.getElementById("summaryItemPrice").innerText = "₹" + firstItem.price;
+      } else {
+        document.getElementById("summaryItemName").innerText = "Outfit Order";
+        document.getElementById("summaryStoreName").innerText = "Store: " + (activeOrder.store || "Boutique");
+        document.getElementById("summaryItemPrice").innerText = "₹" + (activeOrder.itemTotal || activeOrder.totalAmount || 0);
+      }
+
+      document.getElementById("summaryDistance").innerText = "~" + (activeOrder.distanceKm || 2.5) + " KM";
+      document.getElementById("summaryDeliveryFee").innerText = "₹" + (activeOrder.deliveryFee || 49);
+      document.getElementById("summaryTotalAmount").innerText = "₹" + (activeOrder.totalAmount || 0);
 
       // Realtime listener for order acceptance & pickup status
       db.ref("orders/" + activeOrder.orderId).on("value", function(snap) {
@@ -153,7 +193,7 @@
 
         var boutiqueAccepted = ord.boutiqueAccepted === true;
         var riderAssigned = ord.riderAssigned === true;
-        var orderPickedUp = ord.orderPickedUp === true; // Trigger for timer & live radar
+        var orderPickedUp = ord.orderPickedUp === true;
 
         var bStep = document.getElementById("boutiqueStatusStep");
         var rStep = document.getElementById("riderStatusStep");
@@ -190,7 +230,6 @@
           rStep.innerText = "✓ Order Picked Up!";
           title.innerText = "Rider on the way to your address ⚡";
           
-          // Start countdown timer only after pickup
           timerDisplay.className = "font-mono-num font-black text-xl text-emerald-600 animate-pulse";
           if (!timerInterval) {
             timerInterval = setInterval(function() {
@@ -201,7 +240,6 @@
             }, 1000);
           }
 
-          // Show Map after pickup
           mapWrapper.classList.remove("hidden");
           if (!map) {
             setTimeout(function() {
