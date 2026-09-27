@@ -42,7 +42,6 @@
     }
     #quickToast.show { transform: translateY(0); opacity: 1; }
 
-    /* Ultra smooth mobile glassmorphism */
     .glass-panel {
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(16px);
@@ -56,13 +55,13 @@
 </head>
 <body class="min-h-screen pb-32 antialiased selection:bg-orange-500 selection:text-white w-full overflow-x-hidden">
 
-  <!-- Mobile-Optimized Top Banner -->
+  <!-- Top Banner -->
   <div class="gradient-hero text-white text-[11px] font-bold py-2 px-3 text-center flex items-center justify-center gap-2 border-b border-slate-800 shadow-sm">
     <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse shrink-0"></span>
-    <span class="truncate tracking-wide">⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • Centralized Platform Collection</span>
+    <span class="truncate tracking-wide">⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • Secure Delivery OTP & QR</span>
   </div>
 
-  <!-- Mobile Responsive Header -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between shadow-xs w-full">
     <a href="index.html" class="flex items-center gap-2 shrink-0 group">
       <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 via-amber-500 to-yellow-400 flex items-center justify-center text-white font-brand font-black text-lg shadow-lg group-hover:scale-105 transition">F</div>
@@ -123,7 +122,7 @@
   </div>
 
   <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6 space-y-5 sm:space-y-6 w-full">
-    <!-- Search & Smooth Category Filters -->
+    <!-- Search & Filters -->
     <div class="space-y-3.5 w-full">
       <div class="relative w-full shadow-sm rounded-3xl overflow-hidden bg-white border border-slate-200/90">
         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
@@ -141,7 +140,7 @@
       </div>
     </div>
 
-    <!-- Stylish Hero Banner -->
+    <!-- Hero Banner -->
     <div class="relative gradient-hero rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 overflow-hidden w-full">
       <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-orange-500/20 rounded-full blur-3xl pointer-events-none"></div>
       
@@ -158,7 +157,7 @@
         Boutiques & Uniforms in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
       </h1>
       <p class="text-slate-300 text-xs sm:text-sm mt-2 max-w-xl">
-        Tap any outfit picture for immersive high-resolution angles, multi-slide inspection, and instant delivery.
+        Secure Delivery OTP & Instant QR Verification enabled for verified orders.
       </p>
     </div>
 
@@ -172,7 +171,7 @@
     </div>
   </main>
 
-  <!-- Live Order Tracking Quick Floating Pill -->
+  <!-- Active Order Pill -->
   <div id="floatingOrderTracker" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 hidden">
     <a href="tracking.html" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 border border-slate-800 transition transform hover:scale-105 whitespace-nowrap">
       <span class="w-3 h-3 rounded-full bg-orange-500 animate-ping"></span>
@@ -181,9 +180,9 @@
     </a>
   </div>
 
-  <!-- SAVED PERMANENT ADDRESS MODAL -->
+  <!-- Saved Address Modal -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 animate-in zoom-in-95 duration-200">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-3">
         <div class="flex items-center gap-2">
           <span class="text-2xl">📍</span>
@@ -195,9 +194,8 @@
       <div class="space-y-3 text-xs">
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5">Permanent Full Delivery Address</label>
-          <textarea id="savedPermanentAddressInput" rows="3" placeholder="House/Flat No, Landmark, Street Name, Town..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-900 focus:outline-none focus:border-orange-500 font-medium"></textarea>
+          <textarea id="savedPermanentAddressInput" rows="3" placeholder="House/Flat No, Landmark, Street Name..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-900 focus:outline-none focus:border-orange-500 font-medium"></textarea>
         </div>
-
         <button onclick="saveCustomerAddressPermanently()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
           ✓ Save as Permanent Address
         </button>
@@ -205,9 +203,9 @@
     </div>
   </div>
 
-  <!-- STORE EXPLORE MODAL -->
+  <!-- Store Explore Modal -->
   <div id="storeExploreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl">
-    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
       <div class="p-6 bg-slate-950 text-white flex items-center justify-between shrink-0">
         <div>
           <h3 class="font-brand font-black text-xl sm:text-2xl text-white" id="exploreStoreName">Store Name</h3>
@@ -215,7 +213,6 @@
         </div>
         <button onclick="closeStoreExploreModal()" class="text-slate-400 hover:text-white text-3xl font-bold cursor-pointer">&times;</button>
       </div>
-
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-xs">Available Collections</span>
@@ -226,17 +223,15 @@
     </div>
   </div>
 
-  <!-- EXPANSIVE FULL-IMAGE & MULTI-SLIDE DETAILS MODAL -->
+  <!-- Product Detail Modal -->
   <div id="productDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl">
-    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl relative border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col md:flex-row shadow-2xl relative border border-slate-200 overflow-hidden">
       <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 z-30 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-xl cursor-pointer transition">&times;</button>
       
       <div class="relative w-full md:w-3/5 h-80 md:h-auto md:min-h-[460px] bg-slate-100 overflow-hidden flex items-center justify-center select-none" id="swipeArea">
         <img id="modalMainImage" src="" alt="Full Outfit" class="w-full h-full object-contain md:object-cover transition duration-300">
-
         <button onclick="slideImage(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-lg cursor-pointer transition z-10">❮</button>
         <button onclick="slideImage(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-lg cursor-pointer transition z-10">❯</button>
-
         <span id="imageCounterBadge" class="absolute bottom-4 right-4 bg-slate-950/80 text-white text-xs font-mono font-bold px-3 py-1.5 rounded-xl backdrop-blur-md z-10">1 / 1</span>
       </div>
 
@@ -246,27 +241,22 @@
             <p class="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Slide Angles</p>
             <div id="modalThumbnailsStrip" class="flex gap-2.5 overflow-x-auto no-scrollbar py-1"></div>
           </div>
-
           <div class="border-t border-slate-100 pt-3">
             <span id="modalProdCategory" class="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">Uniform</span>
             <h3 id="modalProdName" class="font-brand font-black text-xl text-slate-950 mt-1.5 leading-snug">Outfit Name</h3>
             <p id="modalProdStore" class="text-xs font-bold text-slate-500 mt-1">Store Name</p>
-            
             <div class="flex items-baseline gap-2.5 mt-3">
               <span id="modalProdPrice" class="font-mono-num font-black text-2xl text-slate-950">₹0</span>
               <span id="modalProdOrig" class="text-xs text-slate-400 line-through">₹0</span>
               <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">60-Min Express</span>
             </div>
           </div>
-
           <p id="modalProdDesc" class="text-slate-600 text-xs leading-relaxed">Description and details.</p>
-
           <div>
             <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">Select Size</label>
             <div id="modalSizesContainer" class="flex flex-wrap gap-2"></div>
           </div>
         </div>
-
         <div class="grid grid-cols-2 gap-2.5 pt-4 border-t border-slate-100">
           <button onclick="modalAddToBag()" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs cursor-pointer transition shadow-xs">🛍️ Add Bag</button>
           <button onclick="modalBuyNow()" class="bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-2xl text-xs cursor-pointer shadow-md transition">⚡ Instant Buy</button>
@@ -275,7 +265,7 @@
     </div>
   </div>
 
-  <!-- DIRECT OWNER FAST EDIT MODAL -->
+  <!-- Direct Owner Edit Modal -->
   <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-3">
@@ -285,64 +275,56 @@
         </div>
         <button onclick="closeDirectOwnerEditModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
-
       <form onsubmit="handleDirectOwnerSave(event)" class="space-y-3.5 text-xs">
         <input type="hidden" id="directEditKey">
-
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Dress / Uniform Name</label>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Dress Name</label>
           <input type="text" id="directEditName" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-medium">
         </div>
-
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Store Area / Location</label>
-          <input type="text" id="directEditArea" required placeholder="e.g., Subhash Road, Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-bold">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Store Area</label>
+          <input type="text" id="directEditArea" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-bold">
         </div>
-
         <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Selling Price (₹)</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Price (₹)</label>
             <input type="number" id="directEditPrice" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 font-mono text-slate-900 font-bold">
           </div>
           <div>
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Category</label>
             <select id="directEditCategory" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-bold">
-              <option value="Uniform">🎒 School Uniform</option>
-              <option value="Kids">🧸 Kids Wear</option>
-              <option value="Saree">🥻 Saree</option>
-              <option value="Kurti">👗 Kurti</option>
-              <option value="Lehenga">✨ Lehenga</option>
-              <option value="Men">👔 Men's Wear</option>
+              <option value="Uniform">Uniform</option>
+              <option value="Kids">Kids</option>
+              <option value="Saree">Saree</option>
+              <option value="Kurti">Kurti</option>
+              <option value="Lehenga">Lehenga</option>
+              <option value="Men">Men</option>
             </select>
           </div>
         </div>
-
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Available Sizes</label>
-          <input type="text" id="directEditSizes" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900" placeholder="e.g., 28, 30, 32, Free size">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Sizes</label>
+          <input type="text" id="directEditSizes" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900">
         </div>
-
-        <button type="submit" id="directSaveBtn" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
-          ✓ Save Updates Instantly
-        </button>
+        <button type="submit" class="w-full bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">✓ Save Updates</button>
       </form>
     </div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- Toast -->
   <div id="quickToast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-slate-950/95 backdrop-blur-2xl text-white text-xs font-bold px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-2.5 border border-slate-800 pointer-events-none">
     <span class="text-emerald-400 text-base">✓</span>
     <span id="toastMsg">Added to Bag</span>
   </div>
 
-  <!-- Customer Auth Modal -->
+  <!-- Customer Login Modal -->
   <div id="customerLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl animate-in zoom-in-95 duration-200">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-xs">🔐</div>
       <h3 class="font-brand font-black text-xl text-slate-950 mt-3">Customer Account</h3>
-      <p class="text-xs text-slate-500 mt-1">Login with your Mobile & 4-Digit PIN</p>
-
+      <p class="text-xs text-slate-500 mt-1">Login with Mobile & 4-Digit PIN</p>
+      
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
         <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-xs transition cursor-pointer">Login</button>
         <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
@@ -360,15 +342,13 @@
           </div>
           <input type="password" id="custPinLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-orange-500">
         </div>
-        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
-          Login ➔
-        </button>
+        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">Login ➔</button>
       </form>
 
       <form id="custRegisterForm" onsubmit="handleCustomerPinRegister(event)" class="space-y-3.5 text-left mt-4 hidden">
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Full Name</label>
-          <input type="text" id="custRegName" required placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium focus:outline-none focus:border-orange-500">
+          <input type="text" id="custRegName" required placeholder="Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium focus:outline-none focus:border-orange-500">
         </div>
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile Number</label>
@@ -378,27 +358,23 @@
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Create 4-Digit PIN</label>
           <input type="password" id="custRegPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-orange-500">
         </div>
-        <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
-          Create Account & Log In ➔
-        </button>
+        <button type="submit" class="w-full bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">Register ➔</button>
       </form>
 
       <form id="custForgotForm" onsubmit="handleResetPinSubmit(event)" class="space-y-3.5 text-left mt-4 hidden">
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Registered Mobile</label>
-          <input type="tel" id="resetMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono font-bold focus:outline-none focus:border-orange-500">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile</label>
+          <input type="tel" id="resetMobile" required maxlength="10" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-mono font-bold">
         </div>
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Your Full Name</label>
-          <input type="text" id="resetName" required placeholder="e.g., Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium focus:outline-none focus:border-orange-500">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Name</label>
+          <input type="text" id="resetName" required class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-medium">
         </div>
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Set New 4-Digit PIN</label>
-          <input type="password" id="resetNewPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-orange-500">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">New PIN</label>
+          <input type="password" id="resetNewPin" required maxlength="4" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold">
         </div>
-        <button type="submit" class="w-full bg-slate-950 hover:bg-emerald-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
-          Update PIN & Login ➔
-        </button>
+        <button type="submit" class="w-full bg-slate-950 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider">Update PIN</button>
       </form>
     </div>
   </div>
@@ -407,7 +383,6 @@
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-md"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 overflow-hidden animate-in slide-in-from-right duration-300">
-      <!-- Header -->
       <div class="p-5 bg-slate-950 text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2.5">
           <span class="text-xl">🛍️</span>
@@ -416,35 +391,31 @@
         <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-3xl font-bold cursor-pointer">&times;</button>
       </div>
 
-      <!-- Scrollable Content -->
       <div class="flex-1 p-5 overflow-y-auto space-y-5">
-        <!-- Cart Items List View -->
         <div id="cartBagViewContainer" class="space-y-3.5">
           <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400">Selected Outfits in Bag</h4>
           <div id="cartItems" class="space-y-3"></div>
         </div>
         
-        <!-- Checkout / Payment View -->
         <div id="checkoutViewContainer" class="hidden space-y-4 pt-1">
           <div class="flex items-center justify-between bg-orange-50/80 border border-orange-200/80 p-3.5 rounded-2xl">
             <div class="flex items-center gap-3 truncate">
-              <img id="checkoutItemImg" src="" class="w-12 h-12 rounded-xl object-cover border shrink-0 shadow-xs">
+              <img id="checkoutItemImg" src="" class="w-12 h-12 rounded-xl object-cover border shrink-0">
               <div class="truncate">
                 <p id="checkoutItemName" class="font-bold text-xs text-slate-950 truncate">Item Name</p>
                 <p id="checkoutItemPrice" class="font-mono-num font-black text-orange-600 text-sm mt-0.5">₹0</p>
               </div>
             </div>
-            <button onclick="backToCartBagView()" class="text-[11px] font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl cursor-pointer shadow-xs transition">← Bag</button>
+            <button onclick="backToCartBagView()" class="text-[11px] font-bold bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl cursor-pointer">← Bag</button>
           </div>
 
           <div>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Choose Delivery Address</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Delivery Address</h4>
             <div class="grid grid-cols-2 gap-2.5 mb-3">
               <label class="flex items-center gap-2.5 p-3 bg-orange-50/80 border-2 border-orange-500 rounded-2xl cursor-pointer text-xs font-bold text-slate-950">
                 <input type="radio" name="checkoutAddressType" value="permanent" checked onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
                 <span>🏠 Saved Address</span>
               </label>
-
               <label class="flex items-center gap-2.5 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer text-xs font-bold text-slate-700">
                 <input type="radio" name="checkoutAddressType" value="new" onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
                 <span>📍 New / Other</span>
@@ -452,62 +423,53 @@
             </div>
           </div>
 
-          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium focus:outline-none focus:border-orange-500">
-          <input type="tel" id="custPhone" required placeholder="Mobile Number" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono font-bold focus:outline-none focus:border-orange-500">
+          <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-medium">
+          <input type="tel" id="custPhone" required placeholder="Mobile Number (For Delivery OTP)" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-mono font-bold">
           
           <div id="permanentAddressBoxContainer">
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Permanent Address</label>
-            <textarea id="custPermanentAddress" rows="2" placeholder="Your saved permanent address..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs font-medium focus:outline-none focus:border-orange-500"></textarea>
+            <textarea id="custPermanentAddress" rows="2" class="w-full bg-slate-50 border rounded-2xl p-3.5 text-xs font-medium"></textarea>
           </div>
 
           <div id="newAddressBoxContainer" class="hidden">
-            <label class="block text-[10px] font-black uppercase text-orange-600 mb-1">Deliver to Different Address (Temporary)</label>
-            <textarea id="custNewAddress" rows="2" placeholder="Enter other house/office delivery address for this order..." class="w-full bg-orange-50/50 border border-orange-300 rounded-2xl p-3.5 text-xs font-medium focus:outline-none focus:border-orange-500"></textarea>
+            <label class="block text-[10px] font-black uppercase text-orange-600 mb-1">Temporary Address</label>
+            <textarea id="custNewAddress" rows="2" class="w-full bg-orange-50/50 border border-orange-300 rounded-2xl p-3.5 text-xs font-medium"></textarea>
           </div>
 
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance from Store</label>
-            <select id="deliveryDistanceSelect" onchange="recalculateDistanceFee()" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3 text-xs font-bold text-slate-900 focus:outline-none">
-              <option value="2.5" selected>📍 0 to 3 KM (Local Express) - ₹49</option>
-              <option value="5.5">📍 3 to 7 KM (Mid Distance) - ₹79</option>
-              <option value="9.5">📍 7 to 12 KM (Long Range) - ₹99</option>
-              <option value="14.0">📍 12 to 15 KM (Outer Border) - ₹129</option>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance</label>
+            <select id="deliveryDistanceSelect" onchange="recalculateDistanceFee()" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-bold text-slate-900">
+              <option value="2.5" selected>📍 0 to 3 KM - ₹49</option>
+              <option value="5.5">📍 3 to 7 KM - ₹79</option>
+              <option value="9.5">📍 7 to 12 KM - ₹99</option>
+              <option value="14.0">📍 12 to 15 KM - ₹129</option>
             </select>
           </div>
 
           <div class="pt-2 border-t border-slate-100 space-y-2.5">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Method (Centralized Gateway)</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Secure Payment & Verification</h4>
             <div class="grid grid-cols-1 gap-2.5">
-              <label class="flex items-center gap-3.5 p-3.5 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer shadow-xs">
+              <label class="flex items-center gap-3.5 p-3.5 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer">
                 <input type="radio" name="payOption" value="ONLINE_UPI" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
                 <div class="text-xs">
                   <p class="font-black text-slate-950">Fitin60 Centralized Online UPI / Card / QR</p>
-                  <p class="text-[10px] text-emerald-700 font-bold mt-0.5">100% Platform Secured (Auto-Splits to Store Wallet)</p>
-                </div>
-              </label>
-
-              <label class="flex items-center gap-3.5 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
-                <input type="radio" name="payOption" value="POD" onchange="handlePaymentModeChange()" class="accent-orange-600">
-                <div class="text-xs">
-                  <p class="font-black text-slate-950">Pay on Delivery (Platform Cash/QR Collection)</p>
-                  <p class="text-[10px] text-slate-500 mt-0.5">Collected by rider & credited to platform ledger</p>
+                  <p class="text-[10px] text-emerald-700 font-bold mt-0.5">Auto-generates Secure Delivery OTP</p>
                 </div>
               </label>
             </div>
           </div>
 
-          <!-- Bill Summary -->
-          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5 text-xs shadow-xs">
+          <div class="p-4 bg-slate-50 rounded-2xl border space-y-2.5 text-xs">
             <h5 class="font-bold text-slate-950 uppercase tracking-wider text-[10px]">Bill Summary</h5>
-            <div class="flex justify-between text-slate-600 font-medium">
+            <div class="flex justify-between text-slate-600">
               <span>Item Price</span>
               <span class="font-mono-num font-bold text-slate-950" id="billItemTotal">₹0</span>
             </div>
-            <div class="flex justify-between text-slate-600 font-medium">
-              <span>Delivery Fee (<span id="billDistanceLabel">~2.5 KM</span>)</span>
+            <div class="flex justify-between text-slate-600">
+              <span>Delivery Fee</span>
               <span class="font-mono-num font-bold text-emerald-700" id="billDeliveryFee">₹49</span>
             </div>
-            <div class="border-t border-slate-200 pt-2.5 flex justify-between font-black text-slate-950 text-sm">
+            <div class="border-t pt-2 flex justify-between font-black text-slate-950 text-sm">
               <span>To Pay</span>
               <span class="font-mono-num text-base text-orange-600" id="billFinalPayable">₹0</span>
             </div>
@@ -515,23 +477,22 @@
         </div>
       </div>
 
-      <!-- Sticky Footer Checkout Button -->
-      <div id="checkoutFooter" class="p-5 bg-white border-t border-slate-200 shrink-0 hidden shadow-lg">
-        <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider cursor-pointer shadow-xl transition transform active:scale-95">
-          ⚡ Pay via Centralized Gateway & Order
+      <div id="checkoutFooter" class="p-5 bg-white border-t shrink-0 hidden shadow-lg">
+        <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider cursor-pointer shadow-xl">
+          ⚡ Place Order & Generate Delivery OTP
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Modern Floating Bottom Navigation -->
+  <!-- Bottom Navigation -->
   <nav class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-3 px-8 flex items-center justify-around z-40 shadow-2xl">
-    <a href="index.html" class="flex flex-col items-center text-orange-600 font-bold group">
-      <span class="text-xl group-hover:scale-110 transition">🏬</span>
+    <a href="index.html" class="flex flex-col items-center text-orange-600 font-bold">
+      <span class="text-xl">🏬</span>
       <span class="text-[10px] mt-1 font-black">Explore</span>
     </a>
-    <a href="tracking.html" class="flex flex-col items-center text-slate-400 hover:text-orange-600 font-bold group">
-      <span class="text-xl group-hover:scale-110 transition">⚡</span>
+    <a href="tracking.html" class="flex flex-col items-center text-slate-400 hover:text-orange-600 font-bold">
+      <span class="text-xl">⚡</span>
       <span class="text-[10px] mt-1 font-medium">Orders</span>
     </a>
   </nav>
@@ -781,40 +742,26 @@
 
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
-
       var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
       if (enteredPin === null) return;
-
       if (enteredPin !== currentCustomer.pin) {
         return alert("❌ Incorrect PIN! Deletion cancelled.");
       }
-
       var phoneToDelete = currentCustomer.phone;
-      var nameToDelete = currentCustomer.name;
-
       db.ref("customers/" + phoneToDelete).remove().then(function() {
-        alert("✓ Account for '" + nameToDelete + "' has been permanently deleted.");
+        alert("✓ Account deleted successfully.");
         customerLogout();
-      }).catch(function(err) {
-        alert("Error deleting account: " + err.message);
       });
     };
 
     function getStoreStatus(storeName, storeMobile) {
-      if (storeMobile && boutiquesStatusMap[storeMobile]) {
-        return boutiquesStatusMap[storeMobile];
-      }
-      if (storeName) {
-        var key = storeName.trim().toLowerCase();
-        if (boutiquesStatusMap[key]) return boutiquesStatusMap[key];
-      }
+      if (storeMobile && boutiquesStatusMap[storeMobile]) return boutiquesStatusMap[storeMobile];
+      if (storeName && boutiquesStatusMap[storeName.trim().toLowerCase()]) return boutiquesStatusMap[storeName.trim().toLowerCase()];
       return "OPEN";
     }
 
     function getStoreDisplayName(originalStoreName, storeMobile) {
-      if (storeMobile && boutiqueNameByMobile[storeMobile]) {
-        return boutiqueNameByMobile[storeMobile];
-      }
+      if (storeMobile && boutiqueNameByMobile[storeMobile]) return boutiqueNameByMobile[storeMobile];
       return originalStoreName || "Boutique Studio";
     }
 
@@ -842,12 +789,12 @@
         var inStock = (p.inStock !== false && !isStoreClosed);
 
         html += 
-          '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-3.5 shadow-sm hover:shadow-md transition duration-300 space-y-3 flex flex-col justify-between overflow-hidden">' +
+          '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-3.5 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between overflow-hidden">' +
             (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
             (isOwnerActive && isCloud ? 
               '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer" title="Edit Outfit">✏️</button>' +
-                '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 hover:bg-rose-700 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer" title="Delete Outfit">🗑️</button>' +
+                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
+                '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
               '</div>' : '') +
             '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
               '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
@@ -861,7 +808,7 @@
               '</div>' +
             '</div>' +
             '<div class="grid grid-cols-2 gap-2 pt-1">' +
-              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer transition disabled:opacity-50 shadow-xs">🛍️ Add Bag</button>' +
+              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer transition disabled:opacity-50">🛍️ Add Bag</button>' +
               '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer shadow transition disabled:opacity-50">⚡ Buy Now</button>' +
             '</div>' +
           '</div>';
@@ -882,13 +829,12 @@
 
       var storeStatus = getStoreStatus(p.store, p.storeMobile);
       if (storeStatus === "CLOSED") {
-        alert("❌ This boutique is currently closed and not accepting orders!");
+        alert("❌ This boutique is currently closed!");
         return;
       }
 
       activeModalProduct = p;
       currentModalImageIndex = 0;
-
       var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
       activeModalProduct._resolvedImages = imagesList;
 
@@ -898,22 +844,17 @@
       document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
       document.getElementById("modalProdPrice").innerText = "₹" + p.price;
       document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
-      document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching, ready for instant express delivery.";
+      document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching.";
 
       var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
       selectedModalSize = sizes[0];
       var sizesHtml = "";
       sizes.forEach(function(s, idx) {
-        sizesHtml += 
-          '<button onclick="selectModalSize(\'' + s + '\')" class="size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition ' + 
-            (idx === 0 ? "bg-slate-950 text-white border-slate-950 shadow-sm" : "bg-slate-50 text-slate-800 border-slate-200 hover:bg-slate-100") + '">' + 
-            s + 
-          '</button>';
+        sizesHtml += '<button onclick="selectModalSize(\'' + s + '\')" class="size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition ' + (idx === 0 ? "bg-slate-950 text-white border-slate-950 shadow-sm" : "bg-slate-50 text-slate-800 border-slate-200") + '">' + s + '</button>';
       });
       document.getElementById("modalSizesContainer").innerHTML = sizesHtml;
 
       updateModalSwiperUI();
-      initSwipeGuestures();
       document.getElementById("productDetailModal").classList.remove("hidden");
     };
 
@@ -921,32 +862,17 @@
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
-
-      var storeStatus = getStoreStatus(p.store, p.storeMobile);
-      if (storeStatus === "CLOSED") {
-        return alert("❌ This boutique is currently closed!");
-      }
+      if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
 
       var dispName = getStoreDisplayName(p.store, p.storeMobile);
       var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
-      
       var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
       if (existingIndex === -1) {
         var now = new Date();
         var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-        
-        var itemObj = {
-          name: itemName,
-          price: p.price,
-          store: dispName,
-          storeMobile: p.storeMobile || "",
-          image: p.image,
-          addedTime: timeStr
-        };
-        items.push(itemObj);
+        items.push({ name: itemName, price: p.price, store: dispName, storeMobile: p.storeMobile || "", image: p.image, addedTime: timeStr });
         localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
       }
-
       renderCart();
       showQuickToast("✓ Added to Bag");
     };
@@ -955,23 +881,10 @@
       var all = baseProducts.concat(cloudProducts);
       var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
       if (!p) return;
-
-      var storeStatus = getStoreStatus(p.store, p.storeMobile);
-      if (storeStatus === "CLOSED") {
-        return alert("❌ This boutique is currently closed!");
-      }
+      if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
 
       var dispName = getStoreDisplayName(p.store, p.storeMobile);
-      var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
-      
-      activeCheckoutItem = {
-        name: itemName,
-        price: p.price,
-        store: dispName,
-        storeMobile: p.storeMobile || "",
-        image: p.image
-      };
-
+      activeCheckoutItem = { name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")", price: p.price, store: dispName, storeMobile: p.storeMobile || "", image: p.image };
       openSingleCheckoutView();
     };
 
@@ -979,100 +892,44 @@
       selectedModalSize = size;
       var buttons = document.querySelectorAll(".size-chip");
       buttons.forEach(function(b) {
-        if (b.innerText === size) {
-          b.className = "size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition bg-slate-950 text-white border-slate-950 shadow-sm";
-        } else {
-          b.className = "size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition bg-slate-50 text-slate-800 border-slate-200 hover:bg-slate-100";
-        }
+        b.className = (b.innerText === size) ? "size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition bg-slate-950 text-white border-slate-950 shadow-sm" : "size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition bg-slate-50 text-slate-800 border-slate-200";
       });
     };
 
-    window.slideImage = function(direction) {
+    window.slideImage = function(dir) {
       if (!activeModalProduct || !activeModalProduct._resolvedImages) return;
       var list = activeModalProduct._resolvedImages;
-      currentModalImageIndex += direction;
-
+      currentModalImageIndex += dir;
       if (currentModalImageIndex < 0) currentModalImageIndex = list.length - 1;
       if (currentModalImageIndex >= list.length) currentModalImageIndex = 0;
-
       updateModalSwiperUI();
     };
 
-    window.jumpToImageIndex = function(idx) {
-      currentModalImageIndex = idx;
-      updateModalSwiperUI();
-    };
+    window.jumpToImageIndex = function(idx) { currentModalImageIndex = idx; updateModalSwiperUI(); };
 
     function updateModalSwiperUI() {
       if (!activeModalProduct || !activeModalProduct._resolvedImages) return;
       var list = activeModalProduct._resolvedImages;
-      var mainImg = document.getElementById("modalMainImage");
-      var counter = document.getElementById("imageCounterBadge");
-      var thumbStrip = document.getElementById("modalThumbnailsStrip");
-
-      mainImg.src = list[currentModalImageIndex];
-      counter.innerText = (currentModalImageIndex + 1) + " / " + list.length;
-
+      document.getElementById("modalMainImage").src = list[currentModalImageIndex];
+      document.getElementById("imageCounterBadge").innerText = (currentModalImageIndex + 1) + " / " + list.length;
       var thumbsHtml = "";
       list.forEach(function(imgUrl, idx) {
-        thumbsHtml += 
-          '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" class="w-14 h-14 rounded-2xl object-cover border-2 cursor-pointer shrink-0 transition ' + 
-            (idx === currentModalImageIndex ? "border-orange-600 scale-105 shadow-md" : "border-slate-200 opacity-70 hover:opacity-100") + '">';
+        thumbsHtml += '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" class="w-14 h-14 rounded-2xl object-cover border-2 cursor-pointer shrink-0 transition ' + (idx === currentModalImageIndex ? "border-orange-600 scale-105 shadow-md" : "border-slate-200 opacity-70") + '">';
       });
-      thumbStrip.innerHTML = thumbsHtml;
+      document.getElementById("modalThumbnailsStrip").innerHTML = thumbsHtml;
     }
 
-    function initSwipeGuestures() {
-      var area = document.getElementById("swipeArea");
-      if (!area) return;
-      var startX = 0;
-      var endX = 0;
-
-      area.ontouchstart = function(e) {
-        startX = e.touches[0].clientX;
-      };
-
-      area.ontouchend = function(e) {
-        endX = e.changedTouches[0].clientX;
-        var diff = startX - endX;
-        if (Math.abs(diff) > 40) {
-          if (diff > 0) slideImage(1);
-          else slideImage(-1);
-        }
-      };
-    }
-
-    window.closeProductDetailModal = function() {
-      document.getElementById("productDetailModal").classList.add("hidden");
-    };
+    window.closeProductDetailModal = function() { document.getElementById("productDetailModal").classList.add("hidden"); };
 
     window.modalAddToBag = function() {
       if (!activeModalProduct) return;
-      var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
-      if (storeStatus === "CLOSED") {
-        return alert("❌ This boutique is currently closed!");
-      }
-
+      if (getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile) === "CLOSED") return alert("❌ Closed!");
       var dispName = getStoreDisplayName(activeModalProduct.store, activeModalProduct.storeMobile);
       var itemName = activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : "");
-      
-      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
-      if (existingIndex === -1) {
-        var now = new Date();
-        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-        
-        var itemObj = {
-          name: itemName,
-          price: activeModalProduct.price,
-          store: dispName,
-          storeMobile: activeModalProduct.storeMobile || "",
-          image: activeModalProduct.image,
-          addedTime: timeStr
-        };
-        items.push(itemObj);
-        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
-      }
-
+      var now = new Date();
+      var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+      items.push({ name: itemName, price: activeModalProduct.price, store: dispName, storeMobile: activeModalProduct.storeMobile || "", image: activeModalProduct.image, addedTime: timeStr });
+      localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
       renderCart();
       closeProductDetailModal();
       showQuickToast("✓ Added to Bag");
@@ -1080,84 +937,52 @@
 
     window.modalBuyNow = function() {
       if (!activeModalProduct) return;
-      var storeStatus = getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile);
-      if (storeStatus === "CLOSED") {
-        return alert("❌ This boutique is currently closed!");
-      }
-
+      if (getStoreStatus(activeModalProduct.store, activeModalProduct.storeMobile) === "CLOSED") return alert("❌ Closed!");
       var dispName = getStoreDisplayName(activeModalProduct.store, activeModalProduct.storeMobile);
-      var itemName = activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : "");
-      
-      activeCheckoutItem = {
-        name: itemName,
-        price: activeModalProduct.price,
-        store: dispName,
-        storeMobile: activeModalProduct.storeMobile || "",
-        image: activeModalProduct.image
-      };
-
+      activeCheckoutItem = { name: activeModalProduct.name + (selectedModalSize ? " (" + selectedModalSize + ")" : ""), price: activeModalProduct.price, store: dispName, storeMobile: activeModalProduct.storeMobile || "", image: activeModalProduct.image };
       closeProductDetailModal();
       openSingleCheckoutView();
     };
 
     window.directOwnerDelete = function(key) {
-      if (confirm("Owner: Delete this outfit permanently from Fitin60?")) {
-        db.ref("boutique_products/" + key).remove().then(function() {
-          showQuickToast("✓ Deleted");
-          closeStoreExploreModal();
-        });
+      if (confirm("Delete this outfit?")) {
+        db.ref("boutique_products/" + key).remove().then(function() { showQuickToast("✓ Deleted"); closeStoreExploreModal(); });
       }
     };
 
     window.openDirectOwnerEdit = function(key) {
       var prod = cloudProductsMap[key];
       if (!prod) return;
-
       document.getElementById("directEditKey").value = key;
       document.getElementById("directEditName").value = prod.name || "";
-      document.getElementById("directEditArea").value = prod.area || (boutiqueLocationsMap[prod.store] ? boutiqueLocationsMap[prod.store] : "");
+      document.getElementById("directEditArea").value = prod.area || "";
       document.getElementById("directEditPrice").value = prod.price || 0;
       document.getElementById("directEditCategory").value = prod.category || "Uniform";
       document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
-
       document.getElementById("directOwnerEditModal").classList.remove("hidden");
     };
 
-    window.closeDirectOwnerEditModal = function() {
-      document.getElementById("directOwnerEditModal").classList.add("hidden");
-    };
+    window.closeDirectOwnerEditModal = function() { document.getElementById("directOwnerEditModal").classList.add("hidden"); };
 
     window.handleDirectOwnerSave = function(e) {
       e.preventDefault();
       var key = document.getElementById("directEditKey").value;
       if (!key) return;
-
-      var sizesStr = document.getElementById("directEditSizes").value.trim();
-      var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
-
-      var updateData = {
+      var sizes = document.getElementById("directEditSizes").value.trim().split(",").map(function(s) { return s.trim(); });
+      db.ref("boutique_products/" + key).update({
         name: document.getElementById("directEditName").value.trim(),
         area: document.getElementById("directEditArea").value.trim(),
         price: parseInt(document.getElementById("directEditPrice").value),
         category: document.getElementById("directEditCategory").value,
         sizes: sizes
-      };
-
-      db.ref("boutique_products/" + key).update(updateData).then(function() {
-        closeDirectOwnerEditModal();
-        showQuickToast("✓ Updated Successfully!");
-      });
+      }).then(function() { closeDirectOwnerEditModal(); showQuickToast("✓ Updated!"); });
     };
 
     window.filterByCategory = function(cat) {
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
-        if (btn.innerText.includes(cat) || (cat === "All" && btn.innerText.includes("All"))) {
-          btn.className = "cat-chip bg-slate-950 text-white px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm";
-        } else {
-          btn.className = "cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs";
-        }
+        btn.className = (btn.innerText.includes(cat) || (cat === "All" && btn.innerText.includes("All"))) ? "cat-chip bg-slate-950 text-white px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm" : "cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs";
       });
       renderBoutiqueStores();
     };
@@ -1166,7 +991,6 @@
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
       if (!grid) return;
-
       var all = baseProducts.concat(cloudProducts);
       var searchInput = document.getElementById("storeSearchInput");
       var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
@@ -1177,10 +1001,9 @@
         var sMobile = p.storeMobile || "";
         var rawStoreName = p.store || "Boutique Studio";
         var sName = getStoreDisplayName(rawStoreName, sMobile);
-
         var oName = (p.name || "").toLowerCase();
         var cat = (p.category || "").toLowerCase();
-        var realLocation = p.area || boutiqueLocationsMap[sName] || boutiqueLocationsMap[rawStoreName] || "Anantapur";
+        var realLocation = p.area || boutiqueLocationsMap[sName] || "Anantapur";
 
         var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
         var matchC = (currentCategoryFilter === "All") || oName.includes(currentCategoryFilter.toLowerCase()) || cat.includes(currentCategoryFilter.toLowerCase());
@@ -1188,14 +1011,7 @@
         if (matchS && matchC) {
           var storeKey = sMobile || sName;
           if (!storesMap[storeKey]) {
-            storesMap[storeKey] = {
-              storeName: sName,
-              storeMobile: sMobile,
-              area: realLocation,
-              eta: p.eta || "35 MINS",
-              rating: p.rating || "5.0",
-              products: []
-            };
+            storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "35 MINS", rating: p.rating || "5.0", products: [] };
           }
           storesMap[storeKey].products.push(p);
         }
@@ -1203,83 +1019,54 @@
 
       var stores = Object.values(storesMap);
       if (badge) badge.innerText = stores.length + " Stores Live";
-
-      if (stores.length === 0) {
-        grid.innerHTML = "<div class='col-span-full py-12 text-center text-slate-400 text-xs font-semibold'>No matching outfits found.</div>";
-        return;
-      }
+      if (stores.length === 0) { grid.innerHTML = "<div class='col-span-full py-12 text-center text-slate-400 text-xs font-semibold'>No matching outfits found.</div>"; return; }
 
       var html = "";
       stores.forEach(function(store) {
         var storeStatus = getStoreStatus(store.storeName, store.storeMobile);
         var isStoreClosed = (storeStatus === "CLOSED");
-
         var previewImages = "";
         store.products.slice(0, 3).forEach(function(p) {
-          var isCloud = !!p.cloudKey;
           var targetId = p.id || p.cloudKey;
           var inStock = (p.inStock !== false && !isStoreClosed);
-
-          previewImages += 
-            '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs hover:shadow-sm transition flex flex-col justify-between p-2 space-y-1.5">' +
-              (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
-              '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-                '<img src="' + p.image + '" alt="" class="w-full h-full object-cover group-hover:scale-105 transition">' +
-                '<span class="absolute top-1 left-1 bg-slate-950/75 text-white font-mono-num font-bold text-[9px] px-1.5 py-0.5 rounded backdrop-blur-xs">₹' + p.price + '</span>' +
-                (isOwnerActive && isCloud ? 
-                  '<div class="absolute top-1 right-1 z-20" onclick="event.stopPropagation();">' +
-                    '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1 rounded-lg text-[9px]">✏️</button>' +
-                  '</div>' : '') +
-              '</div>' +
-              '<div class="grid grid-cols-2 gap-1">' +
-                '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-xl text-[10px] cursor-pointer transition disabled:opacity-50">🛍️ Add</button>' +
-                '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-1.5 rounded-xl text-[10px] cursor-pointer shadow-xs transition disabled:opacity-50">⚡ Buy</button>' +
-              '</div>' +
-            '</div>';
+          previewImages += '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs flex flex-col justify-between p-2 space-y-1.5">' +
+            (!inStock ? '<div class="absolute inset-0 bg-white/85 z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">' + (isStoreClosed ? 'Closed' : 'Out') + '</span></div>' : '') +
+            '<div class="relative h-28 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
+              '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition">' +
+              '<span class="absolute top-1 left-1 bg-slate-950/75 text-white font-bold text-[9px] px-1.5 py-0.5 rounded">₹' + p.price + '</span>' +
+            '</div>' +
+            '<div class="grid grid-cols-2 gap-1">' +
+              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-xl text-[10px] cursor-pointer">Add</button>' +
+              '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 text-white font-bold py-1.5 rounded-xl text-[10px] cursor-pointer shadow-xs">Buy</button>' +
+            '</div></div>';
         });
 
-        html += 
-          '<div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition duration-300 space-y-4 w-full relative overflow-hidden glass-panel">' +
-            (isStoreClosed ? '<div class="absolute top-0 inset-x-0 bg-rose-600 text-white text-[10px] font-black text-center py-1 tracking-wider uppercase">🔴 Store Closed / Not Accepting Orders</div>' : '') +
-            '<div class="flex justify-between items-center ' + (isStoreClosed ? 'mt-4' : '') + '">' +
-              '<span class="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">⚡ ' + store.eta + '</span>' +
-              '<div class="flex items-center gap-2">' +
-                '<span class="text-[10px] font-black px-2.5 py-1 rounded-full ' + (isStoreClosed ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800') + '">' + (isStoreClosed ? '🔴 Closed' : '🟢 Open') + '</span>' +
-                '<span class="text-[11px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
-              '</div>' +
-            '</div>' +
-            
-            '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\', \'' + store.storeMobile + '\')">' +
-              '<div class="flex items-center justify-between">' +
-                '<h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3>' +
-                '<span class="text-xs text-orange-600 font-bold group-hover:underline">Explore Store ➔</span>' +
-              '</div>' +
-              '<p class="text-[11px] text-slate-500 font-medium mt-0.5">📍 ' + store.area + '</p>' +
-            '</div>' +
-
-            '<div class="grid grid-cols-3 gap-2.5">' + previewImages + '</div>' +
-          '</div>';
+        html += '<div class="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-sm space-y-4 w-full relative overflow-hidden">' +
+          (isStoreClosed ? '<div class="absolute top-0 inset-x-0 bg-rose-600 text-white text-[10px] font-black text-center py-1 tracking-wider uppercase">🔴 Store Closed</div>' : '') +
+          '<div class="flex justify-between items-center ' + (isStoreClosed ? 'mt-4' : '') + '">' +
+            '<span class="text-[10px] font-black text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">⚡ ' + store.eta + '</span>' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="text-[10px] font-black px-2.5 py-1 rounded-full ' + (isStoreClosed ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800') + '">' + (isStoreClosed ? 'Closed' : 'Open') + '</span>' +
+              '<span class="text-[11px] font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
+            '</div></div>' +
+          '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\', \'' + store.storeMobile + '\')">' +
+            '<div class="flex items-center justify-between"><h3 class="font-brand font-black text-lg text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3><span class="text-xs text-orange-600 font-bold">Explore ➔</span></div>' +
+            '<p class="text-[11px] text-slate-500 font-medium mt-0.5">📍 ' + store.area + '</p>' +
+          '</div>' +
+          '<div class="grid grid-cols-3 gap-2.5">' + previewImages + '</div></div>';
       });
-
       grid.innerHTML = html;
     }
 
     window.toggleCart = function() {
       activeCheckoutItem = null;
-      if (currentCustomer) {
-        var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
-        document.getElementById("custPermanentAddress").value = pAddr;
-      }
+      if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
       renderCart();
       document.getElementById("cartDrawer").classList.toggle("hidden");
     };
 
     function openSingleCheckoutView() {
-      if (currentCustomer) {
-        var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
-        document.getElementById("custPermanentAddress").value = pAddr;
-      }
-
+      if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
       document.getElementById("drawerTitle").innerText = "Express Checkout";
       document.getElementById("cartBagViewContainer").classList.add("hidden");
       document.getElementById("checkoutViewContainer").classList.remove("hidden");
@@ -1290,7 +1077,6 @@
         document.getElementById("checkoutItemName").innerText = activeCheckoutItem.name;
         document.getElementById("checkoutItemPrice").innerText = "₹" + activeCheckoutItem.price;
       }
-
       recalculateDistanceFee();
       document.getElementById("cartDrawer").classList.remove("hidden");
     }
@@ -1304,16 +1090,11 @@
       renderCart();
     };
 
-    function handlePaymentModeChange() {
-      var selected = document.querySelector('input[name="payOption"]:checked').value;
-      var btn = document.getElementById("checkoutSubmitBtn");
-      btn.innerText = (selected === "ONLINE_UPI") ? "⚡ Pay via Centralized Gateway & Order" : "⚡ Place Express Order (Platform Cash/QR)";
-    }
+    function handlePaymentModeChange() {}
 
     function renderCart() {
       document.getElementById("cart-count").innerText = items.length;
       var list = document.getElementById("cartItems");
-      
       if (activeCheckoutItem) return;
 
       document.getElementById("drawerTitle").innerText = "Express Bag";
@@ -1328,27 +1109,19 @@
 
       var html = "";
       items.forEach(function(item, idx) {
-        var imgTag = item.image ? '<img src="' + item.image + '" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0 shadow-xs">' : '<div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-sm shrink-0">👗</div>';
-        var timeLabel = item.addedTime || "Just now";
-        
-        html += 
-          '<div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200/80 rounded-3xl gap-3 text-xs transition hover:border-orange-300 shadow-xs">' +
-            '<div class="flex items-center gap-3 truncate">' +
-              imgTag +
-              '<div class="truncate space-y-1">' +
-                '<p class="font-bold text-slate-950 truncate">' + item.name + '</p>' +
-                '<p class="text-[10px] text-slate-500 font-medium">🏬 ' + item.store + '</p>' +
-                '<p class="text-[9px] text-slate-400 font-mono">🕒 Added: ' + timeLabel + '</p>' +
-              '</div>' +
-            '</div>' +
-            '<div class="flex flex-col items-end gap-2 shrink-0">' +
-              '<span class="font-mono-num font-black text-sm text-orange-600">₹' + item.price + '</span>' +
-              '<div class="flex items-center gap-1.5">' +
-                '<button onclick="proceedBagItemCheckout(' + idx + ')" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-1.5 rounded-xl text-[10px] shadow-xs cursor-pointer transition">⚡ Buy</button>' +
-                '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Remove">🗑️</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>';
+        var imgTag = item.image ? '<img src="' + item.image + '" class="w-16 h-16 rounded-2xl object-cover border shrink-0">' : '<div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-sm shrink-0">👗</div>';
+        html += '<div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200/80 rounded-3xl gap-3 text-xs shadow-xs">' +
+          '<div class="flex items-center gap-3 truncate">' + imgTag +
+            '<div class="truncate space-y-1"><p class="font-bold text-slate-950 truncate">' + item.name + '</p>' +
+            '<p class="text-[10px] text-slate-500 font-medium">🏬 ' + item.store + '</p>' +
+            '<p class="text-[9px] text-slate-400 font-mono">🕒 ' + (item.addedTime || "Just now") + '</p></div>' +
+          '</div>' +
+          '<div class="flex flex-col items-end gap-2 shrink-0">' +
+            '<span class="font-mono-num font-black text-sm text-orange-600">₹' + item.price + '</span>' +
+            '<div class="flex items-center gap-1.5">' +
+              '<button onclick="proceedBagItemCheckout(' + idx + ')" class="bg-orange-600 text-white font-bold px-3 py-1.5 rounded-xl text-[10px]">⚡ Buy</button>' +
+              '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-500 p-1">🗑️</button>' +
+            '</div></div></div>';
       });
       list.innerHTML = html;
     }
@@ -1356,22 +1129,13 @@
     window.proceedBagItemCheckout = function(idx) {
       var item = items[idx];
       if (!item) return;
-
-      activeCheckoutItem = {
-        name: item.name,
-        price: item.price,
-        store: item.store,
-        storeMobile: item.storeMobile || "",
-        image: item.image
-      };
-
+      activeCheckoutItem = { name: item.name, price: item.price, store: item.store, storeMobile: item.storeMobile || "", image: item.image };
       openSingleCheckoutView();
     };
 
     function showQuickToast(msg) {
       var toast = document.getElementById("quickToast");
-      var text = document.getElementById("toastMsg");
-      text.innerText = msg;
+      document.getElementById("toastMsg").innerText = msg;
       toast.classList.add("show");
       setTimeout(function() { toast.classList.remove("show"); }, 1800);
     }
@@ -1380,86 +1144,51 @@
       e.preventDefault();
       var mob = document.getElementById("custPinLoginMobile").value.trim();
       var pin = document.getElementById("custPinLoginPin").value.trim();
-
       if (pin === "4545") {
         isOwnerActive = true;
         localStorage.setItem("fitin60_owner_session", "active");
         currentCustomer = { name: "Platform Owner", phone: mob };
         localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
-        updateAuthHeaderUI();
-        closeLoginModal();
-        renderBoutiqueStores();
-        showQuickToast("🛡️ Welcome Owner! Direct Edit Enabled");
+        updateAuthHeaderUI(); closeLoginModal(); renderBoutiqueStores();
+        showQuickToast("🛡️ Owner Mode Active");
         return;
       }
-
       db.ref("customers/" + mob).once("value").then(function(snap) {
         var user = snap.val();
         if (user && user.pin === pin) {
-          isOwnerActive = false;
-          localStorage.removeItem("fitin60_owner_session");
           currentCustomer = user;
           localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
-          updateAuthHeaderUI();
-          closeLoginModal();
-          renderBoutiqueStores();
+          updateAuthHeaderUI(); closeLoginModal(); renderBoutiqueStores();
           showQuickToast("✓ Logged in as " + user.name);
-        } else {
-          alert("Invalid Mobile or PIN!");
-        }
+        } else { alert("Invalid Mobile or PIN!"); }
       });
     };
 
     function updateAuthHeaderUI() {
       var container = document.getElementById("authPillContainer");
       var ownerBadge = document.getElementById("ownerBadgeInProfile");
-
       if (currentCustomer) {
         var firstName = currentCustomer.name.split(" ")[0];
-        container.innerHTML = 
-          '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-3.5 py-2 rounded-2xl font-bold text-xs cursor-pointer transition">' +
-            '<span>👤</span><span class="text-slate-900 truncate max-w-[80px]">' + firstName + '</span><span class="text-[9px] text-slate-400">▼</span>' +
-          '</button>';
-
+        container.innerHTML = '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 border px-3.5 py-2 rounded-2xl font-bold text-xs cursor-pointer"><span>👤</span><span class="truncate max-w-[80px]">' + firstName + '</span></button>';
         document.getElementById("custName").value = currentCustomer.name || "";
         document.getElementById("custPhone").value = currentCustomer.phone || "";
         document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
         document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
-
-        var pAddr = currentCustomer.permanentAddress || currentCustomer.address || "";
-        document.getElementById("custPermanentAddress").value = pAddr;
-
-        if (isOwnerActive && ownerBadge) {
-          ownerBadge.classList.remove("hidden");
-        } else if (ownerBadge) {
-          ownerBadge.classList.add("hidden");
-        }
+        if (isOwnerActive && ownerBadge) ownerBadge.classList.remove("hidden");
       } else {
-        container.innerHTML = 
-          '<button onclick="openLoginModal()" class="bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-900 font-bold px-4 py-2 rounded-2xl text-xs flex items-center gap-1.5 cursor-pointer transition">' +
-           '<span>👤</span> <span>Login</span>' +
-          '</button>';
-        if (ownerBadge) ownerBadge.classList.add("hidden");
+        container.innerHTML = '<button onclick="openLoginModal()" class="bg-slate-100 border text-slate-900 font-bold px-4 py-2 rounded-2xl text-xs flex items-center gap-1.5"><span>👤</span> <span>Login</span></button>';
       }
     }
 
-    function toggleProfileMenu() {
-      document.getElementById("profilePopover").classList.toggle("hidden");
-    }
+    function toggleProfileMenu() { document.getElementById("profilePopover").classList.toggle("hidden"); }
 
     function customerLogout() {
-      if (confirm("Log out of Fitin60?")) {
-        currentCustomer = null;
-        isOwnerActive = false;
+      if (confirm("Log out?")) {
+        currentCustomer = null; isOwnerActive = false;
         localStorage.removeItem("fitin60_customer_user");
         localStorage.removeItem("fitin60_owner_session");
         document.getElementById("profilePopover").classList.add("hidden");
-        document.getElementById("custName").value = "";
-        document.getElementById("custPhone").value = "";
-        document.getElementById("custPermanentAddress").value = "";
-        document.getElementById("custNewAddress").value = "";
-        updateAuthHeaderUI();
-        renderBoutiqueStores();
+        updateAuthHeaderUI(); renderBoutiqueStores();
       }
     }
 
@@ -1468,14 +1197,11 @@
       var name = document.getElementById("custRegName").value.trim();
       var mob = document.getElementById("custRegMobile").value.trim();
       var pin = document.getElementById("custRegPin").value.trim();
-
       var user = { name: name, phone: mob, pin: pin, permanentAddress: "" };
       db.ref("customers/" + mob).set(user).then(function() {
         currentCustomer = user;
         localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
-        closeLoginModal();
-        updateAuthHeaderUI();
-        showQuickToast("✓ Registered Successfully!");
+        closeLoginModal(); updateAuthHeaderUI(); showQuickToast("✓ Registered!");
       });
     };
 
@@ -1484,17 +1210,11 @@
       var mob = document.getElementById("resetMobile").value.trim();
       var name = document.getElementById("resetName").value.trim().toLowerCase();
       var pin = document.getElementById("resetNewPin").value.trim();
-
       db.ref("customers/" + mob).once("value").then(function(snap) {
         var u = snap.val();
         if (u && u.name.toLowerCase() === name) {
-          db.ref("customers/" + mob).update({ pin: pin }).then(function() {
-            alert("✓ PIN Updated!");
-            switchCustAuthTab('login');
-          });
-        } else {
-          alert("Verification Failed!");
-        }
+          db.ref("customers/" + mob).update({ pin: pin }).then(function() { alert("✓ PIN Updated!"); switchCustAuthTab('login'); });
+        } else { alert("Verification Failed!"); }
       });
     };
 
@@ -1502,22 +1222,8 @@
       if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
-
       var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
-      var deliveryAddress = "";
-
-      if (selectedAddressType === "permanent") {
-        deliveryAddress = document.getElementById("custPermanentAddress").value.trim();
-        if (currentCustomer && deliveryAddress) {
-          currentCustomer.permanentAddress = deliveryAddress;
-          localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
-          if (currentCustomer.phone) {
-            db.ref("customers/" + currentCustomer.phone).update({ permanentAddress: deliveryAddress, address: deliveryAddress });
-          }
-        }
-      } else {
-        deliveryAddress = document.getElementById("custNewAddress").value.trim();
-      }
+      var deliveryAddress = (selectedAddressType === "permanent") ? document.getElementById("custPermanentAddress").value.trim() : document.getElementById("custNewAddress").value.trim();
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
@@ -1526,12 +1232,11 @@
       var orderId = "FIT-" + Math.floor(1000 + Math.random() * 9000);
       var itemPrice = activeCheckoutItem.price;
       var totalPayable = itemPrice + deliveryFee;
-
       var platformFee = Math.round(itemPrice * 0.15);
       var storeNetPayout = itemPrice - platformFee;
 
-      var storeName = activeCheckoutItem.store;
-      var storeMobile = activeCheckoutItem.storeMobile || "";
+      // Secure 4-Digit Delivery OTP Generation matching user request
+      var generatedOtp = String(Math.floor(1000 + Math.random() * 9000));
 
       var orderData = {
         orderId: orderId,
@@ -1545,10 +1250,10 @@
         totalAmount: totalPayable,
         paymentMethod: payMethodStr,
         paymentId: paymentIdStr || "PLATFORM_COLLECT_" + Date.now(),
-        paymentStatus: "Paid via Centralized Platform Gateway",
-        deliveryOtp: String(Math.floor(1000 + Math.random() * 9000)),
-        store: storeName,
-        storeMobile: storeMobile,
+        paymentStatus: "Pending QR Verification on Delivery",
+        deliveryOtp: generatedOtp, // Saved secure delivery OTP
+        store: activeCheckoutItem.store,
+        storeMobile: activeCheckoutItem.storeMobile || "",
         boutiqueAccepted: false,
         riderAssigned: false,
         financialSplit: {
@@ -1562,18 +1267,10 @@
       };
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
-        if (storeMobile) {
-          var storeWalletRef = db.ref("boutiques/" + storeMobile + "/walletBalance");
-          storeWalletRef.transaction(function(currentBalance) {
-            return (currentBalance || 0) + storeNetPayout;
-          });
-          
-          var storeOrdersCountRef = db.ref("boutiques/" + storeMobile + "/totalOrdersCount");
-          storeOrdersCountRef.transaction(function(count) {
-            return (count || 0) + 1;
-          });
+        if (activeCheckoutItem.storeMobile) {
+          db.ref("boutiques/" + activeCheckoutItem.storeMobile + "/walletBalance").transaction(function(bal) { return (bal || 0) + storeNetPayout; });
+          db.ref("boutiques/" + activeCheckoutItem.storeMobile + "/totalOrdersCount").transaction(function(c) { return (c || 0) + 1; });
         }
-
         localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
         window.location.href = "tracking.html";
       });
@@ -1584,75 +1281,47 @@
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
       var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
-      var deliveryAddress = (selectedAddressType === "permanent") 
-        ? document.getElementById("custPermanentAddress").value.trim() 
-        : document.getElementById("custNewAddress").value.trim();
+      var deliveryAddress = (selectedAddressType === "permanent") ? document.getElementById("custPermanentAddress").value.trim() : document.getElementById("custNewAddress").value.trim();
 
-      if (!name || !phone || !deliveryAddress) {
-        return alert("Please fill Name, Mobile & Delivery Address!");
-      }
-
-      if (phone.length !== 10) {
-        return alert("Please enter a valid 10-digit mobile number!");
-      }
-
-      var payMethodRadio = document.querySelector('input[name="payOption"]:checked');
-      var payMethod = payMethodRadio ? payMethodRadio.value : "ONLINE_UPI";
+      if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Address!");
+      if (phone.length !== 10) return alert("Enter valid 10-digit mobile number!");
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
-      var deliveryFee = getDistanceFee(distVal);
-      var totalPayable = activeCheckoutItem.price + deliveryFee;
+      var totalPayable = activeCheckoutItem.price + getDistanceFee(distVal);
 
       var options = {
         "key": "rzp_test_1234567890abcdef",
         "amount": totalPayable * 100,
         "currency": "INR",
         "name": "Fitin60 Centralized Gateway",
-        "description": "60-Minute Hyperlocal Express Drop",
+        "description": "Secure Delivery Drop & Verification",
         "handler": function (response){
-          finalizeAndSaveOrder("Razorpay Centralized Online UPI", response.razorpay_payment_id);
+          finalizeAndSaveOrder("Razorpay Online UPI", response.razorpay_payment_id);
         },
-        "prefill": {
-          "name": name,
-          "email": "customer@fitin60.com",
-          "contact": phone
-        },
-        "theme": {
-          "color": "#ea580c"
-        }
+        "prefill": { "name": name, "contact": phone },
+        "theme": { "color": "#ea580c" }
       };
 
       try {
         var rzp = new Razorpay(options);
         rzp.open();
       } catch (err) {
-        finalizeAndSaveOrder(payMethod === "ONLINE_UPI" ? "Centralized Online UPI" : "Platform Cash Collection", "PLATFORM_TXN_" + Date.now());
+        finalizeAndSaveOrder("Centralized Online UPI", "PLATFORM_TXN_" + Date.now());
       }
     };
 
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
-      boutiqueLocationsMap = {};
-      boutiquesStatusMap = {};
-      boutiqueNameByMobile = {};
-
+      boutiqueLocationsMap = {}; boutiquesStatusMap = {}; boutiqueNameByMobile = {};
       Object.keys(data).forEach(function(key) {
         var b = data[key];
         if (b) {
           var status = (b.status || "OPEN").trim().toUpperCase();
           var sName = b.name ? b.name.trim() : "";
           var sMobile = b.mobile ? String(b.mobile).trim() : String(key).trim();
-
-          if (sName) {
-            boutiquesStatusMap[sName.toLowerCase()] = status;
-            boutiqueLocationsMap[sName] = b.area;
-          }
-          if (sMobile) {
-            boutiquesStatusMap[sMobile] = status;
-            boutiqueNameByMobile[sMobile] = sName;
-          }
-          boutiquesStatusMap[key.trim().toLowerCase()] = status;
+          if (sName) { boutiquesStatusMap[sName.toLowerCase()] = status; boutiqueLocationsMap[sName] = b.area; }
+          if (sMobile) { boutiquesStatusMap[sMobile] = status; boutiqueNameByMobile[sMobile] = sName; }
         }
       });
       renderBoutiqueStores();
@@ -1660,28 +1329,17 @@
 
     db.ref("boutique_products").on("value", function(snapshot) {
       var data = snapshot.val();
-      cloudProducts = [];
-      cloudProductsMap = data || {};
+      cloudProducts = []; cloudProductsMap = data || {};
       if (data) {
         Object.keys(data).forEach(function(k) {
-          var p = data[k];
-          if (p) {
-            p.cloudKey = k;
-            cloudProducts.push(p);
-          }
+          var p = data[k]; if (p) { p.cloudKey = k; cloudProducts.push(p); }
         });
       }
       renderBoutiqueStores();
     });
 
-    try {
-      var saved = localStorage.getItem("fitin60_customer_user");
-      if (saved) currentCustomer = JSON.parse(saved);
-    } catch(e){}
-
-    updateAuthHeaderUI();
-    renderBoutiqueStores();
-    renderCart();
+    try { var saved = localStorage.getItem("fitin60_customer_user"); if (saved) currentCustomer = JSON.parse(saved); } catch(e){}
+    updateAuthHeaderUI(); renderBoutiqueStores(); renderCart();
   </script>
 </body>
 </html>
