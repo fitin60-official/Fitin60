@@ -450,7 +450,7 @@
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Secure Payment & Verification</h4>
             <div class="grid grid-cols-1 gap-2.5">
               <label class="flex items-center gap-3.5 p-3.5 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer">
-                <input type="radio" name="payOption" value="ONLINE_UPI" checked onchange="handlePaymentModeChange()" class="accent-orange-600">
+                <input type="radio" name="payOption" value="ONLINE_UPI" checked class="accent-orange-600">
                 <div class="text-xs">
                   <p class="font-black text-slate-950">Fitin60 Centralized Online UPI / Card / QR</p>
                   <p class="text-[10px] text-emerald-700 font-bold mt-0.5">Auto-generates Secure Delivery OTP</p>
@@ -466,7 +466,7 @@
               <span class="font-mono-num font-bold text-slate-950" id="billItemTotal">₹0</span>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>Delivery Fee</span>
+              <span>Delivery Fee (<span id="billDistanceLabel">~2.5 KM</span>)</span>
               <span class="font-mono-num font-bold text-emerald-700" id="billDeliveryFee">₹49</span>
             </div>
             <div class="border-t pt-2 flex justify-between font-black text-slate-950 text-sm">
@@ -1090,8 +1090,6 @@
       renderCart();
     };
 
-    function handlePaymentModeChange() {}
-
     function renderCart() {
       document.getElementById("cart-count").innerText = items.length;
       var list = document.getElementById("cartItems");
@@ -1235,7 +1233,6 @@
       var platformFee = Math.round(itemPrice * 0.15);
       var storeNetPayout = itemPrice - platformFee;
 
-      // Secure 4-Digit Delivery OTP Generation matching user request
       var generatedOtp = String(Math.floor(1000 + Math.random() * 9000));
 
       var orderData = {
@@ -1250,8 +1247,8 @@
         totalAmount: totalPayable,
         paymentMethod: payMethodStr,
         paymentId: paymentIdStr || "PLATFORM_COLLECT_" + Date.now(),
-        paymentStatus: "Pending QR Verification on Delivery",
-        deliveryOtp: generatedOtp, // Saved secure delivery OTP
+        paymentStatus: "Pending Verification on Delivery",
+        deliveryOtp: generatedOtp,
         store: activeCheckoutItem.store,
         storeMobile: activeCheckoutItem.storeMobile || "",
         boutiqueAccepted: false,
