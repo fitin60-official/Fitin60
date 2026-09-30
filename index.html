@@ -75,7 +75,7 @@
 
     <div class="flex items-center gap-2.5 shrink-0">
       <button onclick="toggleCart()" class="relative bg-slate-950 hover:bg-orange-600 text-white font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition transform active:scale-95 text-xs">
-        <span class="text-sm">🛍️️</span>
+        <span class="text-sm">🛍</span>
         <span class="font-mono-num font-black text-amber-400" id="cart-count">0</span>
       </button>
 
@@ -129,16 +129,17 @@
         <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, shirt, pants, t-shirt, saree..." class="w-full pl-11 pr-4 py-3.5 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900">
       </div>
 
-      <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
-        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm">All Outfits</button>
-        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
-        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
-        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🥻 Sarees</button>
-        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👗 Kurtis</button>
-        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">✨ Lehengas</button>
-        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👔 Shirts</button>
-        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👖 Pants & Jeans</button>
-        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👕 T-Shirts</button>
+      <!-- Categories with proper horizontal wrap/scroll padding -->
+      <div class="flex flex-wrap sm:flex-nowrap gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
+        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm">All Outfits</button>
+        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
+        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
+        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🥻 Sarees</button>
+        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👗 Kurtis</button>
+        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">✨ Lehengas</button>
+        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👔 Shirts</button>
+        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👖 Pants</button>
+        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👕 T-Shirts</button>
       </div>
     </div>
 
@@ -786,7 +787,7 @@
 
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
-      var enteredPin = prompt("⚠️️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
+      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
       if (enteredPin === null) return;
       if (enteredPin !== currentCustomer.pin) {
         return alert("❌ Incorrect PIN! Deletion cancelled.");
@@ -837,7 +838,7 @@
             (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
             (isOwnerActive && isCloud ? 
               '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️️</button>' +
+                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
                 '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
               '</div>' : '') +
             '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
@@ -1026,7 +1027,7 @@
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
-        btn.className = (btn.getAttribute("onclick").includes("'" + cat + "'")) ? "cat-chip bg-slate-950 text-white px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm" : "cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs";
+        btn.className = (btn.getAttribute("onclick").includes("'" + cat + "'")) ? "cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm" : "cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs";
       });
       renderBoutiqueStores();
     };
@@ -1145,7 +1146,7 @@
       document.getElementById("checkoutFooter").classList.add("hidden");
 
       if (items.length === 0) {
-        list.innerHTML = "<div class='text-center py-14 text-slate-400 text-xs font-semibold space-y-3'><p class='text-3xl'>🛍️</p><p>Your Express Bag is empty!</p></div>";
+        list.innerHTML = "<div class='text-center py-14 text-slate-400 text-xs font-semibold space-y-3'><p class='text-3xl'>🛍️️</p><p>Your Express Bag is empty!</p></div>";
         return;
       }
 
