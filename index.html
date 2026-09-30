@@ -126,7 +126,7 @@
     <div class="space-y-3.5 w-full">
       <div class="relative w-full shadow-sm rounded-3xl overflow-hidden bg-white border border-slate-200/90">
         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
-        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, shirt, t-shirt, jeans..." class="w-full pl-11 pr-4 py-3.5 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900">
+        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, shirt, pants, t-shirt, saree..." class="w-full pl-11 pr-4 py-3.5 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900">
       </div>
 
       <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
@@ -136,7 +136,9 @@
         <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🥻 Sarees</button>
         <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👗 Kurtis</button>
         <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">✨ Lehengas</button>
-        <button onclick="filterByCategory('Men')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👔 Men's Wear</button>
+        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👔 Shirts</button>
+        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👖 Pants & Jeans</button>
+        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👕 T-Shirts</button>
       </div>
     </div>
 
@@ -154,7 +156,7 @@
       </div>
 
       <h1 class="font-brand text-xl sm:text-3xl font-black tracking-tight leading-snug text-white">
-        Boutiques & Men's Wear in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
+        Boutiques & Shirts, Pants, T-Shirts in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
       </h1>
       <p class="text-slate-300 text-xs sm:text-sm mt-2 max-w-xl">
         Secure Delivery OTP & Instant QR Verification enabled for verified orders.
@@ -298,7 +300,9 @@
               <option value="Saree">Saree</option>
               <option value="Kurti">Kurti</option>
               <option value="Lehenga">Lehenga</option>
-              <option value="Men">Men</option>
+              <option value="Shirt">Shirt</option>
+              <option value="Pants">Pants</option>
+              <option value="T-Shirt">T-Shirt</option>
             </select>
           </div>
         </div>
@@ -535,11 +539,11 @@
         ]
       },
       {
-        id: "base_mens_1",
+        id: "base_shirt_1",
         name: "Classic Casual Cotton Shirt",
         store: "Mummy Daddy",
         storeMobile: "9000000002",
-        category: "Men",
+        category: "Shirt",
         area: "Bala Nagar, Hyderabad",
         price: 799,
         originalPrice: 1299,
@@ -555,11 +559,11 @@
         ]
       },
       {
-        id: "base_mens_2",
+        id: "base_pants_1",
         name: "Urban Stretch Denim Jeans",
         store: "Mummy Daddy",
         storeMobile: "9000000002",
-        category: "Men",
+        category: "Pants",
         area: "Bala Nagar, Hyderabad",
         price: 1199,
         originalPrice: 1999,
@@ -575,11 +579,11 @@
         ]
       },
       {
-        id: "base_mens_3",
+        id: "base_tshirt_1",
         name: "Minimalist Graphic T-Shirt",
         store: "Mummy Daddy",
         storeMobile: "9000000002",
-        category: "Men",
+        category: "T-Shirt",
         area: "Bala Nagar, Hyderabad",
         price: 499,
         originalPrice: 899,
@@ -782,7 +786,7 @@
 
     window.handleDeleteCustomerAccountPermanently = function() {
       if (!currentCustomer) return;
-      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
+      var enteredPin = prompt("⚠️️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
       if (enteredPin === null) return;
       if (enteredPin !== currentCustomer.pin) {
         return alert("❌ Incorrect PIN! Deletion cancelled.");
@@ -833,7 +837,7 @@
             (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
             (isOwnerActive && isCloud ? 
               '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
+                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️️</button>' +
                 '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
               '</div>' : '') +
             '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
@@ -1022,7 +1026,7 @@
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
-        btn.className = (btn.innerText.includes(cat) || (cat === "All" && btn.innerText.includes("All"))) ? "cat-chip bg-slate-950 text-white px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm" : "cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs";
+        btn.className = (btn.getAttribute("onclick").includes("'" + cat + "'")) ? "cat-chip bg-slate-950 text-white px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm" : "cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs";
       });
       renderBoutiqueStores();
     };
@@ -1046,7 +1050,7 @@
         var realLocation = p.area || boutiqueLocationsMap[sName] || "Anantapur";
 
         var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
-        var matchC = (currentCategoryFilter === "All") || oName.includes(currentCategoryFilter.toLowerCase()) || cat.includes(currentCategoryFilter.toLowerCase());
+        var matchC = (currentCategoryFilter === "All") || (cat === currentCategoryFilter.toLowerCase()) || oName.includes(currentCategoryFilter.toLowerCase());
 
         if (matchS && matchC) {
           var storeKey = sMobile || sName;
