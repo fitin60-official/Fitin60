@@ -75,7 +75,7 @@
 
     <div class="flex items-center gap-2.5 shrink-0">
       <button onclick="toggleCart()" class="relative bg-slate-950 hover:bg-orange-600 text-white font-bold px-3.5 py-2.5 rounded-2xl flex items-center gap-2 shadow-md cursor-pointer transition transform active:scale-95 text-xs">
-        <span class="text-sm">🛍️</span>
+        <span class="text-sm">🛍️️</span>
         <span class="font-mono-num font-black text-amber-400" id="cart-count">0</span>
       </button>
 
@@ -126,7 +126,7 @@
     <div class="space-y-3.5 w-full">
       <div class="relative w-full shadow-sm rounded-3xl overflow-hidden bg-white border border-slate-200/90">
         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
-        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, saree, school uniform..." class="w-full pl-11 pr-4 py-3.5 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900">
+        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, shirt, t-shirt, jeans..." class="w-full pl-11 pr-4 py-3.5 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900">
       </div>
 
       <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
@@ -154,7 +154,7 @@
       </div>
 
       <h1 class="font-brand text-xl sm:text-3xl font-black tracking-tight leading-snug text-white">
-        Boutiques & Uniforms in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
+        Boutiques & Men's Wear in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
       </h1>
       <p class="text-slate-300 text-xs sm:text-sm mt-2 max-w-xl">
         Secure Delivery OTP & Instant QR Verification enabled for verified orders.
@@ -535,23 +535,63 @@
         ]
       },
       {
-        id: "base_2",
-        name: "Casual Grey Winter Jacket",
+        id: "base_mens_1",
+        name: "Classic Casual Cotton Shirt",
         store: "Mummy Daddy",
         storeMobile: "9000000002",
         category: "Men",
         area: "Bala Nagar, Hyderabad",
-        price: 1000,
-        originalPrice: 1600,
+        price: 799,
+        originalPrice: 1299,
         discount: "38% OFF",
-        sizes: ["M", "L", "XL", "XXL"],
-        desc: "Warm high-neck winter jacket with secure zip pockets and premium fleece lining.",
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        desc: "Breathable pure cotton casual shirt designed for all-day comfort and sharp styling.",
         eta: "35 MINS",
         rating: "5.0",
-        image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80",
+        image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
         images: [
-          "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=800&q=80"
+          "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: "base_mens_2",
+        name: "Urban Stretch Denim Jeans",
+        store: "Mummy Daddy",
+        storeMobile: "9000000002",
+        category: "Men",
+        area: "Bala Nagar, Hyderabad",
+        price: 1199,
+        originalPrice: 1999,
+        discount: "40% OFF",
+        sizes: ["28", "30", "32", "34", "36"],
+        desc: "Flex-fit premium denim jeans with modern wash and durable stitching.",
+        eta: "35 MINS",
+        rating: "5.0",
+        image: "https://images.unsplash.com/photo-1542272604-787c96355d63?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1542272604-787c96355d63?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80"
+        ]
+      },
+      {
+        id: "base_mens_3",
+        name: "Minimalist Graphic T-Shirt",
+        store: "Mummy Daddy",
+        storeMobile: "9000000002",
+        category: "Men",
+        area: "Bala Nagar, Hyderabad",
+        price: 499,
+        originalPrice: 899,
+        discount: "45% OFF",
+        sizes: ["M", "L", "XL"],
+        desc: "Super combed bio-wash cotton t-shirt with modern aesthetic print.",
+        eta: "35 MINS",
+        rating: "5.0",
+        image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+        images: [
+          "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80"
         ]
       },
       {
