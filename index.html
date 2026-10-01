@@ -146,7 +146,7 @@
         </div>
 
         <h1 class="font-brand text-2xl sm:text-4xl font-black tracking-tight leading-tight text-white max-w-2xl">
-          Boutiques & Shirts, Pants, T-Shirts in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
+          Boutiques & Sarees, Shirts, Pants in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm font-medium max-w-xl">
           Secure Delivery OTP & Instant QR Verification enabled for verified orders. Shop the latest fashion instantly.
@@ -158,7 +158,7 @@
     <div class="space-y-4 w-full">
       <div class="relative w-full shadow-md rounded-2xl overflow-hidden bg-white border border-slate-200/80">
         <span class="absolute inset-y-0 left-0 pl-4.5 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
-        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, shirt, pants, t-shirt, saree, kurta..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
+        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, saree, shirt, pants, t-shirt, kurta..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
       </div>
 
       <!-- Category Chips -->
@@ -821,7 +821,25 @@
       return originalStoreName || "Boutique Studio";
     }
 
-    // DIRECT LOGIN MODAL POPUP (NO ALERT BOX)
+    // SMART CATEGORY DETECTOR (Ensures Sarees, Shirts, Pants never show as Uniform incorrectly)
+    function getResolvedCategory(p) {
+      var nameL = (p.name || "").toLowerCase();
+      var rawCat = (p.category || "").toLowerCase();
+
+      if (nameL.includes("saree") || nameL.includes("pattu") || nameL.includes("lehenga") || nameL.includes("kurti") || nameL.includes("anarkali")) {
+        if (nameL.includes("saree") || nameL.includes("pattu")) return "Saree";
+        if (nameL.includes("lehenga")) return "Lehenga";
+        if (nameL.includes("kurti") || nameL.includes("anarkali")) return "Kurti";
+      }
+      if (nameL.includes("shirt")) return "Shirt";
+      if (nameL.includes("pant") || nameL.includes("jeans") || nameL.includes("trouser")) return "Pants";
+      if (nameL.includes("t-shirt") || nameL.includes("tee")) return "T-Shirt";
+      if (nameL.includes("uniform")) return "Uniform";
+      if (nameL.includes("kid") || nameL.includes("baby") || nameL.includes("frock")) return "Kids";
+
+      return p.category || "Outfit";
+    }
+
     window.checkLoginBeforeAction = function(callback) {
       if (!currentCustomer && !isOwnerActive) {
         openLoginModal();
@@ -853,6 +871,7 @@
           var isCloud = !!p.cloudKey;
           var targetId = p.id || p.cloudKey;
           var inStock = (p.inStock !== false && !isStoreClosed);
+          var resolvedCat = getResolvedCategory(p);
 
           html += 
             '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between overflow-hidden">' +
@@ -869,7 +888,7 @@
               '<div>' +
                 '<p class="font-bold text-slate-950 text-xs sm:text-sm truncate cursor-pointer hover:text-orange-600 transition" onclick="openProductDetailModal(\'' + targetId + '\')">' + p.name + '</p>' +
                 '<div class="flex items-center justify-between mt-1.5">' +
-                  '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">' + (p.category || 'Outfit') + '</span>' +
+                  '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">' + resolvedCat + '</span>' +
                   '<span class="font-mono-num font-black text-sm sm:text-base text-slate-950">₹' + p.price + '</span>' +
                 '</div>' +
               '</div>' +
@@ -909,7 +928,7 @@
         var dispName = getStoreDisplayName(p.store, p.storeMobile);
         document.getElementById("modalProdName").innerText = p.name;
         document.getElementById("modalProdStore").innerText = "🏬 " + dispName;
-        document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
+        document.getElementById("modalProdCategory").innerText = getResolvedCategory(p);
         document.getElementById("modalProdPrice").innerText = "₹" + p.price;
         document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
         document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching.";
@@ -1075,11 +1094,11 @@
         var rawStoreName = p.store || "Boutique Studio";
         var sName = getStoreDisplayName(rawStoreName, sMobile);
         var oName = (p.name || "").toLowerCase();
-        var cat = (p.category || "").toLowerCase();
+        var resolvedCat = getResolvedCategory(p);
         var realLocation = p.area || boutiqueLocationsMap[sName] || "Anantapur";
 
         var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
-        var matchC = (currentCategoryFilter === "All") || (cat === currentCategoryFilter.toLowerCase()) || oName.includes(currentCategoryFilter.toLowerCase());
+        var matchC = (currentCategoryFilter === "All") || (resolvedCat.toLowerCase() === currentCategoryFilter.toLowerCase()) || oName.includes(currentCategoryFilter.toLowerCase());
 
         if (matchS && matchC) {
           var storeKey = sMobile || sName;
