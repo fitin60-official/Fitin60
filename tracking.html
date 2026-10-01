@@ -21,13 +21,13 @@
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    .chat-bubble-in {
-      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
+    .chat-bubble-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="min-h-screen pb-36 antialiased selection:bg-orange-500 selection:text-white">
@@ -41,7 +41,7 @@
     <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl text-slate-900 transition">← Explore Stores</a>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-6 space-y-6">
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 mt-6 space-y-6">
     <div class="flex justify-between items-center">
       <h1 class="font-brand font-black text-xl sm:text-2xl text-slate-950">📦 My Live Orders & Tracking</h1>
       <span id="activeOrdersCount" class="text-xs bg-orange-100 text-orange-800 font-black px-3.5 py-1.5 rounded-full">Syncing...</span>
@@ -55,43 +55,43 @@
       </div>
     </div>
 
-    <!-- In-App Live Chat Bot Section -->
-    <div class="bg-slate-950 text-white rounded-3xl p-6 shadow-2xl border border-slate-800 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white text-lg font-black shadow-md">🤖</div>
+    <!-- Compact & Decent In-App Live Chat Bot Card -->
+    <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-2xl border border-slate-800 space-y-3.5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white text-sm font-black shadow-md">🤖</div>
           <div>
-            <h3 class="font-brand font-bold text-sm text-white">Fitin60 Support Assistant</h3>
-            <p class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online • Instant Help
+            <h3 class="font-brand font-bold text-xs text-white">Fitin60 Support Assistant</h3>
+            <p class="text-[9px] text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online • Instant Help
             </p>
           </div>
         </div>
-        <span class="text-[10px] bg-white/10 text-slate-300 font-bold px-3 py-1 rounded-full">Secure & Private</span>
+        <span class="text-[9px] bg-white/10 text-slate-300 font-bold px-2.5 py-0.5 rounded-full">Secure & Private</span>
       </div>
 
-      <!-- Chat Messages Window -->
-      <div id="chatMessagesBox" class="h-64 overflow-y-auto space-y-3 pr-2 text-xs scroll-smooth">
+      <!-- Chat Messages Window (Compact Height) -->
+      <div id="chatMessagesBox" class="h-44 overflow-y-auto space-y-2.5 pr-1 text-xs scroll-smooth">
         <div class="flex items-start gap-2 chat-bubble-in">
-          <div class="w-7 h-7 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold shrink-0 text-xs">🤖</div>
-          <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl rounded-tl-xs text-slate-200 max-w-[85%] leading-relaxed">
+          <div class="w-6 h-6 rounded-lg bg-orange-600 text-white flex items-center justify-center font-bold shrink-0 text-[10px]">🤖</div>
+          <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl rounded-tl-xs text-slate-200 max-w-[85%] leading-relaxed text-[11px]">
             Hello! Welcome to Fitin60 Live Support ⚡. How can I help you with your fashion drop today? Choose an option below or type your query:
           </div>
         </div>
       </div>
 
       <!-- Quick Action Buttons -->
-      <div class="flex gap-2 overflow-x-auto no-scrollbar pt-1 text-[11px] font-bold">
-        <button onclick="sendBotQuickQuery('Size / Fit Issue')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">📏 Size / Fit Issue</button>
-        <button onclick="sendBotQuickQuery('Where is my Rider?')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">🛵 Where is my Rider?</button>
-        <button onclick="sendBotQuickQuery('Change Delivery Address')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">📍 Change Address</button>
-        <button onclick="sendBotQuickQuery('Cancel Order')" class="bg-slate-900 hover:bg-slate-800 text-rose-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">✕ Cancel Order</button>
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pt-0.5 text-[10px] font-bold">
+        <button onclick="sendBotQuickQuery('Size / Fit Issue')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3 py-1.5 rounded-xl shrink-0 transition cursor-pointer">📏 Size / Fit Issue</button>
+        <button onclick="sendBotQuickQuery('Where is my Rider?')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3 py-1.5 rounded-xl shrink-0 transition cursor-pointer">🛵 Where is my Rider?</button>
+        <button onclick="sendBotQuickQuery('Change Delivery Address')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3 py-1.5 rounded-xl shrink-0 transition cursor-pointer">📍 Change Address</button>
+        <button onclick="sendBotQuickQuery('Cancel Order')" class="bg-slate-900 hover:bg-slate-800 text-rose-400 border border-slate-800 px-3 py-1.5 rounded-xl shrink-0 transition cursor-pointer">✕ Cancel Order</button>
       </div>
 
       <!-- Chat Input Form -->
-      <form onsubmit="handleChatBotSubmit(event)" class="flex gap-2 pt-2 border-t border-slate-800">
-        <input type="text" id="chatInputText" placeholder="Type your message here..." class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-orange-500 font-medium">
-        <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-3 rounded-2xl text-xs transition cursor-pointer shadow-md">Send ➔</button>
+      <form onsubmit="handleChatBotSubmit(event)" class="flex gap-2 pt-1.5 border-t border-slate-800">
+        <input type="text" id="chatInputText" placeholder="Type your message here..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500 font-medium">
+        <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer shadow-md">Send ➔</button>
       </form>
     </div>
   </main>
@@ -213,8 +213,8 @@
       var box = document.getElementById("chatMessagesBox");
       var isBot = (sender === 'bot');
       var html = '<div class="flex items-start gap-2 chat-bubble-in ' + (isBot ? '' : 'flex-row-reverse') + '">' +
-        '<div class="w-7 h-7 rounded-xl ' + (isBot ? 'bg-orange-600 text-white' : 'bg-slate-700 text-white') + ' flex items-center justify-center font-bold shrink-0 text-xs">' + (isBot ? '🤖' : '👤') + '</div>' +
-        '<div class="' + (isBot ? 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-xs' : 'bg-orange-600 text-white rounded-tr-xs') + ' p-3.5 rounded-2xl max-w-[85%] leading-relaxed">' + text + '</div>' +
+        '<div class="w-6 h-6 rounded-lg ' + (isBot ? 'bg-orange-600 text-white' : 'bg-slate-700 text-white') + ' flex items-center justify-center font-bold shrink-0 text-[10px]">' + (isBot ? '🤖' : '👤') + '</div>' +
+        '<div class="' + (isBot ? 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-xs' : 'bg-orange-600 text-white rounded-tr-xs') + ' p-3 rounded-2xl max-w-[85%] leading-relaxed text-[11px]">' + text + '</div>' +
       '</div>';
       box.innerHTML += html;
       box.scrollTop = box.scrollHeight;
