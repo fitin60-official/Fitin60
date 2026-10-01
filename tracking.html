@@ -8,9 +8,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -20,124 +17,47 @@
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0; padding: 0; background-color: #f1f5f9; color: #0f172a; overflow-x: hidden; width: 100%;
+      margin: 0; padding: 0; background-color: #f8fafc; color: #0f172a; width: 100%;
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    #map { height: 180px; width: 100%; border-radius: 1rem; z-index: 10; }
   </style>
 </head>
-<body class="min-h-screen pb-24 antialiased selection:bg-orange-500 selection:text-white w-full">
+<body class="min-h-screen pb-32 antialiased selection:bg-orange-500 selection:text-white">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 h-14 flex items-center justify-between shadow-xs w-full">
-    <a href="index.html" class="flex items-center gap-1.5">
-      <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-brand font-black text-sm shadow-sm">F</div>
-      <span class="font-brand text-base font-black tracking-tight text-slate-950">FITIN<span class="text-orange-600">60</span></span>
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-8 h-18 flex items-center justify-between shadow-xs">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 via-amber-500 to-yellow-400 flex items-center justify-center text-white font-brand font-black text-lg shadow-md">F</div>
+      <span class="font-brand text-lg font-black tracking-tight text-slate-950">FITIN<span class="text-orange-600">60</span></span>
     </a>
-    <a href="index.html" class="text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-xl transition">← Explore</a>
+    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl text-slate-900 transition">← Explore Stores</a>
   </header>
 
-  <main class="max-w-xl mx-auto px-3 mt-4 space-y-3.5 w-full">
-    <!-- Compact Status Card -->
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-3">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
-        <div>
-          <span id="orderIdBadge" class="text-[9px] font-black bg-orange-100 text-orange-800 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Order #FIT-XXXX</span>
-          <h1 id="orderStatusTitle" class="font-brand font-black text-sm text-slate-950 mt-0.5">Order Placed - Waiting for Boutique Acceptance</h1>
-        </div>
-        <div class="text-right">
-          <p class="text-[9px] font-bold text-slate-400 uppercase">Drop ETA Timer</p>
-          <p class="font-mono-num font-black text-xl text-slate-400" id="countdownTimer">Waiting Pickup</p>
-        </div>
-      </div>
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-6 space-y-6">
+    <div class="flex justify-between items-center">
+      <h1 class="font-brand font-black text-xl sm:text-2xl text-slate-950">📦 My Live Orders & Tracking</h1>
+      <span id="activeOrdersCount" class="text-xs bg-orange-100 text-orange-800 font-black px-3.5 py-1.5 rounded-full">Syncing...</span>
+    </div>
 
-      <!-- Step Acceptance Progress UI -->
-      <div class="grid grid-cols-2 gap-2 text-[11px]">
-        <div id="boutiqueStatusStep" class="bg-amber-50 border border-amber-200 text-amber-800 font-bold p-2 rounded-xl text-center">
-          ⏳ Boutique Pending
-        </div>
-        <div id="riderStatusStep" class="bg-slate-50 border border-slate-200 text-slate-500 font-bold p-2 rounded-xl text-center">
-          ⏳ Rider Pending
-        </div>
-      </div>
-
-      <!-- Ordered Items & Cost Summary Box -->
-      <div class="bg-slate-50 rounded-xl p-3 space-y-3 border border-slate-200/80">
-        <h3 class="text-[11px] font-black uppercase tracking-wider text-slate-400">Ordered Item Details</h3>
-        
-        <div id="orderedItemsContainer" class="space-y-2">
-          <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs">
-            <img id="summaryItemImg" src="" alt="" class="w-12 h-12 rounded-lg object-cover border shrink-0">
-            <div class="flex-1 truncate">
-              <p id="summaryItemName" class="font-bold text-xs text-slate-950 truncate">Outfit Name</p>
-              <p id="summaryStoreName" class="text-[10px] text-slate-500">Store: Loading...</p>
-            </div>
-            <span id="summaryItemPrice" class="font-mono-num font-black text-xs text-orange-600">₹0</span>
-          </div>
-        </div>
-
-        <div class="border-t border-slate-200 pt-2 space-y-1 text-xs font-medium text-slate-600">
-          <div class="flex justify-between">
-            <span>Delivery Fee (<span id="summaryDistance">~2.5 KM</span>)</span>
-            <span id="summaryDeliveryFee" class="font-mono font-bold text-emerald-700">₹49</span>
-          </div>
-          <div class="flex justify-between font-black text-slate-950 text-sm pt-1 border-t border-slate-100">
-            <span>Total Paid Amount</span>
-            <span id="summaryTotalAmount" class="font-mono-num text-orange-600 text-base">₹0</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Compact Map (Visible only after Rider picks up) -->
-      <div id="mapContainerWrapper" class="space-y-1.5 hidden">
-        <div class="flex justify-between items-center text-[11px] font-bold text-slate-700">
-          <span>📍 Live Rider Radar</span>
-          <span class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded text-[10px]">Picked Up & On the way</span>
-        </div>
-        <div id="map" class="shadow-inner border border-slate-200"></div>
-      </div>
-
-      <!-- Delivery Details & Clean OTP Display -->
-      <div class="bg-slate-50 rounded-xl p-3 space-y-2 text-xs border border-slate-100">
-        <div class="flex justify-between">
-          <span class="text-slate-500">Delivery Address:</span>
-          <span class="font-bold text-slate-900 text-right truncate max-w-[180px]" id="deliveryAddressLabel">Customer Address</span>
-        </div>
-        
-        <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 flex items-center justify-between">
-          <div>
-            <p class="font-bold text-orange-900 text-xs">🔒 Secure Delivery OTP</p>
-            <p class="text-[10px] text-orange-700 mt-0.5">Share with arrival rider to verify & pay</p>
-          </div>
-          <span class="font-mono-num font-black text-lg text-orange-600 bg-white px-3 py-1 rounded-lg border border-orange-300 shadow-xs" id="deliveryOtpLabel">----</span>
-        </div>
-      </div>
-
-      <!-- Cancel Order Button (Active only before boutique acceptance) -->
-      <div id="cancelOrderActionBox" class="pt-1">
-        <button onclick="cancelActiveOrder()" id="cancelOrderBtn" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow-xs">
-          ✕ Cancel Order
-        </button>
-      </div>
-
-      <!-- Guarantee Banner -->
-      <div class="bg-slate-900 text-white rounded-xl p-3 text-center space-y-1">
-        <p class="font-brand font-bold text-xs text-orange-400">⚡ Fitin60 Express Hyperlocal Guarantee</p>
-        <p class="text-[10px] text-slate-300">Timer starts automatically once the rider picks up your order from the boutique.</p>
+    <!-- Orders Container -->
+    <div id="allMyOrdersContainer" class="space-y-6">
+      <div class="bg-white rounded-3xl p-8 border border-slate-200 text-center space-y-3 shadow-sm">
+        <p class="text-3xl">⏳</p>
+        <p class="text-xs text-slate-500 font-bold">Fetching your active orders from radar...</p>
       </div>
     </div>
   </main>
 
   <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-2.5 px-6 flex items-center justify-around z-40 shadow-2xl">
+  <nav class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-3 px-8 flex items-center justify-around z-40 shadow-2xl">
     <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-orange-600 font-bold">
-      <span class="text-lg">🏬</span>
-      <span class="text-[9px] mt-0.5">Explore</span>
+      <span class="text-xl">🏬</span>
+      <span class="text-[10px] mt-1 font-medium">Explore</span>
     </a>
     <a href="tracking.html" class="flex flex-col items-center text-orange-600 font-bold">
-      <span class="text-lg">⚡</span>
-      <span class="text-[9px] mt-0.5 font-black">Orders</span>
+      <span class="text-xl">⚡</span>
+      <span class="text-[10px] mt-1 font-black">Orders</span>
     </a>
   </nav>
 
@@ -155,142 +75,105 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var map = null;
-    var riderMarker = null;
-    var activeOrder = null;
-    var timerInterval = null;
-    var timerSecs = 60 * 60;
-
+    var currentCustomer = null;
     try {
-      var saved = localStorage.getItem("chitikelo_active_order");
-      if (saved) activeOrder = JSON.parse(saved);
+      var saved = localStorage.getItem("fitin60_customer_user");
+      if (saved) currentCustomer = JSON.parse(saved);
     } catch(e) {}
 
-    if (activeOrder && activeOrder.orderId) {
-      document.getElementById("orderIdBadge").innerText = "Order #" + activeOrder.orderId;
-      document.getElementById("deliveryAddressLabel").innerText = activeOrder.customerAddress || "Expressed Delivery";
-      
-      if (activeOrder.deliveryOtp) {
-        document.getElementById("deliveryOtpLabel").innerText = activeOrder.deliveryOtp;
-      }
+    function loadCustomerOrders() {
+      db.ref("orders").on("value", function(snap) {
+        var orders = snap.val() || {};
+        var container = document.getElementById("allMyOrdersContainer");
+        var countBadge = document.getElementById("activeOrdersCount");
+        var html = "";
+        var myOrdersCount = 0;
 
-      if (activeOrder.items && activeOrder.items.length > 0) {
-        var firstItem = activeOrder.items[0];
-        document.getElementById("summaryItemImg").src = firstItem.image || "";
-        document.getElementById("summaryItemName").innerText = firstItem.name || "Outfit";
-        document.getElementById("summaryStoreName").innerText = "Store: " + (activeOrder.store || firstItem.store || "Boutique");
-        document.getElementById("summaryItemPrice").innerText = "₹" + firstItem.price;
-      } else {
-        document.getElementById("summaryItemName").innerText = "Outfit Order";
-        document.getElementById("summaryStoreName").innerText = "Store: " + (activeOrder.store || "Boutique");
-        document.getElementById("summaryItemPrice").innerText = "₹" + (activeOrder.itemTotal || activeOrder.totalAmount || 0);
-      }
+        Object.keys(orders).forEach(function(oId) {
+          var o = orders[oId];
+          // Match by customer phone if logged in, or show active orders
+          if (o && (currentCustomer && currentCustomer.phone && o.customerPhone === currentCustomer.phone || !currentCustomer)) {
+            myOrdersCount++;
+            var isDelivered = o.delivered === true || o.status === "Delivered & Paid Successfully";
+            var isAccepted = o.boutiqueAccepted === true;
+            var isPickedUp = o.orderPickedUp === true;
 
-      document.getElementById("summaryDistance").innerText = "~" + (activeOrder.distanceKm || 2.5) + " KM";
-      document.getElementById("summaryDeliveryFee").innerText = "₹" + (activeOrder.deliveryFee || 49);
-      document.getElementById("summaryTotalAmount").innerText = "₹" + (activeOrder.totalAmount || 0);
+            html += '<div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-md space-y-4 relative overflow-hidden">' +
+              '<div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">' +
+                '<div>' +
+                  '<span class="font-mono text-xs font-black text-orange-600">Order #' + o.orderId + '</span>' +
+                  '<h3 class="font-brand font-black text-base text-slate-950 mt-0.5">🏬 ' + (o.store || 'Boutique Store') + '</h3>' +
+                '</div>' +
+                '<span class="text-[10px] font-black px-3 py-1 rounded-full ' + (isDelivered ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800 animate-pulse') + '">' + o.status + '</span>' +
+              '</div>' +
 
-      // Realtime listener for order acceptance & pickup status
-      db.ref("orders/" + activeOrder.orderId).on("value", function(snap) {
-        var ord = snap.val();
-        if (!ord) {
-          // Order was deleted/cancelled
-          alert("❌ This order has been cancelled.");
-          localStorage.removeItem("chitikelo_active_order");
-          window.location.href = "index.html";
-          return;
-        }
+              // Status Progression Steps
+              '<div class="grid grid-cols-2 gap-2 text-center text-[11px] font-bold">' +
+                '<div class="p-2.5 rounded-2xl border ' + (isAccepted ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800') + '">' + (isAccepted ? '✓ Boutique Accepted' : '⏳ Waiting Acceptance') + '</div>' +
+                '<div class="p-2.5 rounded-2xl border ' + (isPickedUp ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-500') + '">' + (isPickedUp ? '⚡ Rider Picked Up' : 'Rider Pending') + '</div>' +
+              '</div>' +
 
-        var boutiqueAccepted = ord.boutiqueAccepted === true;
-        var riderAssigned = ord.riderAssigned === true;
-        var orderPickedUp = ord.orderPickedUp === true;
+              // Item details
+              '<div class="bg-slate-50 rounded-2xl p-4 space-y-2 text-xs border border-slate-100">' +
+                '<div class="flex justify-between font-bold text-slate-950">' +
+                  '<span>Outfit: ' + (o.items && o.items[0] ? o.items[0].name : 'Fashion Item') + '</span>' +
+                  '<span class="font-mono-num text-orange-600">₹' + o.totalAmount + '</span>' +
+                '</div>' +
+                '<p class="text-slate-500 text-[11px]">📍 Delivery Address: ' + o.customerAddress + '</p>' +
+              '</div>' +
 
-        var bStep = document.getElementById("boutiqueStatusStep");
-        var rStep = document.getElementById("riderStatusStep");
-        var title = document.getElementById("orderStatusTitle");
-        var mapWrapper = document.getElementById("mapContainerWrapper");
-        var timerDisplay = document.getElementById("countdownTimer");
-        var cancelBox = document.getElementById("cancelOrderActionBox");
+              // Secure Delivery OTP Box
+              (!isDelivered ? 
+                '<div class="flex items-center justify-between bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">' +
+                  '<div class="space-y-0.5">' +
+                    '<p class="text-[10px] font-black uppercase text-amber-800 tracking-wider">🔒 Secure Delivery OTP</p>' +
+                    '<p class="text-[11px] text-amber-700">Share this with arrival rider to verify & complete.</p>' +
+                  '</div>' +
+                  '<span class="font-mono-num font-black text-xl text-slate-950 bg-white px-3 py-1.5 rounded-xl border border-amber-300 tracking-widest shadow-2xs">' + o.deliveryOtp + '</span>' +
+                '</div>' 
+                :
+                '<div class="bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-center py-3 rounded-2xl text-xs">' +
+                  '🎉 Order Delivered & Paid Successfully!' +
+                '</div>'
+              ) +
 
-        // If boutique accepted, hide cancel button (locking order processing)
-        if (boutiqueAccepted) {
-          cancelBox.classList.add("hidden");
+              (!isDelivered && !isAccepted ? 
+                '<button onclick="cancelCustomerOrder(\'' + o.orderId + '\')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-2.5 rounded-xl text-xs transition cursor-pointer">' +
+                  '✕ Cancel Order' +
+                '</button>' 
+                : ''
+              ) +
+            '</div>';
+          }
+        });
+
+        if (myOrdersCount === 0) {
+          container.innerHTML = '<div class="bg-white rounded-3xl p-10 border border-slate-200 text-center space-y-3 shadow-sm">' +
+            '<p class="text-4xl">📦</p>' +
+            '<h3 class="font-brand font-bold text-base text-slate-950">No Active Orders Found</h3>' +
+            '<p class="text-xs text-slate-500">Explore nearby boutiques and place your first express order!</p>' +
+            '<a href="index.html" class="inline-block bg-orange-600 text-white font-bold px-5 py-3 rounded-2xl text-xs mt-2">Explore Stores ➔</a>' +
+          '</div>';
+          countBadge.innerText = "0 Orders";
         } else {
-          cancelBox.classList.remove("hidden");
-        }
-
-        if (!boutiqueAccepted) {
-          bStep.className = "bg-amber-50 border border-amber-200 text-amber-800 font-bold p-2 rounded-xl text-center";
-          bStep.innerText = "⏳ Boutique Pending";
-          rStep.className = "bg-slate-50 border border-slate-200 text-slate-400 font-bold p-2 rounded-xl text-center";
-          rStep.innerText = "⏳ Rider Waiting";
-          title.innerText = "Order Placed - Waiting for Boutique Acceptance";
-          mapWrapper.classList.add("hidden");
-        } else if (boutiqueAccepted && !riderAssigned) {
-          bStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          bStep.innerText = "✓ Boutique Accepted";
-          rStep.className = "bg-amber-50 border border-amber-200 text-amber-800 font-bold p-2 rounded-xl text-center";
-          rStep.innerText = "⏳ Assigning Rider...";
-          title.innerText = "Boutique Accepted! Assigning Rider...";
-          mapWrapper.classList.add("hidden");
-        } else if (boutiqueAccepted && riderAssigned && !orderPickedUp) {
-          bStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          bStep.innerText = "✓ Boutique Accepted";
-          rStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          rStep.innerText = "✓ Rider Assigned (Heading to Store)";
-          title.innerText = "Rider arrived at store & packing order...";
-          mapWrapper.classList.add("hidden");
-          timerDisplay.innerText = "Waiting Pickup";
-        } else if (orderPickedUp || ord.status === "Picked Up") {
-          bStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          bStep.innerText = "✓ Boutique Accepted";
-          rStep.className = "bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold p-2 rounded-xl text-center";
-          rStep.innerText = "✓ Order Picked Up!";
-          title.innerText = "Rider on the way to your address ⚡";
-          
-          timerDisplay.className = "font-mono-num font-black text-xl text-emerald-600 animate-pulse";
-          if (!timerInterval) {
-            timerInterval = setInterval(function() {
-              if (timerSecs > 0) timerSecs--;
-              var m = Math.floor(timerSecs / 60);
-              var s = timerSecs % 60;
-              timerDisplay.innerText = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
-            }, 1000);
-          }
-
-          mapWrapper.classList.remove("hidden");
-          if (!map) {
-            setTimeout(function() {
-              map = L.map('map').setView([14.6819, 77.6006], 14);
-              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© Fitin60' }).addTo(map);
-              L.marker([14.6850, 77.5950]).addTo(map).bindPopup("🏬 Boutique");
-              L.marker([14.6780, 77.6080]).addTo(map).bindPopup("🏠 Customer");
-              riderMarker = L.marker([14.6815, 77.5990]).addTo(map).bindPopup("⚡ Rider on the way").openPopup();
-            }, 200);
-          }
+          container.innerHTML = html;
+          countBadge.innerText = myOrdersCount + " Active Orders";
         }
       });
     }
 
-    function cancelActiveOrder() {
-      if (!activeOrder || !activeOrder.orderId) return;
-      if (confirm("Are you sure you want to cancel this order?")) {
-        db.ref("orders/" + activeOrder.orderId).remove().then(function() {
+    window.cancelCustomerOrder = function(orderId) {
+      if (confirm("Are you sure you want to cancel order #" + orderId + "?")) {
+        db.ref("orders/" + orderId).update({
+          status: "Cancelled by Customer",
+          delivered: true
+        }).then(function() {
           alert("✓ Order cancelled successfully.");
-          localStorage.removeItem("chitikelo_active_order");
-          window.location.href = "index.html";
-        }).catch(function(err) {
-          alert("Error cancelling order: " + err.message);
         });
       }
-    }
+    };
 
-    setInterval(function() {
-      if (riderMarker) {
-        var cur = riderMarker.getLatLng();
-        riderMarker.setLatLng([cur.lat + (Math.random() - 0.4) * 0.0002, cur.lng + (Math.random() - 0.4) * 0.0003]);
-      }
-    }, 4000);
+    loadCustomerOrders();
   </script>
 </body>
 </html>
