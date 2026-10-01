@@ -113,7 +113,7 @@
       <span class="text-base">📍</span> <span>Manage Permanent Address</span>
     </button>
 
-    <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20I%20need%20help%20with%20my%20order" target="_blank" class="flex items-center gap-3 bg-emerald-50 hover:bg-emerald-100 p-3.5 rounded-2xl text-xs font-bold text-emerald-800 transition">
+    <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20I%20need%20help%20με%20my%20order" target="_blank" class="flex items-center gap-3 bg-emerald-50 hover:bg-emerald-100 p-3.5 rounded-2xl text-xs font-bold text-emerald-800 transition">
       <span class="text-base">💬</span> <span>WhatsApp Support</span>
     </a>
 
@@ -140,7 +140,7 @@
           <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider text-orange-300 shadow-inner">
             <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span> 15-KM Hyperlocal Radar
           </div>
-          <button onclick="showQuickToast('✓ GPS Synced Successfully')" class="text-[10px] font-bold bg-orange-600 hover:bg-orange-500 text-white px-3.5 py-2 rounded-xl transition cursor-pointer shadow-lg shadow-orange-600/30">
+          <button onclick="showQuickToast('✓ GPS Synced Within 15KM Radar')" class="text-[10px] font-bold bg-orange-600 hover:bg-orange-500 text-white px-3.5 py-2 rounded-xl transition cursor-pointer shadow-lg shadow-orange-600/30">
             📍 Sync GPS Location
           </button>
         </div>
@@ -178,7 +178,7 @@
     <!-- Stores & Outfits Section -->
     <div class="w-full space-y-5">
       <div class="flex justify-between items-center px-1">
-        <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Live Partner Stores</h2>
+        <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Live Partner Stores (15 KM Radar)</h2>
         <span id="boutiqueCountBadge" class="text-xs bg-orange-100 text-orange-800 font-black px-3.5 py-1.5 rounded-full border border-orange-200 shadow-2xs">Live Radar Active</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full" id="boutiqueStoreGrid"></div>
@@ -296,8 +296,8 @@
           <input type="text" id="directEditName" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-medium">
         </div>
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Store Area</label>
-          <input type="text" id="directEditArea" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-bold">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Store Area (Locked to Permanent Store Location)</label>
+          <input type="text" id="directEditArea" readonly class="w-full bg-slate-200 border border-slate-300 rounded-2xl px-3.5 py-2.5 text-slate-700 font-bold cursor-not-allowed" title="Store area is permanently locked to store settings">
         </div>
         <div class="grid grid-cols-2 gap-2.5">
           <div>
@@ -453,12 +453,12 @@
           </div>
 
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance (15KM Radar Limit)</label>
             <select id="deliveryDistanceSelect" onchange="recalculateDistanceFee()" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-bold text-slate-900">
               <option value="2.5" selected>📍 0 to 3 KM - ₹49</option>
               <option value="5.5">📍 3 to 7 KM - ₹79</option>
               <option value="9.5">📍 7 to 12 KM - ₹99</option>
-              <option value="14.0">📍 12 to 15 KM - ₹129</option>
+              <option value="14.0">📍 12 to 15 KM (Max Radar) - ₹129</option>
             </select>
           </div>
 
@@ -529,7 +529,6 @@
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
-    // DEMO PRODUCTS REMOVED COMPLETELY. ONLY REAL CLOUD PRODUCTS WILL LOAD.
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
@@ -677,7 +676,7 @@
 
       document.getElementById("custPermanentAddress").value = newAddr;
       closeSavedAddressModal();
-      showQuickToast("✓ Permanent Address Saved!");
+      showQuickToast("✓ Permanent Address Saved within 15KM Radar!");
     };
 
     window.toggleAddressInputMode = function(mode) {
@@ -719,22 +718,16 @@
       return originalStoreName || "Boutique Studio";
     }
 
-    // SMART CATEGORY DETECTOR
     function getResolvedCategory(p) {
       var nameL = (p.name || "").toLowerCase();
-      var rawCat = (p.category || "").toLowerCase();
-
-      if (nameL.includes("saree") || nameL.includes("pattu") || nameL.includes("lehenga") || nameL.includes("kurti") || nameL.includes("anarkali")) {
-        if (nameL.includes("saree") || nameL.includes("pattu")) return "Saree";
-        if (nameL.includes("lehenga")) return "Lehenga";
-        if (nameL.includes("kurti") || nameL.includes("anarkali")) return "Kurti";
-      }
+      if (nameL.includes("saree") || nameL.includes("pattu")) return "Saree";
+      if (nameL.includes("lehenga")) return "Lehenga";
+      if (nameL.includes("kurti") || nameL.includes("anarkali")) return "Kurti";
       if (nameL.includes("shirt")) return "Shirt";
       if (nameL.includes("pant") || nameL.includes("jeans") || nameL.includes("trouser")) return "Pants";
       if (nameL.includes("t-shirt") || nameL.includes("tee")) return "T-Shirt";
       if (nameL.includes("uniform")) return "Uniform";
       if (nameL.includes("kid") || nameL.includes("baby") || nameL.includes("frock")) return "Kids";
-
       return p.category || "Outfit";
     }
 
@@ -753,12 +746,13 @@
           return p && ((p.storeMobile && p.storeMobile === storeMobile) || (p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase()));
         });
 
-        var storeArea = boutiqueLocationsMap[actualStoreName] || boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
+        // FORCE STORE PERMANENT LOCATION OVERRIDE
+        var storeArea = boutiqueLocationsMap[actualStoreName] || boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Anantapur");
         var storeStatus = getStoreStatus(actualStoreName, storeMobile);
         var isStoreClosed = (storeStatus === "CLOSED");
 
         document.getElementById("exploreStoreName").innerText = actualStoreName + (isStoreClosed ? " (CLOSED)" : "");
-        document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
+        document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea + " (15 KM Radar)";
         document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
 
         var grid = document.getElementById("storeExploreGrid");
@@ -938,9 +932,12 @@
     window.openDirectOwnerEdit = function(key) {
       var prod = cloudProductsMap[key];
       if (!prod) return;
+      var sName = getStoreDisplayName(prod.store, prod.storeMobile);
+      var fixedArea = boutiqueLocationsMap[sName] || prod.area || "Anantapur";
+
       document.getElementById("directEditKey").value = key;
       document.getElementById("directEditName").value = prod.name || "";
-      document.getElementById("directEditArea").value = prod.area || "";
+      document.getElementById("directEditArea").value = fixedArea; // Locked to permanent store location
       document.getElementById("directEditPrice").value = prod.price || 0;
       document.getElementById("directEditCategory").value = prod.category || "Uniform";
       document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
@@ -953,14 +950,18 @@
       e.preventDefault();
       var key = document.getElementById("directEditKey").value;
       if (!key) return;
+      var prod = cloudProductsMap[key] || {};
+      var sName = getStoreDisplayName(prod.store, prod.storeMobile);
+      var permanentStoreArea = boutiqueLocationsMap[sName] || prod.area || "Anantapur";
+
       var sizes = document.getElementById("directEditSizes").value.trim().split(",").map(function(s) { return s.trim(); });
       db.ref("boutique_products/" + key).update({
         name: document.getElementById("directEditName").value.trim(),
-        area: document.getElementById("directEditArea").value.trim(),
+        area: permanentStoreArea, // ENFORCE PERMANENT STORE LOCATION LOCK
         price: parseInt(document.getElementById("directEditPrice").value),
         category: document.getElementById("directEditCategory").value,
         sizes: sizes
-      }).then(function() { closeDirectOwnerEditModal(); showQuickToast("✓ Updated!"); });
+      }).then(function() { closeDirectOwnerEditModal(); showQuickToast("✓ Updated with Permanent Store Location!"); });
     };
 
     window.filterByCategory = function(cat) {
@@ -985,9 +986,13 @@
         var sMobile = p.storeMobile || "";
         var rawStoreName = p.store || "Boutique Studio";
         var sName = getStoreDisplayName(rawStoreName, sMobile);
+        
+        // FORCE OVERRIDE PRODUCT AREA TO MATCH STORE'S PERMANENT REGISTERED LOCATION
+        var realLocation = boutiqueLocationsMap[sName] || boutiqueLocationsMap[rawStoreName] || p.area || "Anantapur";
+        p.area = realLocation;
+
         var oName = (p.name || "").toLowerCase();
         var resolvedCat = getResolvedCategory(p);
-        var realLocation = p.area || boutiqueLocationsMap[sName] || "Anantapur";
 
         var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
         var matchC = (currentCategoryFilter === "All") || (resolvedCat.toLowerCase() === currentCategoryFilter.toLowerCase()) || oName.includes(currentCategoryFilter.toLowerCase());
@@ -1002,9 +1007,9 @@
       });
 
       var stores = Object.values(storesMap);
-      if (badge) badge.innerText = stores.length + " Stores Live";
+      if (badge) badge.innerText = stores.length + " Stores (15KM Radar)";
       if (stores.length === 0) { 
-        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores or products found yet. Partners can upload collections from Merchant Portal.</p></div>"; 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores found within 15KM radar.</p></div>"; 
         return; 
       }
 
@@ -1038,7 +1043,7 @@
             '</div></div>' +
           '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\', \'' + store.storeMobile + '\')">' +
             '<div class="flex items-center justify-between"><h3 class="font-brand font-black text-lg sm:text-xl text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3><span class="text-xs text-orange-600 font-bold flex items-center gap-1">Explore <span>➔</span></span></div>' +
-            '<p class="text-xs text-slate-500 font-medium mt-1">📍 ' + store.area + '</p>' +
+            '<p class="text-xs text-slate-500 font-medium mt-1">📍 ' + store.area + ' (15KM Radar)</p>' +
           '</div>' +
           '<div class="grid grid-cols-3 gap-3 pt-2">' + previewImages + '</div></div>';
       });
@@ -1281,7 +1286,7 @@
         "amount": totalPayable * 100,
         "currency": "INR",
         "name": "Fitin60 Centralized Gateway",
-        "description": "Secure Delivery Drop & Verification",
+        "description": "Secure Delivery Drop & Verification within 15KM Radar",
         "handler": function (response){
           finalizeAndSaveOrder("Razorpay Online UPI", response.razorpay_payment_id);
         },
@@ -1306,8 +1311,9 @@
           var status = (b.status || "OPEN").trim().toUpperCase();
           var sName = b.name ? b.name.trim() : "";
           var sMobile = b.mobile ? String(b.mobile).trim() : String(key).trim();
-          if (sName) { boutiquesStatusMap[sName.toLowerCase()] = status; boutiqueLocationsMap[sName] = b.area; }
-          if (sMobile) { boutiquesStatusMap[sMobile] = status; boutiqueNameByMobile[sMobile] = sName; }
+          var sArea = b.area ? b.area.trim() : "Anantapur";
+          if (sName) { boutiquesStatusMap[sName.toLowerCase()] = status; boutiqueLocationsMap[sName] = sArea; }
+          if (sMobile) { boutiquesStatusMap[sMobile] = status; boutiqueNameByMobile[sMobile] = sName; boutiqueLocationsMap[sMobile] = sArea; }
         }
       });
       renderBoutiqueStores();
@@ -1318,7 +1324,14 @@
       cloudProducts = []; cloudProductsMap = data || {};
       if (data) {
         Object.keys(data).forEach(function(k) {
-          var p = data[k]; if (p) { p.cloudKey = k; cloudProducts.push(p); }
+          var p = data[k]; 
+          if (p) { 
+            var sName = getStoreDisplayName(p.store, p.storeMobile);
+            var permanentArea = boutiqueLocationsMap[p.storeMobile] || boutiqueLocationsMap[sName] || p.area || "Anantapur";
+            p.area = permanentArea; // Force lock store permanent location
+            p.cloudKey = k; 
+            cloudProducts.push(p); 
+          }
         });
       }
       renderBoutiqueStores();
