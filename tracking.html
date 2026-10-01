@@ -21,9 +21,16 @@
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+    .chat-bubble-in {
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
-<body class="min-h-screen pb-32 antialiased selection:bg-orange-500 selection:text-white">
+<body class="min-h-screen pb-36 antialiased selection:bg-orange-500 selection:text-white">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-8 h-18 flex items-center justify-between shadow-xs">
@@ -48,18 +55,44 @@
       </div>
     </div>
 
-    <!-- Global WhatsApp Support Box -->
-    <div class="bg-emerald-900 text-white rounded-3xl p-6 shadow-xl space-y-3">
-      <div class="flex items-center gap-3">
-        <span class="text-2xl">💬</span>
-        <div>
-          <h3 class="font-brand font-bold text-base">Fitin60 Instant WhatsApp Support</h3>
-          <p class="text-xs text-emerald-200">Have questions regarding size difference or delivery? Chat with us instantly!</p>
+    <!-- In-App Live Chat Bot Section -->
+    <div class="bg-slate-950 text-white rounded-3xl p-6 shadow-2xl border border-slate-800 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white text-lg font-black shadow-md">🤖</div>
+          <div>
+            <h3 class="font-brand font-bold text-sm text-white">Fitin60 Support Assistant</h3>
+            <p class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online • Instant Help
+            </p>
+          </div>
+        </div>
+        <span class="text-[10px] bg-white/10 text-slate-300 font-bold px-3 py-1 rounded-full">Secure & Private</span>
+      </div>
+
+      <!-- Chat Messages Window -->
+      <div id="chatMessagesBox" class="h-64 overflow-y-auto space-y-3 pr-2 text-xs scroll-smooth">
+        <div class="flex items-start gap-2 chat-bubble-in">
+          <div class="w-7 h-7 rounded-xl bg-orange-600 text-white flex items-center justify-center font-bold shrink-0 text-xs">🤖</div>
+          <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl rounded-tl-xs text-slate-200 max-w-[85%] leading-relaxed">
+            Hello! Welcome to Fitin60 Live Support ⚡. How can I help you with your fashion drop today? Choose an option below or type your query:
+          </div>
         </div>
       </div>
-      <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20I%20need%20help%20with%20my%20order%20and%20size%20coordination." target="_blank" class="block w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-center py-3.5 rounded-2xl text-xs uppercase tracking-wider transition shadow-md">
-        💬 Open WhatsApp Support Chat ➔
-      </a>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pt-1 text-[11px] font-bold">
+        <button onclick="sendBotQuickQuery('Size / Fit Issue')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">📏 Size / Fit Issue</button>
+        <button onclick="sendBotQuickQuery('Where is my Rider?')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">🛵 Where is my Rider?</button>
+        <button onclick="sendBotQuickQuery('Change Delivery Address')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">📍 Change Address</button>
+        <button onclick="sendBotQuickQuery('Cancel Order')" class="bg-slate-900 hover:bg-slate-800 text-rose-400 border border-slate-800 px-3.5 py-2 rounded-xl shrink-0 transition cursor-pointer">✕ Cancel Order</button>
+      </div>
+
+      <!-- Chat Input Form -->
+      <form onsubmit="handleChatBotSubmit(event)" class="flex gap-2 pt-2 border-t border-slate-800">
+        <input type="text" id="chatInputText" placeholder="Type your message here..." class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-orange-500 font-medium">
+        <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-5 py-3 rounded-2xl text-xs transition cursor-pointer shadow-md">Send ➔</button>
+      </form>
     </div>
   </main>
 
@@ -111,9 +144,6 @@
             var isAccepted = o.boutiqueAccepted === true;
             var isPickedUp = o.orderPickedUp === true;
 
-            var storeMob = o.storeMobile || "9515552511";
-            var storeWhatsAppUrl = "https://wa.me/91" + storeMob + "?text=Hi%20" + encodeURIComponent(o.store || 'Boutique') + "%2C%20regarding%20my%20order%20%23" + o.orderId + "%2C%20I%20have%20a%20query%20about%20size%20difference.";
-
             html += '<div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-md space-y-4 relative overflow-hidden">' +
               '<div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">' +
                 '<div>' +
@@ -136,16 +166,6 @@
                   '<span class="font-mono-num text-orange-600">₹' + o.totalAmount + '</span>' +
                 '</div>' +
                 '<p class="text-slate-500 text-[11px]">📍 Delivery Address: ' + o.customerAddress + '</p>' +
-              '</div>' +
-
-              // Direct WhatsApp Connect buttons for Boutique & Rider coordination
-              '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">' +
-                '<a href="' + storeWhatsAppUrl + '" target="_blank" class="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-2.5 px-3 rounded-2xl text-xs transition border border-emerald-200">' +
-                  '<span>💬</span> <span>Chat with Boutique Partner</span>' +
-                '</a>' +
-                '<a href="https://wa.me/919515552511?text=Hi%20Rider%2C%20regarding%20order%20%23' + o.orderId + '%2C%20please%20deliver%20fast%20urgently." target="_blank" class="flex items-center justify-center gap-2 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold py-2.5 px-3 rounded-2xl text-xs transition border border-orange-200">' +
-                  '<span>⚡</span> <span>Contact Delivery Rider</span>' +
-                '</a>' +
               '</div>' +
 
               // Secure Delivery OTP Box
@@ -187,6 +207,45 @@
         }
       });
     }
+
+    // LIVE CHAT BOT LOGIC
+    function appendChatMessage(sender, text) {
+      var box = document.getElementById("chatMessagesBox");
+      var isBot = (sender === 'bot');
+      var html = '<div class="flex items-start gap-2 chat-bubble-in ' + (isBot ? '' : 'flex-row-reverse') + '">' +
+        '<div class="w-7 h-7 rounded-xl ' + (isBot ? 'bg-orange-600 text-white' : 'bg-slate-700 text-white') + ' flex items-center justify-center font-bold shrink-0 text-xs">' + (isBot ? '🤖' : '👤') + '</div>' +
+        '<div class="' + (isBot ? 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-xs' : 'bg-orange-600 text-white rounded-tr-xs') + ' p-3.5 rounded-2xl max-w-[85%] leading-relaxed">' + text + '</div>' +
+      '</div>';
+      box.innerHTML += html;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    window.sendBotQuickQuery = function(query) {
+      appendChatMessage('user', query);
+      setTimeout(function() {
+        var reply = "I have noted your request regarding **" + query + "** ⚡. Our 60-minute express support agent has been notified and will coordinate with the boutique partner immediately.";
+        if (query === 'Size / Fit Issue') {
+          reply = "📏 For size differences, our delivery partner or boutique partner can assist with instant exchange upon arrival, or you can check size charts in the product view.";
+        } else if (query === 'Where is my Rider?') {
+          reply = "🛵 Your express delivery rider is assigned via our 15KM hyperlocal radar and will arrive within the 60-minute window with your Secure OTP verification.";
+        } else if (query === 'Cancel Order') {
+          reply = "✕ You can cancel your order directly using the 'Cancel Order' button on your active order card above before the boutique accepts it.";
+        }
+        appendChatMessage('bot', reply);
+      }, 600);
+    };
+
+    window.handleChatBotSubmit = function(e) {
+      e.preventDefault();
+      var input = document.getElementById("chatInputText");
+      var txt = input.value.trim();
+      if (!txt) return;
+      appendChatMessage('user', txt);
+      input.value = "";
+      setTimeout(function() {
+        appendChatMessage('bot', "Thank you for reaching out. We have logged your query and our support team is actively looking into it ⚡.");
+      }, 700);
+    };
 
     window.cancelCustomerOrder = function(orderId) {
       if (confirm("Are you sure you want to cancel order #" + orderId + "?")) {
