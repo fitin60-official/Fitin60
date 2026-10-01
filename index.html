@@ -129,8 +129,8 @@
         <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, shirt, pants, t-shirt, saree..." class="w-full pl-11 pr-4 py-3.5 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900">
       </div>
 
-      <!-- Categories with proper horizontal wrap/scroll padding -->
-      <div class="flex flex-wrap sm:flex-nowrap gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full" id="categoryChips">
+      <!-- Perfectly Smooth Horizontal Scrolling Chips (No Cut Offs) -->
+      <div class="flex gap-2.5 overflow-x-auto no-scrollbar py-1 text-xs font-bold w-full whitespace-nowrap" id="categoryChips">
         <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-sm">All Outfits</button>
         <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
         <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
