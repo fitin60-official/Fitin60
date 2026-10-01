@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- Compact & Decent In-App Live Chat Bot Card -->
+    <!-- In-App Live Chat Bot Card -->
     <div class="bg-slate-950 text-white rounded-3xl p-5 shadow-2xl border border-slate-800 space-y-3.5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
         <div class="flex items-center gap-2.5">
@@ -70,7 +70,7 @@
         <span class="text-[9px] bg-white/10 text-slate-300 font-bold px-2.5 py-0.5 rounded-full">Secure & Private</span>
       </div>
 
-      <!-- Chat Messages Window (Compact Height) -->
+      <!-- Chat Messages Window -->
       <div id="chatMessagesBox" class="h-44 overflow-y-auto space-y-2.5 pr-1 text-xs scroll-smooth">
         <div class="flex items-start gap-2 chat-bubble-in">
           <div class="w-6 h-6 rounded-lg bg-orange-600 text-white flex items-center justify-center font-bold shrink-0 text-[10px]">🤖</div>
@@ -144,6 +144,9 @@
             var isAccepted = o.boutiqueAccepted === true;
             var isPickedUp = o.orderPickedUp === true;
 
+            var storeMob = o.storeMobile || "9515552511";
+            var storeWhatsAppUrl = "https://wa.me/91" + storeMob + "?text=Hi%20" + encodeURIComponent(o.store || 'Boutique') + "%2C%20regarding%20my%20order%20%23" + o.orderId + "%2C%20I%20have%20a%20query%20about%20size%20change%20and%20exchange.";
+
             html += '<div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-md space-y-4 relative overflow-hidden">' +
               '<div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">' +
                 '<div>' +
@@ -166,6 +169,16 @@
                   '<span class="font-mono-num text-orange-600">₹' + o.totalAmount + '</span>' +
                 '</div>' +
                 '<p class="text-slate-500 text-[11px]">📍 Delivery Address: ' + o.customerAddress + '</p>' +
+              '</div>' +
+
+              // Direct WhatsApp Connect buttons for Partner & Rider Chat
+              '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">' +
+                '<a href="' + storeWhatsAppUrl + '" target="_blank" class="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-2.5 px-3 rounded-2xl text-xs transition border border-emerald-200 cursor-pointer">' +
+                  '<span>💬</span> <span>Chat with Boutique Partner (Size/Fit)</span>' +
+                '</a>' +
+                '<a href="https://wa.me/919515552511?text=Hi%20Rider%2C%20regarding%20order%20%23' + o.orderId + '%2C%20please%20deliver%20fast%20urgently." target="_blank" class="flex items-center justify-center gap-2 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold py-2.5 px-3 rounded-2xl text-xs transition border border-orange-200 cursor-pointer">' +
+                  '<span>⚡</span> <span>Contact Delivery Rider</span>' +
+                '</a>' +
               '</div>' +
 
               // Secure Delivery OTP Box
@@ -225,7 +238,7 @@
       setTimeout(function() {
         var reply = "I have noted your request regarding **" + query + "** ⚡. Our 60-minute express support agent has been notified and will coordinate with the boutique partner immediately.";
         if (query === 'Size / Fit Issue') {
-          reply = "📏 For size differences, our delivery partner or boutique partner can assist with instant exchange upon arrival, or you can check size charts in the product view.";
+          reply = "📏 For size differences, you can click on 'Chat with Boutique Partner' above to instantly request a size change/exchange with the store before or upon arrival.";
         } else if (query === 'Where is my Rider?') {
           reply = "🛵 Your express delivery rider is assigned via our 15KM hyperlocal radar and will arrive within the 60-minute window with your Secure OTP verification.";
         } else if (query === 'Cancel Order') {
