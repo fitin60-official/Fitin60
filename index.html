@@ -161,7 +161,7 @@
         <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, shirt, pants, t-shirt, saree, kurta..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
       </div>
 
-      <!-- Optimized Category Chips with perfect padding to avoid text cuts -->
+      <!-- Category Chips -->
       <div class="flex gap-2 overflow-x-auto no-scrollbar py-2 px-1 text-xs font-bold w-full whitespace-nowrap scroll-smooth" id="categoryChips">
         <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20">All Outfits</button>
         <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
@@ -821,57 +821,69 @@
       return originalStoreName || "Boutique Studio";
     }
 
+    // LOGIN CHECK WRAPPER FOR STORE & OUTFIT CLICKS
+    window.checkLoginBeforeAction = function(callback) {
+      if (!currentCustomer && !isOwnerActive) {
+        alert("🔒 Please login with your Mobile & PIN to explore store collections and purchase outfits!");
+        openLoginModal();
+        return;
+      }
+      callback();
+    };
+
     window.openStoreExploreModal = function(storeName, storeMobile) {
-      var actualStoreName = getStoreDisplayName(storeName, storeMobile);
-      var all = baseProducts.concat(cloudProducts);
-      var storeProds = all.filter(function(p) {
-        return p && ((p.storeMobile && p.storeMobile === storeMobile) || (p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase()));
-      });
+      checkLoginBeforeAction(function() {
+        var actualStoreName = getStoreDisplayName(storeName, storeMobile);
+        var all = baseProducts.concat(cloudProducts);
+        var storeProds = all.filter(function(p) {
+          return p && ((p.storeMobile && p.storeMobile === storeMobile) || (p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase()));
+        });
 
-      var storeArea = boutiqueLocationsMap[actualStoreName] || boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
-      var storeStatus = getStoreStatus(actualStoreName, storeMobile);
-      var isStoreClosed = (storeStatus === "CLOSED");
+        var storeArea = boutiqueLocationsMap[actualStoreName] || boutiqueLocationsMap[storeName] || (storeProds[0] ? storeProds[0].area : "Local Showroom");
+        var storeStatus = getStoreStatus(actualStoreName, storeMobile);
+        var isStoreClosed = (storeStatus === "CLOSED");
 
-      document.getElementById("exploreStoreName").innerText = actualStoreName + (isStoreClosed ? " (CLOSED)" : "");
-      document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
-      document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
+        document.getElementById("exploreStoreName").innerText = actualStoreName + (isStoreClosed ? " (CLOSED)" : "");
+        document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
+        document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
 
-      var grid = document.getElementById("storeExploreGrid");
-      var html = "";
+        var grid = document.getElementById("storeExploreGrid");
+        var html = "";
 
-      storeProds.forEach(function(p) {
-        var isCloud = !!p.cloudKey;
-        var targetId = p.id || p.cloudKey;
-        var inStock = (p.inStock !== false && !isStoreClosed);
+        storeProds.forEach(function(p) {
+          var isCloud = !!p.cloudKey;
+          var targetId = p.id || p.cloudKey;
+          var inStock = (p.inStock !== false && !isStoreClosed);
 
-        html += 
-          '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between overflow-hidden">' +
-            (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
-            (isOwnerActive && isCloud ? 
-              '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
-                '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
-              '</div>' : '') +
-            '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-              '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
-              '<span class="absolute top-2 left-2 bg-slate-950/75 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md">⚡ 60-Min</span>' +
-            '</div>' +
-            '<div>' +
-              '<p class="font-bold text-slate-950 text-xs sm:text-sm truncate cursor-pointer hover:text-orange-600 transition" onclick="openProductDetailModal(\'' + targetId + '\')">' + p.name + '</p>' +
-              '<div class="flex items-center justify-between mt-1.5">' +
-                '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">' + (p.category || 'Outfit') + '</span>' +
-                '<span class="font-mono-num font-black text-sm sm:text-base text-slate-950">₹' + p.price + '</span>' +
+          html += 
+            '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between overflow-hidden">' +
+              (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
+              (isOwnerActive && isCloud ? 
+                '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
+                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
+                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
+                '</div>' : '') +
+              '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
+                '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
+                '<span class="absolute top-2 left-2 bg-slate-950/75 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md">⚡ 60-Min</span>' +
               '</div>' +
-            '</div>' +
-            '<div class="grid grid-cols-2 gap-2 pt-1">' +
-              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer transition disabled:opacity-50">🛍️ Add Bag</button>' +
-              '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer shadow transition disabled:opacity-50">⚡ Buy Now</button>' +
-            '</div>' +
-          '</div>';
-      });
+              '<div>' +
+                '<p class="font-bold text-slate-950 text-xs sm:text-sm truncate cursor-pointer hover:text-orange-600 transition" onclick="openProductDetailModal(\'' + targetId + '\')">' + p.name + '</p>' +
+                '<div class="flex items-center justify-between mt-1.5">' +
+                  '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">' + (p.category || 'Outfit') + '</span>' +
+                  '<span class="font-mono-num font-black text-sm sm:text-base text-slate-950">₹' + p.price + '</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="grid grid-cols-2 gap-2 pt-1">' +
+                '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer transition disabled:opacity-50">🛍️ Add Bag</button>' +
+                '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer shadow transition disabled:opacity-50">⚡ Buy Now</button>' +
+              '</div>' +
+            '</div>';
+        });
 
-      grid.innerHTML = html;
-      document.getElementById("storeExploreModal").classList.remove("hidden");
+        grid.innerHTML = html;
+        document.getElementById("storeExploreModal").classList.remove("hidden");
+      });
     };
 
     window.closeStoreExploreModal = function() {
@@ -879,69 +891,75 @@
     };
 
     window.openProductDetailModal = function(prodId) {
-      var all = baseProducts.concat(cloudProducts);
-      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
-      if (!p) return;
+      checkLoginBeforeAction(function() {
+        var all = baseProducts.concat(cloudProducts);
+        var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+        if (!p) return;
 
-      var storeStatus = getStoreStatus(p.store, p.storeMobile);
-      if (storeStatus === "CLOSED") {
-        alert("❌ This boutique is currently closed!");
-        return;
-      }
+        var storeStatus = getStoreStatus(p.store, p.storeMobile);
+        if (storeStatus === "CLOSED") {
+          alert("❌ This boutique is currently closed!");
+          return;
+        }
 
-      activeModalProduct = p;
-      currentModalImageIndex = 0;
-      var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
-      activeModalProduct._resolvedImages = imagesList;
+        activeModalProduct = p;
+        currentModalImageIndex = 0;
+        var imagesList = (p.images && p.images.length > 0) ? p.images : [p.image];
+        activeModalProduct._resolvedImages = imagesList;
 
-      var dispName = getStoreDisplayName(p.store, p.storeMobile);
-      document.getElementById("modalProdName").innerText = p.name;
-      document.getElementById("modalProdStore").innerText = "🏬 " + dispName;
-      document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
-      document.getElementById("modalProdPrice").innerText = "₹" + p.price;
-      document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
-      document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching.";
+        var dispName = getStoreDisplayName(p.store, p.storeMobile);
+        document.getElementById("modalProdName").innerText = p.name;
+        document.getElementById("modalProdStore").innerText = "🏬 " + dispName;
+        document.getElementById("modalProdCategory").innerText = p.category || "Fashion";
+        document.getElementById("modalProdPrice").innerText = "₹" + p.price;
+        document.getElementById("modalProdOrig").innerText = "₹" + (p.originalPrice || Math.round(p.price * 1.4));
+        document.getElementById("modalProdDesc").innerText = p.desc || "Pure fabric details, premium stitching.";
 
-      var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
-      selectedModalSize = sizes[0];
-      var sizesHtml = "";
-      sizes.forEach(function(s, idx) {
-        sizesHtml += '<button onclick="selectModalSize(\'' + s + '\')" class="size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition ' + (idx === 0 ? "bg-slate-950 text-white border-slate-950 shadow-sm" : "bg-slate-50 text-slate-800 border-slate-200") + '">' + s + '</button>';
+        var sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free size"];
+        selectedModalSize = sizes[0];
+        var sizesHtml = "";
+        sizes.forEach(function(s, idx) {
+          sizesHtml += '<button onclick="selectModalSize(\'' + s + '\')" class="size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition ' + (idx === 0 ? "bg-slate-950 text-white border-slate-950 shadow-sm" : "bg-slate-50 text-slate-800 border-slate-200") + '">' + s + '</button>';
+        });
+        document.getElementById("modalSizesContainer").innerHTML = sizesHtml;
+
+        updateModalSwiperUI();
+        document.getElementById("productDetailModal").classList.remove("hidden");
       });
-      document.getElementById("modalSizesContainer").innerHTML = sizesHtml;
-
-      updateModalSwiperUI();
-      document.getElementById("productDetailModal").classList.remove("hidden");
     };
 
     window.quickAddBag = function(prodId) {
-      var all = baseProducts.concat(cloudProducts);
-      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
-      if (!p) return;
-      if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
+      checkLoginBeforeAction(function() {
+        var all = baseProducts.concat(cloudProducts);
+        var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+        if (!p) return;
+        if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
 
-      var dispName = getStoreDisplayName(p.store, p.storeMobile);
-      var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
-      var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
-      if (existingIndex === -1) {
-        var now = new Date();
-        var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
-        items.push({ name: itemName, price: p.price, store: dispName, storeMobile: p.storeMobile || "", image: p.image, addedTime: timeStr });
-        localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
-      }
-      renderCart();
-      showQuickToast("✓ Added to Bag");
+        var dispName = getStoreDisplayName(p.store, p.storeMobile);
+        var itemName = p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")";
+        var existingIndex = items.findIndex(function(i) { return i.name === itemName && i.store === dispName; });
+        if (existingIndex === -1) {
+          var now = new Date();
+          var timeStr = now.toLocaleDateString('en-IN', {day: '2-digit', month: 'short'}) + ', ' + now.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'});
+          items.push({ name: itemName, price: p.price, store: dispName, storeMobile: p.storeMobile || "", image: p.image, addedTime: timeStr });
+          localStorage.setItem("fitin60_cart_items", JSON.stringify(items));
+        }
+        renderCart();
+        showQuickToast("✓ Added to Bag");
+      });
     };
 
     window.quickBuyNow = function(prodId) {
-      var all = baseProducts.concat(cloudProducts);
-      var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
-      if (!p) return;
-      if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
+      checkLoginBeforeAction(function() {
+        var all = baseProducts.concat(cloudProducts);
+        var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+        if (!p) return;
+        if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
 
-      var dispName = getStoreDisplayName(p.store, p.storeMobile);
-      activeCheckoutItem = { name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")", price: p.price, store: dispName, storeMobile: p.storeMobile || "", image: p.image };
-      openSingleCheckoutView();
+        var dispName = getStoreDisplayName(p.store, p.storeMobile);
+        activeCheckoutItem = { name: p.name + " (" + (p.sizes ? p.sizes[0] : "Free size") + ")", price: p.price, store: dispName, storeMobile: p.storeMobile || "", image: p.image };
+        openSingleCheckoutView();
+      });
     };
 
     window.selectModalSize = function(size) {
@@ -1038,7 +1056,7 @@
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
-        btn.className = (btn.getAttribute("onclick").includes("'" + cat + "'")) ? "cat-chip bg-slate-950 text-white px-3 py-2 rounded-xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20 text-[11px]" : "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3 py-2 rounded-xl shrink-0 cursor-pointer transition shadow-xs text-[11px]";
+        btn.className = (btn.getAttribute("onclick").includes("'" + cat + "'")) ? "cat-chip bg-slate-950 text-white px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20 text-[11px]" : "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs text-[11px]";
       });
       renderBoutiqueStores();
     };
@@ -1092,7 +1110,7 @@
               '<span class="absolute top-1 left-1 bg-slate-950/80 text-white font-bold text-[9px] px-2 py-0.5 rounded backdrop-blur-xs">₹' + p.price + '</span>' +
             '</div>' +
             '<div class="grid grid-cols-2 gap-1">' +
-              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-xl text-[10px] cursor-pointer">Add</button>' +
+             '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-xl text-[10px] cursor-pointer">Add</button>' +
               '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 text-white font-bold py-1.5 rounded-xl text-[10px] cursor-pointer shadow-2xs">Buy</button>' +
             '</div></div>';
         });
@@ -1115,10 +1133,12 @@
     }
 
     window.toggleCart = function() {
-      activeCheckoutItem = null;
-      if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
-      renderCart();
-      document.getElementById("cartDrawer").classList.toggle("hidden");
+      checkLoginBeforeAction(function() {
+        activeCheckoutItem = null;
+        if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
+        renderCart();
+        document.getElementById("cartDrawer").classList.toggle("hidden");
+      });
     };
 
     function openSingleCheckoutView() {
