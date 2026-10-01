@@ -146,7 +146,7 @@
         </div>
 
         <h1 class="font-brand text-2xl sm:text-4xl font-black tracking-tight leading-tight text-white max-w-2xl">
-          Boutiques & Sarees, Shirts, Pants in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
+          Live Partner Boutiques & Outfits in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
         </h1>
         <p class="text-slate-300 text-xs sm:text-sm font-medium max-w-xl">
           Secure Delivery OTP & Instant QR Verification enabled for verified orders. Shop the latest fashion instantly.
@@ -178,7 +178,7 @@
     <!-- Stores & Outfits Section -->
     <div class="w-full space-y-5">
       <div class="flex justify-between items-center px-1">
-        <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Stores Near You</h2>
+        <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Live Partner Stores</h2>
         <span id="boutiqueCountBadge" class="text-xs bg-orange-100 text-orange-800 font-black px-3.5 py-1.5 rounded-full border border-orange-200 shadow-2xs">Live Radar Active</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full" id="boutiqueStoreGrid"></div>
@@ -529,109 +529,7 @@
 
     var isOwnerActive = (localStorage.getItem("fitin60_owner_session") === "active");
 
-    var baseProducts = [
-      {
-        id: "base_1",
-        name: "Floral Designer Anarkali Kurta Set",
-        store: "Sai Fashions",
-        storeMobile: "9515552511",
-        category: "Kurti",
-        area: "Near Upparapalli Road",
-        price: 899,
-        originalPrice: 1499,
-        discount: "40% OFF",
-        sizes: ["M", "L", "XL"],
-        desc: "Premium pure rayon fabric with intricate neckline embroidery and matching dupatta.",
-        eta: "35 MINS",
-        rating: "5.0",
-        image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
-        images: [
-          "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
-        ]
-      },
-      {
-        id: "base_shirt_1",
-        name: "Classic Casual Cotton Shirt",
-        store: "Mummy Daddy",
-        storeMobile: "9000000002",
-        category: "Shirt",
-        area: "Bala Nagar, Hyderabad",
-        price: 799,
-        originalPrice: 1299,
-        discount: "38% OFF",
-        sizes: ["S", "M", "L", "XL", "XXL"],
-        desc: "Breathable pure cotton casual shirt designed for all-day comfort and sharp styling.",
-        eta: "35 MINS",
-        rating: "5.0",
-        image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
-        images: [
-          "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=800&q=80"
-        ]
-      },
-      {
-        id: "base_pants_1",
-        name: "Urban Stretch Denim Jeans",
-        store: "Mummy Daddy",
-        storeMobile: "9000000002",
-        category: "Pants",
-        area: "Bala Nagar, Hyderabad",
-        price: 1199,
-        originalPrice: 1999,
-        discount: "40% OFF",
-        sizes: ["28", "30", "32", "34", "36"],
-        desc: "Flex-fit premium denim jeans with modern wash and durable stitching.",
-        eta: "35 MINS",
-        rating: "5.0",
-        image: "https://images.unsplash.com/photo-1542272604-787c96355d63?auto=format&fit=crop&w=800&q=80",
-        images: [
-          "https://images.unsplash.com/photo-1542272604-787c96355d63?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=800&q=80"
-        ]
-      },
-      {
-        id: "base_tshirt_1",
-        name: "Minimalist Graphic T-Shirt",
-        store: "Mummy Daddy",
-        storeMobile: "9000000002",
-        category: "T-Shirt",
-        area: "Bala Nagar, Hyderabad",
-        price: 499,
-        originalPrice: 899,
-        discount: "45% OFF",
-        sizes: ["M", "L", "XL"],
-        desc: "Super combed bio-wash cotton t-shirt with modern aesthetic print.",
-        eta: "35 MINS",
-        rating: "5.0",
-        image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
-        images: [
-          "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80"
-        ]
-      },
-      {
-        id: "base_uniform_1",
-        name: "Standard School Uniform Set",
-        store: "AdhyaSai Uniforms & Fashions",
-        storeMobile: "9000000003",
-        category: "Uniform",
-        area: "Kamalanagar, Anantapur",
-        price: 699,
-        originalPrice: 999,
-        discount: "30% OFF",
-        sizes: ["26", "28", "30", "32", "34"],
-        desc: "High quality anti-fade school uniform shirt with durable pleated shorts/skirt.",
-        eta: "30 MINS",
-        rating: "5.0",
-        image: "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80",
-        images: [
-          "https://images.unsplash.com/photo-1628157582853-a796fa650a6a?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=800&q=80"
-        ]
-      }
-    ];
-
+    // DEMO PRODUCTS REMOVED COMPLETELY. ONLY REAL CLOUD PRODUCTS WILL LOAD.
     var cloudProducts = [];
     var cloudProductsMap = {};
     var boutiqueLocationsMap = {};
@@ -821,7 +719,7 @@
       return originalStoreName || "Boutique Studio";
     }
 
-    // SMART CATEGORY DETECTOR (Ensures Sarees, Shirts, Pants never show as Uniform incorrectly)
+    // SMART CATEGORY DETECTOR
     function getResolvedCategory(p) {
       var nameL = (p.name || "").toLowerCase();
       var rawCat = (p.category || "").toLowerCase();
@@ -851,8 +749,7 @@
     window.openStoreExploreModal = function(storeName, storeMobile) {
       checkLoginBeforeAction(function() {
         var actualStoreName = getStoreDisplayName(storeName, storeMobile);
-        var all = baseProducts.concat(cloudProducts);
-        var storeProds = all.filter(function(p) {
+        var storeProds = cloudProducts.filter(function(p) {
           return p && ((p.storeMobile && p.storeMobile === storeMobile) || (p.store && p.store.trim().toLowerCase() === storeName.trim().toLowerCase()));
         });
 
@@ -868,15 +765,14 @@
         var html = "";
 
         storeProds.forEach(function(p) {
-          var isCloud = !!p.cloudKey;
-          var targetId = p.id || p.cloudKey;
+          var targetId = p.cloudKey;
           var inStock = (p.inStock !== false && !isStoreClosed);
           var resolvedCat = getResolvedCategory(p);
 
           html += 
             '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between overflow-hidden">' +
               (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
-              (isOwnerActive && isCloud ? 
+              (isOwnerActive ? 
                 '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
                   '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
                   '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
@@ -910,8 +806,7 @@
 
     window.openProductDetailModal = function(prodId) {
       checkLoginBeforeAction(function() {
-        var all = baseProducts.concat(cloudProducts);
-        var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+        var p = cloudProducts.find(function(item) { return item.cloudKey === prodId; });
         if (!p) return;
 
         var storeStatus = getStoreStatus(p.store, p.storeMobile);
@@ -948,8 +843,7 @@
 
     window.quickAddBag = function(prodId) {
       checkLoginBeforeAction(function() {
-        var all = baseProducts.concat(cloudProducts);
-        var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+        var p = cloudProducts.find(function(item) { return item.cloudKey === prodId; });
         if (!p) return;
         if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
 
@@ -969,8 +863,7 @@
 
     window.quickBuyNow = function(prodId) {
       checkLoginBeforeAction(function() {
-        var all = baseProducts.concat(cloudProducts);
-        var p = all.find(function(item) { return item.id === prodId || item.cloudKey === prodId; });
+        var p = cloudProducts.find(function(item) { return item.cloudKey === prodId; });
         if (!p) return;
         if (getStoreStatus(p.store, p.storeMobile) === "CLOSED") return alert("❌ Closed!");
 
@@ -1083,12 +976,11 @@
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
       if (!grid) return;
-      var all = baseProducts.concat(cloudProducts);
       var searchInput = document.getElementById("storeSearchInput");
       var search = searchInput ? searchInput.value.trim().toLowerCase() : "";
 
       var storesMap = {};
-      all.forEach(function(p) {
+      cloudProducts.forEach(function(p) {
         if (!p) return;
         var sMobile = p.storeMobile || "";
         var rawStoreName = p.store || "Boutique Studio";
@@ -1111,7 +1003,10 @@
 
       var stores = Object.values(storesMap);
       if (badge) badge.innerText = stores.length + " Stores Live";
-      if (stores.length === 0) { grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold'>No matching outfits found.</div>"; return; }
+      if (stores.length === 0) { 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores or products found yet. Partners can upload collections from Merchant Portal.</p></div>"; 
+        return; 
+      }
 
       var html = "";
       stores.forEach(function(store) {
@@ -1119,7 +1014,7 @@
         var isStoreClosed = (storeStatus === "CLOSED");
         var previewImages = "";
         store.products.slice(0, 3).forEach(function(p) {
-          var targetId = p.id || p.cloudKey;
+          var targetId = p.cloudKey;
           var inStock = (p.inStock !== false && !isStoreClosed);
           previewImages += '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs flex flex-col justify-between p-2 space-y-1.5">' +
             (!inStock ? '<div class="absolute inset-0 bg-white/85 z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">' + (isStoreClosed ? 'Closed' : 'Out') + '</span></div>' : '') +
