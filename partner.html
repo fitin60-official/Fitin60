@@ -33,7 +33,7 @@
     </div>
     <div class="flex items-center gap-1 shrink-0">
       <button onclick="enableAudioAlerts()" id="soundToggleBtn" class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-lg border border-orange-200 cursor-pointer animate-pulse">🔊 Sound</button>
-      <button onclick="openEditStoreModal()" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200 cursor-pointer">✏️ Location & Edit</button>
+      <button onclick="openEditStoreModal()" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200 cursor-pointer">✏️ Edit</button>
       <button onclick="partnerLogout()" class="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg border border-rose-200 cursor-pointer">Logout</button>
     </div>
   </header>
@@ -174,7 +174,7 @@
             </div>
 
             <div id="imagePreviewContainer" class="hidden flex-col items-center gap-2">
-              <img id="imagePreview" alt="Preview" class="w-32 h-36 object-cover rounded-xl border border-slate-200 shadow-sm">
+              <img id="imagePreview" src="" alt="Preview" class="w-32 h-36 object-cover rounded-xl border border-slate-200 shadow-sm">
               <span class="text-[10px] bg-orange-100 text-orange-700 font-bold px-2.5 py-1 rounded-full">✓ Photo Selected (Tap to Change)</span>
             </div>
           </div>
@@ -270,10 +270,6 @@
           <input type="tel" id="partnerRegMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border rounded-xl p-2.5 font-mono">
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Permanent Store Location / Area</label>
-          <input type="text" id="partnerRegArea" required placeholder="Main Road, Near Clock Tower, Anantapur" class="w-full bg-slate-50 border rounded-xl p-2.5 font-medium">
-        </div>
-        <div>
           <label class="block font-bold text-slate-700 mb-1 uppercase text-[10px]">Create 4-Digit PIN</label>
           <input type="password" id="partnerRegPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border rounded-xl p-2.5 text-center font-mono tracking-widest font-black">
         </div>
@@ -346,7 +342,7 @@
       <div class="flex items-center justify-between border-b pb-2">
         <div class="flex items-center gap-2">
           <span class="text-xl">🏬</span>
-          <h3 class="font-brand font-bold text-sm text-slate-900">Edit Permanent Store Location</h3>
+          <h3 class="font-brand font-bold text-sm text-slate-900">Edit Store Profile</h3>
         </div>
         <button onclick="closeEditStoreModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
@@ -357,11 +353,11 @@
           <input type="text" id="storeModalName" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-bold">
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Permanent Store Location / Area (For Rider Navigation)</label>
-          <input type="text" id="storeModalArea" required placeholder="Main Road, Near Clock Tower..." class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900 font-medium">
+          <label class="block font-bold text-slate-700 mb-1">Store Location / Area</label>
+          <input type="text" id="storeModalArea" required class="w-full bg-slate-50 border rounded-xl p-2.5 text-slate-900">
         </div>
         <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
-          ✓ Update Permanent Store Location
+          ✓ Update Store Details
         </button>
       </form>
     </div>
@@ -371,7 +367,7 @@
   <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 py-2.5 px-4 flex items-center justify-center z-40 shadow-lg">
     <div class="flex items-center gap-2 text-orange-600 font-black text-[11px] uppercase tracking-wider truncate">
       <span>💼</span>
-      <span>Fitin60 Merchant Studio Active (Permanent Location Locked)</span>
+      <span>Fitin60 Merchant Studio Active</span>
     </div>
   </nav>
 
@@ -417,17 +413,13 @@
       db.ref("boutiques/" + activeStoreMobile).once("value").then(function(snap) {
         var st = snap.val();
         if (st) {
-          if (st.area) {
-            activeStoreArea = st.area;
-            localStorage.setItem("fitin60_partner_area", st.area);
-            document.getElementById("bannerStoreArea").innerText = "📍 " + st.area;
-          }
           if (st.upiId) document.getElementById("partnerUpiIdInput").value = st.upiId;
           if (st.accHolder) document.getElementById("partnerAccHolderInput").value = st.accHolder;
           if (st.bankName) document.getElementById("partnerBankNameInput").value = st.bankName;
           if (st.accNum) document.getElementById("partnerAccNumInput").value = st.accNum;
           if (st.ifsc) document.getElementById("partnerIfscInput").value = st.ifsc;
 
+          // Load Saved Store Status
           if (st.status) {
             document.getElementById("storeStatusToggle").value = st.status;
           }
@@ -437,11 +429,12 @@
 
     window.updateStoreStatus = function(status) {
       if (!activeStoreMobile) return;
+      
       var updateObj = { status: status };
       if (status === "CLOSED") {
-        updateObj.closedSince = Date.now();
+        updateObj.closedSince = Date.now(); // Track closure time for 30-day auto-delete
       } else {
-        updateObj.closedSince = null;
+        updateObj.closedSince = null; // Reset if opened
       }
 
       db.ref("boutiques/" + activeStoreMobile).update(updateObj).then(function() {
@@ -481,7 +474,7 @@
       var accNum = document.getElementById("partnerAccNumInput").value.trim();
 
       if (!upiId && !accNum) {
-        return alert("Please save your UPI ID or Bank Account Details first!");
+        return alert("Please save your UPI ID or Bank Account Details first before requesting a withdrawal!");
       }
 
       var withdrawalId = "WD-" + Math.floor(1000 + Math.random() * 9000);
@@ -536,11 +529,11 @@
         var store = snap.val();
         if (store) {
           activeStoreName = store.name || "Sai Fashions";
-          activeStoreArea = store.area || "Near TV tower • Mobile: " + mobile;
+          activeStoreArea = store.area || ("Mobile: " + mobile);
           activeStoreMobile = mobile;
         } else {
-          activeStoreName = "Store " + mobile;
-          activeStoreArea = "Anantapur Store";
+          activeStoreName = (mobile === "9515552511") ? "Sai Fashions" : ("Store " + mobile);
+          activeStoreArea = "Near TV tower • Mobile: " + mobile;
           activeStoreMobile = mobile;
           db.ref("boutiques/" + mobile).set({
             name: activeStoreName,
@@ -568,17 +561,16 @@
       e.preventDefault();
       var name = document.getElementById("partnerRegName").value.trim();
       var mobile = document.getElementById("partnerRegMobile").value.trim();
-      var area = document.getElementById("partnerRegArea").value.trim();
       var pin = document.getElementById("partnerRegPin").value.trim();
 
-      if (mobile.length !== 10 || pin.length !== 4 || !name || !area) {
-        return alert("Please enter valid store details and permanent location!");
+      if (mobile.length !== 10 || pin.length !== 4 || !name) {
+        return alert("Please enter valid details!");
       }
 
       var storeData = {
         name: name,
         mobile: mobile,
-        area: area,
+        area: "Near TV tower • Mobile: " + mobile,
         pin: pin,
         status: "OPEN",
         registeredAt: Date.now()
@@ -586,14 +578,14 @@
 
       db.ref("boutiques/" + mobile).set(storeData).then(function() {
         activeStoreName = name;
-        activeStoreArea = area;
+        activeStoreArea = storeData.area;
         activeStoreMobile = mobile;
         localStorage.setItem("fitin60_partner_store", activeStoreName);
         localStorage.setItem("fitin60_partner_area", activeStoreArea);
         localStorage.setItem("fitin60_partner_mobile", activeStoreMobile);
 
         document.getElementById("partnerAuthModal").classList.add("hidden");
-        showQuickToast("✓ Permanent Store Registered Successfully!");
+        showQuickToast("✓ Store Registered Successfully!");
         window.location.reload();
       });
     };
@@ -709,7 +701,7 @@
       }
 
       closeEditStoreModal();
-      showQuickToast("✓ Permanent store location updated successfully!");
+      showQuickToast("✓ Store details updated!");
     };
 
     window.markOrderPackaged = function(orderId) {
@@ -738,7 +730,7 @@
       }
 
       var file = fileInput.files[0];
-      btn.innerText = "⏳ Uploading Outfit...";
+      btn.innerText = "⏳ Processing Photo...";
       btn.disabled = true;
 
       var reader = new FileReader();
@@ -768,14 +760,10 @@
         db.ref("boutique_products/" + prodKey).set(prodData).then(function() {
           btn.innerText = "+ Publish Live to Fitin60";
           btn.disabled = false;
-          showQuickToast("✓ Outfit published live successfully!");
+          showQuickToast("✓ Outfit published live!");
           e.target.reset();
           document.getElementById("imagePreviewContainer").classList.add("hidden");
           document.getElementById("uploadPrompt").classList.remove("hidden");
-        }).catch(function(err) {
-          btn.innerText = "+ Publish Live to Fitin60";
-          btn.disabled = false;
-          alert("Error publishing: " + err.message);
         });
       };
       reader.readAsDataURL(file);
@@ -788,7 +776,6 @@
       });
     };
 
-    // Safe Inventory Listener
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
       loadedProductsMap = data;
@@ -804,7 +791,7 @@
           html += 
             '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs gap-2">' +
               '<div class="flex items-center gap-2 truncate">' +
-                '<img src="' + (p.image || 'https://via.placeholder.com/150') + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
+                '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
                 '<div class="truncate">' +
                   '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
                   '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • <span class="' + (inStock ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold') + '">' + (inStock ? 'In Stock' : 'Out of Stock') + '</span></p>' +
@@ -820,12 +807,10 @@
       });
 
       if (count === 0) {
-        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No custom outfits uploaded yet. Upload one above!</p>";
+        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No custom outfits uploaded yet.</p>";
       } else {
         container.innerHTML = html;
       }
-    }, function(error) {
-      document.getElementById("partnerUploadedList").innerHTML = "<p class='text-xs text-rose-500 text-center py-2'>Syncing inventory...</p>";
     });
 
     db.ref("orders").on("value", function(snap) {
@@ -894,7 +879,6 @@
         var statusBadge = o.status || "Pending";
         var isPacked = (statusBadge === "Boutique Packed" || statusBadge === "Out for Delivery" || statusBadge === "Delivered");
         var assignedRiderInfo = o.riderName ? o.riderName : "Looking for nearby rider...";
-        var googleMapsNavUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(activeStoreArea);
 
         liveListHtml += 
           '<div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-2">' +
@@ -905,11 +889,6 @@
             '<div class="flex justify-between items-center text-[11px] text-slate-600 font-medium">' +
               '<span class="truncate max-w-[180px]">📍 ' + o.customerAddress + '</span>' +
               '<a href="tel:' + o.customerPhone + '" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-1 rounded-lg border border-emerald-200 shrink-0">📞 Call</a>' +
-            '</div>' +
-            '<div class="bg-amber-50 border border-amber-200 p-2.5 rounded-xl space-y-1">' +
-              '<p class="text-[10px] text-amber-900 font-bold">📍 Store Pickup Location (For Rider):</p>' +
-              '<p class="text-[11px] text-amber-800 font-medium">' + activeStoreArea + '</p>' +
-              '<a href="' + googleMapsNavUrl + '" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-bold text-orange-600 hover:underline">🗺️ Open Map Navigation for Rider</a>' +
             '</div>' +
             '<div class="bg-white p-2 rounded-lg border border-slate-200 space-y-1">' +
               '<p class="text-[10px] text-slate-700 font-bold">🏍️ Rider Status: <span class="text-orange-600">' + assignedRiderInfo + '</span></p>' +
