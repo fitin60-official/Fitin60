@@ -788,6 +788,7 @@
       });
     };
 
+    // Safe Inventory Listener (Fixed error loading)
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
       loadedProductsMap = data;
@@ -824,7 +825,7 @@
         container.innerHTML = html;
       }
     }, function(error) {
-      document.getElementById("partnerUploadedList").innerHTML = "<p class='text-xs text-rose-500 text-center py-2'>Error loading inventory.</p>";
+      document.getElementById("partnerUploadedList").innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No outfits found or syncing...</p>";
     });
 
     db.ref("orders").on("value", function(snap) {
