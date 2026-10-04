@@ -340,7 +340,7 @@
     </div>
   </div>
 
-  <!-- EDIT STORE MODAL (Permanent Location & Area) -->
+  <!-- EDIT STORE MODAL -->
   <div id="editStoreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
       <div class="flex items-center justify-between border-b pb-2">
@@ -437,7 +437,6 @@
 
     window.updateStoreStatus = function(status) {
       if (!activeStoreMobile) return;
-      
       var updateObj = { status: status };
       if (status === "CLOSED") {
         updateObj.closedSince = Date.now();
@@ -482,7 +481,7 @@
       var accNum = document.getElementById("partnerAccNumInput").value.trim();
 
       if (!upiId && !accNum) {
-        return alert("Please save your UPI ID or Bank Account Details first before requesting a withdrawal!");
+        return alert("Please save your UPI ID or Bank Account Details first!");
       }
 
       var withdrawalId = "WD-" + Math.floor(1000 + Math.random() * 9000);
@@ -540,8 +539,8 @@
           activeStoreArea = store.area || "Near TV tower • Mobile: " + mobile;
           activeStoreMobile = mobile;
         } else {
-          activeStoreName = (mobile === "9515552511") ? "Sai Fashions" : ("Store " + mobile);
-          activeStoreArea = "Near TV tower • Mobile: " + mobile;
+          activeStoreName = "Store " + mobile;
+          activeStoreArea = "Anantapur Store";
           activeStoreMobile = mobile;
           db.ref("boutiques/" + mobile).set({
             name: activeStoreName,
@@ -739,7 +738,7 @@
       }
 
       var file = fileInput.files[0];
-      btn.innerText = "⏳ Processing Photo...";
+      btn.innerText = "⏳ Uploading Outfit...";
       btn.disabled = true;
 
       var reader = new FileReader();
@@ -751,7 +750,7 @@
         var prodData = {
           store: activeStoreName,
           storeMobile: activeStoreMobile,
-          area: activeStoreArea, // Locked to permanent store location
+          area: activeStoreArea,
           name: name,
           price: price,
           originalPrice: origPrice,
@@ -769,10 +768,14 @@
         db.ref("boutique_products/" + prodKey).set(prodData).then(function() {
           btn.innerText = "+ Publish Live to Fitin60";
           btn.disabled = false;
-          showQuickToast("✓ Outfit published live with permanent location!");
+          showQuickToast("✓ Outfit published live successfully!");
           e.target.reset();
           document.getElementById("imagePreviewContainer").classList.add("hidden");
           document.getElementById("uploadPrompt").classList.remove("hidden");
+        }).catch(function(err) {
+          btn.innerText = "+ Publish Live to Fitin60";
+          btn.disabled = false;
+          alert("Error publishing: " + err.message);
         });
       };
       reader.readAsDataURL(file);
@@ -800,7 +803,7 @@
           html += 
             '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs gap-2">' +
               '<div class="flex items-center gap-2 truncate">' +
-                '<img src="' + p.image + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
+                '<img src="' + (p.image || 'https://via.placeholder.com/150') + '" class="w-10 h-10 rounded-lg object-cover shrink-0">' +
                 '<div class="truncate">' +
                   '<p class="font-bold text-slate-900 truncate">' + p.name + '</p>' +
                   '<p class="text-[10px] text-orange-600 font-mono">₹' + p.price + ' • <span class="' + (inStock ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold') + '">' + (inStock ? 'In Stock' : 'Out of Stock') + '</span></p>' +
@@ -816,10 +819,12 @@
       });
 
       if (count === 0) {
-        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No custom outfits uploaded yet.</p>";
+        container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No custom outfits uploaded yet. Upload one above!</p>";
       } else {
         container.innerHTML = html;
       }
+    }, function(error) {
+      document.getElementById("partnerUploadedList").innerHTML = "<p class='text-xs text-rose-500 text-center py-2'>Error loading inventory.</p>";
     });
 
     db.ref("orders").on("value", function(snap) {
@@ -888,7 +893,6 @@
         var statusBadge = o.status || "Pending";
         var isPacked = (statusBadge === "Boutique Packed" || statusBadge === "Out for Delivery" || statusBadge === "Delivered");
         var assignedRiderInfo = o.riderName ? o.riderName : "Looking for nearby rider...";
-
         var googleMapsNavUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(activeStoreArea);
 
         liveListHtml += 
