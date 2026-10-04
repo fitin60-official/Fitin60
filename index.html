@@ -32,8 +32,6 @@
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
     #quickToast {
       transform: translateY(120px);
@@ -154,25 +152,25 @@
       </div>
     </div>
 
-    <!-- Search & Swipeable Categories Section (Fully fixed padding so Shirts & Pants are completely visible without cutting) -->
+    <!-- Search & Fully Wrapped Categories Section (No clipping for Shirts & Pants) -->
     <div class="space-y-4 w-full">
       <div class="relative w-full shadow-md rounded-2xl overflow-hidden bg-white border border-slate-200/80">
         <span class="absolute inset-y-0 left-0 pl-4.5 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
         <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique, jacket, hoodie, saree, shirt, pants, t-shirt..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
       </div>
 
-      <!-- Category Chips with extended right padding so Shirts & Pants never get clipped -->
-      <div class="flex gap-2.5 overflow-x-auto no-scrollbar py-2.5 px-2 text-xs font-bold w-full whitespace-nowrap scroll-smooth" id="categoryChips">
-        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20">All Outfits</button>
-        <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧥 Jackets & Hoodies</button>
-        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
-        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
-        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🥻 Sarees</button>
-        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👗 Kurtis</button>
-        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">✨ Lehengas</button>
-        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👔 Shirts</button>
-        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👖 Pants</button>
-        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs pr-10">👕 T-Shirts</button>
+      <!-- Category Chips with Flex Wrap so Shirts, Pants, and T-Shirts are fully visible and never cut -->
+      <div class="flex flex-wrap gap-2 py-2 px-1 text-xs font-bold w-full" id="categoryChips">
+        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-md shadow-slate-950/25">All Outfits</button>
+        <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🧥 Jackets & Hoodies</button>
+        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🎒 Uniforms</button>
+        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
+        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🥻 Sarees</button>
+        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👗 Kurtis</button>
+        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">✨ Lehengas</button>
+        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👔 Shirts</button>
+        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👖 Pants</button>
+        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👕 T-Shirts</button>
       </div>
     </div>
 
@@ -968,9 +966,9 @@
       buttons.forEach(function(btn) {
         var onclickAttr = btn.getAttribute("onclick") || "";
         if (onclickAttr.includes("'" + cat + "'")) {
-          btn.className = "cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20 text-[11px]";
+          btn.className = "cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-md shadow-slate-950/25 text-[11px]";
         } else {
-          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs text-[11px]";
+          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs text-[11px]";
         }
       });
       renderBoutiqueStores();
@@ -1342,3 +1340,4 @@
   </script>
 </body>
 </html>
+      
