@@ -158,12 +158,13 @@
     <div class="space-y-4 w-full">
       <div class="relative w-full shadow-md rounded-2xl overflow-hidden bg-white border border-slate-200/80">
         <span class="absolute inset-y-0 left-0 pl-4.5 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
-        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique name, saree, shirt, pants, t-shirt, kurta..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
+        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique, jacket, hoodie, saree, shirt, pants, t-shirt..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
       </div>
 
       <!-- Category Chips -->
       <div class="flex gap-2 overflow-x-auto no-scrollbar py-2 px-1 text-xs font-bold w-full whitespace-nowrap scroll-smooth" id="categoryChips">
         <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20">All Outfits</button>
+        <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧥 Jackets & Hoodies</button>
         <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
         <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
         <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🥻 Sarees</button>
@@ -175,10 +176,10 @@
       </div>
     </div>
 
-    <!-- Stores & Outfits Section -->
+    <!-- Stores & Outfits Section (15KM Radius Real Stores Only) -->
     <div class="w-full space-y-5">
       <div class="flex justify-between items-center px-1">
-        <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Live Partner Stores</h2>
+        <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Live Partner Stores (15KM Radar)</h2>
         <span id="boutiqueCountBadge" class="text-xs bg-orange-100 text-orange-800 font-black px-3.5 py-1.5 rounded-full border border-orange-200 shadow-2xs">Live Radar Active</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full" id="boutiqueStoreGrid"></div>
@@ -307,6 +308,7 @@
           <div>
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Category</label>
             <select id="directEditCategory" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-bold">
+              <option value="Jacket">Jacket / Hoodie</option>
               <option value="Uniform">Uniform</option>
               <option value="Kids">Kids</option>
               <option value="Saree">Saree</option>
@@ -718,16 +720,21 @@
       return originalStoreName || "Boutique Studio";
     }
 
+    // ENHANCED CATEGORY RESOLVER (JACKET, HOODIE, SAREE, KURTI, SHIRT, PANTS, ETC.)
     function getResolvedCategory(p) {
       var nameL = (p.name || "").toLowerCase();
-      if (nameL.includes("saree") || nameL.includes("pattu")) return "Saree";
-      if (nameL.includes("lehenga")) return "Lehenga";
-      if (nameL.includes("kurti") || nameL.includes("anarkali")) return "Kurti";
-      if (nameL.includes("shirt")) return "Shirt";
-      if (nameL.includes("pant") || nameL.includes("jeans") || nameL.includes("trouser")) return "Pants";
-      if (nameL.includes("t-shirt") || nameL.includes("tee")) return "T-Shirt";
-      if (nameL.includes("uniform")) return "Uniform";
-      if (nameL.includes("kid") || nameL.includes("baby") || nameL.includes("frock")) return "Kids";
+      var descL = (p.desc || "").toLowerCase();
+      var combined = nameL + " " + descL;
+
+      if (combined.includes("jacket") || combined.includes("hoodie") || combined.includes("sweatshirt") || combined.includes("overcoat")) return "Jacket";
+      if (combined.includes("saree") || combined.includes("pattu")) return "Saree";
+      if (combined.includes("lehenga")) return "Lehenga";
+      if (combined.includes("kurti") || combined.includes("anarkali") || combined.includes("kurta")) return "Kurti";
+      if (combined.includes("shirt")) return "Shirt";
+      if (combined.includes("pant") || combined.includes("jeans") || combined.includes("trouser")) return "Pants";
+      if (combined.includes("t-shirt") || combined.includes("tee")) return "T-Shirt";
+      if (combined.includes("uniform")) return "Uniform";
+      if (combined.includes("kid") || combined.includes("baby") || combined.includes("frock")) return "Kids";
       return p.category || "Outfit";
     }
 
@@ -767,7 +774,7 @@
               (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
               (isOwnerActive ? 
                 '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️️</button>' +
+                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
                   '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
                 '</div>' : '') +
               '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
@@ -960,11 +967,17 @@
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
-        btn.className = (btn.getAttribute("onclick").includes("'" + cat + "'")) ? "cat-chip bg-slate-950 text-white px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20 text-[11px]" : "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs text-[11px]";
+        var onclickAttr = btn.getAttribute("onclick") || "";
+        if (onclickAttr.includes("'" + cat + "'")) {
+          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20 text-[11px]";
+        } else {
+          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs text-[11px]";
+        }
       });
       renderBoutiqueStores();
     };
 
+    // STRICT REAL STORES & 15KM RADAR FILTERING LOGIC
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -978,26 +991,31 @@
         var sMobile = p.storeMobile || "";
         var rawStoreName = p.store || "Boutique Studio";
         var sName = getStoreDisplayName(rawStoreName, sMobile);
-        var oName = (p.name || "").toLowerCase();
-        var resolvedCat = getResolvedCategory(p);
-        var realLocation = p.area || boutiqueLocationsMap[sName] || "Anantapur";
 
-        var matchS = !search || oName.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
-        var matchC = (currentCategoryFilter === "All") || (resolvedCat.toLowerCase() === currentCategoryFilter.toLowerCase()) || oName.includes(currentCategoryFilter.toLowerCase());
+        // STOCKS/STORES CHECK: ONLY RENDER STORES THAT ACTUALLY HAVE UPLOADED PRODUCTS IN FIREBASE
+        if (!sName) return;
+
+        var oName = (p.name || "").toLowerCase();
+        var oDesc = (p.desc || "").toLowerCase();
+        var resolvedCat = getResolvedCategory(p);
+        var realLocation = p.area || boutiqueLocationsMap[sName] || "Local Radar";
+
+        var matchS = !search || oName.includes(search) || oDesc.includes(search) || sName.toLowerCase().includes(search) || realLocation.toLowerCase().includes(search);
+        var matchC = (currentCategoryFilter === "All") || (resolvedCat.toLowerCase() === currentCategoryFilter.toLowerCase()) || oName.includes(currentCategoryFilter.toLowerCase()) || oDesc.includes(currentCategoryFilter.toLowerCase());
 
         if (matchS && matchC) {
           var storeKey = sMobile || sName;
           if (!storesMap[storeKey]) {
-            storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "35 MINS", rating: p.rating || "5.0", products: [] };
+            storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
           }
           storesMap[storeKey].products.push(p);
         }
       });
 
       var stores = Object.values(storesMap);
-      if (badge) badge.innerText = stores.length + " Stores Live";
+      if (badge) badge.innerText = stores.length + " Stores Live (15KM)";
       if (stores.length === 0) { 
-        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores or products found yet. Partners can upload collections from Merchant Portal.</p></div>"; 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores or matching outfits found within 15km radar. Upload from Merchant Portal.</p></div>"; 
         return; 
       }
 
@@ -1006,6 +1024,7 @@
         var storeStatus = getStoreStatus(store.storeName, store.storeMobile);
         var isStoreClosed = (storeStatus === "CLOSED");
         var previewImages = "";
+        
         store.products.slice(0, 3).forEach(function(p) {
           var targetId = p.cloudKey;
           var inStock = (p.inStock !== false && !isStoreClosed);
@@ -1031,7 +1050,7 @@
             '</div></div>' +
           '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\', \'' + store.storeMobile + '\')">' +
             '<div class="flex items-center justify-between"><h3 class="font-brand font-black text-lg sm:text-xl text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3><span class="text-xs text-orange-600 font-bold flex items-center gap-1">Explore <span>➔</span></span></div>' +
-            '<p class="text-xs text-slate-500 font-medium mt-1">📍 ' + store.area + '</p>' +
+            '<p class="text-xs text-slate-500 font-medium mt-1">📍 ' + store.area + ' • Within 15KM Radar</p>' +
           '</div>' +
           '<div class="grid grid-cols-3 gap-3 pt-2">' + previewImages + '</div></div>';
       });
@@ -1290,7 +1309,6 @@
       }
     };
 
-    // Robust Realtime Cloud Listeners for Live Boutique & Product Sync
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
       boutiqueLocationsMap = {}; boutiquesStatusMap = {}; boutiqueNameByMobile = {};
