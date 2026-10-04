@@ -154,29 +154,29 @@
       </div>
     </div>
 
-    <!-- Search & Swipeable Categories Section -->
+    <!-- Search & Swipeable Categories Section (Fixed overflow clipping so all chips like Shirts & Pants are fully visible) -->
     <div class="space-y-4 w-full">
       <div class="relative w-full shadow-md rounded-2xl overflow-hidden bg-white border border-slate-200/80">
         <span class="absolute inset-y-0 left-0 pl-4.5 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
         <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique, jacket, hoodie, saree, shirt, pants, t-shirt..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
       </div>
 
-      <!-- Category Chips -->
-      <div class="flex gap-2 overflow-x-auto no-scrollbar py-2 px-1 text-xs font-bold w-full whitespace-nowrap scroll-smooth" id="categoryChips">
-        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20">All Outfits</button>
-        <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧥 Jackets & Hoodies</button>
-        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
-        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
-        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🥻 Sarees</button>
-        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👗 Kurtis</button>
-        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">✨ Lehengas</button>
-        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👔 Shirts</button>
-        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👖 Pants</button>
-        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👕 T-Shirts</button>
+      <!-- Category Chips with proper padding and smooth scroll to prevent cutting -->
+      <div class="flex gap-2.5 overflow-x-auto no-scrollbar py-2 px-2 text-xs font-bold w-full whitespace-nowrap scroll-smooth" id="categoryChips">
+        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20">All Outfits</button>
+        <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧥 Jackets & Hoodies</button>
+        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🎒 Uniforms</button>
+        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
+        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">🥻 Sarees</button>
+        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👗 Kurtis</button>
+        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">✨ Lehengas</button>
+        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👔 Shirts</button>
+        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs">👖 Pants</button>
+        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs pr-6">👕 T-Shirts</button>
       </div>
     </div>
 
-    <!-- Stores & Outfits Section (15KM Radius Real Stores Only) -->
+    <!-- Stores & Outfits Section -->
     <div class="w-full space-y-5">
       <div class="flex justify-between items-center px-1">
         <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Live Partner Stores (15KM Radar)</h2>
@@ -231,7 +231,7 @@
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-xs">Available Collections</span>
-          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -720,7 +720,7 @@
       return originalStoreName || "Boutique Studio";
     }
 
-    // ENHANCED CATEGORY RESOLVER (JACKET, HOODIE, SAREE, KURTI, SHIRT, PANTS, ETC.)
+    // CATEGORY RESOLVER WITH JACKET / HOODIE SUPPORT
     function getResolvedCategory(p) {
       var nameL = (p.name || "").toLowerCase();
       var descL = (p.desc || "").toLowerCase();
@@ -774,7 +774,7 @@
               (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
               (isOwnerActive ? 
                 '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
+                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️️</button>' +
                   '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
                 '</div>' : '') +
               '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
@@ -969,15 +969,15 @@
       buttons.forEach(function(btn) {
         var onclickAttr = btn.getAttribute("onclick") || "";
         if (onclickAttr.includes("'" + cat + "'")) {
-          btn.className = "cat-chip bg-slate-950 text-white px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20 text-[11px]";
+          btn.className = "cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-md shadow-slate-950/20 text-[11px]";
         } else {
-          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-3.5 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs text-[11px]";
+          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl shrink-0 cursor-pointer transition shadow-xs text-[11px]";
         }
       });
       renderBoutiqueStores();
     };
 
-    // STRICT REAL STORES & 15KM RADAR FILTERING LOGIC
+    // STRICT REAL STORES & 15KM RADAR FILTERING LOGIC (MUMMY DADDY STORE EXCLUDED PERMANENTLY)
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -992,8 +992,10 @@
         var rawStoreName = p.store || "Boutique Studio";
         var sName = getStoreDisplayName(rawStoreName, sMobile);
 
-        // STOCKS/STORES CHECK: ONLY RENDER STORES THAT ACTUALLY HAVE UPLOADED PRODUCTS IN FIREBASE
         if (!sName) return;
+
+        // PERMANENTLY EXCLUDE / HIDE "MUMMY DADDY" STORE
+        if (sName.toLowerCase().includes("mummy daddy")) return;
 
         var oName = (p.name || "").toLowerCase();
         var oDesc = (p.desc || "").toLowerCase();
@@ -1015,7 +1017,7 @@
       var stores = Object.values(storesMap);
       if (badge) badge.innerText = stores.length + " Stores Live (15KM)";
       if (stores.length === 0) { 
-        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores or matching outfits found within 15km radar. Upload from Merchant Portal.</p></div>"; 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores found within 15km radar.</p></div>"; 
         return; 
       }
 
