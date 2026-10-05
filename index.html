@@ -76,7 +76,7 @@
         </div>
       </a>
       
-      <!-- Dynamic Logged-in Customer Address / GPS Indicator -->
+      <!-- Dynamic Logged-in Customer Address Indicator -->
       <div class="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200/80 cursor-pointer shadow-2xs hover:bg-slate-100 transition" onclick="openSavedAddressModal()">
         <span>📍</span>
         <span id="headerAddrLabel" class="truncate max-w-[240px]">Select Delivery Address</span>
@@ -189,7 +189,7 @@
     </a>
   </div>
 
-  <!-- Multiple Addresses Management Modal (Address 1, Address 2 Support) -->
+  <!-- Multiple Addresses Management Modal -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b pb-3">
@@ -200,15 +200,11 @@
         <button onclick="closeSavedAddressModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
-      <!-- Saved Addresses List container -->
       <div class="space-y-3">
         <p class="text-[10px] font-black uppercase text-slate-400">Your Saved Addresses</p>
-        <div id="customerAddressesList" class="space-y-2">
-          <!-- Dynamically populated addresses -->
-        </div>
+        <div id="customerAddressesList" class="space-y-2"></div>
       </div>
 
-      <!-- Add New Address Form -->
       <div class="pt-3 border-t border-slate-100 space-y-3 text-xs">
         <p class="font-bold text-[#282c3f]">+ Add New Address (Address 1 / Address 2)</p>
         
@@ -257,7 +253,7 @@
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-xs">Available Collections</span>
-          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -374,7 +370,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer -->
+  <!-- Shopping Bag Drawer with OTP-Verified Pay on Delivery Flow -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-md"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 overflow-hidden animate-in slide-in-from-right duration-300">
@@ -405,10 +401,8 @@
           </div>
 
           <div>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Delivery Address</h4>
-            <div id="checkoutAddressesRadioContainer" class="space-y-2 mb-3">
-              <!-- Dynamically populated radios for multiple saved addresses -->
-            </div>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Select Delivery Address</h4>
+            <div id="checkoutAddressesRadioContainer" class="space-y-2 mb-3"></div>
           </div>
 
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-medium">
@@ -425,13 +419,13 @@
           </div>
 
           <div class="pt-2 border-t border-slate-100 space-y-2.5">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Secure Payment & Verification</h4>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Secure Verification & Payment Mode</h4>
             <div class="grid grid-cols-1 gap-2.5">
-              <label class="flex items-center gap-3.5 p-3.5 bg-slate-50 border-2 border-[#ff3f6c] rounded-2xl cursor-pointer">
-                <input type="radio" name="payOption" value="ONLINE_UPI" checked class="accent-[#ff3f6c]">
+              <label class="flex items-center gap-3.5 p-3.5 bg-pink-50 border-2 border-[#ff3f6c] rounded-2xl cursor-pointer">
+                <input type="radio" name="payOption" value="OTP_VERIFIED_POD" checked class="accent-[#ff3f6c]">
                 <div class="text-xs">
-                  <p class="font-black text-[#282c3f]">Fitin60 Centralized Online UPI / Card / QR</p>
-                  <p class="text-[10px] text-emerald-700 font-bold mt-0.5">Auto-generates Secure Delivery OTP</p>
+                  <p class="font-black text-[#282c3f]">Pay on Delivery (Verified by Secure Delivery OTP)</p>
+                  <p class="text-[10px] text-emerald-700 font-bold mt-0.5">Payment collected by rider after OTP confirmation</p>
                 </div>
               </label>
             </div>
@@ -448,7 +442,7 @@
               <span class="font-mono-num font-bold text-emerald-700" id="billDeliveryFee">₹49</span>
             </div>
             <div class="border-t pt-2 flex justify-between font-black text-[#282c3f] text-sm">
-              <span>To Pay</span>
+              <span>To Pay (After OTP Delivery)</span>
               <span class="font-mono-num text-base text-[#ff3f6c]" id="billFinalPayable">₹0</span>
             </div>
           </div>
@@ -526,7 +520,6 @@
       });
     };
 
-    // Multiple Addresses Handler
     window.saveNewMultiAddress = function() {
       var houseNo = document.getElementById("inputHouseNo").value.trim();
       var areaName = document.getElementById("inputAreaName").value.trim();
@@ -1260,13 +1253,17 @@
       });
     };
 
-    function finalizeAndSaveOrder(payMethodStr, paymentIdStr) {
+    // OTP-Verified Post-Delivery Payment Flow Trigger
+    window.handleCheckout = function() {
       if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
-      
+
       var selectedAddrRadio = document.querySelector('input[name="checkoutSelectedAddr"]:checked');
-      var deliveryAddress = selectedAddrRadio ? selectedAddrRadio.value : (currentCustomer && currentCustomer.activeAddress ? currentCustomer.activeAddress : "Default Delivery Address");
+      var deliveryAddress = selectedAddrRadio ? selectedAddrRadio.value : "";
+
+      if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Select Delivery Address!");
+      if (phone.length !== 10) return alert("Enter valid 10-digit mobile number!");
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
@@ -1290,9 +1287,9 @@
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
-        paymentMethod: payMethodStr,
-        paymentId: paymentIdStr || "PLATFORM_COLLECT_" + Date.now(),
-        paymentStatus: "Pending Verification on Delivery",
+        paymentMethod: "Pay on Delivery (OTP Verified)",
+        paymentId: "PENDING_OTP_VERIFICATION_" + Date.now(),
+        paymentStatus: "Pending Delivery & OTP Confirmation",
         deliveryOtp: generatedOtp,
         store: activeCheckoutItem.store,
         storeMobile: activeCheckoutItem.storeMobile || "",
@@ -1302,56 +1299,16 @@
           storeNetPayout: storeNetPayout,
           platformCommission: platformFee,
           riderFee: deliveryFee,
-          storeSettlementStatus: "Credited to Wallet",
+          storeSettlementStatus: "Pending OTP Delivery",
           riderSettlementStatus: "Pending"
         },
         timestamp: Date.now()
       };
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
-        if (activeCheckoutItem.storeMobile) {
-          db.ref("boutiques/" + activeCheckoutItem.storeMobile + "/walletBalance").transaction(function(bal) { return (bal || 0) + storeNetPayout; });
-          db.ref("boutiques/" + activeCheckoutItem.storeMobile + "/totalOrdersCount").transaction(function(c) { return (c || 0) + 1; });
-        }
         localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
         window.location.href = "tracking.html";
       });
-    }
-
-    window.handleCheckout = function() {
-      if (!activeCheckoutItem) return;
-      var name = document.getElementById("custName").value.trim();
-      var phone = document.getElementById("custPhone").value.trim();
-
-      var selectedAddrRadio = document.querySelector('input[name="checkoutSelectedAddr"]:checked');
-      var deliveryAddress = selectedAddrRadio ? selectedAddrRadio.value : "";
-
-      if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Select Delivery Address!");
-      if (phone.length !== 10) return alert("Enter valid 10-digit mobile number!");
-
-      var distSelect = document.getElementById("deliveryDistanceSelect");
-      var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
-      var totalPayable = activeCheckoutItem.price + getDistanceFee(distVal);
-
-      var options = {
-        "key": "rzp_test_1234567890abcdef",
-        "amount": totalPayable * 100,
-        "currency": "INR",
-        "name": "Fitin60 Centralized Gateway",
-        "description": "Secure Delivery Drop & Verification",
-        "handler": function (response){
-          finalizeAndSaveOrder("Razorpay Online UPI", response.razorpay_payment_id);
-        },
-        "prefill": { "name": name, "contact": phone },
-        "theme": { "color": "#ff3f6c" }
-      };
-
-      try {
-        var rzp = new Razorpay(options);
-        rzp.open();
-      } catch (err) {
-        finalizeAndSaveOrder("Centralized Online UPI", "PLATFORM_TXN_" + Date.now());
-      }
     };
 
     db.ref("boutiques").on("value", function(snapshot) {
