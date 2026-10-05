@@ -12,109 +12,145 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;900&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
-
+  
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0; padding: 0; background-color: #f8fafc; color: #0f172a; width: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #fcfcfc;
+      color: #282c3f;
+      overflow-x: hidden;
+      width: 100%;
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
-    .chat-bubble-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+    .myntra-pink-btn {
+      background: #ff3f6c;
+      transition: all 0.2s ease;
     }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .myntra-pink-btn:hover {
+      background: #f22b59;
+    }
   </style>
 </head>
-<body class="min-h-screen pb-36 antialiased selection:bg-orange-500 selection:text-white">
+<body class="min-h-screen pb-24 antialiased selection:bg-[#ff3f6c] selection:text-white w-full">
 
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-8 h-18 flex items-center justify-between shadow-xs">
-    <a href="index.html" class="flex items-center gap-2">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 via-amber-500 to-yellow-400 flex items-center justify-center text-white font-brand font-black text-lg shadow-md">F</div>
-      <span class="font-brand text-lg font-black tracking-tight text-slate-950">FITIN<span class="text-orange-600">60</span></span>
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 sm:px-8 h-16 flex items-center justify-between shadow-2xs w-full">
+    <a href="index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff3f6c] via-[#ff527b] to-amber-500 flex items-center justify-center text-white font-brand font-black text-xl shadow-md">F</div>
+      <div>
+        <span class="font-brand text-xl font-black tracking-tighter text-[#282c3f]">
+          FITIN<span class="text-[#ff3f6c]">60</span>
+        </span>
+        <span class="block text-[8px] font-extrabold text-slate-400 tracking-widest uppercase">Live Tracking</span>
+      </div>
     </a>
-    <a href="index.html" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-2xl text-slate-900 transition">← Explore Stores</a>
+    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-[#282c3f] font-bold px-4 py-2 rounded-full text-xs transition">
+      ← Back to Home
+    </a>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 sm:px-6 mt-6 space-y-6">
-    <div class="flex justify-between items-center">
-      <h1 class="font-brand font-black text-xl sm:text-2xl text-slate-950">📦 My Live Orders & Tracking</h1>
-      <span id="activeOrdersCount" class="text-xs bg-orange-100 text-orange-800 font-black px-3.5 py-1.5 rounded-full">Syncing...</span>
+  <main class="max-w-3xl mx-auto px-3 sm:px-6 mt-6 space-y-6 w-full">
+    
+    <!-- Active Order Status Card -->
+    <div id="noActiveOrderBox" class="hidden bg-white rounded-3xl border border-slate-200/80 p-8 text-center space-y-3 shadow-sm">
+      <p class="text-4xl">📦</p>
+      <h3 class="font-brand font-black text-lg text-[#282c3f]">No Active Orders Right Now</h3>
+      <p class="text-xs text-slate-500">Place an express order from any boutique to track it live in 60 minutes.</p>
+      <a href="index.html" class="inline-block myntra-pink-btn text-white font-black px-6 py-3 rounded-2xl text-xs uppercase tracking-wider mt-2 shadow-md">Explore Outfits ➔</a>
     </div>
 
-    <!-- Orders Container -->
-    <div id="allMyOrdersContainer" class="space-y-6">
-      <div class="bg-white rounded-3xl p-8 border border-slate-200 text-center space-y-3 shadow-sm">
-        <p class="text-3xl">⏳</p>
-        <p class="text-xs text-slate-500 font-bold">Fetching your active orders from radar...</p>
+    <div id="activeOrderContainer" class="hidden space-y-6">
+      
+      <!-- Status Banner -->
+      <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-xl space-y-4">
+        <div class="absolute -right-12 -top-12 w-48 h-48 bg-[#ff3f6c]/25 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="flex justify-between items-center z-10 relative">
+          <div>
+            <span class="bg-[#ff3f6c] text-white font-black text-[9px] uppercase px-3 py-1 rounded-full tracking-wider">⚡ 60-Min Express Radar</span>
+            <h2 id="trackOrderId" class="font-brand text-2xl font-black mt-2 tracking-tight">FIT-0000</h2>
+            <p id="trackStoreName" class="text-xs text-pink-300 font-medium mt-0.5">Boutique Studio</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] font-black uppercase text-slate-400">Estimated Delivery</p>
+            <p class="font-mono-num font-black text-xl text-emerald-400">59:59 Mins</p>
+          </div>
+        </div>
+
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex items-center justify-between">
+          <div>
+            <p class="text-[10px] uppercase font-bold text-slate-300">Order Status</p>
+            <p id="trackOrderStatus" class="font-brand font-black text-sm text-pink-200 mt-0.5">Boutique Preparing</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase font-bold text-slate-300">Secure Delivery OTP</p>
+            <p id="trackDeliveryOtp" class="font-mono-num font-black text-2xl tracking-widest text-emerald-300">0000</p>
+          </div>
+        </div>
       </div>
+
+      <!-- Item & Bill Summary with Total Amount -->
+      <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm space-y-4">
+        <h3 class="font-brand font-bold text-base text-[#282c3f] border-b pb-3">Order & Payment Summary</h3>
+        
+        <div class="flex items-center gap-4">
+          <img id="trackItemImg" src="" class="w-16 h-16 rounded-2xl object-cover border shrink-0">
+          <div class="flex-1 truncate">
+            <p id="trackItemName" class="font-bold text-xs text-[#282c3f] truncate">Outfit Name</p>
+            <p id="trackItemStore" class="text-[11px] text-slate-500 mt-0.5">Store Name</p>
+          </div>
+          <span id="trackItemPrice" class="font-mono-num font-black text-base text-[#282c3f]">₹0</span>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-2xl border space-y-2 text-xs">
+          <div class="flex justify-between text-slate-600">
+            <span>Delivery Address</span>
+            <span id="trackCustomerAddress" class="font-bold text-slate-800 text-right max-w-[200px] truncate">Address</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Payment Mode</span>
+            <span id="trackPaymentMode" class="font-bold text-[#ff3f6c]">Post-OTP Payment</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Delivery Fee</span>
+            <span id="trackDeliveryFee" class="font-mono-num font-bold text-emerald-700">₹49</span>
+          </div>
+          <div class="border-t pt-2 flex justify-between font-black text-[#282c3f] text-base">
+            <span>Total Payable Amount</span>
+            <span id="trackTotalAmount" class="font-mono-num text-lg text-[#ff3f6c]">₹0</span>
+          </div>
+        </div>
+
+        <!-- Post-OTP Payment Scanner / Success Box (Triggered after OTP verification) -->
+        <div id="postOtpPaymentSection" class="hidden bg-pink-50 border-2 border-[#ff3f6c] rounded-2xl p-5 text-center space-y-3">
+          <span class="text-3xl">📱</span>
+          <h4 class="font-brand font-black text-sm text-[#282c3f]">OTP Verified! Complete Payment</h4>
+          <p class="text-xs text-slate-600">Scan QR or pay via Cash to Delivery Rider to finalize.</p>
+          
+          <div id="upiScannerBox" class="bg-white p-4 rounded-2xl border inline-block shadow-xs space-y-2">
+            <div class="w-36 h-36 bg-slate-900 text-white flex flex-col items-center justify-center rounded-xl mx-auto font-mono text-[10px] p-2">
+              <span>[ UPI QR CODE ]</span>
+              <span class="text-[9px] text-pink-300 mt-1">Fitin60 Central Hub</span>
+            </div>
+            <p class="font-mono text-xs font-bold text-slate-800">UPI ID: fitin60@okaxis</p>
+          </div>
+
+          <button onclick="confirmPaymentSuccess()" class="w-full myntra-pink-btn text-white font-black py-3 rounded-xl text-xs uppercase tracking-wider shadow-md cursor-pointer">
+            ✓ Confirm Payment & Complete Order
+          </button>
+        </div>
+
+        <!-- Order Success Badge -->
+        <div id="orderSuccessBadge" class="hidden bg-emerald-50 border-2 border-emerald-500 text-emerald-800 rounded-2xl p-4 text-center font-bold text-xs">
+          🎉 Order Delivered & Payment Successful! Thank you for shopping with Fitin60.
+        </div>
+      </div>
+
     </div>
   </main>
-
-  <!-- Floating Support Button & Compact Popup Chat Widget -->
-  <div class="fixed bottom-24 right-4 sm:right-8 z-50">
-    <!-- Chat Box (Hidden by default) -->
-    <div id="supportChatWidget" class="hidden bg-slate-950 text-white rounded-3xl p-4 shadow-2xl border border-slate-800 w-80 sm:w-96 space-y-3 mb-3 animate-in fade-in zoom-in duration-200">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-        <div class="flex items-center gap-2.5">
-          <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white text-xs font-black shadow-md">🤖</div>
-          <div>
-            <h3 class="font-brand font-bold text-xs text-white">Fitin60 Support Assistant</h3>
-            <p class="text-[9px] text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online • Instant Help
-            </p>
-          </div>
-        </div>
-        <button onclick="toggleSupportChat()" class="text-slate-400 hover:text-white text-xl font-bold cursor-pointer">&times;</button>
-      </div>
-
-      <!-- Chat Messages Window -->
-      <div id="chatMessagesBox" class="h-40 overflow-y-auto space-y-2.5 pr-1 text-xs scroll-smooth">
-        <div class="flex items-start gap-2 chat-bubble-in">
-          <div class="w-6 h-6 rounded-lg bg-orange-600 text-white flex items-center justify-center font-bold shrink-0 text-[10px]">🤖</div>
-          <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl rounded-tl-xs text-slate-200 max-w-[85%] leading-relaxed text-[11px]">
-            Hello! Welcome to Fitin60 Live Support ⚡. How can I help you with your fashion drop today? Choose an option below or type your query:
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Action Buttons -->
-      <div class="flex gap-1.5 overflow-x-auto no-scrollbar pt-0.5 text-[10px] font-bold">
-        <button onclick="sendBotQuickQuery('Size / Fit Issue')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-2.5 py-1.5 rounded-xl shrink-0 transition cursor-pointer">📏 Size / Fit Issue</button>
-        <button onclick="sendBotQuickQuery('Where is my Rider?')" class="bg-slate-900 hover:bg-slate-800 text-orange-400 border border-slate-800 px-2.5 py-1.5 rounded-xl shrink-0 transition cursor-pointer">🛵 Rider Status</button>
-        <button onclick="sendBotQuickQuery('Cancel Order')" class="bg-slate-900 hover:bg-slate-800 text-rose-400 border border-slate-800 px-2.5 py-1.5 rounded-xl shrink-0 transition cursor-pointer">✕ Cancel</button>
-      </div>
-
-      <!-- Chat Input Form -->
-      <form onsubmit="handleChatBotSubmit(event)" class="flex gap-2 pt-1.5 border-t border-slate-800">
-        <input type="text" id="chatInputText" placeholder="Type your query..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-orange-500 font-medium">
-        <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white font-bold px-3 py-2 rounded-xl text-xs transition cursor-pointer shadow-md">Send</button>
-      </form>
-    </div>
-
-    <!-- Floating Support Trigger Button -->
-    <button onclick="toggleSupportChat()" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-5 py-3.5 rounded-full shadow-2xl flex items-center gap-2.5 border border-slate-800 transition transform hover:scale-105 cursor-pointer ml-auto">
-      <span class="text-base">💬</span>
-      <span>Support Chat</span>
-    </button>
-  </div>
-
-  <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-3 px-8 flex items-center justify-around z-40 shadow-2xl">
-    <a href="index.html" class="flex flex-col items-center text-slate-400 hover:text-orange-600 font-bold">
-      <span class="text-xl">🏬</span>
-      <span class="text-[10px] mt-1 font-medium">Explore</span>
-    </a>
-    <a href="tracking.html" class="flex flex-col items-center text-orange-600 font-bold">
-      <span class="text-xl">⚡</span>
-      <span class="text-[10px] mt-1 font-black">Orders</span>
-    </a>
-  </nav>
 
   <script>
     var firebaseConfig = {
@@ -130,161 +166,89 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     var db = firebase.database();
 
-    var currentCustomer = null;
+    var activeOrder = null;
     try {
-      var saved = localStorage.getItem("fitin60_customer_user");
-      if (saved) currentCustomer = JSON.parse(saved);
+      var saved = localStorage.getItem("chitikelo_active_order");
+      if (saved) activeOrder = JSON.parse(saved);
     } catch(e) {}
 
-    window.toggleSupportChat = function() {
-      var widget = document.getElementById("supportChatWidget");
-      widget.classList.toggle("hidden");
-    };
+    function renderTrackingUI(order) {
+      if (!order) {
+        document.getElementById("noActiveOrderBox").classList.remove("hidden");
+        document.getElementById("activeOrderContainer").classList.add("hidden");
+        return;
+      }
 
-    function loadCustomerOrders() {
-      db.ref("orders").on("value", function(snap) {
-        var orders = snap.val() || {};
-        var container = document.getElementById("allMyOrdersContainer");
-        var countBadge = document.getElementById("activeOrdersCount");
-        var html = "";
-        var myOrdersCount = 0;
+      document.getElementById("noActiveOrderBox").classList.add("hidden");
+      document.getElementById("activeOrderContainer").classList.remove("hidden");
 
-        Object.keys(orders).forEach(function(oId) {
-          var o = orders[oId];
-          if (o && (currentCustomer && currentCustomer.phone && o.customerPhone === currentCustomer.phone || !currentCustomer)) {
-            myOrdersCount++;
-            var isDelivered = o.delivered === true || o.status === "Delivered & Paid Successfully";
-            var isAccepted = o.boutiqueAccepted === true;
-            var isPickedUp = o.orderPickedUp === true;
+      document.getElementById("trackOrderId").innerText = order.orderId || "FIT-0000";
+      document.getElementById("trackStoreName").innerText = order.store || "Boutique Studio";
+      document.getElementById("trackOrderStatus").innerText = order.status || order.paymentStatus || "Boutique Preparing";
+      document.getElementById("trackDeliveryOtp").innerText = order.deliveryOtp || "0000";
 
-            var storeMob = o.storeMobile || "9515552511";
-            var storeWhatsAppUrl = "https://wa.me/91" + storeMob + "?text=Hi%20" + encodeURIComponent(o.store || 'Boutique') + "%2C%20regarding%20my%20order%20%23" + o.orderId + "%2C%20I%20have%20a%20query%20about%20size%20change%20and%20exchange.";
+      if (order.items && order.items[0]) {
+        var itm = order.items[0];
+        document.getElementById("trackItemImg").src = itm.image || "";
+        document.getElementById("trackItemName").innerText = itm.name || "";
+        document.getElementById("trackItemStore").innerText = "🏬 " + (itm.store || order.store || "");
+        document.getElementById("trackItemPrice").innerText = "₹" + (itm.price || order.itemTotal || 0);
+      }
 
-            html += '<div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-md space-y-4 relative overflow-hidden">' +
-              '<div class="flex flex-wrap justify-between items-center gap-2 border-b pb-3">' +
-                '<div>' +
-                  '<span class="font-mono text-xs font-black text-orange-600">Order #' + o.orderId + '</span>' +
-                  '<h3 class="font-brand font-black text-base text-slate-950 mt-0.5">🏬 ' + (o.store || 'Boutique Store') + '</h3>' +
-                '</div>' +
-                '<span class="text-[10px] font-black px-3 py-1 rounded-full ' + (isDelivered ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800 animate-pulse') + '">' + o.status + '</span>' +
-              '</div>' +
+      document.getElementById("trackCustomerAddress").innerText = order.customerAddress || "Local Address";
+      document.getElementById("trackPaymentMode").innerText = order.paymentMethod || "Post-OTP Payment";
+      document.getElementById("trackDeliveryFee").innerText = "₹" + (order.deliveryFee || 49);
+      
+      var totalAmt = order.totalAmount || ((order.itemTotal || 0) + (order.deliveryFee || 49));
+      document.getElementById("trackTotalAmount").innerText = "₹" + totalAmt;
 
-              // Status Steps
-              '<div class="grid grid-cols-2 gap-2 text-center text-[11px] font-bold">' +
-                '<div class="p-2.5 rounded-2xl border ' + (isAccepted ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-amber-50 border-amber-200 text-amber-800') + '">' + (isAccepted ? '✓ Boutique Accepted' : '⏳ Waiting Acceptance') + '</div>' +
-                '<div class="p-2.5 rounded-2xl border ' + (isPickedUp ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-500') + '">' + (isPickedUp ? '⚡ Rider Picked Up' : 'Rider Pending') + '</div>' +
-              '</div>' +
+      // Check if OTP verified or delivered to show payment section or success badge
+      var paySec = document.getElementById("postOtpPaymentSection");
+      var successBadge = document.getElementById("orderSuccessBadge");
 
-              // Item details
-              '<div class="bg-slate-50 rounded-2xl p-4 space-y-2 text-xs border border-slate-100">' +
-                '<div class="flex justify-between font-bold text-slate-950">' +
-                  '<span>Outfit: ' + (o.items && o.items[0] ? o.items[0].name : 'Fashion Item') + '</span>' +
-                  '<span class="font-mono-num text-orange-600">₹' + o.totalAmount + '</span>' +
-                '</div>' +
-                '<p class="text-slate-500 text-[11px]">📍 Delivery Address: ' + o.customerAddress + '</p>' +
-              '</div>' +
+      if (order.status === "Delivered" || order.delivered === true || order.paymentStatus === "Paid & Delivered") {
+        paySec.classList.add("hidden");
+        successBadge.classList.remove("hidden");
+      } else if (order.status === "OTP Verified - Ready for Payment" || order.otpVerified === true) {
+        paySec.classList.remove("hidden");
+        successBadge.classList.add("hidden");
+      } else {
+        paySec.classList.add("hidden");
+        successBadge.classList.add("hidden");
+      }
+    }
 
-              // Direct WhatsApp Connect buttons for Partner & Rider Chat
-              '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">' +
-                '<a href="' + storeWhatsAppUrl + '" target="_blank" class="flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold py-2.5 px-3 rounded-2xl text-xs transition border border-emerald-200 cursor-pointer">' +
-                  '<span>💬</span> <span>Chat with Boutique Partner (Size/Fit)</span>' +
-                '</a>' +
-                '<a href="https://wa.me/919515552511?text=Hi%20Rider%2C%20regarding%20order%20%23' + o.orderId + '%2C%20please%20deliver%20fast%20urgently." target="_blank" class="flex items-center justify-center gap-2 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold py-2.5 px-3 rounded-2xl text-xs transition border border-orange-200 cursor-pointer">' +
-                  '<span>⚡</span> <span>Contact Delivery Rider</span>' +
-                '</a>' +
-              '</div>' +
-
-              // Secure Delivery OTP Box
-              (!isDelivered ? 
-                '<div class="flex items-center justify-between bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">' +
-                  '<div class="space-y-0.5">' +
-                    '<p class="text-[10px] font-black uppercase text-amber-800 tracking-wider">🔒 Secure Delivery OTP</p>' +
-                    '<p class="text-[11px] text-amber-700">Share this with arrival rider to verify & complete.</p>' +
-                  '</div>' +
-                  '<span class="font-mono-num font-black text-xl text-slate-950 bg-white px-3 py-1.5 rounded-xl border border-amber-300 tracking-widest shadow-2xs">' + o.deliveryOtp + '</span>' +
-                '</div>' 
-                :
-                '<div class="bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-center py-3 rounded-2xl text-xs">' +
-                  '🎉 Order Delivered & Paid Successfully!' +
-                '</div>'
-              ) +
-
-              (!isDelivered && !isAccepted ? 
-                '<button onclick="cancelCustomerOrder(\'' + o.orderId + '\')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-2.5 rounded-2xl text-xs transition cursor-pointer">' +
-                  '✕ Cancel Order' +
-                '</button>' 
-                : ''
-              ) +
-            '</div>';
-          }
-        });
-
-        if (myOrdersCount === 0) {
-          container.innerHTML = '<div class="bg-white rounded-3xl p-10 border border-slate-200 text-center space-y-3 shadow-sm">' +
-            '<p class="text-4xl">📦</p>' +
-            '<h3 class="font-brand font-bold text-base text-slate-950">No Active Orders Found</h3>' +
-            '<p class="text-xs text-slate-500">Explore nearby boutiques and place your first express order!</p>' +
-            '<a href="index.html" class="inline-block bg-orange-600 text-white font-bold px-5 py-3 rounded-2xl text-xs mt-2">Explore Stores ➔</a>' +
-          '</div>';
-          countBadge.innerText = "0 Orders";
-        } else {
-          container.innerHTML = html;
-          countBadge.innerText = myOrdersCount + " Active Orders";
+    if (activeOrder && activeOrder.orderId) {
+      renderTrackingUI(activeOrder);
+      db.ref("orders/" + activeOrder.orderId).on("value", function(snap) {
+        var updated = snap.val();
+        if (updated) {
+          activeOrder = updated;
+          localStorage.setItem("chitikelo_active_order", JSON.stringify(updated));
+          renderTrackingUI(updated);
         }
       });
+    } else {
+      renderTrackingUI(null);
     }
 
-    // LIVE CHAT BOT LOGIC
-    function appendChatMessage(sender, text) {
-      var box = document.getElementById("chatMessagesBox");
-      var isBot = (sender === 'bot');
-      var html = '<div class="flex items-start gap-2 chat-bubble-in ' + (isBot ? '' : 'flex-row-reverse') + '">' +
-        '<div class="w-6 h-6 rounded-lg ' + (isBot ? 'bg-orange-600 text-white' : 'bg-slate-700 text-white') + ' flex items-center justify-center font-bold shrink-0 text-[10px]">' + (isBot ? '🤖' : '👤') + '</div>' +
-        '<div class="' + (isBot ? 'bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-xs' : 'bg-orange-600 text-white rounded-tr-xs') + ' p-3 rounded-2xl max-w-[85%] leading-relaxed text-[11px]">' + text + '</div>' +
-      '</div>';
-      box.innerHTML += html;
-      box.scrollTop = box.scrollHeight;
-    }
-
-    window.sendBotQuickQuery = function(query) {
-      appendChatMessage('user', query);
-      setTimeout(function() {
-        var reply = "I have noted your request regarding **" + query + "** ⚡. Our 60-minute express support agent has been notified and will coordinate with the boutique partner immediately.";
-        if (query === 'Size / Fit Issue') {
-          reply = "📏 For size differences, you can click on 'Chat with Boutique Partner' above to instantly request a size change/exchange with the store before or upon arrival.";
-        } else if (query === 'Where is my Rider?') {
-          reply = "🛵 Your express delivery rider is assigned via our 15KM hyperlocal radar and will arrive within the 60-minute window with your Secure OTP verification.";
-        } else if (query === 'Cancel Order') {
-          reply = "✕ You can cancel your order directly using the 'Cancel Order' button on your active order card above before the boutique accepts it.";
+    window.confirmPaymentSuccess = function() {
+      if (!activeOrder) return;
+      db.ref("orders/" + activeOrder.orderId).update({
+        status: "Delivered",
+        delivered: true,
+        paymentStatus: "Paid & Delivered",
+        financialSplit: {
+          storeNetPayout: activeOrder.financialSplit ? activeOrder.financialSplit.storeNetPayout : Math.round((activeOrder.itemTotal || 0) * 0.85),
+          platformCommission: activeOrder.financialSplit ? activeOrder.financialSplit.platformCommission : Math.round((activeOrder.itemTotal || 0) * 0.15),
+          riderFee: activeOrder.deliveryFee || 49,
+          storeSettlementStatus: "Settled",
+          riderSettlementStatus: "Settled"
         }
-        appendChatMessage('bot', reply);
-      }, 600);
+      }).then(function() {
+        alert("✓ Payment Confirmed & Order Successfully Completed!");
+      });
     };
-
-    window.handleChatBotSubmit = function(e) {
-      e.preventDefault();
-      var input = document.getElementById("chatInputText");
-      var txt = input.value.trim();
-      if (!txt) return;
-      appendChatMessage('user', txt);
-      input.value = "";
-      setTimeout(function() {
-        appendChatMessage('bot', "Thank you for reaching out. We have logged your query and our support team is actively looking into it ⚡.");
-      }, 700);
-    };
-
-    window.cancelCustomerOrder = function(orderId) {
-      if (confirm("Are you sure you want to cancel order #" + orderId + "?")) {
-        db.ref("orders/" + orderId).update({
-          status: "Cancelled by Customer",
-          delivered: true
-        }).then(function() {
-          alert("✓ Order cancelled successfully.");
-        });
-      }
-    };
-
-    loadCustomerOrders();
   </script>
 </body>
 </html>
