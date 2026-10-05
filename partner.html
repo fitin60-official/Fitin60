@@ -59,6 +59,18 @@
       </div>
     </div>
 
+    <!-- Featured Counter Box (Max 3 Limit Indicator) -->
+    <div class="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-center justify-between text-xs shadow-xs w-full">
+      <div class="flex items-center gap-2.5">
+        <span class="text-xl">⭐</span>
+        <div>
+          <p class="font-brand font-black text-slate-900">Featured Display Selection (Max 3)</p>
+          <p class="text-[11px] text-amber-800" id="featuredCounterText">0 of 3 outfits starred for customer main radar.</p>
+        </div>
+      </div>
+      <span id="featuredCountPill" class="bg-amber-500 text-white font-black text-xs px-3 py-1.5 rounded-full shadow-xs">0 / 3</span>
+    </div>
+
     <!-- Instant Split Wallet & Earnings -->
     <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
@@ -193,7 +205,7 @@
         <!-- Featured / Highlight Checkbox -->
         <div class="flex items-center gap-2 py-1 bg-amber-50 border border-amber-200 p-3 rounded-2xl">
           <input type="checkbox" id="upFeatured" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
-          <label for="upFeatured" class="font-bold text-slate-900 cursor-pointer text-xs">⭐ Feature / Highlight on Customer Main Display</label>
+          <label for="upFeatured" class="font-bold text-slate-900 cursor-pointer text-xs">⭐ Feature / Highlight on Customer Main Display (Max 3)</label>
         </div>
 
         <button type="submit" id="pubBtn" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition cursor-pointer shadow">
@@ -202,11 +214,11 @@
       </form>
     </div>
 
-    <!-- Manage Uploaded Outfits with Live Feature/Highlight Toggle -->
+    <!-- Manage Uploaded Outfits with Max 3 Resilient Feature Selector -->
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">Manage Outfits & Stock</h3>
-        <span class="text-[10px] text-slate-400 font-bold">Toggle Feature / Stock</span>
+        <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">Manage Outfits & Stock (Select Max 3)</h3>
+        <span class="text-[10px] text-slate-400 font-bold">Toggle Star / Stock</span>
       </div>
       <div id="partnerUploadedList" class="space-y-2">
         <p class="text-xs text-slate-400 text-center py-2">Loading your inventory...</p>
@@ -744,6 +756,22 @@
       var fileInput = document.getElementById("upImageFile");
       var btn = document.getElementById("pubBtn");
 
+      // STRICT MAX 3 CHECK DURING UPLOAD IF FEATURED IS CHECKED
+      if (isFeatured) {
+        var currentFeaturedCount = 0;
+        Object.values(loadedProductsMap).forEach(function(p) {
+          if (p && p.featured === true) {
+            var matchMobile = (p.storeMobile && activeStoreMobile && p.storeMobile.toString() === activeStoreMobile.toString());
+            var matchName = (p.store && activeStoreName && p.store.toLowerCase().trim() === activeStoreName.toLowerCase().trim());
+            if (matchMobile || matchName) currentFeaturedCount++;
+          }
+        });
+        if (currentFeaturedCount >= 3) {
+          alert("❌ Maximum limit reached! You can only feature up to 3 outfits. Please un-feature an existing one first.");
+          return;
+        }
+      }
+
       if (!fileInput.files || fileInput.files.length === 0) {
         return alert("Please select an outfit photo!");
       }
@@ -800,21 +828,38 @@
       });
     };
 
-    // INSTANT QUICK FEATURE TOGGLE DIRECTLY FROM MANAGE OUTFITS LIST
+    // STRICT MAX 3 FEATURED TOGGLE WITH COUNTER
     window.toggleFeaturedStatus = function(key, currentFeatured) {
+      if (!currentFeatured) {
+        // Check how many are currently featured by this partner
+        var currentFeaturedCount = 0;
+        Object.values(loadedProductsMap).forEach(function(p) {
+          if (p && p.featured === true) {
+            var matchMobile = (p.storeMobile && activeStoreMobile && p.storeMobile.toString() === activeStoreMobile.toString());
+            var matchName = (p.store && activeStoreName && p.store.toLowerCase().trim() === activeStoreName.toLowerCase().trim());
+            if (matchMobile || matchName) currentFeaturedCount++;
+          }
+        });
+        if (currentFeaturedCount >= 3) {
+          alert("❌ Maximum limit reached! You can only feature up to 3 outfits for customer main radar.");
+          return;
+        }
+      }
+
       var newFeatured = !currentFeatured;
       db.ref("boutique_products/" + key).update({ featured: newFeatured }).then(function() {
-        showQuickToast(newFeatured ? "⭐ Outfit Highlighted on Main Display!" : "✓ Removed Highlight");
+        showQuickToast(newFeatured ? "⭐ Featured on Customer Radar!" : "✓ Removed from Featured");
       });
     };
 
-    // Instant & Resilient Inventory Loader with Direct Feature Toggle
+    // Instant Inventory Loader with Featured Counter
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
       loadedProductsMap = data;
       var container = document.getElementById("partnerUploadedList");
       var html = "";
       var count = 0;
+      var featuredTotalCount = 0;
 
       Object.keys(data).forEach(function(k) {
         var p = data[k];
@@ -826,6 +871,8 @@
             count++;
             var inStock = (p.inStock !== false);
             var isFeatured = (p.featured === true);
+            if (isFeatured) featuredTotalCount++;
+
             html += 
               '<div class="flex items-center justify-between p-2.5 bg-slate-50 border rounded-xl text-xs gap-2">' +
                 '<div class="flex items-center gap-2 truncate">' +
@@ -836,7 +883,7 @@
                   '</div>' +
                 '</div>' +
                 '<div class="flex gap-1 shrink-0">' +
-                  '<button onclick="toggleFeaturedStatus(\'' + k + '\', ' + isFeatured + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (isFeatured ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-700') + '">' + (isFeatured ? '★ Star' : '☆ Feature') + '</button>' +
+                  '<button onclick="toggleFeaturedStatus(\'' + k + '\', ' + isFeatured + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (isFeatured ? 'bg-amber-500 text-white shadow-xs' : 'bg-slate-200 text-slate-700') + '">' + (isFeatured ? '★ Featured' : '☆ Feature') + '</button>' +
                   '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '">' + (inStock ? 'Pause' : 'Stock') + '</button>' +
                   '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 text-white px-2 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
                   '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 text-white px-2 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
@@ -845,6 +892,10 @@
           }
         }
       });
+
+      // Update Featured Counter UI Pill
+      document.getElementById("featuredCountPill").innerText = featuredTotalCount + " / 3";
+      document.getElementById("featuredCounterText").innerText = featuredTotalCount + " of 3 outfits starred for customer main radar.";
 
       if (count === 0) {
         container.innerHTML = "<p class='text-xs text-slate-400 text-center py-2'>No custom outfits uploaded yet. Upload one above!</p>";
@@ -989,9 +1040,24 @@
       var sizes = sizesStr ? sizesStr.split(",").map(function(s) { return s.trim(); }) : ["Free size"];
       var isFeatured = document.getElementById("editFeatured").checked;
 
+      if (isFeatured) {
+        var currentFeaturedCount = 0;
+        Object.values(loadedProductsMap).forEach(function(p, k) {
+          if (p && p.featured === true && k !== key) {
+            var matchMobile = (p.storeMobile && activeStoreMobile && p.storeMobile.toString() === activeStoreMobile.toString());
+            var matchName = (p.store && activeStoreName && p.store.toLowerCase().trim() === activeStoreName.toLowerCase().trim());
+            if (matchMobile || matchName) currentFeaturedCount++;
+          }
+        });
+        if (currentFeaturedCount >= 3) {
+          alert("❌ Maximum limit reached! You can only feature up to 3 outfits.");
+          return;
+        }
+      }
+
       var updateData = {
         name: document.getElementById("editName").value.trim(),
-        price: parseInt(document.getElementById("editPrice").value),
+        price: parseInt(document.getElementById("editPrice.value") || document.getElementById("editPrice").value),
         originalPrice: parseInt(document.getElementById("editOrigPrice").value),
         sizes: sizes,
         featured: isFeatured
