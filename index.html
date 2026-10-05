@@ -267,7 +267,7 @@
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-xs">Available Collections</span>
-          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -831,11 +831,11 @@
           var resolvedCat = getResolvedCategory(p);
 
           html += 
-            '<div class="relative bg-white border border-slate-200 rounded-2xl p-3 shadow-xs hover:shadow-md transition space-y-2.5 flex flex-col justify-between overflow-hidden">' +
+            '<div class="relative bg-white border border-slate-200 rounded-2xl p-3 shadow-xs hover:shadow-md transition space-y-2.5 flex flex-col justify-between overflow-hidden" loading="lazy">' +
               (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1 rounded-full">Out of Stock</span></div>' : '') +
               (p.featured === true || p.featured === "true" || p.featured === 1 ? '<span class="absolute top-2 left-2 bg-[#ff3f6c] text-white text-[9px] font-black px-2 py-0.5 rounded shadow z-20">⭐ FEATURED</span>' : '') +
               '<div class="relative h-44 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-                '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
+                '<img src="' + p.image + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
                 '<span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded">60-Min</span>' +
               '</div>' +
               '<div>' +
@@ -956,7 +956,7 @@
       document.getElementById("imageCounterBadge").innerText = (currentModalImageIndex + 1) + " / " + list.length;
       var thumbsHtml = "";
       list.forEach(function(imgUrl, idx) {
-        thumbsHtml += '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" class="w-14 h-14 rounded-xl object-cover border-2 cursor-pointer shrink-0 transition ' + (idx === currentModalImageIndex ? "border-[#ff3f6c] scale-105 shadow-sm" : "border-slate-200 opacity-70") + '">';
+        thumbsHtml += '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" loading="lazy" class="w-14 h-14 rounded-xl object-cover border-2 cursor-pointer shrink-0 transition ' + (idx === currentModalImageIndex ? "border-[#ff3f6c] scale-105 shadow-sm" : "border-slate-200 opacity-70") + '">';
       });
       document.getElementById("modalThumbnailsStrip").innerHTML = thumbsHtml;
     }
@@ -1000,7 +1000,7 @@
       renderBoutiqueStores();
     };
 
-    // STRICT FEATURED-ONLY & MAX 3 OUTFITS DISPLAY LOGIC
+    // STRICT FEATURED-ONLY & LIGHTNING FAST 10-STORES PAGINATION LIMIT
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1042,13 +1042,17 @@
 
       var stores = Object.values(storesMap).filter(function(st) { return st.products.length > 0; });
       if (badge) badge.innerText = stores.length + " Stores Live";
-      if (stores.length === 0) { 
-        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No featured partner outfits (max 3) available right now.</p></div>"; 
+      
+      // LIGHTNING FAST PAGINATION: Show max 10 stores at a time
+      var visibleStores = stores.slice(0, 10);
+
+      if (visibleStores.length === 0) { 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No featured partner outfits available right now.</p></div>"; 
         return; 
       }
 
       var html = "";
-      stores.forEach(function(store) {
+      visibleStores.forEach(function(store) {
         var storeStatus = getStoreStatus(store.storeName, store.storeMobile);
         var isStoreClosed = (storeStatus === "CLOSED");
         var previewImages = "";
@@ -1056,11 +1060,11 @@
         store.products.slice(0, 3).forEach(function(p) {
           var targetId = p.cloudKey;
           var inStock = (p.inStock !== false && !isStoreClosed);
-          previewImages += '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs flex flex-col justify-between p-2.5 space-y-2">' +
+          previewImages += '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs flex flex-col justify-between p-2.5 space-y-2" loading="lazy">' +
             (!inStock ? '<div class="absolute inset-0 bg-white/85 z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">Closed</span></div>' : '') +
             '<span class="absolute top-2 left-2 bg-[#ff3f6c] text-white text-[8px] font-black px-2 py-0.5 rounded shadow z-20">⭐ FEATURED</span>' +
             '<div class="relative h-36 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-              '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition">' +
+              '<img src="' + p.image + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition">' +
               '<span class="absolute bottom-2 right-2 bg-black/70 text-white font-bold text-[9px] px-2 py-0.5 rounded backdrop-blur-xs">₹' + p.price + '</span>' +
             '</div>' +
             '<div class="grid grid-cols-2 gap-1.5">' +
@@ -1154,13 +1158,13 @@
       document.getElementById("checkoutFooter").classList.add("hidden");
 
       if (items.length === 0) {
-        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍️</p><p>Your Express Bag is empty!</p></div>";
+        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍️️</p><p>Your Express Bag is empty!</p></div>";
         return;
       }
 
       var html = "";
       items.forEach(function(item, idx) {
-        var imgTag = item.image ? '<img src="' + item.image + '" class="w-16 h-16 rounded-2xl object-cover border shrink-0">' : '<div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-sm shrink-0">👗</div>';
+        var imgTag = item.image ? '<img src="' + item.image + '" loading="lazy" class="w-16 h-16 rounded-2xl object-cover border shrink-0">' : '<div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-sm shrink-0">👗</div>';
         html += '<div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/80 rounded-2xl gap-3 text-xs shadow-2xs">' +
           '<div class="flex items-center gap-3 truncate">' + imgTag +
             '<div class="truncate space-y-1"><p class="font-bold text-[#282c3f] truncate">' + item.name + '</p>' +
