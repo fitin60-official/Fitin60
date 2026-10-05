@@ -152,14 +152,14 @@
       </div>
     </div>
 
-    <!-- Search & Fully Wrapped Categories Section (No clipping for Shirts & Pants) -->
+    <!-- Search & Fully Wrapped Categories Section -->
     <div class="space-y-4 w-full">
       <div class="relative w-full shadow-md rounded-2xl overflow-hidden bg-white border border-slate-200/80">
         <span class="absolute inset-y-0 left-0 pl-4.5 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
-        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique, jacket, hoodie, saree, shirt, pants, t-shirt..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
+        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique, featured, jacket, saree, shirt, pants, t-shirt..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
       </div>
 
-      <!-- Category Chips with Flex Wrap so Shirts, Pants, and T-Shirts are fully visible and never cut -->
+      <!-- Category Chips with Flex Wrap -->
       <div class="flex flex-wrap gap-2 py-2 px-1 text-xs font-bold w-full" id="categoryChips">
         <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-md shadow-slate-950/25">All Outfits</button>
         <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🧥 Jackets & Hoodies</button>
@@ -229,7 +229,7 @@
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-xs">Available Collections</span>
-          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -769,6 +769,7 @@
           html += 
             '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between overflow-hidden">' +
               (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
+              (p.featured === true || p.featured === "true" || p.featured === 1 ? '<span class="absolute top-2.5 left-2.5 bg-amber-500 text-white text-[9px] font-black px-2 py-0.5 rounded-md shadow z-20">⭐ FEATURED</span>' : '') +
               (isOwnerActive ? 
                 '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
                   '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
@@ -776,7 +777,7 @@
                 '</div>' : '') +
               '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
                 '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
-                '<span class="absolute top-2 left-2 bg-slate-950/75 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md">⚡ 60-Min</span>' +
+                '<span class="absolute top-2 right-2 bg-slate-950/75 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md">⚡ 60-Min</span>' +
               '</div>' +
               '<div>' +
                 '<p class="font-bold text-slate-950 text-xs sm:text-sm truncate cursor-pointer hover:text-orange-600 transition" onclick="openProductDetailModal(\'' + targetId + '\')">' + p.name + '</p>' +
@@ -926,40 +927,6 @@
       openSingleCheckoutView();
     };
 
-    window.directOwnerDelete = function(key) {
-      if (confirm("Delete this outfit?")) {
-        db.ref("boutique_products/" + key).remove().then(function() { showQuickToast("✓ Deleted"); closeStoreExploreModal(); });
-      }
-    };
-
-    window.openDirectOwnerEdit = function(key) {
-      var prod = cloudProductsMap[key];
-      if (!prod) return;
-      document.getElementById("directEditKey").value = key;
-      document.getElementById("directEditName").value = prod.name || "";
-      document.getElementById("directEditArea").value = prod.area || "";
-      document.getElementById("directEditPrice").value = prod.price || 0;
-      document.getElementById("directEditCategory").value = prod.category || "Uniform";
-      document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
-      document.getElementById("directOwnerEditModal").classList.remove("hidden");
-    };
-
-    window.closeDirectOwnerEditModal = function() { document.getElementById("directOwnerEditModal").classList.add("hidden"); };
-
-    window.handleDirectOwnerSave = function(e) {
-      e.preventDefault();
-      var key = document.getElementById("directEditKey").value;
-      if (!key) return;
-      var sizes = document.getElementById("directEditSizes").value.trim().split(",").map(function(s) { return s.trim(); });
-      db.ref("boutique_products/" + key).update({
-        name: document.getElementById("directEditName").value.trim(),
-        area: document.getElementById("directEditArea").value.trim(),
-        price: parseInt(document.getElementById("directEditPrice").value),
-        category: document.getElementById("directEditCategory").value,
-        sizes: sizes
-      }).then(function() { closeDirectOwnerEditModal(); showQuickToast("✓ Updated!"); });
-    };
-
     window.filterByCategory = function(cat) {
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
@@ -974,7 +941,7 @@
       renderBoutiqueStores();
     };
 
-    // STRICT REAL STORES & 15KM RADAR FILTERING LOGIC (MUMMY DADDY STORE EXCLUDED PERMANENTLY)
+    // STRICT ROBUST FEATURED-ONLY & MAX 3 OUTFITS DISPLAY LOGIC
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -990,9 +957,11 @@
         var sName = getStoreDisplayName(rawStoreName, sMobile);
 
         if (!sName) return;
-
-        // PERMANENTLY EXCLUDE / HIDE "MUMMY DADDY" STORE
         if (sName.toLowerCase().includes("mummy daddy")) return;
+
+        // STRICT CHECK: ONLY INCLUDE IF FEATURED IS TRUE
+        var isFeaturedItem = (p.featured === true || p.featured === "true" || p.featured === 1);
+        if (!isFeaturedItem) return;
 
         var oName = (p.name || "").toLowerCase();
         var oDesc = (p.desc || "").toLowerCase();
@@ -1007,14 +976,16 @@
           if (!storesMap[storeKey]) {
             storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
           }
-          storesMap[storeKey].products.push(p);
+          if (storesMap[storeKey].products.length < 3) {
+            storesMap[storeKey].products.push(p);
+          }
         }
       });
 
-      var stores = Object.values(storesMap);
-      if (badge) badge.innerText = stores.length + " Stores Live (15KM)";
+      var stores = Object.values(storesMap).filter(function(st) { return st.products.length > 0; });
+      if (badge) badge.innerText = stores.length + " Stores Live (Featured)";
       if (stores.length === 0) { 
-        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores found within 15km radar.</p></div>"; 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No featured partner outfits (max 3) available on radar right now. Please mark items as Featured in Partner Hub.</p></div>"; 
         return; 
       }
 
@@ -1029,9 +1000,10 @@
           var inStock = (p.inStock !== false && !isStoreClosed);
           previewImages += '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs flex flex-col justify-between p-2 space-y-1.5">' +
             (!inStock ? '<div class="absolute inset-0 bg-white/85 z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">' + (isStoreClosed ? 'Closed' : 'Out') + '</span></div>' : '') +
+            '<span class="absolute top-1 left-1 bg-amber-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow z-20">⭐ FEATURED</span>' +
             '<div class="relative h-32 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
               '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition">' +
-              '<span class="absolute top-1 left-1 bg-slate-950/80 text-white font-bold text-[9px] px-2 py-0.5 rounded backdrop-blur-xs">₹' + p.price + '</span>' +
+              '<span class="absolute top-1 right-1 bg-slate-950/80 text-white font-bold text-[9px] px-2 py-0.5 rounded backdrop-blur-xs">₹' + p.price + '</span>' +
             '</div>' +
             '<div class="grid grid-cols-2 gap-1">' +
               '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-xl text-[10px] cursor-pointer">Add</button>' +
@@ -1340,4 +1312,3 @@
   </script>
 </body>
 </html>
-      
