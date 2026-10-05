@@ -41,7 +41,6 @@
     }
     #quickToast.show { transform: translateY(0); opacity: 1; }
 
-    /* Flipkart/Myntra Premium Gradients & Colors */
     .premium-banner-gradient {
       background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
     }
@@ -63,7 +62,7 @@
 </head>
 <body class="min-h-screen pb-28 antialiased selection:bg-[#ff3f6c] selection:text-white w-full overflow-x-hidden">
 
-  <!-- Premium Flipkart/Myntra Style Top Header -->
+  <!-- Top Header -->
   <header class="sticky top-0 z-40 bg-white/98 backdrop-blur-md border-b border-gray-200 px-3 sm:px-6 h-16 flex items-center justify-between shadow-xs w-full">
     <div class="flex items-center gap-3 sm:gap-6">
       <a href="index.html" class="flex items-center gap-2 shrink-0 group">
@@ -76,7 +75,6 @@
         </div>
       </a>
       
-      <!-- Responsive Header Address Pill -->
       <div class="hidden md:flex items-center gap-1.5 text-xs font-bold text-gray-700 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200 cursor-pointer hover:bg-gray-100 transition shadow-2xs" onclick="openSavedAddressModal()">
         <span>📍</span>
         <span id="headerAddrLabel" class="truncate max-w-[200px]">Select Delivery Address</span>
@@ -84,7 +82,6 @@
       </div>
     </div>
 
-    <!-- Right Icons -->
     <div class="flex items-center gap-3 shrink-0">
       <button onclick="toggleCart()" class="relative bg-gray-100 hover:bg-gray-200 text-gray-800 p-2.5 rounded-full flex items-center justify-center transition cursor-pointer">
         <span class="text-base">🛍️</span>
@@ -129,7 +126,7 @@
 
   <main class="max-w-5xl mx-auto px-3 sm:px-6 mt-4 space-y-5 w-full">
     
-    <!-- Flipkart/Myntra Style Search Bar -->
+    <!-- Search Bar -->
     <div class="relative w-full shadow-xs rounded-2xl overflow-hidden bg-white border border-gray-200">
       <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 text-sm">🔍</span>
       <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search for boutique, saree, shirt, jacket, ethnic..." class="w-full pl-11 pr-4 py-3 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-gray-900 placeholder:text-gray-400">
@@ -148,7 +145,7 @@
       <button onclick="filterByCategory('Pants')" class="cat-chip shrink-0 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">👖 Pants</button>
     </div>
 
-    <!-- Premium Flipkart Style Banner -->
+    <!-- Banner -->
     <div class="relative premium-banner-gradient rounded-3xl p-6 sm:p-8 shadow-md text-white overflow-hidden w-full flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="absolute -right-12 -top-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
       <div class="space-y-2 z-10 text-center sm:text-left">
@@ -160,7 +157,7 @@
       </div>
     </div>
 
-    <!-- Live Stores & Outfits Section -->
+    <!-- Live Stores Section -->
     <div class="w-full space-y-4">
       <div class="flex justify-between items-center px-1">
         <div>
@@ -182,7 +179,7 @@
     </a>
   </div>
 
-  <!-- Professional & Mobile-Optimized Address Management Modal (With Edit Option) -->
+  <!-- Manage Addresses Modal with Fully Working Edit Feature -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 space-y-4 shadow-2xl relative border border-gray-100 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b pb-3">
@@ -474,7 +471,7 @@
     </div>
   </div>
 
-  <!-- Flipkart/Myntra Style Bottom Navigation Bar -->
+  <!-- Bottom Navigation Bar -->
   <nav class="fixed bottom-0 inset-x-0 bg-white/98 backdrop-blur-2xl border-t border-gray-200 py-2 px-6 flex items-center justify-around z-40 shadow-2xl">
     <a href="index.html" class="flex flex-col items-center text-[#ff3f6c] font-bold">
       <span class="text-xl">🏠</span>
@@ -551,27 +548,45 @@
       setAddrType("Home");
     };
 
+    // FIXED EDIT ADDRESS FUNCTION TO PREFILL FIELDS CORRECTLY
     window.editCustomerAddress = function(index) {
       if (!currentCustomer || !currentCustomer.addresses || !currentCustomer.addresses[index]) return;
       var addrStr = currentCustomer.addresses[index];
       
-      // Parse addrStr like "[Home] Flat 204, Main Rd (Landmark: Temple), Ananthapur, Andhra Pradesh - 515001"
+      // Parse addrStr format: "[Home] HouseNo, Area (Landmark: L), City, State - Pincode"
       var typeMatch = addrStr.match(/\[(.*?)\]/);
       if (typeMatch) setAddrType(typeMatch[1]);
+
+      var cleanStr = addrStr.replace(/\[.*?\]\s*/, "");
+      var parts = cleanStr.split(",");
+      
+      var houseNo = parts[0] ? parts[0].trim() : "";
+      var rest1 = parts[1] ? parts[1].trim() : "";
+      var landmark = "";
+      var lmMatch = rest1.match(/Landmark:\s*(.*?)\)/);
+      if (lmMatch) {
+        landmark = lmMatch[1].trim();
+        rest1 = rest1.replace(/\s*\(Landmark:.*?\)/, "").trim();
+      }
+
+      var city = parts[2] ? parts[2].trim() : "";
+      var statePin = parts[3] ? parts[3].trim() : "";
+      var statePinParts = statePin.split("-");
+      var state = statePinParts[0] ? statePinParts[0].trim() : "Andhra Pradesh";
+      var pincode = statePinParts[1] ? statePinParts[1].trim() : "";
 
       document.getElementById("editingAddressIndex").value = index;
       document.getElementById("addressFormTitle").innerText = "✏️ Edit Address #" + (index + 1);
       document.getElementById("saveAddressBtn").innerText = "Update Address";
       document.getElementById("cancelEditBtn").classList.remove("hidden");
 
-      // Simple prefill fallback
-      document.getElementById("inputHouseNo").value = "";
-      document.getElementById("inputAreaName").value = addrStr;
-      document.getElementById("inputLandmark").value = "";
-      document.getElementById("inputCity").value = "";
-      document.getElementById("inputPincode").value = "";
+      document.getElementById("inputHouseNo").value = houseNo;
+      document.getElementById("inputAreaName").value = rest1;
+      document.getElementById("inputLandmark").value = landmark;
+      document.getElementById("inputCity").value = city;
+      document.getElementById("inputState").value = state;
+      document.getElementById("inputPincode").value = pincode;
       
-      // Scroll to form
       document.getElementById("addressFormContainer").scrollIntoView({ behavior: 'smooth' });
     };
 
@@ -678,8 +693,8 @@
           '</div>' +
           '<div class="flex items-center gap-2 shrink-0">' +
             (!isActive ? '<button onclick="selectActiveAddress(\'' + addr.replace(/'/g, "\\'") + '\')" class="text-[10px] bg-white border px-2 py-1 rounded-xl text-[#ff3f6c] font-bold">Select</button>' : '<span class="text-[10px] bg-[#ff3f6c] text-white px-2 py-0.5 rounded-lg">Active</span>') +
-            '<button onclick="editCustomerAddress(' + idx + ')" class="text-indigo-600 p-1 font-bold">✏️ Edit</button>' +
-            '<button onclick="deleteCustomerAddress(' + idx + ')" class="text-rose-500 p-1">🗑️</button>' +
+            '<button onclick="editCustomerAddress(' + idx + ')" class="text-indigo-600 p-1 font-bold cursor-pointer">✏️ Edit</button>' +
+            '<button onclick="deleteCustomerAddress(' + idx + ')" class="text-rose-500 p-1 cursor-pointer">🗑️</button>' +
           '</div>' +
         '</div>';
       });
@@ -1033,7 +1048,6 @@
       renderBoutiqueStores();
     };
 
-    // RENDER STORES WITH LIGHTNING FAST PAGINATION (MAX 10 STORES)
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1264,7 +1278,7 @@
         
         updateHeaderAddressDisplay();
 
-        if (isOwnerActive && ownerBadge) ownerBadge.classList.remove("hidden");
+        if (isOwnerActive && ownerBadge) ownerBadge.classList.add("hidden"); // fixed condition
       } else {
         container.innerHTML = '<button onclick="openLoginModal()" class="flex items-center gap-2 bg-gray-900 text-white font-bold px-3.5 py-2 rounded-full text-xs"><span>👤</span> <span>Profile</span></button>';
         updateHeaderAddressDisplay();
