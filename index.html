@@ -13,7 +13,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -76,7 +75,7 @@
         </div>
       </a>
       
-      <!-- Dynamic Logged-in Customer Address Indicator -->
+      <!-- Dynamic Customer Address Indicator -->
       <div class="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200/80 cursor-pointer shadow-2xs hover:bg-slate-100 transition" onclick="openSavedAddressModal()">
         <span>📍</span>
         <span id="headerAddrLabel" class="truncate max-w-[240px]">Select Delivery Address</span>
@@ -141,7 +140,7 @@
       <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search for boutique, saree, shirt, jacket, ethnic..." class="w-full pl-11 pr-4 py-3 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-[#282c3f] placeholder:text-slate-400">
     </div>
 
-    <!-- Category Chips Grid with Flex-Wrap -->
+    <!-- Category Chips Grid -->
     <div class="flex flex-wrap gap-2.5 py-1.5 px-2 text-xs font-bold w-full items-center" id="categoryChips">
       <button onclick="filterByCategory('All')" class="cat-chip bg-[#282c3f] text-white px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">All Outfits</button>
       <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">🧥 Jackets</button>
@@ -370,7 +369,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer with OTP-Verified Pay on Delivery Flow -->
+  <!-- Shopping Bag / Checkout Drawer with COD & UPI Scan Options -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-md"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 overflow-hidden animate-in slide-in-from-right duration-300">
@@ -409,7 +408,7 @@
           <input type="tel" id="custPhone" required placeholder="Mobile Number (For Delivery OTP)" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-mono font-bold">
 
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance & Distance Fee</label>
             <select id="deliveryDistanceSelect" onchange="recalculateDistanceFee()" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-bold text-slate-900">
               <option value="2.5" selected>📍 0 to 3 KM - ₹49</option>
               <option value="5.5">📍 3 to 7 KM - ₹79</option>
@@ -419,14 +418,17 @@
           </div>
 
           <div class="pt-2 border-t border-slate-100 space-y-2.5">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Secure Verification & Payment Mode</h4>
-            <div class="grid grid-cols-1 gap-2.5">
-              <label class="flex items-center gap-3.5 p-3.5 bg-pink-50 border-2 border-[#ff3f6c] rounded-2xl cursor-pointer">
-                <input type="radio" name="payOption" value="OTP_VERIFIED_POD" checked class="accent-[#ff3f6c]">
-                <div class="text-xs">
-                  <p class="font-black text-[#282c3f]">Pay on Delivery (Verified by Secure Delivery OTP)</p>
-                  <p class="text-[10px] text-emerald-700 font-bold mt-0.5">Payment collected by rider after OTP confirmation</p>
-                </div>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Choose Payment Mode</h4>
+            <div class="grid grid-cols-2 gap-2.5">
+              <label class="flex flex-col items-center justify-center p-3.5 bg-pink-50 border-2 border-[#ff3f6c] rounded-2xl cursor-pointer text-center">
+                <input type="radio" name="payMode" value="COD" checked class="accent-[#ff3f6c] mb-1">
+                <span class="font-black text-xs text-[#282c3f]">💵 Cash on Delivery</span>
+                <span class="text-[9px] text-slate-500 mt-0.5">Pay after receiving</span>
+              </label>
+              <label class="flex flex-col items-center justify-center p-3.5 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer text-center">
+                <input type="radio" name="payMode" value="UPI_SCAN" class="accent-[#ff3f6c] mb-1">
+                <span class="font-black text-xs text-[#282c3f]">📱 UPI QR / Scan</span>
+                <span class="text-[9px] text-emerald-700 mt-0.5">Instant Scan & Pay</span>
               </label>
             </div>
           </div>
@@ -442,7 +444,7 @@
               <span class="font-mono-num font-bold text-emerald-700" id="billDeliveryFee">₹49</span>
             </div>
             <div class="border-t pt-2 flex justify-between font-black text-[#282c3f] text-sm">
-              <span>To Pay (After OTP Delivery)</span>
+              <span>To Pay</span>
               <span class="font-mono-num text-base text-[#ff3f6c]" id="billFinalPayable">₹0</span>
             </div>
           </div>
@@ -1253,7 +1255,7 @@
       });
     };
 
-    // OTP-Verified Post-Delivery Payment Flow Trigger
+    // Smooth Checkout with COD & UPI Scan Selection (No payment failures)
     window.handleCheckout = function() {
       if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
@@ -1261,6 +1263,8 @@
 
       var selectedAddrRadio = document.querySelector('input[name="checkoutSelectedAddr"]:checked');
       var deliveryAddress = selectedAddrRadio ? selectedAddrRadio.value : "";
+
+      var selectedPayMode = document.querySelector('input[name="payMode"]:checked').value;
 
       if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Select Delivery Address!");
       if (phone.length !== 10) return alert("Enter valid 10-digit mobile number!");
@@ -1287,9 +1291,9 @@
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
-        paymentMethod: "Pay on Delivery (OTP Verified)",
-        paymentId: "PENDING_OTP_VERIFICATION_" + Date.now(),
-        paymentStatus: "Pending Delivery & OTP Confirmation",
+        paymentMethod: selectedPayMode === 'COD' ? "Cash on Delivery" : "UPI QR Scan & Pay",
+        paymentId: "PAY_" + selectedPayMode + "_" + Date.now(),
+        paymentStatus: selectedPayMode === 'COD' ? "Pending COD Verification" : "Pending UPI Scan Confirmation",
         deliveryOtp: generatedOtp,
         store: activeCheckoutItem.store,
         storeMobile: activeCheckoutItem.storeMobile || "",
@@ -1299,7 +1303,7 @@
           storeNetPayout: storeNetPayout,
           platformCommission: platformFee,
           riderFee: deliveryFee,
-          storeSettlementStatus: "Pending OTP Delivery",
+          storeSettlementStatus: "Pending Delivery",
           riderSettlementStatus: "Pending"
         },
         timestamp: Date.now()
