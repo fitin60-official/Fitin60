@@ -76,11 +76,11 @@
         </div>
       </a>
       
-      <!-- Delivery Address Quick Indicator -->
-      <div class="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200/60 cursor-pointer" onclick="openSavedAddressModal()">
+      <!-- Dynamic Logged-in Customer Address / GPS Indicator -->
+      <div class="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200/80 cursor-pointer shadow-2xs hover:bg-slate-100 transition" onclick="openSavedAddressModal()">
         <span>📍</span>
-        <span id="headerAddrLabel" class="truncate max-w-[200px]">Add Delivery Address</span>
-        <span class="text-[10px] text-[#ff3f6c] font-black">change</span>
+        <span id="headerAddrLabel" class="truncate max-w-[240px]">Select Delivery Address</span>
+        <span class="text-[10px] text-[#ff3f6c] font-black uppercase">Change</span>
       </div>
     </div>
 
@@ -115,7 +115,7 @@
     </a>
 
     <button onclick="openSavedAddressModal()" class="w-full flex items-center gap-3 bg-slate-50 hover:bg-pink-50 hover:text-[#ff3f6c] p-3 rounded-xl text-xs font-bold text-slate-700 transition text-left cursor-pointer">
-      <span class="text-base">📍</span> <span>Manage Permanent Address</span>
+      <span class="text-base">📍</span> <span>Manage Saved Addresses</span>
     </button>
 
     <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support" target="_blank" class="flex items-center gap-3 bg-emerald-50 hover:bg-emerald-100 p-3 rounded-xl text-xs font-bold text-emerald-800 transition">
@@ -141,7 +141,7 @@
       <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search for boutique, saree, shirt, jacket, ethnic..." class="w-full pl-11 pr-4 py-3 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-[#282c3f] placeholder:text-slate-400">
     </div>
 
-    <!-- Category Chips Grid with Flex-Wrap & Extra Right Padding to prevent Shirts/Pants cutting -->
+    <!-- Category Chips Grid with Flex-Wrap -->
     <div class="flex flex-wrap gap-2.5 py-1.5 px-2 text-xs font-bold w-full items-center" id="categoryChips">
       <button onclick="filterByCategory('All')" class="cat-chip bg-[#282c3f] text-white px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">All Outfits</button>
       <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">🧥 Jackets</button>
@@ -155,19 +155,19 @@
       <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">👕 T-Shirts</button>
     </div>
 
-    <!-- Myntra Style Luxury Promo Banner (Shop Now Button Removed)[span_2](start_span)[span_2](end_span) -->
+    <!-- Luxury Promo Banner -->
     <div class="relative myntra-gradient rounded-3xl p-6 sm:p-8 shadow-sm border border-pink-100 overflow-hidden w-full flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="absolute -right-12 -top-12 w-48 h-48 bg-pink-300/30 rounded-full blur-2xl pointer-events-none"></div>
       <div class="space-y-2 z-10 text-center sm:text-left">
-        <span class="bg-[#ff3f6c] text-white font-extrabold text-[9px] uppercase px-3 py-1 rounded-full tracking-wider shadow-xs">FLAT ₹300 OFF • 60-MIN DROP</span>
+        <span class="bg-[#ff3f6c] text-white font-extrabold text-[9px] uppercase px-3 py-1 rounded-full tracking-wider shadow-xs">⚡ EXPRESS HYPERLOCAL FASHION</span>
         <h2 class="font-brand text-xl sm:text-3xl font-black text-[#282c3f] tracking-tight">
-          Grand Ethnic & Streetwear Edit
+          Fitin60 Express • Fashion at Your Doorstep in 60 Mins
         </h2>
-        <p class="text-xs text-slate-600 font-medium">Verified 15KM Radar Boutiques • Secure Delivery OTP</p>
+        <p class="text-xs text-slate-600 font-medium">Verified 15KM Radar Boutiques • Secure Delivery OTP & QR Verification</p>
       </div>
     </div>
 
-    <!-- Live Stores & Outfits Section (Premium Near Boutique 60m Look) -->
+    <!-- Live Stores & Outfits Section -->
     <div class="w-full space-y-4">
       <div class="flex justify-between items-center px-1">
         <div>
@@ -189,24 +189,56 @@
     </a>
   </div>
 
-  <!-- Saved Address Modal -->
+  <!-- Multiple Addresses Management Modal (Address 1, Address 2 Support) -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b pb-3">
         <div class="flex items-center gap-2">
           <span class="text-2xl">📍</span>
-          <h3 class="font-brand font-bold text-base text-[#282c3f]">Delivery Address</h3>
+          <h3 class="font-brand font-bold text-base text-[#282c3f]">Manage Delivery Addresses</h3>
         </div>
         <button onclick="closeSavedAddressModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5">Permanent Full Delivery Address</label>
-          <textarea id="savedPermanentAddressInput" rows="3" placeholder="House/Flat No, Landmark, Street Name..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-900 focus:outline-none focus:border-[#ff3f6c] font-medium"></textarea>
+      <!-- Saved Addresses List container -->
+      <div class="space-y-3">
+        <p class="text-[10px] font-black uppercase text-slate-400">Your Saved Addresses</p>
+        <div id="customerAddressesList" class="space-y-2">
+          <!-- Dynamically populated addresses -->
         </div>
-        <button onclick="saveCustomerAddressPermanently()" class="w-full myntra-pink-btn text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
-          ✓ Save Address
+      </div>
+
+      <!-- Add New Address Form -->
+      <div class="pt-3 border-t border-slate-100 space-y-3 text-xs">
+        <p class="font-bold text-[#282c3f]">+ Add New Address (Address 1 / Address 2)</p>
+        
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Address Label / Type</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setAddrType('Home')" id="addrTypeHome" class="py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition">🏠 Home</button>
+            <button type="button" onclick="setAddrType('Office')" id="addrTypeOffice" class="py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">🏢 Office</button>
+            <button type="button" onclick="setAddrType('Other')" id="addrTypeOther" class="py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">📍 Other</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">House / Plot No *</label>
+            <input type="text" id="inputHouseNo" required placeholder="Flat 204, Plot 12" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Area / Society</label>
+            <input type="text" id="inputAreaName" placeholder="Itikalapalli Main Rd" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Landmark (Nearby Famous Spot) *</label>
+          <input type="text" id="inputLandmark" required placeholder="Near Clock Tower / Temple" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+        </div>
+
+        <button onclick="saveNewMultiAddress()" class="w-full myntra-pink-btn text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
+          + Save New Address
         </button>
       </div>
     </div>
@@ -374,30 +406,13 @@
 
           <div>
             <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Delivery Address</h4>
-            <div class="grid grid-cols-2 gap-2.5 mb-3">
-              <label class="flex items-center gap-2.5 p-3 bg-pink-50 border-2 border-[#ff3f6c] rounded-2xl cursor-pointer text-xs font-bold text-[#282c3f]">
-                <input type="radio" name="checkoutAddressType" value="permanent" checked onchange="toggleAddressInputMode(this.value)" class="accent-[#ff3f6c]">
-                <span>🏠 Saved Address</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer text-xs font-bold text-slate-700">
-                <input type="radio" name="checkoutAddressType" value="new" onchange="toggleAddressInputMode(this.value)" class="accent-[#ff3f6c]">
-                <span>📍 New / Other</span>
-              </label>
+            <div id="checkoutAddressesRadioContainer" class="space-y-2 mb-3">
+              <!-- Dynamically populated radios for multiple saved addresses -->
             </div>
           </div>
 
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-medium">
           <input type="tel" id="custPhone" required placeholder="Mobile Number (For Delivery OTP)" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-mono font-bold">
-          
-          <div id="permanentAddressBoxContainer">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Permanent Address</label>
-            <textarea id="custPermanentAddress" rows="2" class="w-full bg-slate-50 border rounded-2xl p-3.5 text-xs font-medium"></textarea>
-          </div>
-
-          <div id="newAddressBoxContainer" class="hidden">
-            <label class="block text-[10px] font-black uppercase text-[#ff3f6c] mb-1">Temporary Address</label>
-            <textarea id="custNewAddress" rows="2" class="w-full bg-pink-50/50 border border-pink-300 rounded-2xl p-3.5 text-xs font-medium"></textarea>
-          </div>
 
           <div>
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance</label>
@@ -495,6 +510,135 @@
     var activeModalProduct = null;
     var currentModalImageIndex = 0;
     var selectedModalSize = "";
+    var selectedAddrTypeTag = "Home";
+
+    window.setAddrType = function(type) {
+      selectedAddrTypeTag = type;
+      ["Home", "Office", "Other"].forEach(function(t) {
+        var btn = document.getElementById("addrType" + t);
+        if (btn) {
+          if (t === type) {
+            btn.className = "py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition";
+          } else {
+            btn.className = "py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition";
+          }
+        }
+      });
+    };
+
+    // Multiple Addresses Handler
+    window.saveNewMultiAddress = function() {
+      var houseNo = document.getElementById("inputHouseNo").value.trim();
+      var areaName = document.getElementById("inputAreaName").value.trim();
+      var landmark = document.getElementById("inputLandmark").value.trim();
+
+      if (!houseNo || !landmark) {
+        return alert("Please enter House/Plot No and Landmark!");
+      }
+
+      var newAddrString = "[" + selectedAddrTypeTag + "] " + houseNo + (areaName ? ", " + areaName : "") + " (Landmark: " + landmark + ")";
+
+      if (!currentCustomer) {
+        currentCustomer = { name: "Guest User", phone: "9999999999", addresses: [newAddrString], activeAddress: newAddrString };
+      } else {
+        if (!currentCustomer.addresses) {
+          currentCustomer.addresses = currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : [];
+        }
+        currentCustomer.addresses.push(newAddrString);
+        currentCustomer.activeAddress = newAddrString;
+        currentCustomer.permanentAddress = newAddrString;
+        localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+
+        if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
+          db.ref("customers/" + currentCustomer.phone).update({
+            addresses: currentCustomer.addresses,
+            activeAddress: newAddrString,
+            permanentAddress: newAddrString
+          });
+        }
+      }
+
+      renderCustomerAddressesUI();
+      updateHeaderAddressDisplay();
+      closeSavedAddressModal();
+      showQuickToast("✓ New Address Added Successfully!");
+    };
+
+    window.selectActiveAddress = function(addrStr) {
+      if (!currentCustomer) return;
+      currentCustomer.activeAddress = addrStr;
+      currentCustomer.permanentAddress = addrStr;
+      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+      if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
+        db.ref("customers/" + currentCustomer.phone).update({ activeAddress: addrStr, permanentAddress: addrStr });
+      }
+      renderCustomerAddressesUI();
+      updateHeaderAddressDisplay();
+      showQuickToast("✓ Active Address Updated!");
+    };
+
+    window.deleteCustomerAddress = function(index) {
+      if (!currentCustomer || !currentCustomer.addresses) return;
+      if (currentCustomer.addresses.length <= 1) {
+        return alert("You must keep at least one address!");
+      }
+      currentCustomer.addresses.splice(index, 1);
+      currentCustomer.activeAddress = currentCustomer.addresses[0];
+      currentCustomer.permanentAddress = currentCustomer.addresses[0];
+      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+      if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
+        db.ref("customers/" + currentCustomer.phone).update({
+          addresses: currentCustomer.addresses,
+          activeAddress: currentCustomer.activeAddress,
+          permanentAddress: currentCustomer.permanentAddress
+        });
+      }
+      renderCustomerAddressesUI();
+      updateHeaderAddressDisplay();
+      showQuickToast("✓ Address Removed");
+    };
+
+    function renderCustomerAddressesUI() {
+      var listContainer = document.getElementById("customerAddressesList");
+      if (!listContainer) return;
+
+      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : (currentCustomer && currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : []);
+      var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : (addrs[0] || "");
+
+      if (addrs.length === 0) {
+        listContainer.innerHTML = "<p class='text-xs text-slate-400'>No saved addresses yet. Add one below.</p>";
+        return;
+      }
+
+      var html = "";
+      addrs.forEach(function(addr, idx) {
+        var isActive = (addr === active);
+        html += '<div class="flex items-center justify-between p-3 rounded-2xl border text-xs transition ' + (isActive ? 'border-[#ff3f6c] bg-pink-50/50 font-bold text-[#282c3f]' : 'border-slate-200 bg-slate-50 text-slate-700') + '">' +
+          '<div class="flex items-center gap-2.5 truncate cursor-pointer flex-1" onclick="selectActiveAddress(\'' + addr.replace(/'/g, "\\'") + '\')">' +
+            '<span>' + (isActive ? '📍' : '🏠') + '</span>' +
+            '<span class="truncate">' + addr + '</span>' +
+          '</div>' +
+          '<div class="flex items-center gap-2 shrink-0">' +
+            (!isActive ? '<button onclick="selectActiveAddress(\'' + addr.replace(/'/g, "\\'") + '\')" class="text-[10px] bg-white border px-2.5 py-1 rounded-xl text-[#ff3f6c] font-bold">Select</button>' : '<span class="text-[10px] bg-[#ff3f6c] text-white px-2 py-0.5 rounded-lg">Active</span>') +
+            '<button onclick="deleteCustomerAddress(' + idx + ')" class="text-rose-500 p-1">🗑️</button>' +
+          '</div>' +
+        '</div>';
+      });
+      listContainer.innerHTML = html;
+    }
+
+    function updateHeaderAddressDisplay() {
+      var addrLabel = document.getElementById("headerAddrLabel");
+      if (!addrLabel) return;
+
+      if (currentCustomer && currentCustomer.activeAddress) {
+        addrLabel.innerText = currentCustomer.activeAddress;
+      } else if (currentCustomer && currentCustomer.permanentAddress) {
+        addrLabel.innerText = currentCustomer.permanentAddress;
+      } else {
+        addrLabel.innerText = "Select Delivery Address 📍";
+      }
+    }
 
     var orderTimerSecs = 60 * 60;
     setInterval(function() {
@@ -592,53 +736,13 @@
     });
 
     window.openSavedAddressModal = function() {
-      if (!currentCustomer) {
-        openLoginModal();
-        return;
-      }
-      document.getElementById("savedPermanentAddressInput").value = currentCustomer.permanentAddress || currentCustomer.address || "";
+      renderCustomerAddressesUI();
       document.getElementById("profilePopover").classList.add("hidden");
       document.getElementById("savedAddressModal").classList.remove("hidden");
     };
 
     window.closeSavedAddressModal = function() {
       document.getElementById("savedAddressModal").classList.add("hidden");
-    };
-
-    window.saveCustomerAddressPermanently = function() {
-      if (!currentCustomer) return;
-      var newAddr = document.getElementById("savedPermanentAddressInput").value.trim();
-      if (!newAddr) return alert("Please enter your permanent address!");
-
-      currentCustomer.permanentAddress = newAddr;
-      currentCustomer.address = newAddr;
-      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
-
-      if (currentCustomer.phone) {
-        db.ref("customers/" + currentCustomer.phone).update({
-          permanentAddress: newAddr,
-          address: newAddr
-        });
-      }
-
-      document.getElementById("custPermanentAddress").value = newAddr;
-      document.getElementById("headerAddrLabel").innerText = newAddr;
-      closeSavedAddressModal();
-      showQuickToast("✓ Address Saved!");
-    };
-
-    window.toggleAddressInputMode = function(mode) {
-      var permBox = document.getElementById("permanentAddressBoxContainer");
-      var newBox = document.getElementById("newAddressBoxContainer");
-
-      if (mode === "permanent") {
-        permBox.classList.remove("hidden");
-        newBox.classList.add("hidden");
-      } else {
-        permBox.classList.add("hidden");
-        newBox.classList.remove("hidden");
-        document.getElementById("custNewAddress").focus();
-      }
     };
 
     window.handleDeleteCustomerAccountPermanently = function() {
@@ -972,14 +1076,37 @@
     window.toggleCart = function() {
       checkLoginBeforeAction(function() {
         activeCheckoutItem = null;
-        if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
+        renderCheckoutAddressesList();
         renderCart();
         document.getElementById("cartDrawer").classList.toggle("hidden");
       });
     };
 
+    function renderCheckoutAddressesList() {
+      var container = document.getElementById("checkoutAddressesRadioContainer");
+      if (!container) return;
+
+      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : (currentCustomer && currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : []);
+      var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : (addrs[0] || "Default Address");
+
+      if (addrs.length === 0) {
+        container.innerHTML = '<p class="text-xs text-rose-500 font-bold">Please add a delivery address first!</p>';
+        return;
+      }
+
+      var html = "";
+      addrs.forEach(function(addr, idx) {
+        var isChecked = (addr === active || idx === 0);
+        html += '<label class="flex items-center gap-3 p-3 bg-slate-50 border rounded-2xl cursor-pointer text-xs font-bold text-[#282c3f]">' +
+          '<input type="radio" name="checkoutSelectedAddr" value="' + addr.replace(/"/g, '&quot;') + '" ' + (isChecked ? 'checked' : '') + ' class="accent-[#ff3f6c]">' +
+          '<span class="truncate">📍 ' + addr + '</span>' +
+        '</label>';
+      });
+      container.innerHTML = html;
+    }
+
     function openSingleCheckoutView() {
-      if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
+      renderCheckoutAddressesList();
       document.getElementById("drawerTitle").innerText = "Express Checkout";
       document.getElementById("cartBagViewContainer").classList.add("hidden");
       document.getElementById("checkoutViewContainer").classList.remove("hidden");
@@ -1014,7 +1141,7 @@
       document.getElementById("checkoutFooter").classList.add("hidden");
 
       if (items.length === 0) {
-        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍️️</p><p>Your Express Bag is empty!</p></div>";
+        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍️</p><p>Your Express Bag is empty!</p></div>";
         return;
       }
 
@@ -1085,12 +1212,13 @@
         document.getElementById("custPhone").value = currentCustomer.phone || "";
         document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
         document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
-        if (currentCustomer.permanentAddress || currentCustomer.address) {
-          document.getElementById("headerAddrLabel").innerText = currentCustomer.permanentAddress || currentCustomer.address;
-        }
+        
+        updateHeaderAddressDisplay();
+
         if (isOwnerActive && ownerBadge) ownerBadge.classList.remove("hidden");
       } else {
         container.innerHTML = '<button onclick="openLoginModal()" class="flex items-center gap-2 bg-slate-900 text-white font-bold px-4 py-2 rounded-full text-xs"><span>👤</span> <span>Profile</span></button>';
+        updateHeaderAddressDisplay();
       }
     }
 
@@ -1111,7 +1239,7 @@
       var name = document.getElementById("custRegName").value.trim();
       var mob = document.getElementById("custRegMobile").value.trim();
       var pin = document.getElementById("custRegPin").value.trim();
-      var user = { name: name, phone: mob, pin: pin, permanentAddress: "" };
+      var user = { name: name, phone: mob, pin: pin, addresses: [], activeAddress: "" };
       db.ref("customers/" + mob).set(user).then(function() {
         currentCustomer = user;
         localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
@@ -1136,8 +1264,9 @@
       if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
-      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
-      var deliveryAddress = (selectedAddressType === "permanent") ? document.getElementById("custPermanentAddress").value.trim() : document.getElementById("custNewAddress").value.trim();
+      
+      var selectedAddrRadio = document.querySelector('input[name="checkoutSelectedAddr"]:checked');
+      var deliveryAddress = selectedAddrRadio ? selectedAddrRadio.value : (currentCustomer && currentCustomer.activeAddress ? currentCustomer.activeAddress : "Default Delivery Address");
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
@@ -1193,10 +1322,11 @@
       if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
-      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
-      var deliveryAddress = (selectedAddressType === "permanent") ? document.getElementById("custPermanentAddress").value.trim() : document.getElementById("custNewAddress").value.trim();
 
-      if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Address!");
+      var selectedAddrRadio = document.querySelector('input[name="checkoutSelectedAddr"]:checked');
+      var deliveryAddress = selectedAddrRadio ? selectedAddrRadio.value : "";
+
+      if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Select Delivery Address!");
       if (phone.length !== 10) return alert("Enter valid 10-digit mobile number!");
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
