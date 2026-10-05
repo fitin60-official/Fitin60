@@ -33,7 +33,7 @@
     </div>
     <div class="flex items-center gap-1 shrink-0">
       <button onclick="enableAudioAlerts()" id="soundToggleBtn" class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded-lg border border-orange-200 cursor-pointer animate-pulse">🔊 Sound</button>
-      <button onclick="openEditStoreModal()" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200 cursor-pointer">✏️️ Location & Edit</button>
+      <button onclick="openEditStoreModal()" class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg border border-blue-200 cursor-pointer">✏️ Location & Edit</button>
       <button onclick="partnerLogout()" class="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg border border-rose-200 cursor-pointer">Logout</button>
     </div>
   </header>
@@ -202,11 +202,11 @@
       </form>
     </div>
 
-    <!-- Manage Uploaded Outfits -->
+    <!-- Manage Uploaded Outfits with Live Feature/Highlight Toggle -->
     <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-3 w-full">
       <div class="border-b pb-2 flex justify-between items-center">
         <h3 class="font-brand font-black text-xs sm:text-sm text-slate-900">Manage Outfits & Stock</h3>
-        <span class="text-[10px] text-slate-400 font-bold">Toggle In/Out Stock</span>
+        <span class="text-[10px] text-slate-400 font-bold">Toggle Feature / Stock</span>
       </div>
       <div id="partnerUploadedList" class="space-y-2">
         <p class="text-xs text-slate-400 text-center py-2">Loading your inventory...</p>
@@ -800,7 +800,15 @@
       });
     };
 
-    // Instant & Resilient Inventory Loader
+    // INSTANT QUICK FEATURE TOGGLE DIRECTLY FROM MANAGE OUTFITS LIST
+    window.toggleFeaturedStatus = function(key, currentFeatured) {
+      var newFeatured = !currentFeatured;
+      db.ref("boutique_products/" + key).update({ featured: newFeatured }).then(function() {
+        showQuickToast(newFeatured ? "⭐ Outfit Highlighted on Main Display!" : "✓ Removed Highlight");
+      });
+    };
+
+    // Instant & Resilient Inventory Loader with Direct Feature Toggle
     db.ref("boutique_products").on("value", function(snap) {
       var data = snap.val() || {};
       loadedProductsMap = data;
@@ -828,6 +836,7 @@
                   '</div>' +
                 '</div>' +
                 '<div class="flex gap-1 shrink-0">' +
+                  '<button onclick="toggleFeaturedStatus(\'' + k + '\', ' + isFeatured + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (isFeatured ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-700') + '">' + (isFeatured ? '★ Star' : '☆ Feature') + '</button>' +
                   '<button onclick="toggleStockStatus(\'' + k + '\', ' + inStock + ')" class="px-2 py-1.5 rounded-lg text-[10px] font-bold cursor-pointer ' + (inStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') + '">' + (inStock ? 'Pause' : 'Stock') + '</button>' +
                   '<button onclick="openPartnerEditModal(\'' + k + '\')" class="bg-blue-600 text-white px-2 py-1.5 rounded-lg text-xs font-bold cursor-pointer">✏️</button>' +
                   '<button onclick="deletePartnerOutfit(\'' + k + '\')" class="bg-rose-600 text-white px-2 py-1.5 rounded-lg text-xs font-bold cursor-pointer">🗑️</button>' +
