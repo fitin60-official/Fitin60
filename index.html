@@ -188,9 +188,9 @@
     </a>
   </div>
 
-  <!-- Multiple Addresses Management Modal -->
+  <!-- Professional Multi-Address Management Modal (With State, City, Pincode) -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b pb-3">
         <div class="flex items-center gap-2">
           <span class="text-2xl">📍</span>
@@ -205,7 +205,7 @@
       </div>
 
       <div class="pt-3 border-t border-slate-100 space-y-3 text-xs">
-        <p class="font-bold text-[#282c3f]">+ Add New Address (Address 1 / Address 2)</p>
+        <p class="font-bold text-[#282c3f]">+ Add New Professional Address</p>
         
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Address Label / Type</label>
@@ -222,18 +222,33 @@
             <input type="text" id="inputHouseNo" required placeholder="Flat 204, Plot 12" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
           </div>
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Area / Society</label>
-            <input type="text" id="inputAreaName" placeholder="Itikalapalli Main Rd" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Area / Society / Street *</label>
+            <input type="text" id="inputAreaName" required placeholder="Itikalapalli Main Rd" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
           </div>
         </div>
 
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Landmark (Nearby Famous Spot) *</label>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Landmark (Famous Spot) *</label>
           <input type="text" id="inputLandmark" required placeholder="Near Clock Tower / Temple" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
         </div>
 
-        <button onclick="saveNewMultiAddress()" class="w-full myntra-pink-btn text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
-          + Save New Address
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">City / District *</label>
+            <input type="text" id="inputCity" required placeholder="Ananthapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">State *</label>
+            <input type="text" id="inputState" required value="Andhra Pradesh" placeholder="Andhra Pradesh" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Pincode *</label>
+            <input type="tel" id="inputPincode" required maxlength="6" placeholder="515001" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+        </div>
+
+        <button onclick="saveNewMultiAddress()" class="w-full myntra-pink-btn text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md mt-2">
+          + Save Professional Address
         </button>
       </div>
     </div>
@@ -252,7 +267,7 @@
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-xs">Available Collections</span>
-          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -369,7 +384,7 @@
     </div>
   </div>
 
-  <!-- Shopping Bag / Checkout Drawer with Post-OTP Payment Selection -->
+  <!-- Shopping Bag / Checkout Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-md"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 overflow-hidden animate-in slide-in-from-right duration-300">
@@ -526,12 +541,15 @@
       var houseNo = document.getElementById("inputHouseNo").value.trim();
       var areaName = document.getElementById("inputAreaName").value.trim();
       var landmark = document.getElementById("inputLandmark").value.trim();
+      var city = document.getElementById("inputCity").value.trim();
+      var state = document.getElementById("inputState").value.trim();
+      var pincode = document.getElementById("inputPincode").value.trim();
 
-      if (!houseNo || !landmark) {
-        return alert("Please enter House/Plot No and Landmark!");
+      if (!houseNo || !areaName || !landmark || !city || !state || !pincode) {
+        return alert("Please fill all professional address fields (House, Area, Landmark, City, State, Pincode)!");
       }
 
-      var newAddrString = "[" + selectedAddrTypeTag + "] " + houseNo + (areaName ? ", " + areaName : "") + " (Landmark: " + landmark + ")";
+      var newAddrString = "[" + selectedAddrTypeTag + "] " + houseNo + ", " + areaName + " (Landmark: " + landmark + "), " + city + ", " + state + " - " + pincode;
 
       if (!currentCustomer) {
         currentCustomer = { name: "Guest User", phone: "9999999999", addresses: [newAddrString], activeAddress: newAddrString };
@@ -556,7 +574,7 @@
       renderCustomerAddressesUI();
       updateHeaderAddressDisplay();
       closeSavedAddressModal();
-      showQuickToast("✓ New Address Added Successfully!");
+      showQuickToast("✓ Professional Address Saved!");
     };
 
     window.selectActiveAddress = function(addrStr) {
@@ -1255,7 +1273,6 @@
       });
     };
 
-    // Clean Order Placement without Razorpay Errors (Supports COD & UPI Scan Selection)
     window.handleCheckout = function() {
       if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
