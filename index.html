@@ -201,7 +201,7 @@
         <div id="customerAddressesList" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
       </div>
 
-      <!-- Add / Edit Address Form Section (Initially Hidden unless Add/Edit clicked) -->
+      <!-- Add / Edit Address Form Section -->
       <div id="addressFormSection" class="hidden pt-3 border-t border-gray-100 space-y-3 text-xs">
         <div class="flex justify-between items-center">
           <p class="font-bold text-gray-900 text-sm" id="addressFormTitle">Add New Delivery Address</p>
@@ -537,9 +537,9 @@
         var btn = document.getElementById("addrType" + t);
         if (btn) {
           if (t === type) {
-            btn.className = "py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition";
+            btn.className = "py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition shadow-xs";
           } else {
-            btn.className = "py-2 border border-gray-200 text-gray-700 font-bold rounded-xl text-xs transition";
+            btn.className = "py-2 border border-gray-200 text-gray-700 font-bold rounded-xl text-xs transition bg-white";
           }
         }
       });
@@ -566,11 +566,9 @@
       document.getElementById("savedAddressesSection").classList.remove("hidden");
     };
 
-    // GPS Current Location Auto-Detect Simulation
     window.detectCurrentLocationGPS = function() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-          // Auto fill with local accurate area info for Fitin60 radar
           document.getElementById("inputHouseNo").value = "Plot 45, Near GPS Hub";
           document.getElementById("inputAreaName").value = "Itikalapalli Main Road";
           document.getElementById("inputLandmark").value = "Near Main Temple";
@@ -591,7 +589,11 @@
       var addrStr = currentCustomer.addresses[index];
       
       var typeMatch = addrStr.match(/\[(.*?)\]/);
-      if (typeMatch) setAddrType(typeMatch[1]);
+      if (typeMatch) {
+        setAddrType(typeMatch[1]);
+      } else {
+        setAddrType("Home");
+      }
 
       var cleanStr = addrStr.replace(/\[.*?\]\s*/, "");
       var parts = cleanStr.split(",");
@@ -639,6 +641,7 @@
         return alert("Please fill all professional address fields (House, Area, Landmark, City, State, Pincode)!");
       }
 
+      // Strictly use the currently active selectedAddrTypeTag ('Home', 'Office', or 'Other')
       var newAddrString = "[" + selectedAddrTypeTag + "] " + houseNo + ", " + areaName + " (Landmark: " + landmark + "), " + city + ", " + state + " - " + pincode;
 
       if (!currentCustomer) {
@@ -1116,7 +1119,7 @@
         if (matchS && matchC) {
           var storeKey = sMobile || sName;
           if (!storesMap[storeKey]) {
-            storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
+           storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
           }
           if (storesMap[storeKey].products.length < 3) {
             storesMap[storeKey].products.push(p);
