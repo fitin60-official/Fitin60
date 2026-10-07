@@ -921,7 +921,7 @@
           html += 
             '<div class="relative bg-white border border-gray-100 rounded-2xl p-3 shadow-xs hover:shadow-md transition space-y-2.5 flex flex-col justify-between overflow-hidden" loading="lazy">' +
               (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1 rounded-full">Out of Stock</span></div>' : '') +
-              (p.featured === true || p.featured === "true" || p.featured === 1 ? '<span class="absolute top-2 left-2 bg-[#ff3f6c] text-white text-[9px] font-black px-2 py-0.5 rounded shadow z-20">⭐ FEATURED</span>' : '') +
+              '<span class="absolute top-2 left-2 bg-[#ff3f6c] text-white text-[9px] font-black px-2 py-0.5 rounded shadow z-20">⭐ FEATURED</span>' +
               '<div class="relative h-44 w-full rounded-xl overflow-hidden bg-gray-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
                 '<img src="' + p.image + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
                 '<span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded">60-Min</span>' +
@@ -1121,7 +1121,7 @@
           if (storesMap[storeKey].products.length < 3) {
             storesMap[storeKey].products.push(p);
           }
-        }
+	}
       });
 
       var stores = Object.values(storesMap).filter(function(st) { return st.products.length > 0; });
@@ -1417,7 +1417,7 @@
       });
     };
 
-    // INSTANT CACHE + REALTIME SYNC FOR LIGHTNING FAST STORE OPENING
+    // INSTANT LOCAL STORAGE CACHE + REALTIME SYNC (GUARANTEED STORES DISPLAY)
     try {
       var cachedBoutiques = localStorage.getItem("fitin60_cached_boutiques");
       var cachedProducts = localStorage.getItem("fitin60_cached_products");
