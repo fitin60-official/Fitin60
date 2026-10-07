@@ -549,7 +549,7 @@
       document.getElementById("editingAddressIndex").value = "-1";
       document.getElementById("addressFormTitle").innerText = "Add New Delivery Address";
       document.getElementById("saveAddressBtn").innerText = "Save Address";
-      // Clear all inputs so user gets a fresh form for Home/Office/Other
+      // Clear inputs for fresh entry when clicking Add New, Office, or Other
       document.getElementById("inputHouseNo").value = "";
       document.getElementById("inputAreaName").value = "";
       document.getElementById("inputLandmark").value = "";
@@ -1105,9 +1105,6 @@
         if (!sName) return;
         if (sName.toLowerCase().includes("mummy daddy")) return;
 
-        var isFeaturedItem = (p.featured === true || p.featured === "true" || p.featured === 1);
-        if (!isFeaturedItem) return;
-
         var oName = (p.name || "").toLowerCase();
         var oDesc = (p.desc || "").toLowerCase();
         var resolvedCat = getResolvedCategory(p);
@@ -1119,7 +1116,7 @@
         if (matchS && matchC) {
           var storeKey = sMobile || sName;
           if (!storesMap[storeKey]) {
-           storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
+            storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
           }
           if (storesMap[storeKey].products.length < 3) {
             storesMap[storeKey].products.push(p);
@@ -1133,7 +1130,7 @@
       var visibleStores = stores.slice(0, 10);
 
       if (visibleStores.length === 0) { 
-        grid.innerHTML = "<div class='col-span-full py-16 text-center text-gray-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No featured partner outfits available right now.</p></div>"; 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-gray-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No active partner outfits available right now.</p></div>"; 
         return; 
       }
 
@@ -1420,7 +1417,7 @@
       });
     };
 
-    // INSTANT LOCAL CACHE LOAD FOR LIGHTNING FAST STORE OPENING
+    // INSTANT CACHE + REALTIME SYNC FOR LIGHTNING FAST STORE OPENING
     try {
       var cachedBoutiques = localStorage.getItem("fitin60_cached_boutiques");
       var cachedProducts = localStorage.getItem("fitin60_cached_products");
