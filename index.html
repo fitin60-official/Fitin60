@@ -549,6 +549,7 @@
       document.getElementById("editingAddressIndex").value = "-1";
       document.getElementById("addressFormTitle").innerText = "Add New Delivery Address";
       document.getElementById("saveAddressBtn").innerText = "Save Address";
+      // Clear all inputs so user gets a fresh form for Home/Office/Other
       document.getElementById("inputHouseNo").value = "";
       document.getElementById("inputAreaName").value = "";
       document.getElementById("inputLandmark").value = "";
@@ -641,7 +642,6 @@
         return alert("Please fill all professional address fields (House, Area, Landmark, City, State, Pincode)!");
       }
 
-      // Strictly use the currently active selectedAddrTypeTag ('Home', 'Office', or 'Other')
       var newAddrString = "[" + selectedAddrTypeTag + "] " + houseNo + ", " + areaName + " (Landmark: " + landmark + "), " + city + ", " + state + " - " + pincode;
 
       if (!currentCustomer) {
@@ -1420,8 +1420,37 @@
       });
     };
 
+    // INSTANT LOCAL CACHE LOAD FOR LIGHTNING FAST STORE OPENING
+    try {
+      var cachedBoutiques = localStorage.getItem("fitin60_cached_boutiques");
+      var cachedProducts = localStorage.getItem("fitin60_cached_products");
+      if (cachedBoutiques) {
+        var data = JSON.parse(cachedBoutiques);
+        boutiqueLocationsMap = {}; boutiquesStatusMap = {}; boutiqueNameByMobile = {};
+        Object.keys(data).forEach(function(key) {
+          var b = data[key];
+          if (b) {
+            var status = (b.status || "OPEN").trim().toUpperCase();
+            var sName = b.name ? b.name.trim() : "";
+            var sMobile = b.mobile ? String(b.mobile).trim() : String(key).trim();
+            if (sName) { boutiquesStatusMap[sName.toLowerCase()] = status; boutiqueLocationsMap[sName] = b.area; }
+            if (sMobile) { boutiquesStatusMap[sMobile] = status; boutiqueNameByMobile[sMobile] = sName; }
+          }
+        });
+      }
+      if (cachedProducts) {
+        var pData = JSON.parse(cachedProducts);
+        cloudProducts = []; cloudProductsMap = pData || {};
+        Object.keys(pData).forEach(function(k) {
+          var p = pData[k]; if (p) { p.cloudKey = k; cloudProducts.push(p); }
+        });
+      }
+      if (cloudProducts.length > 0) renderBoutiqueStores();
+    } catch(e) {}
+
     db.ref("boutiques").on("value", function(snapshot) {
       var data = snapshot.val() || {};
+      localStorage.setItem("fitin60_cached_boutiques", JSON.stringify(data));
       boutiqueLocationsMap = {}; boutiquesStatusMap = {}; boutiqueNameByMobile = {};
       Object.keys(data).forEach(function(key) {
         var b = data[key];
@@ -1438,6 +1467,7 @@
 
     db.ref("boutique_products").on("value", function(snapshot) {
       var data = snapshot.val();
+      if (data) localStorage.setItem("fitin60_cached_products", JSON.stringify(data));
       cloudProducts = []; cloudProductsMap = data || {};
       if (data) {
         Object.keys(data).forEach(function(k) {
