@@ -1116,7 +1116,7 @@
         if (matchS && matchC) {
           var storeKey = sMobile || sName;
           if (!storesMap[storeKey]) {
-           storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
+            storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
           }
           if (storesMap[storeKey].products.length < 3) {
             storesMap[storeKey].products.push(p);
