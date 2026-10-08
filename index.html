@@ -62,7 +62,7 @@
 </head>
 <body class="min-h-screen pb-32 antialiased selection:bg-[#ff3f6c] selection:text-white w-full overflow-x-hidden">
 
-  <!-- Myntra Style Top Header -->
+  <!-- Top Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 sm:px-8 h-16 flex items-center justify-between shadow-2xs w-full">
     <div class="flex items-center gap-6">
       <a href="index.html" class="flex items-center gap-2.5 shrink-0 group">
@@ -75,7 +75,6 @@
         </div>
       </a>
       
-      <!-- Dynamic Customer Address Indicator -->
       <div class="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200/80 cursor-pointer shadow-2xs hover:bg-slate-100 transition" onclick="openSavedAddressModal()">
         <span>📍</span>
         <span id="headerAddrLabel" class="truncate max-w-[240px]">Select Delivery Address</span>
@@ -83,7 +82,6 @@
       </div>
     </div>
 
-    <!-- Right Header Icons -->
     <div class="flex items-center gap-4 shrink-0">
       <button onclick="toggleCart()" class="relative bg-slate-100 hover:bg-slate-200 text-[#282c3f] p-2.5 rounded-full flex items-center justify-center transition cursor-pointer">
         <span class="text-base">🛍️</span>
@@ -182,69 +180,103 @@
     </a>
   </div>
 
-  <!-- Professional Multi-Address Management Modal -->
+  <!-- Reference-Matching Professional Address Management Modal -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 space-y-5 shadow-2xl relative border border-slate-200 max-h-[92vh] overflow-y-auto">
+      
+      <!-- Modal Header -->
       <div class="flex items-center justify-between border-b pb-3">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2.5">
           <span class="text-2xl">📍</span>
-          <h3 class="font-brand font-bold text-base text-[#282c3f]">Manage Delivery Addresses</h3>
+          <div>
+            <h3 class="font-brand font-bold text-base text-[#282c3f]">My Addresses</h3>
+            <p class="text-[10px] text-slate-400 font-medium">Manage your saved addresses for express delivery</p>
+          </div>
         </div>
-        <button onclick="closeSavedAddressModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
+        <div class="flex items-center gap-3">
+          <button onclick="switchToAddNewView()" class="bg-[#ff3f6c] hover:bg-[#f22b59] text-white text-xs font-black px-4 py-2 rounded-xl shadow-sm transition cursor-pointer">
+            + Add New Address
+          </button>
+          <button onclick="closeSavedAddressModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
+        </div>
       </div>
 
-      <div class="space-y-3">
-        <p class="text-[10px] font-black uppercase text-slate-400">Your Saved Addresses</p>
-        <div id="customerAddressesList" class="space-y-2"></div>
+      <!-- View 1: Saved Addresses List -->
+      <div id="modalListView" class="space-y-4">
+        <div id="customerAddressesList" class="space-y-3"></div>
       </div>
 
-      <div class="pt-3 border-t border-slate-100 space-y-3 text-xs">
-        <p class="font-bold text-[#282c3f]">+ Add New Professional Address</p>
-        
-        <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Address Label / Type</label>
-          <div class="grid grid-cols-3 gap-2">
-            <button type="button" onclick="setAddrType('Home')" id="addrTypeHome" class="py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition">🏠 Home</button>
-            <button type="button" onclick="setAddrType('Office')" id="addrTypeOffice" class="py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">🏢 Office</button>
-            <button type="button" onclick="setAddrType('Other')" id="addrTypeOther" class="py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">📍 Other</button>
-          </div>
+      <!-- View 2: Add / Edit Address Form (Matches Reference Design) -->
+      <div id="modalFormView" class="hidden space-y-4 text-xs">
+        <div class="flex justify-between items-center border-b pb-2">
+          <p id="formViewHeading" class="font-brand font-bold text-sm text-[#282c3f]">Add New Address</p>
+          <button onclick="switchToListView()" class="text-xs text-indigo-600 font-bold hover:underline cursor-pointer">← Back to Addresses</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">House / Plot No *</label>
-            <input type="text" id="inputHouseNo" required placeholder="Flat 204, Plot 12" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
-          </div>
-          <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Area / Society / Street *</label>
-            <input type="text" id="inputAreaName" required placeholder="Itikalapalli Main Rd" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
-          </div>
-        </div>
+        <input type="hidden" id="editingAddressIndex" value="-1">
 
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Landmark (Famous Spot) *</label>
-          <input type="text" id="inputLandmark" required placeholder="Near Clock Tower / Temple" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5">Address Type</label>
+          <div class="grid grid-cols-3 gap-2.5">
+            <button type="button" onclick="setAddrType('Home')" id="addrTypeHome" class="py-2.5 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition flex items-center justify-center gap-2">🏠 Home</button>
+            <button type="button" onclick="setAddrType('Office')" id="addrTypeOffice" class="py-2.5 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2">🏢 Office</button>
+            <button type="button" onclick="setAddrType('Other')" id="addrTypeOther" class="py-2.5 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2">📍 Other</button>
+          </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">City / District *</label>
-            <input type="text" id="inputCity" required placeholder="Ananthapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Full Name *</label>
+            <input type="text" id="inputFullName" required placeholder="Sai Krishna" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile Number *</label>
+            <input type="tel" id="inputMobileNo" required maxlength="10" placeholder="98765 43210" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Address Line 1 (House No, Street) *</label>
+          <input type="text" id="inputAddressLine1" required placeholder="H.No 12-3-45, Green Park Colony" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Address Line 2 (Landmark, Area) *</label>
+          <input type="text" id="inputAddressLine2" required placeholder="Near Clock Tower / Temple" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+        </div>
+
+        <div class="grid grid-cols-3 gap-2.5">
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">City *</label>
+            <input type="text" id="inputCity" required placeholder="Anantapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
           </div>
           <div>
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">State *</label>
-            <input type="text" id="inputState" required value="Andhra Pradesh" placeholder="Andhra Pradesh" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+            <select id="inputState" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+              <option value="Andhra Pradesh" selected>Andhra Pradesh</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Telangana">Telangana</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Maharashtra">Maharashtra</option>
+            </select>
           </div>
           <div>
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Pincode *</label>
-            <input type="tel" id="inputPincode" required maxlength="6" placeholder="515001" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+            <input type="tel" id="inputPincode" required maxlength="6" placeholder="515001" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
           </div>
         </div>
 
-        <button onclick="saveNewMultiAddress()" class="w-full myntra-pink-btn text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md mt-2">
-          + Save Professional Address
-        </button>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="defaultAddrCheck" class="w-4 h-4 accent-[#ff3f6c] rounded cursor-pointer" checked>
+          <label for="defaultAddrCheck" class="text-xs font-bold text-slate-700 cursor-pointer">Set as default delivery address</label>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button onclick="switchToListView()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 rounded-xl transition cursor-pointer">Cancel</button>
+          <button onclick="saveReferenceStyleAddress()" id="saveAddressBtn" class="flex-1 myntra-pink-btn text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer">Save Address</button>
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -468,7 +500,7 @@
     </div>
   </div>
 
-  <!-- Myntra Style Bottom Navigation Bar -->
+  <!-- Bottom Navigation Bar -->
   <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-2xl border-t border-slate-200/80 py-2.5 px-6 flex items-center justify-around z-40 shadow-2xl">
     <a href="index.html" class="flex flex-col items-center text-[#ff3f6c] font-bold">
       <span class="text-lg">🏠</span>
@@ -523,52 +555,119 @@
         var btn = document.getElementById("addrType" + t);
         if (btn) {
           if (t === type) {
-            btn.className = "py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition";
+            btn.className = "py-2.5 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition flex items-center justify-center gap-2";
           } else {
-            btn.className = "py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition";
+            btn.className = "py-2.5 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2";
           }
         }
       });
     };
 
-    window.saveNewMultiAddress = function() {
-      var houseNo = document.getElementById("inputHouseNo").value.trim();
-      var areaName = document.getElementById("inputAreaName").value.trim();
-      var landmark = document.getElementById("inputLandmark").value.trim();
-      var city = document.getElementById("inputCity").value.trim();
-      var state = document.getElementById("inputState").value.trim();
-      var pincode = document.getElementById("inputPincode").value.trim();
+    window.switchToAddNewView = function() {
+      document.getElementById("editingAddressIndex").value = "-1";
+      document.getElementById("formViewHeading").innerText = "Add New Address";
+      document.getElementById("saveAddressBtn").innerText = "Save Address";
+      
+      document.getElementById("inputFullName").value = currentCustomer ? (currentCustomer.name || "") : "";
+      document.getElementById("inputMobileNo").value = currentCustomer ? (currentCustomer.phone || "") : "";
+      document.getElementById("inputAddressLine1").value = "";
+      document.getElementById("inputAddressLine2").value = "";
+      document.getElementById("inputCity").value = "Anantapur";
+      document.getElementById("inputPincode").value = "515001";
+      setAddrType("Home");
 
-      if (!houseNo || !areaName || !landmark || !city || !state || !pincode) {
-        return alert("Please fill all professional address fields (House, Area, Landmark, City, State, Pincode)!");
+      document.getElementById("modalListView").classList.add("hidden");
+      document.getElementById("modalFormView").classList.remove("hidden");
+    };
+
+    window.switchToListView = function() {
+      document.getElementById("modalFormView").classList.add("hidden");
+      document.getElementById("modalListView").classList.remove("hidden");
+    };
+
+    window.editCustomerAddress = function(index) {
+      if (!currentCustomer || !currentCustomer.addresses || !currentCustomer.addresses[index]) return;
+      var addrObj = currentCustomer.addresses[index];
+      
+      if (typeof addrObj === 'string') {
+        // Fallback string parser
+        var typeMatch = addrObj.match(/\[(.*?)\]/);
+        if (typeMatch) setAddrType(typeMatch[1]);
+        document.getElementById("inputFullName").value = currentCustomer.name || "Sai Krishna";
+        document.getElementById("inputMobileNo").value = currentCustomer.phone || "9876543210";
+        document.getElementById("inputAddressLine1").value = addrObj.replace(/\[.*?\]\s*/, "");
+        document.getElementById("inputAddressLine2").value = "";
+      } else {
+        setAddrType(addrObj.type || "Home");
+        document.getElementById("inputFullName").value = addrObj.fullName || "";
+        document.getElementById("inputMobileNo").value = addrObj.mobile || "";
+        document.getElementById("inputAddressLine1").value = addrObj.line1 || "";
+        document.getElementById("inputAddressLine2").value = addrObj.line2 || "";
+        document.getElementById("inputCity").value = addrObj.city || "Anantapur";
+        document.getElementById("inputState").value = addrObj.state || "Andhra Pradesh";
+        document.getElementById("inputPincode").value = addrObj.pincode || "";
       }
 
-      var newAddrString = "[" + selectedAddrTypeTag + "] " + houseNo + ", " + areaName + " (Landmark: " + landmark + "), " + city + ", " + state + " - " + pincode;
+      document.getElementById("editingAddressIndex").value = index;
+      document.getElementById("formViewHeading").innerText = "Edit Address";
+      document.getElementById("saveAddressBtn").innerText = "Update";
+
+      document.getElementById("modalListView").classList.add("hidden");
+      document.getElementById("modalFormView").classList.remove("hidden");
+    };
+
+    window.saveReferenceStyleAddress = function() {
+      var fullName = document.getElementById("inputFullName").value.trim();
+      var mobile = document.getElementById("inputMobileNo").value.trim();
+      var line1 = document.getElementById("inputAddressLine1").value.trim();
+      var line2 = document.getElementById("inputAddressLine2").value.trim();
+      var city = document.getElementById("inputCity").value.trim();
+      var state = document.getElementById("inputState").value;
+      var pincode = document.getElementById("inputPincode").value.trim();
+      var editIndex = parseInt(document.getElementById("editingAddressIndex").value);
+
+      if (!fullName || !mobile || !line1 || !city || !pincode) {
+        return alert("Please fill all required address fields!");
+      }
+
+      var addressStruct = {
+        type: selectedAddrTypeTag,
+        fullName: fullName,
+        mobile: mobile,
+        line1: line1,
+        line2: line2,
+        city: city,
+        state: state,
+        pincode: pincode,
+        formattedString: "[" + selectedAddrTypeTag + "] " + fullName + ", " + line1 + ", " + (line2 ? line2 + ", " : "") + city + ", " + state + " - " + pincode + " (+91 " + mobile + ")"
+      };
 
       if (!currentCustomer) {
-        currentCustomer = { name: "Guest User", phone: "9999999999", addresses: [newAddrString], activeAddress: newAddrString };
+        currentCustomer = { name: fullName, phone: mobile, addresses: [addressStruct], activeAddress: addressStruct.formattedString };
       } else {
-        if (!currentCustomer.addresses) {
-          currentCustomer.addresses = currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : [];
+        if (!currentCustomer.addresses) currentCustomer.addresses = [];
+        if (editIndex >= 0) {
+          currentCustomer.addresses[editIndex] = addressStruct;
+        } else {
+          currentCustomer.addresses.push(addressStruct);
         }
-        currentCustomer.addresses.push(newAddrString);
-        currentCustomer.activeAddress = newAddrString;
-        currentCustomer.permanentAddress = newAddrString;
+        currentCustomer.activeAddress = addressStruct.formattedString;
+        currentCustomer.permanentAddress = addressStruct.formattedString;
         localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
 
         if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
           db.ref("customers/" + currentCustomer.phone).update({
             addresses: currentCustomer.addresses,
-            activeAddress: newAddrString,
-            permanentAddress: newAddrString
+            activeAddress: addressStruct.formattedString,
+            permanentAddress: addressStruct.formattedString
           });
         }
       }
 
       renderCustomerAddressesUI();
       updateHeaderAddressDisplay();
-      closeSavedAddressModal();
-      showQuickToast("✓ Professional Address Saved!");
+      switchToListView();
+      showQuickToast("✓ Address Saved Successfully!");
     };
 
     window.selectActiveAddress = function(addrStr) {
@@ -590,14 +689,16 @@
         return alert("You must keep at least one address!");
       }
       currentCustomer.addresses.splice(index, 1);
-      currentCustomer.activeAddress = currentCustomer.addresses[0];
-      currentCustomer.permanentAddress = currentCustomer.addresses[0];
+      var nextAddr = currentCustomer.addresses[0];
+      var nextStr = typeof nextAddr === 'string' ? nextAddr : nextAddr.formattedString;
+      currentCustomer.activeAddress = nextStr;
+      currentCustomer.permanentAddress = nextStr;
       localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
       if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
         db.ref("customers/" + currentCustomer.phone).update({
           addresses: currentCustomer.addresses,
-          activeAddress: currentCustomer.activeAddress,
-          permanentAddress: currentCustomer.permanentAddress
+          activeAddress: nextStr,
+          permanentAddress: nextStr
         });
       }
       renderCustomerAddressesUI();
@@ -609,26 +710,41 @@
       var listContainer = document.getElementById("customerAddressesList");
       if (!listContainer) return;
 
-      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : (currentCustomer && currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : []);
-      var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : (addrs[0] || "");
+      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : [];
+      var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : "";
 
       if (addrs.length === 0) {
-        listContainer.innerHTML = "<p class='text-xs text-slate-400'>No saved addresses yet. Add one below.</p>";
+        listContainer.innerHTML = "<div class='text-center py-10 text-slate-400 text-xs space-y-2'><p class='text-3xl'>📍</p><p>No saved addresses yet. Click '+ Add New Address' above.</p></div>";
         return;
       }
 
       var html = "";
       addrs.forEach(function(addr, idx) {
-        var isActive = (addr === active);
-        html += '<div class="flex items-center justify-between p-3 rounded-2xl border text-xs transition ' + (isActive ? 'border-[#ff3f6c] bg-pink-50/50 font-bold text-[#282c3f]' : 'border-slate-200 bg-slate-50 text-slate-700') + '">' +
-          '<div class="flex items-center gap-2.5 truncate cursor-pointer flex-1" onclick="selectActiveAddress(\'' + addr.replace(/'/g, "\\'") + '\')">' +
-            '<span>' + (isActive ? '📍' : '🏠') + '</span>' +
-            '<span class="truncate">' + addr + '</span>' +
+        var addrStr = typeof addr === 'string' ? addr : addr.formattedString;
+        var addrType = (typeof addr === 'object' && addr.type) ? addr.type : (addrStr.includes("[Office]") ? "Office" : (addrStr.includes("[Other]") ? "Other" : "Home"));
+        var nameVal = (typeof addr === 'object' && addr.fullName) ? addr.fullName : (currentCustomer ? currentCustomer.name : "Sai Krishna");
+        var mobileVal = (typeof addr === 'object' && addr.mobile) ? addr.mobile : (currentCustomer ? currentCustomer.phone : "98765 43210");
+        var detailLine = (typeof addr === 'object' && addr.line1) ? (addr.line1 + ", " + (addr.line2 ? addr.line2 + ", " : "") + addr.city + ", " + addr.state + " - " + addr.pincode) : addrStr;
+
+        var isActive = (addrStr === active);
+
+        html += '<div class="bg-white border rounded-2xl p-4 shadow-xs space-y-3 transition ' + (isActive ? 'border-[#ff3f6c] ring-1 ring-[#ff3f6c]/20' : 'border-slate-200') + '">' +
+          '<div class="flex items-center justify-between">' +
+            '<div class="flex items-center gap-2">' +
+              '<span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ' + (addrType === 'Home' ? 'bg-pink-100 text-[#ff3f6c]' : (addrType === 'Office' ? 'bg-indigo-100 text-indigo-700' : 'bg-amber-100 text-amber-800')) + '">' + addrType + '</span>' +
+              (isActive ? '<span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full">Default Active</span>' : '') +
+            '</div>' +
+            '<div class="flex items-center gap-2">' +
+              '<button onclick="editCustomerAddress(' + idx + ')" class="text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-xl transition cursor-pointer">Edit</button>' +
+              '<button onclick="deleteCustomerAddress(' + idx + ')" class="text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-xl transition cursor-pointer">Delete</button>' +
+            '</div>' +
           '</div>' +
-          '<div class="flex items-center gap-2 shrink-0">' +
-            (!isActive ? '<button onclick="selectActiveAddress(\'' + addr.replace(/'/g, "\\'") + '\')" class="text-[10px] bg-white border px-2.5 py-1 rounded-xl text-[#ff3f6c] font-bold">Select</button>' : '<span class="text-[10px] bg-[#ff3f6c] text-white px-2 py-0.5 rounded-lg">Active</span>') +
-            '<button onclick="deleteCustomerAddress(' + idx + ')" class="text-rose-500 p-1">🗑️</button>' +
+          '<div class="text-xs space-y-1">' +
+            '<p class="font-bold text-[#282c3f]">' + nameVal + '</p>' +
+            '<p class="text-slate-600 leading-relaxed">' + detailLine + '</p>' +
+            '<p class="font-mono text-slate-500">+91 ' + mobileVal + '</p>' +
           '</div>' +
+          (!isActive ? '<button onclick="selectActiveAddress(\'' + addrStr.replace(/'/g, "\\'") + '\')" class="w-full bg-slate-900 hover:bg-[#ff3f6c] text-white font-bold py-2 rounded-xl text-xs transition cursor-pointer">Select as Delivery Address</button>' : '') +
         '</div>';
       });
       listContainer.innerHTML = html;
@@ -744,6 +860,7 @@
 
     window.openSavedAddressModal = function() {
       renderCustomerAddressesUI();
+      switchToListView();
       document.getElementById("profilePopover").classList.add("hidden");
       document.getElementById("savedAddressModal").classList.remove("hidden");
     };
@@ -981,7 +1098,6 @@
       renderBoutiqueStores();
     };
 
-    // ORIGINAL LIGHTNING FAST RENDERING & PAGINATION LIMIT (.slice(0, 10))
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1083,8 +1199,8 @@
       var container = document.getElementById("checkoutAddressesRadioContainer");
       if (!container) return;
 
-      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : (currentCustomer && currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : []);
-     var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : (addrs[0] || "Default Address");
+      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : [];
+      var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : "";
 
       if (addrs.length === 0) {
         container.innerHTML = '<p class="text-xs text-rose-500 font-bold">Please add a delivery address first!</p>';
@@ -1093,10 +1209,11 @@
 
       var html = "";
       addrs.forEach(function(addr, idx) {
-        var isChecked = (addr === active || idx === 0);
+        var addrStr = typeof addr === 'string' ? addr : addr.formattedString;
+        var isChecked = (addrStr === active || idx === 0);
         html += '<label class="flex items-center gap-3 p-3 bg-slate-50 border rounded-2xl cursor-pointer text-xs font-bold text-[#282c3f]">' +
-          '<input type="radio" name="checkoutSelectedAddr" value="' + addr.replace(/"/g, '&quot;') + '" ' + (isChecked ? 'checked' : '') + ' class="accent-[#ff3f6c]">' +
-          '<span class="truncate">📍 ' + addr + '</span>' +
+          '<input type="radio" name="checkoutSelectedAddr" value="' + addrStr.replace(/"/g, '&quot;') + '" ' + (isChecked ? 'checked' : '') + ' class="accent-[#ff3f6c]">' +
+          '<span class="truncate">📍 ' + addrStr + '</span>' +
         '</label>';
       });
       container.innerHTML = html;
@@ -1138,7 +1255,7 @@
       document.getElementById("checkoutFooter").classList.add("hidden");
 
       if (items.length === 0) {
-        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍</p><p>Your Express Bag is empty!</p></div>";
+        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍️</p><p>Your Express Bag is empty!</p></div>";
         return;
       }
 
