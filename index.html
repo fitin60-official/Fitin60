@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Fitin60 | 60-Minute Hyperlocal Fashion Radar</title>
+  <title>Fitin60 | 60-Minute Hyperlocal Fashion</title>
   
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="apple-touch-icon" href="icon.svg">
-  <meta name="theme-color" content="#f97316">
+  <meta name="theme-color" content="#ffffff">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -25,13 +24,15 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f8fafc;
-      color: #0f172a;
+      background-color: #fcfcfc;
+      color: #282c3f;
       overflow-x: hidden;
       width: 100%;
     }
     .font-brand { font-family: 'Syne', sans-serif; }
     .font-mono-num { font-family: 'Space Grotesk', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
     #quickToast {
       transform: translateY(120px);
@@ -40,145 +41,133 @@
     }
     #quickToast.show { transform: translateY(0); opacity: 1; }
 
-    .glass-header {
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    .myntra-gradient {
+      background: linear-gradient(135deg, #fff0f5 0%, #fff5ee 50%, #fdf2f8 100%);
     }
-    .gradient-hero {
-      background: linear-gradient(135deg, #09090b 0%, #1e1b4b 60%, #0f172a 100%);
+    .myntra-pink-btn {
+      background: #ff3f6c;
+      transition: all 0.2s ease;
+    }
+    .myntra-pink-btn:hover {
+      background: #f22b59;
     }
     .card-hover-effect {
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .card-hover-effect:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px -5px rgba(40, 44, 63, 0.12);
     }
   </style>
 </head>
-<body class="min-h-screen pb-32 antialiased selection:bg-orange-500 selection:text-white w-full overflow-x-hidden">
+<body class="min-h-screen pb-32 antialiased selection:bg-[#ff3f6c] selection:text-white w-full overflow-x-hidden">
 
-  <!-- Top Announcement Banner -->
-  <div class="gradient-hero text-white text-[11px] font-bold py-2.5 px-4 text-center flex items-center justify-center gap-2.5 border-b border-slate-800/80 shadow-sm">
-    <span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse shrink-0"></span>
-    <span class="truncate tracking-wide">⚡ <strong>FITIN60 EXPRESS</strong> • 15KM Hyperlocal Radar • Secure Delivery OTP & QR Verification</span>
-  </div>
-
-  <!-- Professional Sticky Header -->
-  <header class="sticky top-0 z-40 glass-header px-4 sm:px-8 h-18 sm:h-20 flex items-center justify-between shadow-xs w-full">
-    <a href="index.html" class="flex items-center gap-3 shrink-0 group">
-      <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-orange-600 via-amber-500 to-yellow-400 flex items-center justify-center text-white font-brand font-black text-xl shadow-lg shadow-orange-500/20 group-hover:scale-105 transition">F</div>
-      <div>
-        <span class="font-brand text-xl sm:text-2xl font-black tracking-tight text-slate-950">
-          FITIN<span class="text-orange-600">60</span>
-        </span>
-        <span class="block text-[9px] font-black text-slate-400 tracking-widest uppercase">Express Radar</span>
+  <!-- Myntra Style Top Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 sm:px-8 h-16 flex items-center justify-between shadow-2xs w-full">
+    <div class="flex items-center gap-6">
+      <a href="index.html" class="flex items-center gap-2.5 shrink-0 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff3f6c] via-[#ff527b] to-amber-500 flex items-center justify-center text-white font-brand font-black text-xl shadow-md shadow-[#ff3f6c]/25 group-hover:scale-105 transition">F</div>
+        <div>
+          <span class="font-brand text-xl font-black tracking-tighter text-[#282c3f]">
+            FITIN<span class="text-[#ff3f6c]">60</span>
+          </span>
+          <span class="block text-[8px] font-extrabold text-slate-400 tracking-widest uppercase">Express Luxury</span>
+        </div>
+      </a>
+      
+      <!-- Dynamic Customer Address Indicator -->
+      <div class="hidden md:flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200/80 cursor-pointer shadow-2xs hover:bg-slate-100 transition" onclick="openSavedAddressModal()">
+        <span>📍</span>
+        <span id="headerAddrLabel" class="truncate max-w-[240px]">Select Delivery Address</span>
+        <span class="text-[10px] text-[#ff3f6c] font-black uppercase">Change</span>
       </div>
-    </a>
+    </div>
 
-    <div class="flex items-center gap-3 shrink-0">
-      <button onclick="toggleCart()" class="relative bg-slate-950 hover:bg-orange-600 text-white font-bold px-4 py-2.5 rounded-2xl flex items-center gap-2 shadow-md hover:shadow-orange-500/20 cursor-pointer transition transform active:scale-95 text-xs">
-        <span class="text-base">🛍</span>
-        <span class="font-mono-num font-black text-amber-400 text-sm" id="cart-count">0</span>
+    <!-- Right Header Icons -->
+    <div class="flex items-center gap-4 shrink-0">
+      <button onclick="toggleCart()" class="relative bg-slate-100 hover:bg-slate-200 text-[#282c3f] p-2.5 rounded-full flex items-center justify-center transition cursor-pointer">
+        <span class="text-base">🛍️</span>
+        <span class="absolute -top-1 -right-1 font-mono-num font-black bg-[#ff3f6c] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-xs" id="cart-count">0</span>
       </button>
 
       <div id="authPillContainer" class="relative">
-        <button onclick="openLoginModal()" class="bg-slate-100 hover:bg-slate-200 border border-slate-200/80 text-slate-900 font-bold px-4 py-2.5 rounded-2xl text-xs flex items-center gap-2 cursor-pointer transition shadow-xs">
-          <span>👤</span> <span class="hidden sm:inline">Login</span>
+        <button onclick="openLoginModal()" class="flex items-center gap-2 bg-slate-900 hover:bg-[#ff3f6c] text-white font-bold px-4 py-2 rounded-full text-xs transition shadow-sm">
+          <span>👤</span> <span>Profile</span>
         </button>
       </div>
     </div>
   </header>
 
   <!-- Profile Menu Popover -->
-  <div id="profilePopover" class="hidden absolute top-20 right-4 z-50 bg-white/95 backdrop-blur-2xl border border-slate-200 shadow-2xl rounded-3xl p-5 w-72 space-y-3.5 animate-in fade-in zoom-in duration-200">
-    <div class="border-b border-slate-100 pb-3.5">
+  <div id="profilePopover" class="hidden absolute top-18 right-4 z-50 bg-white/98 backdrop-blur-2xl border border-slate-200 shadow-2xl rounded-2xl p-4 w-72 space-y-3 animate-in fade-in duration-200">
+    <div class="border-b border-slate-100 pb-3">
       <div class="flex justify-between items-center mb-1">
-        <p class="text-[10px] font-black uppercase text-slate-400 tracking-wider">Account Settings</p>
-        <span id="ownerBadgeInProfile" class="hidden text-[9px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-black px-2.5 py-0.5 rounded-full">🛡️ OWNER ACTIVE</span>
+        <p class="text-[9px] font-black uppercase text-slate-400 tracking-wider">Welcome</p>
+        <span id="ownerBadgeInProfile" class="hidden text-[8px] bg-emerald-100 text-emerald-800 font-black px-2 py-0.5 rounded-full">🛡️ OWNER</span>
       </div>
-      <p id="popoverCustName" class="font-brand font-bold text-base text-slate-950 truncate">Customer</p>
+      <p id="popoverCustName" class="font-brand font-bold text-sm text-[#282c3f] truncate">Customer</p>
       <p id="popoverCustPhone" class="font-mono text-xs text-slate-500">9876543210</p>
     </div>
 
-    <a href="tracking.html" class="flex items-center gap-3 bg-slate-50 hover:bg-orange-50 hover:text-orange-700 p-3.5 rounded-2xl text-xs font-bold text-slate-700 transition">
+    <a href="tracking.html" class="flex items-center gap-3 bg-slate-50 hover:bg-pink-50 hover:text-[#ff3f6c] p-3 rounded-xl text-xs font-bold text-slate-700 transition">
       <span class="text-base">📦</span> <span>My Orders & Live Tracking</span>
     </a>
 
-    <button onclick="openSavedAddressModal()" class="w-full flex items-center gap-3 bg-slate-50 hover:bg-orange-50 hover:text-orange-700 p-3.5 rounded-2xl text-xs font-bold text-slate-700 transition text-left cursor-pointer">
-      <span class="text-base">📍</span> <span>Manage Permanent Address</span>
+    <button onclick="openSavedAddressModal()" class="w-full flex items-center gap-3 bg-slate-50 hover:bg-pink-50 hover:text-[#ff3f6c] p-3 rounded-xl text-xs font-bold text-slate-700 transition text-left cursor-pointer">
+      <span class="text-base">📍</span> <span>Manage Saved Addresses</span>
     </button>
 
-    <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support%2C%20I%20need%20help%20with%20my%20order" target="_blank" class="flex items-center gap-3 bg-emerald-50 hover:bg-emerald-100 p-3.5 rounded-2xl text-xs font-bold text-emerald-800 transition">
+    <a href="https://wa.me/919515552511?text=Hi%20Fitin60%20Support" target="_blank" class="flex items-center gap-3 bg-emerald-50 hover:bg-emerald-100 p-3 rounded-xl text-xs font-bold text-emerald-800 transition">
       <span class="text-base">💬</span> <span>WhatsApp Support</span>
     </a>
 
-    <button onclick="customerLogout()" class="w-full flex items-center gap-3 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold p-3.5 rounded-2xl text-xs transition cursor-pointer">
+    <button onclick="customerLogout()" class="w-full flex items-center gap-3 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold p-3 rounded-xl text-xs transition cursor-pointer">
       <span class="text-base">🚪</span> <span>Logout Securely</span>
     </button>
-
-    <div class="pt-2 border-t border-slate-100 text-center">
-      <button onclick="handleDeleteCustomerAccountPermanently()" class="text-[11px] text-rose-500 hover:text-rose-700 font-semibold underline decoration-rose-300 transition cursor-pointer">
-        Delete Customer Account
-      </button>
-    </div>
   </div>
 
-  <main class="max-w-5xl mx-auto px-4 sm:px-6 mt-5 sm:mt-8 space-y-6 sm:space-y-8 w-full">
+  <main class="max-w-5xl mx-auto px-3 sm:px-6 mt-4 space-y-6 w-full">
     
-    <!-- Hero Banner -->
-    <div class="relative gradient-hero rounded-3xl p-6 sm:p-10 text-white shadow-2xl border border-slate-800 overflow-hidden w-full">
-      <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -left-16 -top-16 w-64 h-64 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
-      
-      <div class="relative z-10 space-y-4">
-        <div class="flex flex-wrap justify-between items-center gap-2">
-          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/15 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider text-orange-300 shadow-inner">
-            <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span> 15-KM Hyperlocal Radar
-          </div>
-          <button onclick="showQuickToast('✓ GPS Synced Successfully')" class="text-[10px] font-bold bg-orange-600 hover:bg-orange-500 text-white px-3.5 py-2 rounded-xl transition cursor-pointer shadow-lg shadow-orange-600/30">
-            📍 Sync GPS Location
-          </button>
-        </div>
+    <!-- Search Bar -->
+    <div class="relative w-full shadow-xs rounded-full overflow-hidden bg-slate-100 border border-slate-200/80">
+      <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-sm">🔍</span>
+      <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search for boutique, saree, shirt, jacket, ethnic..." class="w-full pl-11 pr-4 py-3 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-[#282c3f] placeholder:text-slate-400">
+    </div>
 
-        <h1 class="font-brand text-2xl sm:text-4xl font-black tracking-tight leading-tight text-white max-w-2xl">
-          Live Partner Boutiques & Outfits in <span class="text-orange-400">15 KM</span>. Drops in 60 Mins.
-        </h1>
-        <p class="text-slate-300 text-xs sm:text-sm font-medium max-w-xl">
-          Secure Delivery OTP & Instant QR Verification enabled for verified orders. Shop the latest fashion instantly.
-        </p>
+    <!-- Category Chips Grid -->
+    <div class="flex flex-wrap gap-2.5 py-1.5 px-2 text-xs font-bold w-full items-center" id="categoryChips">
+      <button onclick="filterByCategory('All')" class="cat-chip bg-[#282c3f] text-white px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">All Outfits</button>
+      <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">🧥 Jackets</button>
+      <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">🎒 Uniforms</button>
+      <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
+      <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">🥻 Sarees</button>
+      <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">👗 Kurtis</button>
+      <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">✨ Lehengas</button>
+      <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">👔 Shirts</button>
+      <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">👖 Pants</button>
+      <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs">👕 T-Shirts</button>
+    </div>
+
+    <!-- Luxury Promo Banner -->
+    <div class="relative myntra-gradient rounded-3xl p-6 sm:p-8 shadow-sm border border-pink-100 overflow-hidden w-full flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-pink-300/30 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="space-y-2 z-10 text-center sm:text-left">
+        <span class="bg-[#ff3f6c] text-white font-extrabold text-[9px] uppercase px-3 py-1 rounded-full tracking-wider shadow-xs">⚡ EXPRESS HYPERLOCAL FASHION</span>
+        <h2 class="font-brand text-xl sm:text-3xl font-black text-[#282c3f] tracking-tight">
+          Fitin60 Express • Fashion at Your Doorstep in 60 Mins
+        </h2>
+        <p class="text-xs text-slate-600 font-medium">Verified 15KM Radar Boutiques • Secure Delivery OTP & Post-OTP Payment</p>
       </div>
     </div>
 
-    <!-- Search & Fully Wrapped Categories Section (No clipping for Shirts & Pants) -->
-    <div class="space-y-4 w-full">
-      <div class="relative w-full shadow-md rounded-2xl overflow-hidden bg-white border border-slate-200/80">
-        <span class="absolute inset-y-0 left-0 pl-4.5 flex items-center text-slate-400 text-base pointer-events-none">🔍</span>
-        <input type="text" id="storeSearchInput" oninput="renderBoutiqueStores()" placeholder="Search boutique, jacket, hoodie, saree, shirt, pants, t-shirt..." class="w-full pl-12 pr-4 py-4 bg-transparent text-xs sm:text-sm font-medium focus:outline-none text-slate-900 placeholder:text-slate-400">
-      </div>
-
-      <!-- Category Chips with Flex Wrap so Shirts, Pants, and T-Shirts are fully visible and never cut -->
-      <div class="flex flex-wrap gap-2 py-2 px-1 text-xs font-bold w-full" id="categoryChips">
-        <button onclick="filterByCategory('All')" class="cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-md shadow-slate-950/25">All Outfits</button>
-        <button onclick="filterByCategory('Jacket')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🧥 Jackets & Hoodies</button>
-        <button onclick="filterByCategory('Uniform')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🎒 Uniforms</button>
-        <button onclick="filterByCategory('Kids')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🧸 Kids Wear</button>
-        <button onclick="filterByCategory('Saree')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">🥻 Sarees</button>
-        <button onclick="filterByCategory('Kurti')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👗 Kurtis</button>
-        <button onclick="filterByCategory('Lehenga')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">✨ Lehengas</button>
-        <button onclick="filterByCategory('Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👔 Shirts</button>
-        <button onclick="filterByCategory('Pants')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👖 Pants</button>
-        <button onclick="filterByCategory('T-Shirt')" class="cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs">👕 T-Shirts</button>
-      </div>
-    </div>
-
-    <!-- Stores & Outfits Section -->
-    <div class="w-full space-y-5">
+    <!-- Live Stores & Outfits Section -->
+    <div class="w-full space-y-4">
       <div class="flex justify-between items-center px-1">
-        <h2 class="font-brand font-black text-xl sm:text-2xl text-slate-950 tracking-tight">Live Partner Stores (15KM Radar)</h2>
-        <span id="boutiqueCountBadge" class="text-xs bg-orange-100 text-orange-800 font-black px-3.5 py-1.5 rounded-full border border-orange-200 shadow-2xs">Live Radar Active</span>
+        <div>
+          <h2 class="font-brand font-black text-lg sm:text-xl text-[#282c3f] tracking-tight">Near Boutique (60Mins Express)</h2>
+          <p class="text-[11px] text-slate-500 font-medium">Handpicked elite styles ready for instant radar drop</p>
+        </div>
+        <span id="boutiqueCountBadge" class="text-[11px] bg-pink-100 text-[#ff3f6c] font-black px-3 py-1 rounded-full">Live Radar</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full" id="boutiqueStoreGrid"></div>
     </div>
@@ -186,31 +175,74 @@
 
   <!-- Active Order Pill -->
   <div id="floatingOrderTracker" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 hidden">
-    <a href="tracking.html" class="bg-slate-950 hover:bg-orange-600 text-white text-xs font-bold px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-3 border border-slate-800 transition transform hover:scale-105 whitespace-nowrap">
-      <span class="w-3 h-3 rounded-full bg-orange-500 animate-ping"></span>
-      <span>📦 Active Order: <span id="floatingOrderStatus" class="text-orange-400">On the way</span> (<span id="floatingOrderCountdown" class="font-mono-num text-emerald-400 font-black">59:59</span>)</span>
-      <span class="bg-white/20 px-2.5 py-1 rounded-lg text-[10px]">Track →</span>
+    <a href="tracking.html" class="bg-slate-900 hover:bg-[#ff3f6c] text-white text-xs font-bold px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-3 border border-slate-800 transition transform hover:scale-105 whitespace-nowrap">
+      <span class="w-3 h-3 rounded-full bg-[#ff3f6c] animate-ping"></span>
+      <span>📦 Active Order: <span id="floatingOrderStatus" class="text-pink-300">On the way</span> (<span id="floatingOrderCountdown" class="font-mono-num text-emerald-400 font-black">59:59</span>)</span>
+      <span class="bg-white/20 px-2 py-0.5 rounded-md text-[10px]">Track →</span>
     </a>
   </div>
 
-  <!-- Saved Address Modal -->
+  <!-- Professional Multi-Address Management Modal -->
   <div id="savedAddressModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b pb-3">
         <div class="flex items-center gap-2">
           <span class="text-2xl">📍</span>
-          <h3 class="font-brand font-bold text-base text-slate-950">Manage Saved Address</h3>
+          <h3 class="font-brand font-bold text-base text-[#282c3f]">Manage Delivery Addresses</h3>
         </div>
         <button onclick="closeSavedAddressModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
 
-      <div class="space-y-3 text-xs">
+      <div class="space-y-3">
+        <p class="text-[10px] font-black uppercase text-slate-400">Your Saved Addresses</p>
+        <div id="customerAddressesList" class="space-y-2"></div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 space-y-3 text-xs">
+        <p class="font-bold text-[#282c3f]">+ Add New Professional Address</p>
+        
         <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5">Permanent Full Delivery Address</label>
-          <textarea id="savedPermanentAddressInput" rows="3" placeholder="House/Flat No, Landmark, Street Name..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-900 focus:outline-none focus:border-orange-500 font-medium"></textarea>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Address Label / Type</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setAddrType('Home')" id="addrTypeHome" class="py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition">🏠 Home</button>
+            <button type="button" onclick="setAddrType('Office')" id="addrTypeOffice" class="py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">🏢 Office</button>
+            <button type="button" onclick="setAddrType('Other')" id="addrTypeOther" class="py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">📍 Other</button>
+          </div>
         </div>
-        <button onclick="saveCustomerAddressPermanently()" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">
-          ✓ Save as Permanent Address
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">House / Plot No *</label>
+            <input type="text" id="inputHouseNo" required placeholder="Flat 204, Plot 12" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Area / Society / Street *</label>
+            <input type="text" id="inputAreaName" required placeholder="Itikalapalli Main Rd" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Landmark (Famous Spot) *</label>
+          <input type="text" id="inputLandmark" required placeholder="Near Clock Tower / Temple" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">City / District *</label>
+            <input type="text" id="inputCity" required placeholder="Ananthapur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">State *</label>
+            <input type="text" id="inputState" required value="Andhra Pradesh" placeholder="Andhra Pradesh" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+          <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Pincode *</label>
+            <input type="tel" id="inputPincode" required maxlength="6" placeholder="515001" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-mono font-bold text-slate-900 focus:outline-none focus:border-[#ff3f6c]">
+          </div>
+        </div>
+
+        <button onclick="saveNewMultiAddress()" class="w-full myntra-pink-btn text-white font-bold py-3 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md mt-2">
+          + Save Professional Address
         </button>
       </div>
     </div>
@@ -219,17 +251,17 @@
   <!-- Store Explore Modal -->
   <div id="storeExploreModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl">
     <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
-      <div class="p-6 bg-slate-950 text-white flex items-center justify-between shrink-0">
+      <div class="p-6 bg-[#282c3f] text-white flex items-center justify-between shrink-0">
         <div>
           <h3 class="font-brand font-black text-xl sm:text-2xl text-white" id="exploreStoreName">Store Name</h3>
-          <p class="text-xs text-orange-400 mt-1" id="exploreStoreArea">📍 Location</p>
+          <p class="text-xs text-pink-400 mt-1" id="exploreStoreArea">📍 Location</p>
         </div>
         <button onclick="closeStoreExploreModal()" class="text-slate-400 hover:text-white text-3xl font-bold cursor-pointer">&times;</button>
       </div>
       <div class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50">
         <div class="flex justify-between items-center text-xs font-bold text-slate-600">
           <span id="exploreItemCount" class="bg-white px-4 py-1.5 rounded-full border border-slate-200 shadow-xs">Available Collections</span>
-          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-slate-200">⚡ 60-Min Express Drop</span>
+          <span class="text-emerald-700 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-200">⚡ 60-Min Express Drop</span>
         </div>
         <div id="storeExploreGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
       </div>
@@ -255,11 +287,11 @@
             <div id="modalThumbnailsStrip" class="flex gap-2.5 overflow-x-auto no-scrollbar py-1"></div>
           </div>
           <div class="border-t border-slate-100 pt-3">
-            <span id="modalProdCategory" class="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-50 px-2.5 py-1 rounded-lg">Uniform</span>
-            <h3 id="modalProdName" class="font-brand font-black text-xl text-slate-950 mt-1.5 leading-snug">Outfit Name</h3>
+            <span id="modalProdCategory" class="text-[10px] font-black uppercase tracking-wider text-[#ff3f6c] bg-pink-50 px-2.5 py-1 rounded-lg">Uniform</span>
+            <h3 id="modalProdName" class="font-brand font-black text-xl text-[#282c3f] mt-1.5 leading-snug">Outfit Name</h3>
             <p id="modalProdStore" class="text-xs font-bold text-slate-500 mt-1">Store Name</p>
             <div class="flex items-baseline gap-2.5 mt-3">
-              <span id="modalProdPrice" class="font-mono-num font-black text-2xl text-slate-950">₹0</span>
+              <span id="modalProdPrice" class="font-mono-num font-black text-2xl text-[#282c3f]">₹0</span>
               <span id="modalProdOrig" class="text-xs text-slate-400 line-through">₹0</span>
               <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">60-Min Express</span>
             </div>
@@ -271,64 +303,15 @@
           </div>
         </div>
         <div class="grid grid-cols-2 gap-2.5 pt-4 border-t border-slate-100">
-          <button onclick="modalAddToBag()" class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-3.5 rounded-2xl text-xs cursor-pointer transition shadow-xs">🛍️ Add Bag</button>
-          <button onclick="modalBuyNow()" class="bg-orange-600 hover:bg-orange-500 text-white font-black py-3.5 rounded-2xl text-xs cursor-pointer shadow-md transition">⚡ Instant Buy</button>
+          <button onclick="modalAddToBag()" class="bg-slate-100 hover:bg-slate-200 text-[#282c3f] font-bold py-3.5 rounded-2xl text-xs cursor-pointer transition shadow-xs">🛍️ Add Bag</button>
+          <button onclick="modalBuyNow()" class="myntra-pink-btn text-white font-black py-3.5 rounded-2xl text-xs cursor-pointer shadow-md transition">⚡ Instant Buy</button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Direct Owner Edit Modal -->
-  <div id="directOwnerEditModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative border border-slate-200">
-      <div class="flex items-center justify-between border-b pb-3">
-        <div class="flex items-center gap-2">
-          <span class="text-2xl">✏️</span>
-          <h3 class="font-brand font-bold text-base text-slate-950">Owner Fast Edit</h3>
-        </div>
-        <button onclick="closeDirectOwnerEditModal()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
-      </div>
-      <form onsubmit="handleDirectOwnerSave(event)" class="space-y-3.5 text-xs">
-        <input type="hidden" id="directEditKey">
-        <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Dress Name</label>
-          <input type="text" id="directEditName" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-medium">
-        </div>
-        <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Store Area</label>
-          <input type="text" id="directEditArea" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-bold">
-        </div>
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Price (₹)</label>
-            <input type="number" id="directEditPrice" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 font-mono text-slate-900 font-bold">
-          </div>
-          <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Category</label>
-            <select id="directEditCategory" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900 font-bold">
-              <option value="Jacket">Jacket / Hoodie</option>
-              <option value="Uniform">Uniform</option>
-              <option value="Kids">Kids</option>
-              <option value="Saree">Saree</option>
-              <option value="Kurti">Kurti</option>
-              <option value="Lehenga">Lehenga</option>
-              <option value="Shirt">Shirt</option>
-              <option value="Pants">Pants</option>
-              <option value="T-Shirt">T-Shirt</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Sizes</label>
-          <input type="text" id="directEditSizes" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-slate-900">
-        </div>
-        <button type="submit" class="w-full bg-orange-600 text-white font-bold py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer shadow-md">✓ Save Updates</button>
-      </form>
     </div>
   </div>
 
   <!-- Toast -->
-  <div id="quickToast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-slate-950/95 backdrop-blur-2xl text-white text-xs font-bold px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-2.5 border border-slate-800 pointer-events-none">
+  <div id="quickToast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-[#282c3f]/95 backdrop-blur-2xl text-white text-xs font-bold px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-2.5 border border-slate-800 pointer-events-none">
     <span class="text-emerald-400 text-base">✓</span>
     <span id="toastMsg">Added to Bag</span>
   </div>
@@ -337,44 +320,44 @@
   <div id="customerLoginModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative shadow-2xl">
       <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
-      <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-xs">🔐</div>
-      <h3 class="font-brand font-black text-xl text-slate-950 mt-3">Customer Account</h3>
+      <div class="w-14 h-14 bg-pink-100 text-[#ff3f6c] rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold shadow-xs">🔐</div>
+      <h3 class="font-brand font-black text-xl text-[#282c3f] mt-3">Customer Profile</h3>
       <p class="text-xs text-slate-500 mt-1">Login with Mobile & 4-Digit PIN</p>
       
       <div class="flex bg-slate-100 p-1 rounded-2xl mt-4">
-        <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-xs transition cursor-pointer">Login</button>
+        <button onclick="switchCustAuthTab('login')" id="custTabLogin" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-[#282c3f] shadow-xs transition cursor-pointer">Login</button>
         <button onclick="switchCustAuthTab('register')" id="custTabRegister" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer">Register</button>
       </div>
 
       <form id="custLoginForm" onsubmit="handleCustomerPinLogin(event)" class="space-y-3.5 text-left mt-4">
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile Number</label>
-          <input type="tel" id="custPinLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono font-bold focus:outline-none focus:border-orange-500">
+          <input type="tel" id="custPinLoginMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono font-bold focus:outline-none focus:border-[#ff3f6c]">
         </div>
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="block text-[10px] font-black uppercase text-slate-400">4-Digit PIN</label>
-            <button type="button" onclick="openForgotPinView()" class="text-[10px] text-orange-600 font-bold hover:underline cursor-pointer">Forgot PIN?</button>
+            <button type="button" onclick="openForgotPinView()" class="text-[10px] text-[#ff3f6c] font-bold hover:underline cursor-pointer">Forgot PIN?</button>
           </div>
-          <input type="password" id="custPinLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-orange-500">
+          <input type="password" id="custPinLoginPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-[#ff3f6c]">
         </div>
-        <button type="submit" class="w-full bg-slate-950 hover:bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">Login ➔</button>
+        <button type="submit" class="w-full bg-slate-900 hover:bg-[#ff3f6c] text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">Login ➔</button>
       </form>
 
       <form id="custRegisterForm" onsubmit="handleCustomerPinRegister(event)" class="space-y-3.5 text-left mt-4 hidden">
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Full Name</label>
-          <input type="text" id="custRegName" required placeholder="Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium focus:outline-none focus:border-orange-500">
+          <input type="text" id="custRegName" required placeholder="Sai Kumar" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium focus:outline-none focus:border-[#ff3f6c]">
         </div>
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Mobile Number</label>
-          <input type="tel" id="custRegMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono font-bold focus:outline-none focus:border-orange-500">
+          <input type="tel" id="custRegMobile" required maxlength="10" placeholder="10-Digit Mobile" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono font-bold focus:outline-none focus:border-[#ff3f6c]">
         </div>
         <div>
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Create 4-Digit PIN</label>
-          <input type="password" id="custRegPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-orange-500">
+          <input type="password" id="custRegPin" required maxlength="4" placeholder="••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold focus:outline-none focus:border-[#ff3f6c]">
         </div>
-        <button type="submit" class="w-full bg-orange-600 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">Register ➔</button>
+        <button type="submit" class="w-full myntra-pink-btn text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider transition cursor-pointer">Register ➔</button>
       </form>
 
       <form id="custForgotForm" onsubmit="handleResetPinSubmit(event)" class="space-y-3.5 text-left mt-4 hidden">
@@ -390,16 +373,16 @@
           <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">New PIN</label>
           <input type="password" id="resetNewPin" required maxlength="4" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-mono tracking-widest text-center font-bold">
         </div>
-        <button type="submit" class="w-full bg-slate-950 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider">Update PIN</button>
+        <button type="submit" class="w-full bg-slate-900 text-white font-black py-3.5 rounded-2xl text-xs uppercase tracking-wider">Update PIN</button>
       </form>
     </div>
   </div>
 
-  <!-- Shopping Bag Drawer -->
+  <!-- Shopping Bag / Checkout Drawer -->
   <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
     <div onclick="toggleCart()" class="fixed inset-0 bg-black/70 backdrop-blur-md"></div>
     <div class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between z-10 overflow-hidden animate-in slide-in-from-right duration-300">
-      <div class="p-5 bg-slate-950 text-white flex items-center justify-between shrink-0">
+      <div class="p-5 bg-[#282c3f] text-white flex items-center justify-between shrink-0">
         <div class="flex items-center gap-2.5">
           <span class="text-xl">🛍️</span>
           <h3 id="drawerTitle" class="font-brand font-black text-base uppercase tracking-wide">Express Bag</h3>
@@ -414,46 +397,27 @@
         </div>
         
         <div id="checkoutViewContainer" class="hidden space-y-4 pt-1">
-          <div class="flex items-center justify-between bg-orange-50/80 border border-orange-200/80 p-3.5 rounded-2xl">
+          <div class="flex items-center justify-between bg-pink-50/80 border border-pink-200 p-3.5 rounded-2xl">
             <div class="flex items-center gap-3 truncate">
               <img id="checkoutItemImg" src="" class="w-12 h-12 rounded-xl object-cover border shrink-0">
               <div class="truncate">
-                <p id="checkoutItemName" class="font-bold text-xs text-slate-950 truncate">Item Name</p>
-                <p id="checkoutItemPrice" class="font-mono-num font-black text-orange-600 text-sm mt-0.5">₹0</p>
+                <p id="checkoutItemName" class="font-bold text-xs text-[#282c3f] truncate">Item Name</p>
+                <p id="checkoutItemPrice" class="font-mono-num font-black text-[#ff3f6c] text-sm mt-0.5">₹0</p>
               </div>
             </div>
             <button onclick="backToCartBagView()" class="text-[11px] font-bold bg-white text-slate-700 border border-slate-300 px-3 py-1.5 rounded-xl cursor-pointer">← Bag</button>
           </div>
 
           <div>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Delivery Address</h4>
-            <div class="grid grid-cols-2 gap-2.5 mb-3">
-              <label class="flex items-center gap-2.5 p-3 bg-orange-50/80 border-2 border-orange-500 rounded-2xl cursor-pointer text-xs font-bold text-slate-950">
-                <input type="radio" name="checkoutAddressType" value="permanent" checked onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
-                <span>🏠 Saved Address</span>
-              </label>
-              <label class="flex items-center gap-2.5 p-3 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer text-xs font-bold text-slate-700">
-                <input type="radio" name="checkoutAddressType" value="new" onchange="toggleAddressInputMode(this.value)" class="accent-orange-600">
-                <span>📍 New / Other</span>
-              </label>
-            </div>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">1. Select Delivery Address</h4>
+            <div id="checkoutAddressesRadioContainer" class="space-y-2 mb-3"></div>
           </div>
 
           <input type="text" id="custName" required placeholder="Full Name" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-medium">
           <input type="tel" id="custPhone" required placeholder="Mobile Number (For Delivery OTP)" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-mono font-bold">
-          
-          <div id="permanentAddressBoxContainer">
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Permanent Address</label>
-            <textarea id="custPermanentAddress" rows="2" class="w-full bg-slate-50 border rounded-2xl p-3.5 text-xs font-medium"></textarea>
-          </div>
-
-          <div id="newAddressBoxContainer" class="hidden">
-            <label class="block text-[10px] font-black uppercase text-orange-600 mb-1">Temporary Address</label>
-            <textarea id="custNewAddress" rows="2" class="w-full bg-orange-50/50 border border-orange-300 rounded-2xl p-3.5 text-xs font-medium"></textarea>
-          </div>
 
           <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Delivery Distance & Fee (Auto-calculated)</label>
             <select id="deliveryDistanceSelect" onchange="recalculateDistanceFee()" class="w-full bg-slate-50 border rounded-2xl px-4 py-3 text-xs font-bold text-slate-900">
               <option value="2.5" selected>📍 0 to 3 KM - ₹49</option>
               <option value="5.5">📍 3 to 7 KM - ₹79</option>
@@ -463,53 +427,56 @@
           </div>
 
           <div class="pt-2 border-t border-slate-100 space-y-2.5">
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Secure Payment & Verification</h4>
-            <div class="grid grid-cols-1 gap-2.5">
-              <label class="flex items-center gap-3.5 p-3.5 bg-slate-50 border-2 border-orange-500 rounded-2xl cursor-pointer">
-                <input type="radio" name="payOption" value="ONLINE_UPI" checked class="accent-orange-600">
-                <div class="text-xs">
-                  <p class="font-black text-slate-950">Fitin60 Centralized Online UPI / Card / QR</p>
-                  <p class="text-[10px] text-emerald-700 font-bold mt-0.5">Auto-generates Secure Delivery OTP</p>
-                </div>
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">2. Payment Mode After OTP Verification</h4>
+            <div class="grid grid-cols-2 gap-2.5">
+              <label class="flex flex-col items-center justify-center p-3.5 bg-pink-50 border-2 border-[#ff3f6c] rounded-2xl cursor-pointer text-center">
+                <input type="radio" name="payMethodPref" value="COD" checked class="accent-[#ff3f6c] mb-1">
+                <span class="font-black text-xs text-[#282c3f]">💵 Cash on Delivery</span>
+                <span class="text-[9px] text-slate-500 mt-0.5">Pay rider after OTP</span>
+              </label>
+              <label class="flex flex-col items-center justify-center p-3.5 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer text-center">
+                <input type="radio" name="payMethodPref" value="UPI_SCAN" class="accent-[#ff3f6c] mb-1">
+                <span class="font-black text-xs text-[#282c3f]">📱 UPI Scan & Pay</span>
+                <span class="text-[9px] text-emerald-700 mt-0.5">Scan after OTP check</span>
               </label>
             </div>
           </div>
 
           <div class="p-4 bg-slate-50 rounded-2xl border space-y-2.5 text-xs">
-            <h5 class="font-bold text-slate-950 uppercase tracking-wider text-[10px]">Bill Summary</h5>
+            <h5 class="font-bold text-[#282c3f] uppercase tracking-wider text-[10px]">Bill Summary</h5>
             <div class="flex justify-between text-slate-600">
               <span>Item Price</span>
-              <span class="font-mono-num font-bold text-slate-950" id="billItemTotal">₹0</span>
+              <span class="font-mono-num font-bold text-[#282c3f]" id="billItemTotal">₹0</span>
             </div>
             <div class="flex justify-between text-slate-600">
               <span>Delivery Fee (<span id="billDistanceLabel">~2.5 KM</span>)</span>
               <span class="font-mono-num font-bold text-emerald-700" id="billDeliveryFee">₹49</span>
             </div>
-            <div class="border-t pt-2 flex justify-between font-black text-slate-950 text-sm">
-              <span>To Pay</span>
-              <span class="font-mono-num text-base text-orange-600" id="billFinalPayable">₹0</span>
+            <div class="border-t pt-2 flex justify-between font-black text-[#282c3f] text-sm">
+              <span>To Pay (After OTP Verification)</span>
+              <span class="font-mono-num text-base text-[#ff3f6c]" id="billFinalPayable">₹0</span>
             </div>
           </div>
         </div>
       </div>
 
       <div id="checkoutFooter" class="p-5 bg-white border-t shrink-0 hidden shadow-lg">
-        <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full bg-gradient-to-r from-orange-600 to-amber-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider cursor-pointer shadow-xl">
+        <button onclick="handleCheckout()" id="checkoutSubmitBtn" class="w-full myntra-pink-btn text-white font-black py-4 rounded-2xl text-xs uppercase tracking-wider cursor-pointer shadow-xl">
           ⚡ Place Order & Generate Delivery OTP
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-2xl border-t border-slate-200/80 py-3 px-8 flex items-center justify-around z-40 shadow-2xl">
-    <a href="index.html" class="flex flex-col items-center text-orange-600 font-bold">
-      <span class="text-xl">🏬</span>
-      <span class="text-[10px] mt-1 font-black">Explore</span>
+  <!-- Myntra Style Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-2xl border-t border-slate-200/80 py-2.5 px-6 flex items-center justify-around z-40 shadow-2xl">
+    <a href="index.html" class="flex flex-col items-center text-[#ff3f6c] font-bold">
+      <span class="text-lg">🏠</span>
+      <span class="text-[10px] mt-0.5 font-black">Home</span>
     </a>
-    <a href="tracking.html" class="flex flex-col items-center text-slate-400 hover:text-orange-600 font-bold">
-      <span class="text-xl">⚡</span>
-      <span class="text-[10px] mt-1 font-medium">Orders</span>
+    <a href="tracking.html" class="flex flex-col items-center text-slate-400 hover:text-[#ff3f6c] font-bold">
+      <span class="text-lg">📦</span>
+      <span class="text-[10px] mt-0.5 font-medium">Orders</span>
     </a>
   </nav>
 
@@ -548,6 +515,137 @@
     var activeModalProduct = null;
     var currentModalImageIndex = 0;
     var selectedModalSize = "";
+    var selectedAddrTypeTag = "Home";
+
+    window.setAddrType = function(type) {
+      selectedAddrTypeTag = type;
+      ["Home", "Office", "Other"].forEach(function(t) {
+        var btn = document.getElementById("addrType" + t);
+        if (btn) {
+          if (t === type) {
+            btn.className = "py-2 border-2 border-[#ff3f6c] bg-pink-50 text-[#ff3f6c] font-bold rounded-xl text-xs transition";
+          } else {
+            btn.className = "py-2 border border-slate-200 text-slate-700 font-bold rounded-xl text-xs transition";
+          }
+        }
+      });
+    };
+
+    window.saveNewMultiAddress = function() {
+      var houseNo = document.getElementById("inputHouseNo").value.trim();
+      var areaName = document.getElementById("inputAreaName").value.trim();
+      var landmark = document.getElementById("inputLandmark").value.trim();
+      var city = document.getElementById("inputCity").value.trim();
+      var state = document.getElementById("inputState").value.trim();
+      var pincode = document.getElementById("inputPincode").value.trim();
+
+      if (!houseNo || !areaName || !landmark || !city || !state || !pincode) {
+        return alert("Please fill all professional address fields (House, Area, Landmark, City, State, Pincode)!");
+      }
+
+      var newAddrString = "[" + selectedAddrTypeTag + "] " + houseNo + ", " + areaName + " (Landmark: " + landmark + "), " + city + ", " + state + " - " + pincode;
+
+      if (!currentCustomer) {
+        currentCustomer = { name: "Guest User", phone: "9999999999", addresses: [newAddrString], activeAddress: newAddrString };
+      } else {
+        if (!currentCustomer.addresses) {
+          currentCustomer.addresses = currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : [];
+        }
+        currentCustomer.addresses.push(newAddrString);
+        currentCustomer.activeAddress = newAddrString;
+        currentCustomer.permanentAddress = newAddrString;
+        localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+
+        if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
+          db.ref("customers/" + currentCustomer.phone).update({
+            addresses: currentCustomer.addresses,
+            activeAddress: newAddrString,
+            permanentAddress: newAddrString
+          });
+        }
+      }
+
+      renderCustomerAddressesUI();
+      updateHeaderAddressDisplay();
+      closeSavedAddressModal();
+      showQuickToast("✓ Professional Address Saved!");
+    };
+
+    window.selectActiveAddress = function(addrStr) {
+      if (!currentCustomer) return;
+      currentCustomer.activeAddress = addrStr;
+      currentCustomer.permanentAddress = addrStr;
+      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+      if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
+        db.ref("customers/" + currentCustomer.phone).update({ activeAddress: addrStr, permanentAddress: addrStr });
+      }
+      renderCustomerAddressesUI();
+      updateHeaderAddressDisplay();
+      showQuickToast("✓ Active Address Updated!");
+    };
+
+    window.deleteCustomerAddress = function(index) {
+      if (!currentCustomer || !currentCustomer.addresses) return;
+      if (currentCustomer.addresses.length <= 1) {
+        return alert("You must keep at least one address!");
+      }
+      currentCustomer.addresses.splice(index, 1);
+      currentCustomer.activeAddress = currentCustomer.addresses[0];
+      currentCustomer.permanentAddress = currentCustomer.addresses[0];
+      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
+      if (currentCustomer.phone && currentCustomer.phone !== "9999999999") {
+        db.ref("customers/" + currentCustomer.phone).update({
+          addresses: currentCustomer.addresses,
+          activeAddress: currentCustomer.activeAddress,
+          permanentAddress: currentCustomer.permanentAddress
+        });
+      }
+      renderCustomerAddressesUI();
+      updateHeaderAddressDisplay();
+      showQuickToast("✓ Address Removed");
+    };
+
+    function renderCustomerAddressesUI() {
+      var listContainer = document.getElementById("customerAddressesList");
+      if (!listContainer) return;
+
+      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : (currentCustomer && currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : []);
+      var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : (addrs[0] || "");
+
+      if (addrs.length === 0) {
+        listContainer.innerHTML = "<p class='text-xs text-slate-400'>No saved addresses yet. Add one below.</p>";
+        return;
+      }
+
+      var html = "";
+      addrs.forEach(function(addr, idx) {
+        var isActive = (addr === active);
+        html += '<div class="flex items-center justify-between p-3 rounded-2xl border text-xs transition ' + (isActive ? 'border-[#ff3f6c] bg-pink-50/50 font-bold text-[#282c3f]' : 'border-slate-200 bg-slate-50 text-slate-700') + '">' +
+          '<div class="flex items-center gap-2.5 truncate cursor-pointer flex-1" onclick="selectActiveAddress(\'' + addr.replace(/'/g, "\\'") + '\')">' +
+            '<span>' + (isActive ? '📍' : '🏠') + '</span>' +
+            '<span class="truncate">' + addr + '</span>' +
+          '</div>' +
+          '<div class="flex items-center gap-2 shrink-0">' +
+            (!isActive ? '<button onclick="selectActiveAddress(\'' + addr.replace(/'/g, "\\'") + '\')" class="text-[10px] bg-white border px-2.5 py-1 rounded-xl text-[#ff3f6c] font-bold">Select</button>' : '<span class="text-[10px] bg-[#ff3f6c] text-white px-2 py-0.5 rounded-lg">Active</span>') +
+            '<button onclick="deleteCustomerAddress(' + idx + ')" class="text-rose-500 p-1">🗑️</button>' +
+          '</div>' +
+        '</div>';
+      });
+      listContainer.innerHTML = html;
+    }
+
+    function updateHeaderAddressDisplay() {
+      var addrLabel = document.getElementById("headerAddrLabel");
+      if (!addrLabel) return;
+
+      if (currentCustomer && currentCustomer.activeAddress) {
+        addrLabel.innerText = currentCustomer.activeAddress;
+      } else if (currentCustomer && currentCustomer.permanentAddress) {
+        addrLabel.innerText = currentCustomer.permanentAddress;
+      } else {
+        addrLabel.innerText = "Select Delivery Address 📍";
+      }
+    }
 
     var orderTimerSecs = 60 * 60;
     setInterval(function() {
@@ -617,12 +715,12 @@
       if (tab === 'login') {
         loginF.classList.remove("hidden");
         regF.classList.add("hidden");
-        document.getElementById("custTabLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-xs transition cursor-pointer";
+        document.getElementById("custTabLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-[#282c3f] shadow-xs transition cursor-pointer";
         document.getElementById("custTabRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       } else {
         loginF.classList.add("hidden");
         regF.classList.remove("hidden");
-        document.getElementById("custTabRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-950 shadow-xs transition cursor-pointer";
+        document.getElementById("custTabRegister").className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-[#282c3f] shadow-xs transition cursor-pointer";
         document.getElementById("custTabLogin").className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 transition cursor-pointer";
       }
     };
@@ -645,66 +743,13 @@
     });
 
     window.openSavedAddressModal = function() {
-      if (!currentCustomer) {
-        openLoginModal();
-        return;
-      }
-      document.getElementById("savedPermanentAddressInput").value = currentCustomer.permanentAddress || currentCustomer.address || "";
+      renderCustomerAddressesUI();
       document.getElementById("profilePopover").classList.add("hidden");
       document.getElementById("savedAddressModal").classList.remove("hidden");
     };
 
     window.closeSavedAddressModal = function() {
       document.getElementById("savedAddressModal").classList.add("hidden");
-    };
-
-    window.saveCustomerAddressPermanently = function() {
-      if (!currentCustomer) return;
-      var newAddr = document.getElementById("savedPermanentAddressInput").value.trim();
-      if (!newAddr) return alert("Please enter your permanent address!");
-
-      currentCustomer.permanentAddress = newAddr;
-      currentCustomer.address = newAddr;
-      localStorage.setItem("fitin60_customer_user", JSON.stringify(currentCustomer));
-
-      if (currentCustomer.phone) {
-        db.ref("customers/" + currentCustomer.phone).update({
-          permanentAddress: newAddr,
-          address: newAddr
-        });
-      }
-
-      document.getElementById("custPermanentAddress").value = newAddr;
-      closeSavedAddressModal();
-      showQuickToast("✓ Permanent Address Saved!");
-    };
-
-    window.toggleAddressInputMode = function(mode) {
-      var permBox = document.getElementById("permanentAddressBoxContainer");
-      var newBox = document.getElementById("newAddressBoxContainer");
-
-      if (mode === "permanent") {
-        permBox.classList.remove("hidden");
-        newBox.classList.add("hidden");
-      } else {
-        permBox.classList.add("hidden");
-        newBox.classList.remove("hidden");
-        document.getElementById("custNewAddress").focus();
-      }
-    };
-
-    window.handleDeleteCustomerAccountPermanently = function() {
-      if (!currentCustomer) return;
-      var enteredPin = prompt("⚠️ DELETE CUSTOMER ACCOUNT\n\nEnter your 4-digit PIN to permanently delete your account (" + currentCustomer.name + "):");
-      if (enteredPin === null) return;
-      if (enteredPin !== currentCustomer.pin) {
-        return alert("❌ Incorrect PIN! Deletion cancelled.");
-      }
-      var phoneToDelete = currentCustomer.phone;
-      db.ref("customers/" + phoneToDelete).remove().then(function() {
-        alert("✓ Account deleted successfully.");
-        customerLogout();
-      });
     };
 
     function getStoreStatus(storeName, storeMobile) {
@@ -723,7 +768,7 @@
       var descL = (p.desc || "").toLowerCase();
       var combined = nameL + " " + descL;
 
-      if (combined.includes("jacket") || combined.includes("hoodie") || combined.includes("sweatshirt") || combined.includes("overcoat")) return "Jacket";
+      if (combined.includes("jacket") || combined.includes("hoodie") || combined.includes("sweatshirt")) return "Jacket";
       if (combined.includes("saree") || combined.includes("pattu")) return "Saree";
       if (combined.includes("lehenga")) return "Lehenga";
       if (combined.includes("kurti") || combined.includes("anarkali") || combined.includes("kurta")) return "Kurti";
@@ -756,7 +801,7 @@
 
         document.getElementById("exploreStoreName").innerText = actualStoreName + (isStoreClosed ? " (CLOSED)" : "");
         document.getElementById("exploreStoreArea").innerText = "📍 " + storeArea;
-        document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in this store";
+        document.getElementById("exploreItemCount").innerText = storeProds.length + " Outfits in store";
 
         var grid = document.getElementById("storeExploreGrid");
         var html = "";
@@ -767,27 +812,23 @@
           var resolvedCat = getResolvedCategory(p);
 
           html += 
-            '<div class="relative bg-white border border-slate-200/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between overflow-hidden">' +
-              (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-md">' + (isStoreClosed ? '🔴 Store Closed' : 'Out of Stock') + '</span></div>' : '') +
-              (isOwnerActive ? 
-                '<div class="absolute top-2.5 right-2.5 flex gap-1 z-20" onclick="event.stopPropagation();">' +
-                  '<button onclick="openDirectOwnerEdit(\'' + p.cloudKey + '\')" class="bg-blue-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">✏️</button>' +
-                  '<button onclick="directOwnerDelete(\'' + p.cloudKey + '\')" class="bg-rose-600 text-white p-1.5 rounded-xl text-xs shadow-md cursor-pointer">🗑️</button>' +
-                '</div>' : '') +
-              '<div class="relative h-44 sm:h-52 w-full rounded-2xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-                '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
-                '<span class="absolute top-2 left-2 bg-slate-950/75 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg backdrop-blur-md">⚡ 60-Min</span>' +
+            '<div class="relative bg-white border border-slate-200 rounded-2xl p-3 shadow-xs hover:shadow-md transition space-y-2.5 flex flex-col justify-between overflow-hidden" loading="lazy">' +
+              (!inStock ? '<div class="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-20 flex items-center justify-center p-2 text-center"><span class="bg-rose-600 text-white text-[10px] font-black px-3 py-1 rounded-full">Out of Stock</span></div>' : '') +
+              (p.featured === true || p.featured === "true" || p.featured === 1 ? '<span class="absolute top-2 left-2 bg-[#ff3f6c] text-white text-[9px] font-black px-2 py-0.5 rounded shadow z-20">⭐ FEATURED</span>' : '') +
+              '<div class="relative h-44 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
+                '<img src="' + p.image + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">' +
+                '<span class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded">60-Min</span>' +
               '</div>' +
               '<div>' +
-                '<p class="font-bold text-slate-950 text-xs sm:text-sm truncate cursor-pointer hover:text-orange-600 transition" onclick="openProductDetailModal(\'' + targetId + '\')">' + p.name + '</p>' +
-                '<div class="flex items-center justify-between mt-1.5">' +
-                  '<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-md">' + resolvedCat + '</span>' +
-                  '<span class="font-mono-num font-black text-sm sm:text-base text-slate-950">₹' + p.price + '</span>' +
+                '<p class="font-bold text-[#282c3f] text-xs truncate cursor-pointer hover:text-[#ff3f6c] transition" onclick="openProductDetailModal(\'' + targetId + '\')">' + p.name + '</p>' +
+                '<div class="flex items-center justify-between mt-1">' +
+                  '<span class="text-[10px] text-slate-500">' + resolvedCat + '</span>' +
+                  '<span class="font-mono-num font-black text-sm text-[#282c3f]">₹' + p.price + '</span>' +
                 '</div>' +
               '</div>' +
-              '<div class="grid grid-cols-2 gap-2 pt-1">' +
-                '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer transition disabled:opacity-50">🛍️ Add Bag</button>' +
-                '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 hover:bg-orange-500 text-white font-bold py-2.5 rounded-2xl text-[11px] cursor-pointer shadow transition disabled:opacity-50">⚡ Buy Now</button>' +
+              '<div class="grid grid-cols-2 gap-1.5 pt-1">' +
+                '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-2 rounded-xl text-[10px] cursor-pointer">Bag</button>' +
+                '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="myntra-pink-btn text-white font-bold py-2 rounded-xl text-[10px] cursor-pointer shadow-xs">Buy</button>' +
               '</div>' +
             '</div>';
         });
@@ -829,7 +870,7 @@
         selectedModalSize = sizes[0];
         var sizesHtml = "";
         sizes.forEach(function(s, idx) {
-          sizesHtml += '<button onclick="selectModalSize(\'' + s + '\')" class="size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition ' + (idx === 0 ? "bg-slate-950 text-white border-slate-950 shadow-sm" : "bg-slate-50 text-slate-800 border-slate-200") + '">' + s + '</button>';
+          sizesHtml += '<button onclick="selectModalSize(\'' + s + '\')" class="size-chip px-3.5 py-2 rounded-xl border text-xs font-bold transition ' + (idx === 0 ? "bg-[#ff3f6c] text-white border-[#ff3f6c] shadow-xs" : "bg-slate-50 text-slate-800 border-slate-200") + '">' + s + '</button>';
         });
         document.getElementById("modalSizesContainer").innerHTML = sizesHtml;
 
@@ -874,7 +915,7 @@
       selectedModalSize = size;
       var buttons = document.querySelectorAll(".size-chip");
       buttons.forEach(function(b) {
-        b.className = (b.innerText === size) ? "size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition bg-slate-950 text-white border-slate-950 shadow-sm" : "size-chip px-3.5 py-2 rounded-2xl border text-xs font-bold transition bg-slate-50 text-slate-800 border-slate-200";
+        b.className = (b.innerText === size) ? "size-chip px-3.5 py-2 rounded-xl border text-xs font-bold transition bg-[#ff3f6c] text-white border-[#ff3f6c] shadow-xs" : "size-chip px-3.5 py-2 rounded-xl border text-xs font-bold transition bg-slate-50 text-slate-800 border-slate-200";
       });
     };
 
@@ -896,7 +937,7 @@
       document.getElementById("imageCounterBadge").innerText = (currentModalImageIndex + 1) + " / " + list.length;
       var thumbsHtml = "";
       list.forEach(function(imgUrl, idx) {
-        thumbsHtml += '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" class="w-14 h-14 rounded-2xl object-cover border-2 cursor-pointer shrink-0 transition ' + (idx === currentModalImageIndex ? "border-orange-600 scale-105 shadow-md" : "border-slate-200 opacity-70") + '">';
+        thumbsHtml += '<img onclick="jumpToImageIndex(' + idx + ')" src="' + imgUrl + '" loading="lazy" class="w-14 h-14 rounded-xl object-cover border-2 cursor-pointer shrink-0 transition ' + (idx === currentModalImageIndex ? "border-[#ff3f6c] scale-105 shadow-sm" : "border-slate-200 opacity-70") + '">';
       });
       document.getElementById("modalThumbnailsStrip").innerHTML = thumbsHtml;
     }
@@ -926,55 +967,21 @@
       openSingleCheckoutView();
     };
 
-    window.directOwnerDelete = function(key) {
-      if (confirm("Delete this outfit?")) {
-        db.ref("boutique_products/" + key).remove().then(function() { showQuickToast("✓ Deleted"); closeStoreExploreModal(); });
-      }
-    };
-
-    window.openDirectOwnerEdit = function(key) {
-      var prod = cloudProductsMap[key];
-      if (!prod) return;
-      document.getElementById("directEditKey").value = key;
-      document.getElementById("directEditName").value = prod.name || "";
-      document.getElementById("directEditArea").value = prod.area || "";
-      document.getElementById("directEditPrice").value = prod.price || 0;
-      document.getElementById("directEditCategory").value = prod.category || "Uniform";
-      document.getElementById("directEditSizes").value = (prod.sizes || []).join(", ");
-      document.getElementById("directOwnerEditModal").classList.remove("hidden");
-    };
-
-    window.closeDirectOwnerEditModal = function() { document.getElementById("directOwnerEditModal").classList.add("hidden"); };
-
-    window.handleDirectOwnerSave = function(e) {
-      e.preventDefault();
-      var key = document.getElementById("directEditKey").value;
-      if (!key) return;
-      var sizes = document.getElementById("directEditSizes").value.trim().split(",").map(function(s) { return s.trim(); });
-      db.ref("boutique_products/" + key).update({
-        name: document.getElementById("directEditName").value.trim(),
-        area: document.getElementById("directEditArea").value.trim(),
-        price: parseInt(document.getElementById("directEditPrice").value),
-        category: document.getElementById("directEditCategory").value,
-        sizes: sizes
-      }).then(function() { closeDirectOwnerEditModal(); showQuickToast("✓ Updated!"); });
-    };
-
     window.filterByCategory = function(cat) {
       currentCategoryFilter = cat;
       var buttons = document.querySelectorAll(".cat-chip");
       buttons.forEach(function(btn) {
         var onclickAttr = btn.getAttribute("onclick") || "";
         if (onclickAttr.includes("'" + cat + "'")) {
-          btn.className = "cat-chip bg-slate-950 text-white px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-md shadow-slate-950/25 text-[11px]";
+          btn.className = "cat-chip bg-[#282c3f] text-white px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs text-[11px]";
         } else {
-          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 px-4 py-2.5 rounded-2xl cursor-pointer transition shadow-xs text-[11px]";
+          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs text-[11px]";
         }
       });
       renderBoutiqueStores();
     };
 
-    // STRICT REAL STORES & 15KM RADAR FILTERING LOGIC (MUMMY DADDY STORE EXCLUDED PERMANENTLY)
+    // ORIGINAL LIGHTNING FAST RENDERING & PAGINATION LIMIT (.slice(0, 10))
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -990,9 +997,10 @@
         var sName = getStoreDisplayName(rawStoreName, sMobile);
 
         if (!sName) return;
-
-        // PERMANENTLY EXCLUDE / HIDE "MUMMY DADDY" STORE
         if (sName.toLowerCase().includes("mummy daddy")) return;
+
+        var isFeaturedItem = (p.featured === true || p.featured === "true" || p.featured === 1);
+        if (!isFeaturedItem) return;
 
         var oName = (p.name || "").toLowerCase();
         var oDesc = (p.desc || "").toLowerCase();
@@ -1007,19 +1015,24 @@
           if (!storesMap[storeKey]) {
             storesMap[storeKey] = { storeName: sName, storeMobile: sMobile, area: realLocation, eta: p.eta || "30 MINS", rating: p.rating || "5.0", products: [] };
           }
-          storesMap[storeKey].products.push(p);
+          if (storesMap[storeKey].products.length < 3) {
+            storesMap[storeKey].products.push(p);
+          }
         }
       });
 
-      var stores = Object.values(storesMap);
-      if (badge) badge.innerText = stores.length + " Stores Live (15KM)";
-      if (stores.length === 0) { 
-        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No live partner stores found within 15km radar.</p></div>"; 
+      var stores = Object.values(storesMap).filter(function(st) { return st.products.length > 0; });
+      if (badge) badge.innerText = stores.length + " Stores Live";
+      
+      var visibleStores = stores.slice(0, 10);
+
+      if (visibleStores.length === 0) { 
+        grid.innerHTML = "<div class='col-span-full py-16 text-center text-slate-400 text-xs font-semibold space-y-2'><p class='text-3xl'>🏬</p><p>No featured partner outfits available right now.</p></div>"; 
         return; 
       }
 
       var html = "";
-      stores.forEach(function(store) {
+      visibleStores.forEach(function(store) {
         var storeStatus = getStoreStatus(store.storeName, store.storeMobile);
         var isStoreClosed = (storeStatus === "CLOSED");
         var previewImages = "";
@@ -1027,31 +1040,32 @@
         store.products.slice(0, 3).forEach(function(p) {
           var targetId = p.cloudKey;
           var inStock = (p.inStock !== false && !isStoreClosed);
-          previewImages += '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs flex flex-col justify-between p-2 space-y-1.5">' +
-            (!inStock ? '<div class="absolute inset-0 bg-white/85 z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">' + (isStoreClosed ? 'Closed' : 'Out') + '</span></div>' : '') +
-            '<div class="relative h-32 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
-              '<img src="' + p.image + '" class="w-full h-full object-cover group-hover:scale-105 transition">' +
-              '<span class="absolute top-1 left-1 bg-slate-950/80 text-white font-bold text-[9px] px-2 py-0.5 rounded backdrop-blur-xs">₹' + p.price + '</span>' +
+          previewImages += '<div class="relative bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-2xs flex flex-col justify-between p-2.5 space-y-2" loading="lazy">' +
+            (!inStock ? '<div class="absolute inset-0 bg-white/85 z-20 flex items-center justify-center p-1 text-center"><span class="bg-rose-600 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">Closed</span></div>' : '') +
+            '<span class="absolute top-2 left-2 bg-[#ff3f6c] text-white text-[8px] font-black px-2 py-0.5 rounded shadow z-20">⭐ FEATURED</span>' +
+            '<div class="relative h-36 w-full rounded-xl overflow-hidden bg-slate-100 cursor-pointer group" onclick="openProductDetailModal(\'' + targetId + '\')">' +
+              '<img src="' + p.image + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition">' +
+              '<span class="absolute bottom-2 right-2 bg-black/70 text-white font-bold text-[9px] px-2 py-0.5 rounded backdrop-blur-xs">₹' + p.price + '</span>' +
             '</div>' +
-            '<div class="grid grid-cols-2 gap-1">' +
-              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-xl text-[10px] cursor-pointer">Add</button>' +
-              '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-orange-600 text-white font-bold py-1.5 rounded-xl text-[10px] cursor-pointer shadow-2xs">Buy</button>' +
+            '<div class="grid grid-cols-2 gap-1.5">' +
+              '<button onclick="quickAddBag(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-1.5 rounded-xl text-[10px] cursor-pointer">Bag</button>' +
+              '<button onclick="quickBuyNow(\'' + targetId + '\')" ' + (!inStock ? 'disabled' : '') + ' class="myntra-pink-btn text-white font-bold py-1.5 rounded-xl text-[10px] cursor-pointer shadow-2xs">Buy</button>' +
             '</div></div>';
         });
 
         html += '<div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm card-hover-effect space-y-4 w-full relative overflow-hidden">' +
           (isStoreClosed ? '<div class="absolute top-0 inset-x-0 bg-rose-600 text-white text-[10px] font-black text-center py-1 tracking-wider uppercase">🔴 Store Closed</div>' : '') +
           '<div class="flex justify-between items-center ' + (isStoreClosed ? 'mt-4' : '') + '">' +
-            '<span class="text-[10px] font-black text-orange-600 bg-orange-50 px-3 py-1 rounded-lg">⚡ ' + store.eta + '</span>' +
+            '<span class="text-[10px] font-black text-[#ff3f6c] bg-pink-50 px-3 py-1 rounded-lg">⚡ ' + store.eta + '</span>' +
             '<div class="flex items-center gap-2">' +
               '<span class="text-[10px] font-black px-3 py-1 rounded-full ' + (isStoreClosed ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800') + '">' + (isStoreClosed ? 'Closed' : 'Open') + '</span>' +
               '<span class="text-xs font-bold text-slate-700">⭐ ' + store.rating + '</span>' +
             '</div></div>' +
           '<div class="cursor-pointer group" onclick="openStoreExploreModal(\'' + store.storeName + '\', \'' + store.storeMobile + '\')">' +
-            '<div class="flex items-center justify-between"><h3 class="font-brand font-black text-lg sm:text-xl text-slate-950 group-hover:text-orange-600 transition">' + store.storeName + '</h3><span class="text-xs text-orange-600 font-bold flex items-center gap-1">Explore <span>➔</span></span></div>' +
+            '<div class="flex items-center justify-between"><h3 class="font-brand font-black text-lg sm:text-xl text-[#282c3f] group-hover:text-[#ff3f6c] transition">' + store.storeName + '</h3><span class="text-xs text-[#ff3f6c] font-bold flex items-center gap-1">Explore <span>➔</span></span></div>' +
             '<p class="text-xs text-slate-500 font-medium mt-1">📍 ' + store.area + ' • Within 15KM Radar</p>' +
           '</div>' +
-          '<div class="grid grid-cols-3 gap-3 pt-2">' + previewImages + '</div></div>';
+          '<div class="grid grid-cols-3 gap-2.5 pt-2">' + previewImages + '</div></div>';
       });
       grid.innerHTML = html;
     }
@@ -1059,14 +1073,37 @@
     window.toggleCart = function() {
       checkLoginBeforeAction(function() {
         activeCheckoutItem = null;
-        if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
+        renderCheckoutAddressesList();
         renderCart();
         document.getElementById("cartDrawer").classList.toggle("hidden");
       });
     };
 
+    function renderCheckoutAddressesList() {
+      var container = document.getElementById("checkoutAddressesRadioContainer");
+      if (!container) return;
+
+      var addrs = (currentCustomer && currentCustomer.addresses) ? currentCustomer.addresses : (currentCustomer && currentCustomer.permanentAddress ? [currentCustomer.permanentAddress] : []);
+     var active = (currentCustomer && currentCustomer.activeAddress) ? currentCustomer.activeAddress : (addrs[0] || "Default Address");
+
+      if (addrs.length === 0) {
+        container.innerHTML = '<p class="text-xs text-rose-500 font-bold">Please add a delivery address first!</p>';
+        return;
+      }
+
+      var html = "";
+      addrs.forEach(function(addr, idx) {
+        var isChecked = (addr === active || idx === 0);
+        html += '<label class="flex items-center gap-3 p-3 bg-slate-50 border rounded-2xl cursor-pointer text-xs font-bold text-[#282c3f]">' +
+          '<input type="radio" name="checkoutSelectedAddr" value="' + addr.replace(/"/g, '&quot;') + '" ' + (isChecked ? 'checked' : '') + ' class="accent-[#ff3f6c]">' +
+          '<span class="truncate">📍 ' + addr + '</span>' +
+        '</label>';
+      });
+      container.innerHTML = html;
+    }
+
     function openSingleCheckoutView() {
-      if (currentCustomer) document.getElementById("custPermanentAddress").value = currentCustomer.permanentAddress || currentCustomer.address || "";
+      renderCheckoutAddressesList();
       document.getElementById("drawerTitle").innerText = "Express Checkout";
       document.getElementById("cartBagViewContainer").classList.add("hidden");
       document.getElementById("checkoutViewContainer").classList.remove("hidden");
@@ -1101,23 +1138,23 @@
       document.getElementById("checkoutFooter").classList.add("hidden");
 
       if (items.length === 0) {
-        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍️</p><p>Your Express Bag is empty!</p></div>";
+        list.innerHTML = "<div class='text-center py-16 text-slate-400 text-xs font-semibold space-y-3'><p class='text-4xl'>🛍</p><p>Your Express Bag is empty!</p></div>";
         return;
       }
 
       var html = "";
       items.forEach(function(item, idx) {
-        var imgTag = item.image ? '<img src="' + item.image + '" class="w-16 h-16 rounded-2xl object-cover border shrink-0">' : '<div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-sm shrink-0">👗</div>';
-        html += '<div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/80 rounded-3xl gap-3 text-xs shadow-2xs">' +
+        var imgTag = item.image ? '<img src="' + item.image + '" loading="lazy" class="w-16 h-16 rounded-2xl object-cover border shrink-0">' : '<div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-sm shrink-0">👗</div>';
+        html += '<div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/80 rounded-2xl gap-3 text-xs shadow-2xs">' +
           '<div class="flex items-center gap-3 truncate">' + imgTag +
-            '<div class="truncate space-y-1"><p class="font-bold text-slate-950 truncate">' + item.name + '</p>' +
+            '<div class="truncate space-y-1"><p class="font-bold text-[#282c3f] truncate">' + item.name + '</p>' +
             '<p class="text-[10px] text-slate-500 font-medium">🏬 ' + item.store + '</p>' +
             '<p class="text-[9px] text-slate-400 font-mono">🕒 ' + (item.addedTime || "Just now") + '</p></div>' +
           '</div>' +
           '<div class="flex flex-col items-end gap-2 shrink-0">' +
-            '<span class="font-mono-num font-black text-sm text-orange-600">₹' + item.price + '</span>' +
+            '<span class="font-mono-num font-black text-sm text-[#ff3f6c]">₹' + item.price + '</span>' +
             '<div class="flex items-center gap-1.5">' +
-              '<button onclick="proceedBagItemCheckout(' + idx + ')" class="bg-orange-600 text-white font-bold px-3.5 py-1.5 rounded-xl text-[10px]">⚡ Buy</button>' +
+              '<button onclick="proceedBagItemCheckout(' + idx + ')" class="myntra-pink-btn text-white font-bold px-3 py-1.5 rounded-xl text-[10px]">⚡ Buy</button>' +
               '<button onclick="items.splice(' + idx + ', 1); localStorage.setItem(\'fitin60_cart_items\', JSON.stringify(items)); renderCart();" class="text-rose-500 p-1">🗑️</button>' +
             '</div></div></div>';
       });
@@ -1167,14 +1204,18 @@
       var ownerBadge = document.getElementById("ownerBadgeInProfile");
       if (currentCustomer) {
         var firstName = currentCustomer.name.split(" ")[0];
-        container.innerHTML = '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 border px-4 py-2 rounded-2xl font-bold text-xs cursor-pointer"><span>👤</span><span class="truncate max-w-[80px]">' + firstName + '</span></button>';
+        container.innerHTML = '<button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 bg-slate-100 border px-4 py-2 rounded-full font-bold text-xs cursor-pointer"><span>👤</span><span class="truncate max-w-[80px]">' + firstName + '</span></button>';
         document.getElementById("custName").value = currentCustomer.name || "";
         document.getElementById("custPhone").value = currentCustomer.phone || "";
         document.getElementById("popoverCustName").innerText = currentCustomer.name || "Customer";
         document.getElementById("popoverCustPhone").innerText = currentCustomer.phone || "";
+        
+        updateHeaderAddressDisplay();
+
         if (isOwnerActive && ownerBadge) ownerBadge.classList.remove("hidden");
       } else {
-        container.innerHTML = '<button onclick="openLoginModal()" class="bg-slate-100 border text-slate-900 font-bold px-4 py-2.5 rounded-2xl text-xs flex items-center gap-1.5"><span>👤</span> <span>Login</span></button>';
+        container.innerHTML = '<button onclick="openLoginModal()" class="flex items-center gap-2 bg-slate-900 text-white font-bold px-4 py-2 rounded-full text-xs"><span>👤</span> <span>Profile</span></button>';
+        updateHeaderAddressDisplay();
       }
     }
 
@@ -1195,7 +1236,7 @@
       var name = document.getElementById("custRegName").value.trim();
       var mob = document.getElementById("custRegMobile").value.trim();
       var pin = document.getElementById("custRegPin").value.trim();
-      var user = { name: name, phone: mob, pin: pin, permanentAddress: "" };
+      var user = { name: name, phone: mob, pin: pin, addresses: [], activeAddress: "" };
       db.ref("customers/" + mob).set(user).then(function() {
         currentCustomer = user;
         localStorage.setItem("fitin60_customer_user", JSON.stringify(user));
@@ -1216,12 +1257,18 @@
       });
     };
 
-    function finalizeAndSaveOrder(payMethodStr, paymentIdStr) {
+    window.handleCheckout = function() {
       if (!activeCheckoutItem) return;
       var name = document.getElementById("custName").value.trim();
       var phone = document.getElementById("custPhone").value.trim();
-      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
-      var deliveryAddress = (selectedAddressType === "permanent") ? document.getElementById("custPermanentAddress").value.trim() : document.getElementById("custNewAddress").value.trim();
+
+      var selectedAddrRadio = document.querySelector('input[name="checkoutSelectedAddr"]:checked');
+      var deliveryAddress = selectedAddrRadio ? selectedAddrRadio.value : "";
+
+      var selectedPayMethod = document.querySelector('input[name="payMethodPref"]:checked').value;
+
+      if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Select Delivery Address!");
+      if (phone.length !== 10) return alert("Enter valid 10-digit mobile number!");
 
       var distSelect = document.getElementById("deliveryDistanceSelect");
       var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
@@ -1245,9 +1292,9 @@
         distanceKm: distVal,
         deliveryFee: deliveryFee,
         totalAmount: totalPayable,
-        paymentMethod: payMethodStr,
-        paymentId: paymentIdStr || "PLATFORM_COLLECT_" + Date.now(),
-        paymentStatus: "Pending Verification on Delivery",
+        paymentMethod: selectedPayMethod === 'COD' ? "Cash on Delivery" : "UPI Scan & Pay",
+        paymentId: "TXN_" + selectedPayMethod + "_" + Date.now(),
+        paymentStatus: "Pending Delivery & OTP Verification",
         deliveryOtp: generatedOtp,
         store: activeCheckoutItem.store,
         storeMobile: activeCheckoutItem.storeMobile || "",
@@ -1257,55 +1304,16 @@
           storeNetPayout: storeNetPayout,
           platformCommission: platformFee,
           riderFee: deliveryFee,
-          storeSettlementStatus: "Credited to Wallet",
+          storeSettlementStatus: "Pending Post-OTP Payment",
           riderSettlementStatus: "Pending"
         },
         timestamp: Date.now()
       };
 
       db.ref("orders/" + orderId).set(orderData).then(function() {
-        if (activeCheckoutItem.storeMobile) {
-          db.ref("boutiques/" + activeCheckoutItem.storeMobile + "/walletBalance").transaction(function(bal) { return (bal || 0) + storeNetPayout; });
-          db.ref("boutiques/" + activeCheckoutItem.storeMobile + "/totalOrdersCount").transaction(function(c) { return (c || 0) + 1; });
-        }
         localStorage.setItem("chitikelo_active_order", JSON.stringify(orderData));
         window.location.href = "tracking.html";
       });
-    }
-
-    window.handleCheckout = function() {
-      if (!activeCheckoutItem) return;
-      var name = document.getElementById("custName").value.trim();
-      var phone = document.getElementById("custPhone").value.trim();
-      var selectedAddressType = document.querySelector('input[name="checkoutAddressType"]:checked').value;
-      var deliveryAddress = (selectedAddressType === "permanent") ? document.getElementById("custPermanentAddress").value.trim() : document.getElementById("custNewAddress").value.trim();
-
-      if (!name || !phone || !deliveryAddress) return alert("Please fill Name, Mobile & Address!");
-      if (phone.length !== 10) return alert("Enter valid 10-digit mobile number!");
-
-      var distSelect = document.getElementById("deliveryDistanceSelect");
-      var distVal = distSelect ? parseFloat(distSelect.value) : 2.5;
-      var totalPayable = activeCheckoutItem.price + getDistanceFee(distVal);
-
-      var options = {
-        "key": "rzp_test_1234567890abcdef",
-        "amount": totalPayable * 100,
-        "currency": "INR",
-        "name": "Fitin60 Centralized Gateway",
-        "description": "Secure Delivery Drop & Verification",
-        "handler": function (response){
-          finalizeAndSaveOrder("Razorpay Online UPI", response.razorpay_payment_id);
-        },
-        "prefill": { "name": name, "contact": phone },
-        "theme": { "color": "#ea580c" }
-      };
-
-      try {
-        var rzp = new Razorpay(options);
-        rzp.open();
-      } catch (err) {
-        finalizeAndSaveOrder("Centralized Online UPI", "PLATFORM_TXN_" + Date.now());
-      }
     };
 
     db.ref("boutiques").on("value", function(snapshot) {
@@ -1340,4 +1348,3 @@
   </script>
 </body>
 </html>
-      
