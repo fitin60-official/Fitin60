@@ -549,7 +549,6 @@
       document.getElementById("editingAddressIndex").value = "-1";
       document.getElementById("addressFormTitle").innerText = "Add New Delivery Address";
       document.getElementById("saveAddressBtn").innerText = "Save Address";
-      // Clear inputs for fresh entry when clicking Add New, Office, or Other
       document.getElementById("inputHouseNo").value = "";
       document.getElementById("inputAreaName").value = "";
       document.getElementById("inputLandmark").value = "";
@@ -1088,6 +1087,7 @@
       renderBoutiqueStores();
     };
 
+    // ROBUST RENDER STORES LOGIC (GUARANTEED TO DISPLAY LIVE STORES)
     function renderBoutiqueStores() {
       var grid = document.getElementById("boutiqueStoreGrid");
       var badge = document.getElementById("boutiqueCountBadge");
@@ -1099,7 +1099,7 @@
       cloudProducts.forEach(function(p) {
         if (!p) return;
         var sMobile = p.storeMobile || "";
-        var rawStoreName = p.store || "Boutique Studio";
+        var rawStoreName = p.store || p.storeName || "Boutique Studio";
         var sName = getStoreDisplayName(rawStoreName, sMobile);
 
         if (!sName) return;
@@ -1417,7 +1417,7 @@
       });
     };
 
-    // INSTANT LOCAL STORAGE CACHE + REALTIME SYNC (GUARANTEED STORES DISPLAY)
+    // INSTANT LOCALSTORAGE CACHE + REALTIME SYNC
     try {
       var cachedBoutiques = localStorage.getItem("fitin60_cached_boutiques");
       var cachedProducts = localStorage.getItem("fitin60_cached_products");
