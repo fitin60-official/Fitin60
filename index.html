@@ -590,7 +590,6 @@
       var addrObj = currentCustomer.addresses[index];
       
       if (typeof addrObj === 'string') {
-        // Fallback string parser
         var typeMatch = addrObj.match(/\[(.*?)\]/);
         if (typeMatch) setAddrType(typeMatch[1]);
         document.getElementById("inputFullName").value = currentCustomer.name || "Sai Krishna";
@@ -1092,7 +1091,7 @@
         if (onclickAttr.includes("'" + cat + "'")) {
           btn.className = "cat-chip bg-[#282c3f] text-white px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs text-[11px]";
         } else {
-          btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs text-[11px]";
+        btn.className = "cat-chip bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-4 py-2.5 rounded-full cursor-pointer transition shadow-xs text-[11px]";
         }
       });
       renderBoutiqueStores();
